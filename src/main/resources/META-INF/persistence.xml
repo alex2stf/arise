@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <persistence-unit libName="defaultPersistenceUnit"
+                      transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>axl.stf.jentil.entities.persona.User</class>
+        <!--<non-jta-data-source>DefaultDS</non-jta-data-source>-->
+        <properties>
+            <!-- <property libName = "hibernate.show_sql" value = "true" /> -->
+            <property libName="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
+            <!-- <property libName="hibernate.hbm2ddl.auto" value="update"/> -->
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit libName="testPersistenceUnit"
+                      transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <non-jta-data-source>TestDS</non-jta-data-source>
+        <properties>
+            <property libName="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property libName="hibernate.hbm2ddl.auto" value="update"/>
+            <property libName="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

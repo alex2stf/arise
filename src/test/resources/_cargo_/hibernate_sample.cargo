@@ -1,0 +1,103 @@
+root-namespace com.arise
+
+
+namespace com.arise.jentil.embeddables
+
+embeddable public class Unit
+    private var value long alias num_val
+    private var code string
+
+embeddable public class InfoID
+    private var entityId long alias entity_id
+    private var infoId long alias info_id
+
+
+
+
+#generation stategy can be: TABLE, SEQUENCE, IDENTITY, AUTO
+#cascadeTypes:     ALL,  PERSIST, MERGE,  REMOVE, REFRESH, DETACH;
+
+
+
+namespace com.arise.jentil.storage.entities
+
+
+#RELATION TYPES:
+#one_to_one
+#one_to_many
+
+#define type to solve cyclic dependency:
+using type FileEntity com.arise.jentil.storage.entities.FileEntity
+using type FileTag com.arise.jentil.storage.entities.FileTag
+using type FolderTag  com.arise.jentil.storage.entities.FolderTag
+
+persistable public class FolderEntity alias ent_folder
+    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=dfolder_sequence sequenceGenerator=dfolder_sequence_generator allocationSize=1
+    private var status string
+    private var creationDate date
+    private var currentFile FileEntity attributes: relation=one_to_one foreign_key=FK_file_to_folder
+    private var deleted bool attributes: hibernate_type=org.hibernate.type.NumericBooleanType
+    private var parent FolderEntity attributes: relation=one_to_one fetch=EAGER join_column=parent_id cascade=ALL
+    private var type string
+    private var description string
+    private var productName string
+    private var productId long
+    private var productCode string
+    private var phase string
+    private var source string
+    private var tags set<FolderTag>  attributes: relation=one_to_many foreign_key=FK_fldr_to_tag fetch=LAZY mapped_by=folder orphanRemoval=true
+
+
+
+
+persistable public class FileEntity alias ent_file
+    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=file_sequence sequenceGenerator=file_seq_gen allocationSize=1
+    private var name string
+    private var size long
+    private var mimeType string
+    private var path string
+    private var serviceId string
+    private var deleted bool
+    private var notes string
+    private var status string
+    private var parentId long
+    private transient var tags set<string>
+    private transient var props map<string,string>
+
+
+persistable public class Property alias store_props
+    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=folder_sequence sequenceGenerator=fldr_seq_gen allocationSize=1
+    private var key string alias p_key
+    private var values string alias p_val
+
+
+persistable public class Tag alias store_tags
+    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=storage_tag_sequence sequenceGenerator=stag_seq_gen allocationSize=1
+    private var value string attributes: naturalid
+    private var fileTags set<FileTag> attributes: relation=one_to_many mapped_by=tag cascade=ALL orphanRemoval=true
+    private var folderTags set<FolderTag> attributes: relation=one_to_many mapped_by=tag cascade=ALL orphanRemoval=true
+
+persistable public class FileTag alias f_tags
+    private var id InfoID primaryKey attributes: entityId=file_id infoId=tag_id
+    private var file FileEntity attributes: relation=many_to_one fetch=LAZY maps_id=entityId
+    private var tag Tag attributes: relation=many_to_one fetch=EAGER maps_id=infoId
+    private var createdOn date alias created_on
+
+
+persistable public class FolderTag alias d_tags
+    private var id InfoID primaryKey attributes: entityId=document_id infoId=tag_id
+    private var folder FolderEntity attributes: relation=many_to_one fetch=LAZY maps_id=entityId
+    private var tag Tag attributes: relation=many_to_one fetch=EAGER maps_id=infoId
+    private var createdOn date alias created_on
+
+namespace com.arise.jentil.storage.dtos
+
+dto FolderDTO
+    all_from FolderEntity
+
+
+#plugin spring-app SpringServices
+#    -> service FolderService for FolderEntity using FolderDTO
+
+#persistable public class EmbeddedIDSample alias embedde_id_sample
+#    private var id ComposedID primaryKey attributes: left=left_id right=right_id

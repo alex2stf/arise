@@ -1,0 +1,464 @@
+<html>
+<script type="text/javascript" src="/quixot"></script>
+<head>
+    <meta libName="viewport" content="width=device-width">
+    <style>
+        body {
+            background: #2aa090;
+            margin:0;
+            padding: 0;
+            font-size: 30px;
+        }
+
+        .mjpeg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        .mjpeg-container img{
+            position: absolute;
+        }
+
+        .controls{
+            position: fixed;
+            text-align: center;
+            bottom: 2px;
+            height: 40%;
+            /* background: red; */
+            min-height: 40%;
+            max-height: 40%;
+        }
+
+
+
+        .controls audio {
+            position: static;
+        }
+
+        .rotate90 {
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
+
+        .rotate180 {
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+
+        .rotate270 {
+            -webkit-transform: rotate(270deg);
+            -moz-transform: rotate(270deg);
+            -o-transform: rotate(270deg);
+            -ms-transform: rotate(270deg);
+            transform: rotate(270deg);
+        }
+
+        .rotate0 {
+            left: 0;
+        }
+
+        button {
+            margin: 0px;
+            font-size: 26px;
+        }
+
+
+        pre {
+            background: white;
+            padding: 0px;
+            margin: 1px;
+        }
+
+        .rBtn{
+            float:left;
+            width: 16.66666666666666666%;
+            height: 60px;
+        }
+
+        #btn-container{
+            height: 26px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div id="prev"></div>
+
+<div class="mjpeg-container">
+
+    <img id="xxx"/>
+
+    <button id="ctrlBtn" style="position: fixed; opacity: 0.5; height: 60%; width: 12%;" onclick="toggleControls()"> - </button>
+
+
+</div>
+
+<div id="control-box" class="controls">
+    <div style="text-align: center;">
+        <div style="font-size: 26px; margin: 0px; margin-top: 2px;" id="device-status-container" style="overflow: auto;"></div>
+        <div id="btn-container">
+            <button class="rBtn" onclick="rotate();">rotate</button>
+            <button class="rBtn" onclick="match_height();">height 100%</button>
+            <button class="rBtn" onclick="match_width();">width 100%</button>
+            <button class="rBtn" id="lightBtn" onclick="toggleDeviceLight();">Light ON</button>
+            <button class="rBtn" id="movieMod" onclick="toggleMovie()">MJPEG</button>
+            <button class="rBtn" onclick="showInfo()">INFO</button>
+        </div>
+    </div>
+    <audio src="/device-audio-live-stream.wav" style="margin-top: 2px" controls autoplay></audio>
+</div>
+
+    <script>
+
+
+
+        var rVars = ['rotate90', 'rotate180', 'rotate270', 'rotate0'],
+            i = 0,
+            LRot = '',
+            imgId = 'xxx',
+            controlsVisible = true,
+            mode = 'IMGREQ',
+            mSW = minScreenWidth(),
+            mSH = minScreenHeight(),
+            imgReqTimeout = 0,
+            frameIndx = 0;
+
+        function showInfo() {
+            alert(JSON.stringify(deviceStat))
+        }
+
+        function useMJPEG(){
+            clearTimeout(imgReqTimeout);
+            document.getElementById(imgId).src = '/device-cam-mjpeg-stream';
+        }
+
+        toggleMovie();
+
+        setTimeout(function () {
+             toggleControls();
+        }, 1000);
+
+        function useImgReq() {
+            if( mode != 'IMGREQ'){
+                return;
+            }
+            clearTimeout(imgReqTimeout);
+            imgReqTimeout = setTimeout(function () {
+
+                document.getElementById(imgId).onload = function () {
+                    console.log('loaded');
+                    frameIndx++;
+                    useImgReq();
+
+                };
+
+                document.getElementById(imgId).onerror = function () {
+                    console.log('loaded');
+                    frameIndx++;
+                    useImgReq();
+                };
+
+
+                document.getElementById(imgId).src = '/jpeg-stream-test?frame=' + frameIndx;
+            }, 30);
+        }
+
+
+        function toggleMovie() {
+            document.getElementById('movieMod').innerText = mode;
+            if (mode == 'MJPEG') {
+                mode = 'IMGREQ';
+                useImgReq();
+            } else {
+                mode = 'MJPEG';
+                useMJPEG();
+            }
+        }
+
+
+        function toggleControls() {
+            var div = document.getElementById('control-box');
+
+            div.style.width = '100%';
+
+            if(controlsVisible){
+                div.style.display = 'none';
+                controlsVisible = false;
+                document.getElementById('ctrlBtn').innerText = '>';
+            } else {
+                div.style.display = 'block';
+                controlsVisible = true;
+                document.getElementById('ctrlBtn').innerText = '<';
+            }
+
+        }
+
+
+
+
+
+        function calculateRatio(){
+            var img = document.getElementById(imgId);
+            img.style.width = 'auto';
+            img.style.height = 'auto';
+            var width = img.offsetWidth;
+            var height = img.offsetHeight;
+
+            var diff = (Math.max(width, height) - Math.min(width, height));
+            var ratio = width / height;
+
+            console.log('fw=' + width + ' fh=' + height + ' ratio=' + ratio)
+            return {
+                ratio: ratio,
+                diff: diff,
+                isLandscape: (width >= height),
+                width: width,
+                height: height
+            }
+        }
+
+        function fitWidthLandscape() {
+            var img = document.getElementById(imgId);
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.left = 0;
+            img.style.top = 0;
+            img.style.bottom = null;
+            img.style.right = null;
+        }
+
+        function fitHeightLandscape() {
+            var img = document.getElementById(imgId);
+            img.style.height = '100%';
+            img.style.width = 'auto';
+            img.style.left = (maxScreenWidth() - img.offsetWidth)  / 2;
+            img.style.top = 0;
+            img.style.bottom = null;
+            img.style.right = null;
+        }
+
+
+
+        function fitPortrait() {
+            console.log("xx---------------")
+            //var calc = calculateRatio();
+            var img = document.getElementById(imgId);
+            img.style.width = mSH;
+            img.style.height = 'auto';
+
+
+            img.style.top = ((img.offsetWidth - img.offsetHeight) / 2);
+            var diff = (img.offsetHeight - img.offsetWidth) / 2;
+            img.style.left = (diff + ((mSW - img.offsetHeight) / 2) );
+
+        }
+
+
+
+
+        mSW = minScreenWidth();
+            mSH = minScreenHeight();
+
+        function rotate(){
+            var img = document.getElementById(imgId);
+            if (i > rVars.length -1){
+                i = 0;
+            }
+            var rot = rVars[i];
+            console.log(i + ' ' + rot);
+
+            img.setAttribute('class', rot);
+            i++;
+            LRot = rot;
+        }
+
+        function isRotated(){
+            return LRot == 'rotate90' || LRot == 'rotate270';
+        }
+
+        function minScreenHeight() {
+            return Math.min(document.documentElement.clientHeight, window.innerHeight, screen.height);
+        }
+
+
+        function minScreenWidth() {
+            return Math.min(document.documentElement.clientWidth, window.innerWidth || screen.width);
+        }
+
+        function maxScreenHeight() {
+            return Math.max(document.documentElement.clientHeight, window.innerHeight || 0, screen.height, screen.height || 0);
+        }
+
+
+        function maxScreenWidth() {
+            return Math.max(document.documentElement.clientWidth, window.innerWidth || screen.width);
+        }
+        
+        function match_height() {
+            if(isRotated()){
+                fitPortrait();
+            } else {
+                fitHeightLandscape();
+            }
+        }
+
+        function match_width() {
+            if(isRotated()){
+                fitPortrait();
+            } else {
+                fitWidthLandscape();
+            }
+        }
+        
+        var lightOn = false;
+
+        function turnLightOn() {
+            quixot.Http.doPost('/device-stat?flashLightOn=true', {}, function(data){
+                console.log(data);
+                lightOn = true;
+                document.getElementById('lightBtn').innerText = 'Light OFF';
+            });
+
+        }
+        
+        function turnLightOff() {
+            quixot.Http.doPost('/device-stat?flashLightOn=false', {}, function(data){
+                console.log(data);
+                lightOn = false;
+                document.getElementById('lightBtn').innerText = 'Light ON';
+            });
+        }
+
+        function toggleDeviceLight() {
+            if (lightOn){
+                turnLightOff();
+            }  else {
+                turnLightOn();
+            }
+        }
+
+
+
+        var ws = null;
+
+        function initWS(ip){
+            console.log(ip);
+            try {
+                ws = new WebSocket('ws://' + ip + ':8221');
+
+                ws.onopen = function() {
+                    console.log('ws open at ' + ip);
+                };
+
+                ws.onmessage = function (evt) {
+                    var m = evt.data;
+                    if(m.indexOf("NOTIFY:") > -1){
+                        m = m.replace("NOTIFY:", "");
+                        try {
+                            quixot.Mingui.notify(m, m, '');
+                        } catch(e){
+
+                        }
+                    } else {
+                        console.log('ws msg ' + m);
+                    }
+                };
+
+                ws.onclose = function() {
+                    console.log('ws close ' + ip);
+                    ws = null;
+                };
+
+            } catch(e){
+
+            }
+        }
+
+        var deviceStatCheckers = {
+            self: function(){
+                getDeviceStat('', 'self', true);
+            }
+        };
+
+
+        var deviceStat = {};
+
+        function getDeviceStat(host, id, checkWs){
+
+            var next = 1000 * 30;
+
+            var libName = id.replace(/\./g, '').replace(/\:/g, '').replace(/\/\//g, '') + 'Stat';
+            var thisArea;
+
+            if(document.getElementById(libName)){
+                thisArea = document.getElementById(libName)
+            } else {
+                thisArea = document.createElement('pre');
+                thisArea.id = libName;
+                document.getElementById('device-status-container').appendChild(thisArea);
+            }
+
+
+            thisArea.innerHTML = '';
+            var txt = ''
+
+            quixot.Http.doGet(host + '/device-stat', {},
+                function(data){
+                    if(checkWs){
+                        if(ws == null && data.ipv4Addrs){
+                            for(var x = 0; x < data.ipv4Addrs.length; x++){
+                                if(ws == null){
+                                    initWS(data.ipv4Addrs[x]);
+                                }
+                            }
+                        }
+
+                        deviceStat = data;
+                    }
+                    var batteryPercentage = ((+data.batteryLevel) / (+data.batteryScale) * 100);
+                    txt += id + '] battery:' + batteryPercentage;
+
+                    if(+batteryPercentage){
+                        next = 1000 * batteryPercentage;
+                    }
+
+
+                    if(data.props.friendIps){
+                        var friendIps = data.props.friendIps.split(',');
+                        for(var i = 0; i < friendIps.length; i++){
+
+                            if(!deviceStatCheckers[friendIps[i]]){
+                                eval('deviceStatCheckers[\''+friendIps[i]+'\'] = function () { getDeviceStat(\''+friendIps[i]+'\', \''+friendIps[i]+'\', false); }');
+                                deviceStatCheckers[friendIps[i]]();
+                            }
+                        }
+                    }
+
+                    thisArea.innerHTML = txt;
+
+                    setTimeout(function () {
+                        deviceStatCheckers[id]();
+                    }, next);
+                }
+            );
+        }
+
+        initWS('localhost');
+        deviceStatCheckers.self();
+
+
+        
+    </script>
+
+
+</body>
+</html>

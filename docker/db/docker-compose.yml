@@ -1,0 +1,86 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    container_name: db.jentilapp.postgres
+    domainname: db.jentilapp.postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=astox_public
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=alex
+
+  redis:
+    image: redis
+    container_name: db.jentilapp.redis
+    domainname: db.jentilapp.redis
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: mongo
+    container_name: db.jentilapp.mongo
+    domainname: db.jentilapp.mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: alex
+
+#  mongo-express:
+#    image: mongo-express
+#    restart: always
+#    ports:
+#      - 8081:8081
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+
+#  app:
+#     container_name: dev.jentil.app
+#     domainname: dev.jentil.app
+#     build:
+#        context: .
+#        dockerfile: docker/app/Dockerfile
+#        args:
+#          buildno: 1
+
+#  tomcat-server:
+#    image: tomcat:8.0
+#    container_name: servers.arise.tomcat
+#    domainname: servers.arise.tomcat
+#    tty: true
+#    ports:
+#      - 9090:8080
+
+
+  #https://hub.docker.com/_/rethinkdb/
+  #https://hub.docker.com/_/neo4j/
+
+
+#
+
+
+  # sudo docker exec -it db.arise.mysql mysql -u root -p
+
+
+
+
+
+
+#  mysql:
+#      build: ./deps/mysql
+#      container_name: db.arise.mysql
+#      domainname: db.arise.mysql
+#      ports:
+#        - "3306:3306"
+#      env_file: deps/mysql/env_mysql
+
+ # adminer:
+ #     image: adminer
+ #     restart: always
+ #     ports:
+ #       - 6003:6004

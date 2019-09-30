@@ -1,0 +1,25 @@
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label for="INUSG" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="INUSG" placeholder="Name"  ng-model="usgd.libName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="IEUSG" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="IEUSG" placeholder="Email"   ng-model="usgd.mail">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="IPUSG" class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="IPUSG" placeholder="Password"  ng-model="usgd.passwd">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success" ng-click="saveData()">Sign up</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,117 @@
+<html>
+
+<head>
+    <title>{{title}}</title>
+
+    <link rel="stylesheet" href="/less">
+    <link rel="stylesheet" href="/css/jqueryFileTree.css">
+    <script src="/quixot"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.easing.1.3.js"></script>
+    <script src="/js/jqueryFileTree.js"></script>
+    <link rel="stylesheet" href="/css/jqueryFileTree.css">
+</head>
+
+<body>
+
+
+<script>
+
+    function alertTest(){
+        MinGui.alert('hi');
+    }
+
+    function notificationTest(){
+        MinGui.notify('title', 'text', 'JS_EXEC:MinGui.toast("notification clicked");');
+    }
+
+
+    function dialogok(args){
+        document.write(args);
+    }
+
+     function dialogcancel(args){
+        document.write(args);
+    }
+
+
+    MinGui.addRootSubMenu('devices-menu', 'Devices');
+    MinGui.addMenu('win10-device', 'devices-menu', 'WIN10', 'URL_LOAD:{{rootHost}}/device/win10/view?frontKey={{front_end_key}}');
+    MinGui.addMenu('ubuntu-device', 'devices-menu', 'UBUNTU', 'URL_LOAD:{{rootHost}}/device/ubuntu/view?frontKey={{front_end_key}}');
+
+
+    MinGui.addRootSubMenu('goodies-menu', 'Goodies');
+    MinGui.addSubMenu('alerts-sub-menu', 'goodies-menu', 'Alerts');
+
+    MinGui.addMenu('alert-test', 'alerts-sub-menu', 'basic alert', 'JS_EXEC:alertTest()');
+
+
+    for(var i in MinGui.dialog.style){
+        var s =  MinGui.dialog.style[i];
+        MinGui.addMenu(s+'_MENU_ID', 'alerts-sub-menu', 'dialog ('+ s + ')', 'JS_EXEC:MinGui.dialog("'+s+'", "title", "text", "CALLBACK:dialogok", "CALLBACK:dialogcancel")');
+    }
+
+
+     MinGui.addRootSubMenu('user-submenu', 'User');
+     MinGui.addRootMenu('broadcats-menu', 'Broadcast', 'JS_EXEC:MinGui.showView("MEDIA_RECORDER")');
+
+     MinGui.addMenu('notification-test', 'goodies-menu', 'notify', 'JS_EXEC:notificationTest()');
+
+     var exampleSocket = new WebSocket("ws://localhost:8002", "echo");
+
+     exampleSocket.onmessage = function (e) {
+        console.log('Server: ' + e.data);
+     };
+
+     //var exampleSocket = new WebSocket("ws://localhost:8002");
+
+
+//navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+//var errorCallback = function(e) { console.log('Reeeejected!', e); };
+//navigator.getUserMedia({video: true, audio: true},
+//function(localMediaStream) {
+//    var video = document.querySelector('video');
+//    video.src = window.URL.createObjectURL(localMediaStream);
+//    video.onloadedmetadata = function(e) {};
+//}, errorCallback);
+
+
+
+
+</script>
+
+
+<!--<video width="400" controls>-->
+    <!--<source src="D:\Dropbox\arise\projects\intellij\maven\astoxj-servers\ok.mp4" type="video/mp4">-->
+
+    <!--Your browser does not support HTML5 video.-->
+<!--</video>-->
+
+<!--CAMCORDER INPUT:-->
+<!--<input type="file" accept="video/*;capture=camcorder">-->
+
+<!--MICROPHONE INPUT:-->
+<!--<input type="file" accept="audio/*;capture=microphone">-->
+
+<!--<video autoplay></video>-->
+
+
+<!--navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;-->
+
+
+<!--var errorCallback = function(e) {-->
+<!--console.log('Reeeejected!', e);-->
+<!--};-->
+
+<!--// Not showing vendor prefixes.-->
+<!--navigator.getUserMedia({video: true, audio: true}, function(localMediaStream) {-->
+<!--var video = document.querySelector('video');-->
+<!--video.src = window.URL.createObjectURL(localMediaStream);-->
+
+<!--// Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.-->
+<!--// See crbug.com/110938.-->
+<!--video.onloadedmetadata = function(e) {-->
+<!--// Ready to go. Do some stuff.-->
+<!--};-->
+<!--}, errorCallback);-->
+<div class="page">

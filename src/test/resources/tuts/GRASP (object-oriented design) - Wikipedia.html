@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>GRASP (object-oriented design) - Wikipedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"GRASP_(object-oriented_design)","wgTitle":"GRASP (object-oriented design)","wgCurRevisionId":768917295,"wgRevisionId":768917295,"wgArticleId":4907231,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Articles lacking in-text citations from May 2015","All articles lacking in-text citations","Articles lacking reliable references from May 2015","All articles lacking reliable references","Software design","Programming principles"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"GRASP_(object-oriented_design)","wgRelevantArticleId":4907231,"wgRequestId":"Wd33nQpAIC4AALD27N0AAABW","wgIsProbablyEditable":true,"wgRelevantPageIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{}},"wgStableRevisionId":null,"wgWikiEditorEnabledModules":{"toolbar":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":false,"wgPopupsShouldSendModuleToUser":false,"wgPopupsConflictsWithNavPopupGadget":false,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","pageVariantFallbacks":"en","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFExpandAllSectionsUserOption":false,"wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":false},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgWikibaseItemId":"Q1486676","wgCentralAuthMobileDomain":false,"wgCodeMirrorEnabled":false,"wgVisualEditorToolbarScrollOffset":0,"wgVisualEditorUnsupportedEditParams":["undo","undoafter","veswitched"],"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.gadget.charinsert-styles":"ready","ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"ready","user.tokens":"loading","ext.cite.styles":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.tokens@1dqfd7l",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/
+
+});mw.loader.load(["ext.cite.a11y","site","mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.toc","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.uls.interface","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.cite.styles%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta libName="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.charinsert-styles&amp;only=styles&amp;skin=vector"/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta libName="generator" content="MediaWiki 1.31.0-wmf.2"/>
+<meta libName="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/GRASP_(object-oriented_design)"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+<!--[if lt IE 9]><script src="/resources/lib/html5shiv/html5shiv.min.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-GRASP_object-oriented_design rootpage-GRASP_object-oriented_design vector-nav-directionality skin-vector action-view">		<div type="mw-page-base" class="noprint"></div>
+		<div type="mw-head-base" class="noprint"></div>
+		<div type="content" class="mw-body" role="main">
+			<a type="top"></a>
+
+							<div type="siteNotice" class="mw-body-content"><!-- CentralNotice --></div>
+						<div class="mw-indicators mw-body-content">
+</div>
+			<h1 type="firstHeading" class="firstHeading" lang="en">GRASP (object-oriented design)</h1>
+									<div type="bodyContent" class="mw-body-content">
+									<div type="siteSub" class="noprint">From Wikipedia, the free encyclopedia</div>
+								<div type="contentSub"></div>
+												<div type="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div type="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><table class="plainlinks metadata ambox ambox-style ambox-More_footnotes" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/40px-Text_document_with_red_question_mark.svg.png" width="40" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/60px-Text_document_with_red_question_mark.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Text_document_with_red_question_mark.svg/80px-Text_document_with_red_question_mark.svg.png 2x" data-file-width="48" data-file-height="48" /></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">This article includes a <a href="/wiki/Wikipedia:Citing_sources" title="Wikipedia:Citing sources">list of references</a>, but <b>its sources remain unclear</b> because it has <b>insufficient <a href="/wiki/Wikipedia:Citing_sources#Inline_citations" title="Wikipedia:Citing sources">inline citations</a></b>. <span class="hide-when-compact">Please help to <a href="/wiki/Wikipedia:WikiProject_Fact_and_Reference_Check" title="Wikipedia:WikiProject Fact and Reference Check">improve</a> this article by <a href="/wiki/Wikipedia:When_to_cite" title="Wikipedia:When to cite">introducing</a> more precise citations.</span> <small><i>(May 2015)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+<table class="plainlinks metadata ambox ambox-content ambox-Primary_sources" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><a href="/wiki/File:Question_book-new.svg" class="image"><img alt="Question book-new.svg" src="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/50px-Question_book-new.svg.png" width="50" height="39" srcset="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/75px-Question_book-new.svg.png 1.5x, //upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/100px-Question_book-new.svg.png 2x" data-file-width="512" data-file-height="399" /></a></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">This article <b>relies too much on <a href="/wiki/Wikipedia:Verifiability" title="Wikipedia:Verifiability">references</a> to <a href="/wiki/Wikipedia:No_original_research#Primary.2C_secondary_and_tertiary_sources" title="Wikipedia:No original research">primary sources</a></b>. <span class="hide-when-compact">Please improve this by adding <a href="/wiki/Wikipedia:No_original_research#Primary.2C_secondary_and_tertiary_sources" title="Wikipedia:No original research">secondary or tertiary sources</a>.</span> <small><i>(May 2015)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+<p><b>General responsibility assignment software patterns</b> (or <b>principles</b>), abbreviated <b>GRASP</b>, consist of guidelines for assigning responsibility to classes and objects in <a href="/wiki/Object-oriented_design" title="Object-oriented design">object-oriented design</a>.</p>
+<p>The different patterns and principles used in GRASP are: controller, creator, indirection, information expert, high <a href="/wiki/Cohesion_(computer_science)" title="Cohesion (computer science)">cohesion</a>, low <a href="/wiki/Coupling_(computer_science)" class="mw-redirect" title="Coupling (computer science)">coupling</a>, <a href="/wiki/Polymorphism_(object-oriented_programming)" class="mw-redirect" title="Polymorphism (object-oriented programming)">polymorphism</a>, protected variations, and pure fabrication. All these patterns answer some <a href="/wiki/Software" title="Software">software</a> problem, and these problems are common to almost every <a href="/wiki/Software_development" title="Software development">software development</a> project. These techniques have not been invented to create new ways of working, but to better document and standardize old, tried-and-tested <a href="/wiki/Computer_programming" title="Computer programming">programming</a> principles in object-oriented design.</p>
+<p>Computer scientist <a href="/wiki/Craig_Larman" title="Craig Larman">Craig Larman</a> states that "the critical design tool for software development is a mind well educated in design principles. It is not <a href="/wiki/Unified_Modeling_Language" title="Unified Modeling Language">UML</a> or any other technology."<sup type="cite_ref-FOOTNOTELarman2005272_1-0" class="reference"><a href="#cite_note-FOOTNOTELarman2005272-1">[1]</a></sup> Thus, GRASP are really a mental toolset, a learning aid to help in the design of object-oriented software.</p>
+<p></p>
+<div type="toc" class="toc">
+<div class="toctitle">
+<h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Patterns"><span class="tocnumber">1</span> <span class="toctext">Patterns</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Controller"><span class="tocnumber">1.1</span> <span class="toctext">Controller</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Creator"><span class="tocnumber">1.2</span> <span class="toctext">Creator</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#High_cohesion"><span class="tocnumber">1.3</span> <span class="toctext">High cohesion</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Indirection"><span class="tocnumber">1.4</span> <span class="toctext">Indirection</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Information_expert"><span class="tocnumber">1.5</span> <span class="toctext">Information expert</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Low_coupling"><span class="tocnumber">1.6</span> <span class="toctext">Low coupling</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Polymorphism"><span class="tocnumber">1.7</span> <span class="toctext">Polymorphism</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Protected_variations"><span class="tocnumber">1.8</span> <span class="toctext">Protected variations</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Pure_fabrication"><span class="tocnumber">1.9</span> <span class="toctext">Pure fabrication</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="#See_also"><span class="tocnumber">2</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#Notes"><span class="tocnumber">3</span> <span class="toctext">Notes</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="#References"><span class="tocnumber">4</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" type="Patterns">Patterns</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=1" title="Edit section: Patterns">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<h3><span class="mw-headline" type="Controller">Controller</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=2" title="Edit section: Controller">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>The <b>controller</b> pattern assigns the responsibility of dealing with system events to a non-<a href="/wiki/User_Interface" class="mw-redirect" title="User Interface">UI</a> class that represents the overall system or a <a href="/wiki/Use_case" title="Use case">use case</a> scenario. A controller object is a non-user interface object responsible for receiving or handling a system event.</p>
+<p>A use case controller should be used to deal with <i>all</i> system events of a use case, and may be used for more than one use case (for instance, for use cases <i>Create User</i> and <i>Delete User</i>, one can have a single <i>UserController</i>, instead of two separate use case controllers).</p>
+<p>It is defined as the first object beyond the UI layer that receives and coordinates ("controls") a system operation. The controller should delegate the work that needs to be done to other objects; it coordinates or controls the activity. It should not do much work itself. The GRASP Controller can be thought of as being a part of the application/service layer <sup type="cite_ref-2" class="reference"><a href="#cite_note-2">[2]</a></sup> (assuming that the application has made an explicit distinction between the application/service layer and the <a href="/wiki/Domain_layer" class="mw-redirect" title="Domain layer">domain layer</a>) in an object-oriented system with common layers in an information system logical architecture.</p>
+<h3><span class="mw-headline" type="Creator">Creator</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=3" title="Edit section: Creator">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">See also: <a href="/wiki/Factory_pattern" class="mw-redirect" title="Factory pattern">Factory pattern</a></div>
+<p>Creation of objects is one of the most common activities in an object-oriented system. Which class is responsible for creating objects is a fundamental property of the relationship between objects of particular classes.</p>
+<p>In general, a class <code>B</code> should be responsible for creating instances of class <code>A</code> if one, or preferably more, of the following apply:</p>
+<ul>
+<li>Instances of <code>B</code> contain or compositely aggregate instances of <code>A</code></li>
+<li>Instances of <code>B</code> record instances of <code>A</code></li>
+<li>Instances of <code>B</code> closely use instances of <code>A</code></li>
+<li>Instances of <code>B</code> have the initializing information for instances of <code>A</code> and pass it on creation.</li>
+</ul>
+<h3><span class="mw-headline" type="High_cohesion">High cohesion</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=4" title="Edit section: High cohesion">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">Main article: <a href="/wiki/Cohesion_(computer_science)" title="Cohesion (computer science)">Cohesion (computer science)</a></div>
+<p><b>High cohesion</b> is an evaluative pattern that attempts to keep objects appropriately focused, manageable and understandable. High cohesion is generally used in support of low coupling. High cohesion means that the responsibilities of a given element are strongly related and highly focused. Breaking programs into classes and subsystems is an example of activities that increase the cohesive properties of a system. Alternatively, low cohesion is a situation in which a given element has too many unrelated responsibilities. Elements with low cohesion often suffer from being hard to comprehend, hard to reuse, hard to maintain and averse to change.<sup type="cite_ref-larman314_3-0" class="reference"><a href="#cite_note-larman314-3">[3]</a></sup></p>
+<h3><span class="mw-headline" type="Indirection">Indirection</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=5" title="Edit section: Indirection">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">See also: <a href="/wiki/Delegation_pattern" title="Delegation pattern">Delegation pattern</a></div>
+<p>The <b>indirection</b> pattern supports low coupling (and reuse potential) between two elements by assigning the responsibility of mediation between them to an intermediate object. An example of this is the introduction of a controller component for mediation between data (model) and its representation (view) in the <a href="/wiki/Model-view-controller" class="mw-redirect" title="Model-view-controller">model-view-controller</a> pattern.</p>
+<h3><span class="mw-headline" type="Information_expert">Information expert</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=6" title="Edit section: Information expert">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">See also: <a href="/wiki/Information_hiding" title="Information hiding">Information hiding</a></div>
+<p><b>Information expert</b> (also <b>expert</b> or the <b>expert principle</b>) is a principle used to determine where to delegate responsibilities. These responsibilities include methods, computed fields, and so on.</p>
+<p>Using the principle of information expert, a general approach to assigning responsibilities is to look at a given responsibility, determine the information needed to fulfill it, and then determine where that information is stored.</p>
+<p>Information expert will lead to placing the responsibility on the class with the most information required to fulfill it.<sup type="cite_ref-4" class="reference"><a href="#cite_note-4">[4]</a></sup></p>
+<h3><span class="mw-headline" type="Low_coupling">Low coupling</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=7" title="Edit section: Low coupling">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">Main article: <a href="/wiki/Loose_coupling" title="Loose coupling">Loose coupling</a></div>
+<p>Coupling is a measure of how strongly one element is connected to, has knowledge of, or relies on other elements. <b>Low coupling</b> is an evaluative pattern that dictates how to assign responsibilities to support:</p>
+<ul>
+<li>lower dependency between the classes,</li>
+<li>change in one class having lower impact on other classes,</li>
+<li>higher reuse potential.</li>
+</ul>
+<h3><span class="mw-headline" type="Polymorphism">Polymorphism</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=8" title="Edit section: Polymorphism">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">Main article: <a href="/wiki/Polymorphism_in_object-oriented_programming" class="mw-redirect" title="Polymorphism in object-oriented programming">Polymorphism in object-oriented programming</a></div>
+<p>According to <b>polymorphism</b> principle, responsibility of defining the variation of behaviors based on type is assigned to the type for which this variation happens. This is achieved using <a href="/wiki/Polymorphism_(computer_science)" title="Polymorphism (computer science)">polymorphic</a> operations. The user of the type should use polymorphic operations instead of explicit branching based on type.</p>
+<h3><span class="mw-headline" type="Protected_variations">Protected variations</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=9" title="Edit section: Protected variations">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">See also: <a href="/wiki/Open/closed_principle" title="Open/closed principle">Open/closed principle</a></div>
+<p>The <b>protected variations</b> pattern protects elements from the variations on other elements (objects, systems, subsystems) by wrapping the focus of instability with an <a href="/wiki/Interface_(computer_science)" class="mw-redirect" title="Interface (computer science)">interface</a> and using <a href="/wiki/Polymorphism_(computer_science)" title="Polymorphism (computer science)">polymorphism</a> to create various implementations of this interface.</p>
+<h3><span class="mw-headline" type="Pure_fabrication">Pure fabrication</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=10" title="Edit section: Pure fabrication">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<div role="note" class="hatnote navigation-not-searchable">See also: <a href="/wiki/Service_(systems_architecture)" title="Service (systems architecture)">Service (systems architecture)</a></div>
+<p>A <b>pure fabrication</b> is a class that does not represent a concept in the problem domain, specially made up to achieve low coupling, high cohesion, and the reuse potential thereof derived (when a solution presented by the <i>information expert</i> pattern does not). This kind of class is called a "service" in <a href="/wiki/Domain-driven_design" title="Domain-driven design">domain-driven design</a>.</p>
+<h2><span class="mw-headline" type="See_also">See also</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=11" title="Edit section: See also">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a href="/wiki/Anemic_domain_model" title="Anemic domain model">Anemic domain model</a></li>
+<li><a href="/wiki/Design_pattern_(computer_science)" class="mw-redirect" title="Design pattern (computer science)">Design pattern (computer science)</a></li>
+<li><a href="/wiki/Design_Patterns_(book)" class="mw-redirect" title="Design Patterns (book)">Design Patterns (book)</a></li>
+<li><a href="/wiki/SOLID_(object-oriented_design)" title="SOLID (object-oriented design)">SOLID (object-oriented design)</a></li>
+</ul>
+<h2><span class="mw-headline" type="Notes">Notes</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=12" title="Edit section: Notes">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;">
+<div class="mw-references-wrap">
+<ol class="references">
+<li type="cite_note-FOOTNOTELarman2005272-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-FOOTNOTELarman2005272_1-0">^</a></b></span> <span class="reference-text"><a href="#CITEREFLarman2005">Larman 2005</a>, p.&#160;272.</span></li>
+<li type="cite_note-2"><span class="mw-cite-backlink"><b><a href="#cite_ref-2">^</a></b></span> <span class="reference-text"><cite class="citation web"><a rel="nofollow" class="external text" href="https://groups.yahoo.com/neo/groups/domaindrivendesign/conversations/messages/7582">"Application Layer like business facade?"</a>. <i>Yahoo! Groups (domaindrivendesign)</i><span class="reference-accessdate">. Retrieved <span class="nowrap">15 July</span> 2010</span>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3AGRASP+%28object-oriented+design%29&amp;rft.atitle=Application+Layer+like+business+facade%3F&amp;rft.genre=unknown&amp;rft.jtitle=Yahoo%21+Groups+%28domaindrivendesign%29&amp;rft_id=https%3A%2F%2Fgroups.yahoo.com%2Fneo%2Fgroups%2Fdomaindrivendesign%2Fconversations%2Fmessages%2F7582&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li type="cite_note-larman314-3"><span class="mw-cite-backlink"><b><a href="#cite_ref-larman314_3-0">^</a></b></span> <span class="reference-text"><a href="#CITEREFLarman2005">Larman 2005</a>, pp.&#160;314–315.</span></li>
+<li type="cite_note-4"><span class="mw-cite-backlink"><b><a href="#cite_ref-4">^</a></b></span> <span class="reference-text"><a href="#CITEREFLarman2005">Larman 2005</a> chapter 17, section 11.</span></li>
+</ol>
+</div>
+</div>
+<h2><span class="mw-headline" type="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit&amp;section=13" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="refbegin" style="">
+<ul>
+<li><cite type="CITEREFLarman2005" class="citation book"><a href="/wiki/Craig_Larman" title="Craig Larman">Larman, Craig</a> (2005) [2004]. <a rel="nofollow" class="external text" href="http://authors.phptr.com/larman/uml_ooad/index.html"><i>Applying UML and Patterns – An Introduction to Object-Oriented Analysis and Design and Iterative Development</i></a> (3rd ed.). New Jersey: <a href="/wiki/Prentice_Hall" title="Prentice Hall">Prentice Hall</a>. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/0-13-148906-2" title="Special:BookSources/0-13-148906-2">0-13-148906-2</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3AGRASP+%28object-oriented+design%29&amp;rft.aufirst=Craig&amp;rft.aulast=Larman&amp;rft.btitle=Applying+UML+and+Patterns+%26ndash%3B+An+Introduction+to+Object-Oriented+Analysis+and+Design+and+Iterative+Development&amp;rft.date=2005&amp;rft.edition=3rd&amp;rft.genre=book&amp;rft.isbn=0-13-148906-2&amp;rft.place=New+Jersey&amp;rft.pub=Prentice+Hall&amp;rft_id=http%3A%2F%2Fauthors.phptr.com%2Flarman%2Fuml_ooad%2Findex.html&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&#160;</span></span></li>
+</ul>
+</div>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1243
+Cached time: 20171005060943
+Cache expiry: 1900800
+Dynamic content: false
+CPU time usage: 0.088 seconds
+Real time usage: 0.139 seconds
+Preprocessor visited node count: 499/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 13689/2097152 bytes
+Template argument size: 211/2097152 bytes
+Highest expansion depth: 8/40
+Expensive parser function count: 2/500
+Lua time usage: 0.042/10.000 seconds
+Lua memory usage: 2.73 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  117.104      1 -total
+ 37.21%   43.579      1 Template:More_footnotes
+ 30.11%   35.263      1 Template:Reflist
+ 24.71%   28.941      2 Template:Ambox
+ 22.34%   26.158      1 Template:Cite_web
+ 10.83%   12.679      5 Template:See_also
+  5.04%    5.903      1 Template:Primary
+  4.26%    4.994      1 Template:Sfn
+  4.16%    4.875      3 Template:Main
+  3.82%    4.476      1 Template:Cite_book
+-->
+</div>
+<!-- Saved in parser cache with key enwiki:pcache:idhash:4907231-0!canonical and timestamp 20171005060943 and revision type 768917295
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=GRASP_(object-oriented_design)&amp;oldid=768917295">https://en.wikipedia.org/w/index.php?title=GRASP_(object-oriented_design)&amp;oldid=768917295</a>"					</div>
+				<div type="catlinks" class="catlinks" data-mw="interface"><div type="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:Software_design" title="Category:Software design">Software design</a></li><li><a href="/wiki/Category:Programming_principles" title="Category:Programming principles">Programming principles</a></li></ul></div><div type="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:Articles_lacking_in-text_citations_from_May_2015" title="Category:Articles lacking in-text citations from May 2015">Articles lacking in-text citations from May 2015</a></li><li><a href="/wiki/Category:All_articles_lacking_in-text_citations" title="Category:All articles lacking in-text citations">All articles lacking in-text citations</a></li><li><a href="/wiki/Category:Articles_lacking_reliable_references_from_May_2015" title="Category:Articles lacking reliable references from May 2015">Articles lacking reliable references from May 2015</a></li><li><a href="/wiki/Category:All_articles_lacking_reliable_references" title="Category:All articles lacking reliable references">All articles lacking reliable references</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div type="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div type="mw-head">
+									<div type="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 type="p-personal-label">Personal tools</h3>
+						<ul>
+							<li type="pt-anonuserpage">Not logged in</li><li type="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li type="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li type="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=GRASP+%28object-oriented+design%29" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li type="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=GRASP+%28object-oriented+design%29" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div type="left-navigation">
+										<div type="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 type="p-namespaces-label">Namespaces</h3>
+						<ul>
+														<li type="ca-nstab-main" class="selected"><span><a href="/wiki/GRASP_(object-oriented_design)" title="View the content page [c]" accesskey="c">Article</a></span></li>
+							<li type="ca-talk"><span><a href="/wiki/Talk:GRASP_(object-oriented_design)" rel="discussion" title="Discussion about the content page [t]" accesskey="t">Talk</a></span></li>
+						</ul>
+					</div>
+										<div type="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 type="p-variants-label">
+							<span>Variants</span>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div type="right-navigation">
+										<div type="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 type="p-views-label">Views</h3>
+						<ul>
+														<li type="ca-view" class="collapsible selected"><span><a href="/wiki/GRASP_(object-oriented_design)">Read</a></span></li>
+							<li type="ca-edit" class="collapsible"><span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=edit" title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+							<li type="ca-history" class="collapsible"><span><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=history" title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+						</ul>
+					</div>
+										<div type="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 type="p-cactions-label"><span>More</span></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div type="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" type="searchform">
+							<div type="simpleSearch">
+							<input type="search" libName="search" placeholder="Search Wikipedia" title="Search Wikipedia [f]" accesskey="f" type="searchInput"/><input type="hidden" value="Special:Search" libName="title"/><input type="submit" libName="fulltext" value="Search" title="Search Wikipedia for this text" type="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" libName="go" value="Go" title="Go to a page with this exact libName if it exists" type="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div type="mw-panel">
+				<div type="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" type='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 type='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li type="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li type="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li type="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li type="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li type="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li type="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 type='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li type="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li type="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li type="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li type="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-tb' aria-labelledby='p-tb-label'>
+			<h3 type='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li type="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/GRASP_(object-oriented_design)" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li type="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/GRASP_(object-oriented_design)" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li type="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li type="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li type="t-permalink"><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;oldid=768917295" title="Permanent link to this revision of the page">Permanent link</a></li><li type="t-info"><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;action=info" title="More information about this page">Page information</a></li><li type="t-wikibase"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q1486676" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li type="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=GRASP_%28object-oriented_design%29&amp;type=768917295" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 type='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li type="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=GRASP+%28object-oriented+design%29">Create a book</a></li><li type="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:ElectronPdf&amp;page=GRASP+%28object-oriented+design%29&amp;action=show-download-screen">Download as PDF</a></li><li type="t-print"><a href="/w/index.php?title=GRASP_(object-oriented_design)&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-lang' aria-labelledby='p-lang-label'>
+			<h3 type='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+						<li class="interlanguage-link interwiki-ca"><a href="https://ca.wikipedia.org/wiki/GRASP_(disseny_orientat_a_objectes)" title="GRASP (disseny orientat a objectes) – Catalan" lang="ca" hreflang="ca" class="interlanguage-link-target">Català</a></li><li class="interlanguage-link interwiki-de"><a href="https://de.wikipedia.org/wiki/GRASP" title="GRASP – German" lang="de" hreflang="de" class="interlanguage-link-target">Deutsch</a></li><li class="interlanguage-link interwiki-es"><a href="https://es.wikipedia.org/wiki/GRASP" title="GRASP – Spanish" lang="es" hreflang="es" class="interlanguage-link-target">Español</a></li><li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/GRASP_(programmation)" title="GRASP (programmation) – French" lang="fr" hreflang="fr" class="interlanguage-link-target">Français</a></li><li class="interlanguage-link interwiki-it"><a href="https://it.wikipedia.org/wiki/GRASP" title="GRASP – Italian" lang="it" hreflang="it" class="interlanguage-link-target">Italiano</a></li><li class="interlanguage-link interwiki-nl"><a href="https://nl.wikipedia.org/wiki/GRASP" title="GRASP – Dutch" lang="nl" hreflang="nl" class="interlanguage-link-target">Nederlands</a></li><li class="interlanguage-link interwiki-ja"><a href="https://ja.wikipedia.org/wiki/GRASP" title="GRASP – Japanese" lang="ja" hreflang="ja" class="interlanguage-link-target">日本語</a></li><li class="interlanguage-link interwiki-pt"><a href="https://pt.wikipedia.org/wiki/GRASP_(padr%C3%A3o_orientado_a_objetos)" title="GRASP (padrão orientado a objetos) – Portuguese" lang="pt" hreflang="pt" class="interlanguage-link-target">Português</a></li><li class="interlanguage-link interwiki-ru"><a href="https://ru.wikipedia.org/wiki/GRASP" title="GRASP – Russian" lang="ru" hreflang="ru" class="interlanguage-link-target">Русский</a></li><li class="interlanguage-link interwiki-sv"><a href="https://sv.wikipedia.org/wiki/Grasp" title="Grasp – Swedish" lang="sv" hreflang="sv" class="interlanguage-link-target">Svenska</a></li><li class="interlanguage-link interwiki-uk"><a href="https://uk.wikipedia.org/wiki/GRASP" title="GRASP – Ukrainian" lang="uk" hreflang="uk" class="interlanguage-link-target">Українська</a></li>					</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q1486676#sitelinks-wikipedia" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div type="footer" role="contentinfo">
+							<ul type="footer-info">
+											<li type="footer-info-lastmod"> This page was last edited on 6 March 2017, at 14:42.</li>
+											<li type="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul type="footer-places">
+											<li type="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li type="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li type="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li type="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li type="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li type="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li type="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=GRASP_(object-oriented_design)&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul type="footer-icons" class="noprint">
+											<li type="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li type="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.088","walltime":"0.139","ppvisitednodes":{"value":499,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":13689,"limit":2097152},"templateargumentsize":{"value":211,"limit":2097152},"expansiondepth":{"value":8,"limit":40},"expensivefunctioncount":{"value":2,"limit":500},"entityaccesscount":{"value":0,"limit":400},"timingprofile":["100.00%  117.104      1 -total"," 37.21%   43.579      1 Template:More_footnotes"," 30.11%   35.263      1 Template:Reflist"," 24.71%   28.941      2 Template:Ambox"," 22.34%   26.158      1 Template:Cite_web"," 10.83%   12.679      5 Template:See_also","  5.04%    5.903      1 Template:Primary","  4.26%    4.994      1 Template:Sfn","  4.16%    4.875      3 Template:Main","  3.82%    4.476      1 Template:Cite_book"]},"scribunto":{"limitreport-timeusage":{"value":"0.042","limit":"10.000"},"limitreport-memusage":{"value":2859379,"limit":52428800}},"cachereport":{"origin":"mw1243","timestamp":"20171005060943","ttl":1900800,"transientcontent":false}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":77,"wgHostname":"mw1325"});});</script>
+	</body>
+</html>

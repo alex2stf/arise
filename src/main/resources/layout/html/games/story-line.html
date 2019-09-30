@@ -1,0 +1,137 @@
+<head>
+    <title>{{title}}</title>
+
+    <link rel="stylesheet" href="/less">
+    <script src="/quixot"></script>
+
+</head>
+
+
+
+
+<body>
+<style>
+    .svg-container{
+        position: absolute;
+    }
+</style>
+<script>
+    {{{quixot_js}}}
+</script>
+
+    <div type="slider" class="swipe">
+        <div class="swipe-wrap">
+
+
+
+
+            <div type="pag-0" class="page">
+
+0
+                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"  viewBox="0 0 100 100">
+                    <circle cx="20" cy="20" r="40" stroke="green" stroke-width="4" fill="yellow" />
+                    Sorry, your browser does not support inline SVG.
+                </svg>
+
+            </div>
+
+
+            <div type="pag-1" class="page">
+                <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"  viewBox="0 0 100 100">
+                    <circle cx="20" cy="20" r="40" stroke="green" stroke-width="4" fill="red" />
+                    Sorry, your browser does not support inline SVG.
+                </svg>
+                    </div>
+            </div>
+
+            <div type="pag-2" class="page" >
+                <div class="svg-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"  viewBox="0 0 100 100">
+                    <circle cx="20" cy="20" r="40" stroke="green" stroke-width="4" fill="blue" />
+                    Sorry, your browser does not support inline SVG.
+                </svg>
+                    </div>
+            </div>
+
+
+            <div type="pag-3" class="page">
+                <div class="svg-container">
+                    <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 100 100">
+                        <circle cx="20" cy="20" r="40" stroke="green" stroke-width="4" fill="green" />
+                        Sorry, your browser does not support inline SVG.
+                    </svg>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+<script>
+
+var elements = [
+    document.getElementById('pag-0'),
+    document.getElementById('pag-1'),
+    document.getElementById('pag-2'),
+    document.getElementById('pag-3')
+
+];
+
+
+function down(e){
+    console.log('down');
+}
+
+function up(e){
+    console.log('up');
+}
+
+function move(e){
+    console.log('move');
+}
+
+var width = window.innerWidth
+|| document.documentElement.clientWidth
+|| document.body.clientWidth;
+
+var height = window.innerHeight
+|| document.documentElement.clientHeight
+|| document.body.clientHeight;
+
+for(var i =0; i < elements.length; i++){
+
+elements[i].style.position='relative';
+//    elements[i].style.width=width;
+//    elements[i].style.height=height;
+
+//    elements[i].style.maxWidth=width;
+//    elements[i].style.maxHeight=height;
+
+}
+
+
+
+   var element = document.getElementById('slider');
+window.mySwipe = new Swipe(element, {
+  startSlide: 0,
+  auto: 3000,
+  draggable: true,
+  autoRestart: false,
+  continuous: false,
+  disableScroll: false,
+  stopPropagation: true,
+  callback: function(index, element) {
+    console.log('callback' + index + '' + element);
+  },
+  transitionEnd: function(index, element) {
+    console.log('transition end' + index + '' + element)
+  }
+});
+
+</script>
+
+</body>

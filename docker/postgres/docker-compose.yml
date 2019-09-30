@@ -1,0 +1,12 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    container_name: db.jentilapp.postgres
+    domainname: db.jentilapp.postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=jentil
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=alex

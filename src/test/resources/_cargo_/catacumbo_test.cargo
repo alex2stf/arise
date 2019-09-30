@@ -1,0 +1,483 @@
+root-namespace com.readyup
+
+namespace com.readyup.games.entities
+
+
+embeddable public class CSGOTotals
+  private var TotalKills long
+  private var TotalDeaths long
+  private var TotalTimePlayed long
+  private var TotalPlantedBombs long
+  private var TotalDefusedBombs long
+  private var TotalWins long
+  private var TotalDamageDone long
+  private var TotalMoneyEarned long
+  private var TotalRescuedHostages long
+  private var TotalKillsKnife long
+  private var TotalKillsHegrenade long
+  private var TotalKillsGlock long
+  private var TotalKillsDeagle long
+  private var TotalKillsElite long
+  private var TotalKillsFiveseven long
+  private var TotalKillsXm1014 long
+  private var TotalKillsMac10 long
+  private var TotalKillsUmp45 long
+  private var TotalKillsP90 long
+  private var TotalKillsAwp long
+  private var TotalKillsAk47 long
+  private var TotalKillsAug long
+  private var TotalKillsFamas long
+  private var TotalKillsG3Sg1 long
+  private var TotalKillsM249 long
+  private var TotalKillsHeadshot long
+  private var TotalKillsEnemyWeapon long
+  private var TotalWinsPistolround long
+  private var TotalWinsMapCsAssault long
+  private var TotalWinsMapCsItaly long
+  private var TotalWinsMapCsOffice long
+  private var TotalWinsMapDeAztec long
+  private var TotalWinsMapDeCbble long
+  private var TotalWinsMapDeDust2 long
+  private var TotalWinsMapDeInferno long
+  private var TotalWinsMapDeNuke long
+  private var TotalWinsMapDeTrain long
+  private var TotalWeaponsDonated long
+  private var TotalBrokenWindows long
+  private var TotalKillsEnemyBlinded long
+  private var TotalKillsKnifeFight long
+  private var TotalKillsAgainstZoomedSniper long
+  private var TotalDominations long
+  private var TotalDominationOverkills long
+  private var TotalRevenges long
+  private var TotalShotsHit long
+  private var TotalShotsFired long
+  private var TotalRoundsPlayed long
+  private var TotalShotsDeagle long
+  private var TotalShotsGlock long
+  private var TotalShotsElite long
+  private var TotalShotsFiveseven long
+  private var TotalShotsAwp long
+  private var TotalShotsAk47 long
+  private var TotalShotsAug long
+  private var TotalShotsFamas long
+  private var TotalShotsG3sg1 long
+  private var TotalShotsP90 long
+  private var TotalShotsMac10 long
+  private var TotalShotsUmp45 long
+  private var TotalShotsXm1014 long
+  private var TotalShotsM249 long
+  private var TotalHitsDeagle long
+  private var TotalHitsGlock long
+  private var TotalHitsElite long
+  private var TotalHitsFiveseven long
+  private var TotalHitsAwp long
+  private var TotalHitsAk47 long
+  private var TotalHitsAug long
+  private var TotalHitsFamas long
+  private var TotalHitsG3sg1 long
+  private var TotalHitsP90 long
+  private var TotalHitsMac10 long
+  private var TotalHitsUmp45 long
+  private var TotalHitsXm1014 long
+  private var TotalHitsM249 long
+  private var TotalRoundsMapCsAssault long
+  private var TotalRoundsMapCsItaly long
+  private var TotalRoundsMapCsOffice long
+  private var TotalRoundsMapCeAztec long
+  private var TotalRoundsMapCeCbble long
+  private var TotalRoundsMapCeDust2 long
+  private var TotalRoundsMapCeDust long
+  private var TotalRoundsMapCeInferno long
+  private var TotalRoundsMapCeNuke long
+  private var TotalRoundsMapCeTrain long
+  private var LastMatchTWins long
+  private var LastMatchCtWins long
+  private var LastMatchWins long
+  private var LastMatchMaxPlayers long
+  private var LastMatchKills long
+  private var LastMatchDeaths long
+  private var LastMatchMvps long
+  private var LastMatchFavweaponID long
+  private var LastMatchFavweaponShots long
+  private var LastMatchFavweaponHits long
+  private var LastMatchFavweaponKills long
+  private var LastMatchDamage long
+  private var LastMatchMoneySpent long
+  private var LastMatchDominations long
+  private var LastMatchRevenges long
+  private var TotalMvps long
+  private var TotalRoundsMapDeLake long
+  private var TotalRoundsMapDeSafehouse long
+  private var TotalRoundsMapDeSugarcane long
+  private var TotalRoundsMapDeStmarc long
+  private var TotalRoundsMapDeBank long
+  private var TotalTRPlantedBombs long
+  private var TotalTRDefusedBombs long
+  private var TotalGunGameRoundsWon long
+  private var TotalGunGameRoundsPlayed long
+  private var TotalWinsMapDeHouse long
+  private var TotalWinsMapDeBank long
+  private var TotalWinsMapDeVertigo long
+  private var TotalRoundsMapArShoots long
+  private var TotalRoundsMapArBaggage long
+  private var TotalWinsMapArShoots long
+  private var TotalWinsMapArBaggage long
+  private var TotalWinsMapDeLake long
+  private var TotalWinsMapDeSugarcane long
+  private var TotalWinsMapDeStmarc long
+  private var TotalMatchesWonBank long
+  private var TotalWinsMapDeSafehouse long
+  private var TotalMatchesWon long
+  private var TotalMatchesPlayed long
+  private var TotalGgMatchesWon long
+  private var TotalGgMatchesPlayed long
+  private var TotalProgressiveMatchesWon long
+  private var TotalTrbombMatchesWon long
+  private var TotalContributionScore long
+  private var LastMatchContributionScore long
+  private var LastMatchRounds long
+  private var TotalKillsHkp2000 long
+  private var TotalShotsHkp2000 long
+  private var TotalHitsHkp2000 long
+  private var TotalHitsP250 long
+  private var TotalKillsP250 long
+  private var TotalShotsP250 long
+  private var TotalKillsSg556 long
+  private var TotalShotsSg556 long
+  private var TotalHitsSg556 long
+  private var TotalHitsScar20 long
+  private var TotalKillsScar20 long
+  private var TotalShotsScar20 long
+  private var TotalShotsSsg08 long
+  private var TotalHitsSsg08 long
+  private var TotalKillsSsg08 long
+  private var TotalShotsMp7 long
+  private var TotalHitsMp7 long
+  private var TotalKillsMp7 long
+  private var TotalKillsMp9 long
+  private var TotalShotsMp9 long
+  private var TotalHitsMp9 long
+  private var TotalHitsNova long
+  private var TotalKillsNova long
+  private var TotalShotsNova long
+  private var TotalHitsNegev long
+  private var TotalKillsNegev long
+  private var TotalShotsNegev long
+  private var TotalShotsSawedoff long
+  private var TotalHitsSawedoff long
+  private var TotalKillsSawedoff long
+  private var TotalShotsBizon long
+  private var TotalHitsBizon long
+  private var TotalKillsBizon long
+  private var TotalKillsTec9 long
+  private var TotalShotsTec9 long
+  private var TotalHitsTec9 long
+  private var TotalShotsMag7 long
+  private var TotalHitsMag7 long
+  private var TotalKillsMag7 long
+  private var TotalGunGameContributionScore long
+  private var LastMatchGgContributionScore long
+  private var TotalKillsM4a1 long
+  private var TotalKillsGalilar long
+  private var TotalKillsMolotov long
+  private var TotalKillsDecoy long
+  private var TotalKillsTaser long
+  private var TotalShotsM4a1 long
+  private var TotalShotsGalilar long
+  private var TotalShotsTaser long
+  private var TotalHitsM4a1 long
+  private var TotalHitsGalilar long
+  private var TotalRoundsMapArMonastery long
+  private var TotalMatchesWonTrain long
+  private var TotalRoundsMapDeVertigo long
+  private var TotalMatchesWonShoots long
+  private var TotalMatchesWonBaggage long
+  private var TotalMatchesWonLake long
+  private var TotalMatchesWonStmarc long
+  private var TotalMatchesWonSafehouse long
+  private var TotalWinsMapCsMilitia long
+  private var TotalRoundsMapCsMilitia long
+
+
+persistable public class CSGOStatsEntity alias csgostats
+  private var accountId string
+  private var csgoId string
+  private var gameId string
+  private var matchesPlayed float
+  private var matchesWon float
+  private var totalHoursPlayed int
+  private var setTotalShotsFired float
+  private var winRatio double
+  private var kills float
+  private var accuracy double
+  private var headshots float
+  private var updated int
+  private var MMR float
+  private var EFF float
+  private var AGG float
+  private var SUP float
+  private var ACC float
+  private var aggregated CSGOTotals
+
+
+embeddable public class PUBGTotals
+  private var Assists long
+  private var BestRankPoint float
+  private var Boosts long
+  private var DBNOs long
+  private var DailyKills long
+  private var DailyWins long
+  private var DamageDealt float
+  private var Days long
+  private var HeadshotKills long
+  private var Heals long
+  private var KillPoints long
+  private var Kills long
+  private var LongestKill float
+  private var LongestTimeSurvived float
+  private var Losses long
+  private var MaxKillStreaks long
+  private var MostSurvivalTime float
+  private var RankPoints float
+  private var RankPointsTitle string
+  private var Revives long
+  private var RideDistance float
+  private var RoadKills long
+  private var RoundMostKills long
+  private var RoundsPlayed long
+  private var Suicides long
+  private var SwimDistance float
+  private var TeamKills long
+  private var TimeSurvived float
+  private var Top10s long
+  private var VehicleDestroys long
+  private var WalkDistance float
+  private var WeaponsAcquired long
+  private var WeeklyKills long
+  private var WeeklyWins long
+  private var WinPoints long
+  private var Wins long
+
+
+persistable public class PubgStatsEntity
+  private var accountId string primaryKey
+  private var shard string
+  private var shardTotalMatches int
+  private var season string
+  private var pubgNickname string
+  private var soloRating float
+  private var soloFppRating float
+  private var duoRating float
+  private var duoFppRating float
+  private var squadRating float
+  private var squadFppRating float
+  private var gameId string
+  private var mostPlayedShard string
+  private var updated long
+  private var MMR float
+  private var EFF float
+  private var AGG float
+  private var SUP float
+  private var ACC float
+  private var solo PUBGTotals
+  private var soloFpp PUBGTotals
+  private var duo PUBGTotals
+  private var duoFpp PUBGTotals
+  private var squad PUBGTotals
+  private var squadFpp PUBGTotals
+
+
+
+
+
+persistable public class FortniteEntity alias fortnite_stats
+  private var accountId string primaryKey
+  private var fortniteId string
+  private var numberOfWins int
+  private var numberOfKills int
+  private var numberOfMatchesPlayed float
+  private var killsPerMatch double
+  private var killDeathRatio double
+  private var gameId string
+  private var updated int
+  private var MMR float
+  private var EFF float
+  private var AGG float
+  private var SUP float
+  private var ACC float
+
+
+embeddable public class LOLLastMatches alias lastMatches
+  private var longestTimeSpentLiving int
+  private var goldEarned int
+  private var totalMinionsKilled int
+  private var turretKills int
+  private var inhibitorKills int
+  private var kills int
+  private var deaths int
+  private var assists int
+  private var totalDamageDealt int
+  private var totalDamageTaken int
+  private var totalHeal int
+  private var totalTimeCrowdControlDealt int
+  private var visionScore int
+  private var wardsPlaced int
+  private var wardsKilled int
+  private var firstBloodKills int
+  private var doubleKills int
+  private var tripleKills int
+  private var pentaKills int
+  private var unrealKills int
+
+
+
+embeddable public class LOLLeagueStanding alias leagueStanding
+  private var queueName string
+  private var tier string
+  private var rank string
+  private var leaguePoints int
+  private var wins int
+  private var losses int
+  private var topCnt int
+  private var midCnt int
+  private var carryCnt int
+  private var supportCnt int
+  private var jungleCnt int
+  private var latest LOLLastMatches
+
+
+
+persistable public class LOLStatsEntity alias lol_stats
+  private var id string primaryKey
+  private var accountId string
+  private var summonerLevel int
+  private var gameId string
+  private var shard string
+  private var lolNickname string
+  private var summonerId string
+
+  private var solo LOLLeagueStanding
+  private var flexSr LOLLeagueStanding
+  private var flexTt LOLLeagueStanding
+
+
+embeddable public class DOTA2LastMatches
+    private var kills long
+    private var Assists long
+    private var Deaths long
+    private var Level long
+    private var LastHits long
+    private var Denies long
+    private var XpPerMin long
+    private var GoldPerMin long
+    private var GameMode string
+    private var Wins long
+    private var Losses long
+    private var LatestHeroesPlayed map<long,long>
+
+
+persistable public class DOTA2StatsEntity alias dota2
+  private var id string primaryKey
+  private var accountId string
+  private var steamId string
+  private var gameId string
+  private var rAllPick DOTA2LastMatches
+  private var allPick DOTA2LastMatches
+  private var soloMid DOTA2LastMatches
+  private var captainMode DOTA2LastMatches
+
+
+embeddable public class HALO5Totals
+    private var totalAssassinations long
+    private var totalAssists long
+    private var totalDeaths long
+    private var totalGamesCompleted long
+    private var totalGamesLost long
+    private var totalGamesTied long
+    private var totalGamesWon long
+    private var totalGrenadeDamage float
+    private var totalGrenadeKills long
+    private var totalGroundPoundDamage float
+    private var totalGroundPoundKills long
+    private var totalHeadshots long
+    private var totalKills long
+    private var totalMeleeDamage float
+    private var totalMeleeKills long
+    private var totalPowerWeaponDamage float
+    private var totalPowerWeaponGrabs long
+    private var totalPowerWeaponKills long
+    private var totalPowerWeaponPossessionTime long
+    private var totalShotsFired long
+    private var totalShotsLanded long
+    private var totalShoulderBashDamage long
+    private var totalShoulderBashKills long
+    private var totalSpartanKills long
+    private var totalTimePlayed long
+    private var totalWeaponDamage float
+
+persistable public class HALOStatsEntity
+  private var id string primarykey
+  private var accountId string
+  private var halo5Nickname string
+  private var shard string
+  private var gameId string
+  private var arena HALO5Totals
+  private var warzone HALO5Totals
+
+
+#stats classifier
+persistable public class StatsClassifierEntity alias stats_classifier
+  private var id string primaryKey
+  private var gameId string
+  private var apiName string
+  private var displayName string
+  private var category string
+  private var iconName string
+  private var iconUrl string
+
+
+namespace com.readyup.games.domain
+
+dto StatsClassifier
+  all_from StatsClassifierEntity
+
+dto FortniteStats
+    all_from FortniteEntity
+
+dto LOLStats
+  all_from LOLStatsEntity
+
+
+dto DOTAStats
+  all_from DOTA2StatsEntity
+
+
+dto HALOStats
+  all_from HALOStatsEntity
+
+plugin blind-mapper EntityMappers
+  -> from com.readyup.schema.Stats.CSGO to CSGOStatsEntity
+  -> from com.readyup.schema.Stats.CSGO.totals to CSGOTotals
+  -> from com.readyup.schema.Stats.Halo5 to HALOStatsEntity except getId
+  -> from com.readyup.schema.Stats.Halo5.totals to HALO5Totals
+  -> from com.readyup.schema.Stats.DOTA2 to DOTA2StatsEntity except getId
+  -> from com.readyup.schema.Stats.DOTA2.lastMatches to DOTA2LastMatches
+  -> from com.readyup.schema.Stats.LOL to LOLStatsEntity except getId
+  -> from com.readyup.schema.Stats.LOL.leagueStanding to LOLLeagueStanding
+  -> from com.readyup.schema.Stats.LOL.lastMatches to LOLLastMatches
+
+plugin protobuf-blind-mapper ProtobufMappers
+  -> from CSGOStatsEntity to com.readyup.schema.Stats.CSGO
+  -> from CSGOTotals to com.readyup.schema.Stats.CSGO.totals
+  -> from PubgStatsEntity to com.readyup.schema.Stats.PUBG
+  -> from PUBGTotals to com.readyup.schema.Stats.PUBG.totals
+  -> from HALOStatsEntity to com.readyup.schema.Stats.Halo5
+  -> from HALO5Totals to com.readyup.schema.Stats.Halo5.totals
+  -> from DOTA2StatsEntity to com.readyup.schema.Stats.DOTA2
+  -> from DOTA2LastMatches to com.readyup.schema.Stats.DOTA2.lastMatches
+  -> from com.readyup.schema.Stats.DOTA2 to DOTA2StatsEntity except getId
+  -> from com.readyup.schema.Stats.DOTA2.lastMatches to DOTA2LastMatches
+  -> from LOLStatsEntity to com.readyup.schema.Stats.LOL except getId
+  -> from LOLLeagueStanding to com.readyup.schema.Stats.LOL.leagueStanding
+  -> from LOLLastMatches to com.readyup.schema.Stats.LOL.lastMatches
+

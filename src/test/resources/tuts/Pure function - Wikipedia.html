@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Pure function - Wikipedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Pure_function","wgTitle":"Pure function","wgCurRevisionId":785556868,"wgRevisionId":785556868,"wgArticleId":5619321,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["CS1 errors: external links","Accuracy disputes from February 2017","All accuracy disputes","Articles needing additional references from July 2014","All articles needing additional references","All articles with unsourced statements","Articles with unsourced statements from September 2016","Functional programming","Subroutines"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Pure_function","wgRelevantArticleId":5619321,"wgRequestId":"WeRyngpAIC4AACWqGgcAAABV","wgIsProbablyEditable":true,"wgRelevantPageIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{}},"wgStableRevisionId":null,"wgWikiEditorEnabledModules":{"toolbar":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":false,"wgPopupsShouldSendModuleToUser":false,"wgPopupsConflictsWithNavPopupGadget":false,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","pageVariantFallbacks":"en","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFExpandAllSectionsUserOption":false,"wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":false},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgWikibaseItemId":"Q3075265","wgCentralAuthMobileDomain":false,"wgCodeMirrorEnabled":false,"wgVisualEditorToolbarScrollOffset":0,"wgVisualEditorUnsupportedEditParams":["undo","undoafter","veswitched"],"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.gadget.charinsert-styles":"ready","ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"ready","user.tokens":"loading","ext.cite.styles":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","skins.vector.styles.experimental.print":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.tokens@1dqfd7l",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/
+
+});mw.loader.load(["ext.cite.a11y","site","mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","jquery.makeCollapsible","mediawiki.toc","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.uls.interface","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.cite.styles%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cskins.vector.styles.experimental.print%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta libName="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.charinsert-styles&amp;only=styles&amp;skin=vector"/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta libName="generator" content="MediaWiki 1.31.0-wmf.3"/>
+<meta libName="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Pure_function"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Pure_function&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=Pure_function&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/Pure_function"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+<!--[if lt IE 9]><script src="/w/load.php?debug=false&amp;lang=en&amp;modules=html5shiv&amp;only=scripts&amp;skin=vector&amp;sync=1"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Pure_function rootpage-Pure_function vector-experimental-print-styles vector-nav-directionality skin-vector action-view">		<div type="mw-page-base" class="noprint"></div>
+		<div type="mw-head-base" class="noprint"></div>
+		<div type="content" class="mw-body" role="main">
+			<a type="top"></a>
+
+							<div type="siteNotice" class="mw-body-content"><!-- CentralNotice --></div>
+						<div class="mw-indicators mw-body-content">
+</div>
+			<h1 type="firstHeading" class="firstHeading" lang="en">Pure function</h1>
+									<div type="bodyContent" class="mw-body-content">
+									<div type="siteSub" class="noprint">From Wikipedia, the free encyclopedia</div>
+								<div type="contentSub"></div>
+												<div type="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div type="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><table class="plainlinks metadata ambox ambox-content ambox-multiple_issues compact-ambox" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><img alt="" src="//upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Ambox_important.svg/40px-Ambox_important.svg.png" width="40" height="40" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Ambox_important.svg/60px-Ambox_important.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Ambox_important.svg/80px-Ambox_important.svg.png 2x" data-file-width="40" data-file-height="40" /></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">
+<div class="mw-collapsible" style="width:95%; margin: 0.2em 0;"><b>This article has multiple issues.</b> Please help <b><a class="external text" href="//en.wikipedia.org/w/index.php?title=Pure_function&amp;action=edit">improve it</a></b> or discuss these issues on the <b><a href="/wiki/Talk:Pure_function" title="Talk:Pure function">talk page</a></b>. <small><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove these template messages</a>)</i></small>
+<div class="mw-collapsible-content" style="margin-top: 0.3em;">
+<table class="plainlinks metadata ambox ambox-content ambox-disputed" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><img alt="System-search.svg" src="//upload.wikimedia.org/wikipedia/commons/thumb/1/17/System-search.svg/45px-System-search.svg.png" width="45" height="45" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/1/17/System-search.svg/68px-System-search.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/1/17/System-search.svg/90px-System-search.svg.png 2x" data-file-width="48" data-file-height="48" /></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">This article's <b>factual accuracy is <a href="/wiki/Wikipedia:Accuracy_dispute" title="Wikipedia:Accuracy dispute">disputed</a></b>. <span class="hide-when-compact">Relevant discussion may be found on the <a href="/wiki/Talk:Pure_function#alternate_usage_of_the_term:" title="Talk:Pure function">talk page</a>. Please help to ensure that disputed statements are <a href="/wiki/Wikipedia:Identifying_reliable_sources" title="Wikipedia:Identifying reliable sources">reliably sourced</a>.</span> <small><i>(February 2017)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+<table class="plainlinks metadata ambox ambox-content ambox-Refimprove" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><a href="/wiki/File:Question_book-new.svg" class="image"><img alt="" src="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/50px-Question_book-new.svg.png" width="50" height="39" srcset="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/75px-Question_book-new.svg.png 1.5x, //upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/100px-Question_book-new.svg.png 2x" data-file-width="512" data-file-height="399" /></a></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">This article <b>needs additional citations for <a href="/wiki/Wikipedia:Verifiability" title="Wikipedia:Verifiability">verification</a></b>. <span class="hide-when-compact">Please help <a class="external text" href="//en.wikipedia.org/w/index.php?title=Pure_function&amp;action=edit">improve this article</a> by <a href="/wiki/Help:Introduction_to_referencing_with_Wiki_Markup/1" title="Help:Introduction to referencing with Wiki Markup/1">adding citations to reliable sources</a>. Unsourced material may be challenged and removed.</span> <small><i>(July 2014)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+<p>In <a href="/wiki/Computer_programming" title="Computer programming">computer programming</a>, a <a href="/wiki/Function_(computer_science)" class="mw-redirect" title="Function (computer science)">function</a> may be considered a <b>pure function</b> if both of the following statements about the function hold:</p>
+<ol>
+<li>The function always evaluates the same result value given the same argument value(s). The function result value cannot depend on any hidden information or <a href="/wiki/Program_state" class="mw-redirect" title="Program state">state</a> that may change while program execution proceeds or between different executions of the program, nor can it depend on any external input from <a href="/wiki/I/O_device" class="mw-redirect" title="I/O device">I/O devices</a> (usually—see below).</li>
+<li>Evaluation of the result does not cause any semantically observable <a href="/wiki/Side_effect_(computer_science)" title="Side effect (computer science)">side effect</a> or output, such as mutation of mutable objects or output to I/O devices (usually—see below).</li>
+</ol>
+<p>The result value need not depend on all (or any) of the argument values. However, it must depend on nothing other than the argument values. The function may return multiple result values and these conditions must apply to all returned values for the function to be considered pure. If an argument is <a href="/wiki/Pass_by_reference" class="mw-redirect" title="Pass by reference">passed by reference</a>, any parameter mutation will alter the value of the argument outside the function, which will render the function impure.<sup class="noprint Inline-Template Template-Fact" style="white-space:nowrap;">[<i><a href="/wiki/Wikipedia:Citation_needed" title="Wikipedia:Citation needed"><span title="The Gnu C Compiler provides the attribute 'pure' and 'const' to express that a function satisfies 2 and 1+2, respectively. See section 'Declaring Attributes of Functions' in the GCC manual. (September 2016)">citation needed</span></a></i>]</sup></p>
+<p></p>
+<div type="toc" class="toc">
+<div class="toctitle">
+<h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Examples"><span class="tocnumber">1</span> <span class="toctext">Examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Pure_functions"><span class="tocnumber">1.1</span> <span class="toctext">Pure functions</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Impure_functions"><span class="tocnumber">1.2</span> <span class="toctext">Impure functions</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-4"><a href="#Pure_expressions"><span class="tocnumber">2</span> <span class="toctext">Pure expressions</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#I.2FO_in_pure_functions"><span class="tocnumber">3</span> <span class="toctext">I/O in pure functions</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Impure_functions_in_pure_expressions"><span class="tocnumber">4</span> <span class="toctext">Impure functions in pure expressions</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#See_also"><span class="tocnumber">5</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#References"><span class="tocnumber">6</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#External_links"><span class="tocnumber">7</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" type="Examples">Examples</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=1" title="Edit section: Examples">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<h3><span class="mw-headline" type="Pure_functions">Pure functions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=2" title="Edit section: Pure functions">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<ul>
+<li><code>sin(x)</code>, returning the <a href="/wiki/Sine" title="Sine">sine</a> of a number <i>x</i></li>
+<li><code>length(s)</code>, returning the size of a string <i>s</i></li>
+<li><code>encrypt(k,d)</code>, running a <a href="/wiki/Deterministic_encryption" title="Deterministic encryption">deterministic encryption algorithm</a> on a piece of data <i>d</i> using a <a href="/wiki/Key_(cryptography)" title="Key (cryptography)">key</a> <i>k</i> (Such as <a href="/wiki/Advanced_Encryption_Standard" title="Advanced Encryption Standard">AES</a>)</li>
+</ul>
+<h3><span class="mw-headline" type="Impure_functions">Impure functions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=3" title="Edit section: Impure functions">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<ul>
+<li>Any function that uses a <a href="/wiki/Non-local_variable" title="Non-local variable">non-local variable</a> is potentially impure. I.e., if there are any <a href="/wiki/Free_variable" class="mw-redirect" title="Free variable">free variables</a> in the function definition. For example <code>inc(x): x + a</code> returns the value of <code>x</code> incremented by the free variable <code>a</code>, and thus depends on the value of <code>a</code>.</li>
+<li>A function that returns the current time or date, is impure because at different times it will yield different results—it refers to some global state.</li>
+<li><code>random()</code> is impure because each call potentially yields a different value. This is because <a href="/wiki/Pseudorandom_generator" title="Pseudorandom generator">pseudorandom generators</a> use and update a global "seed" state. If we modify it to take the seed as an argument, i.e. <code>random(seed)</code>; then <code>random</code> becomes pure, because multiple calls with the same seed value return the same random number.</li>
+<li><code><a href="/wiki/Printf" class="mw-redirect" title="Printf">printf</a>()</code> and similar functions are impure because it causes output to an I/O device as a side effect.</li>
+</ul>
+<h2><span class="mw-headline" type="Pure_expressions">Pure expressions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=4" title="Edit section: Pure expressions">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Pure functions are required to construct pure <a href="/wiki/Expression_(programming)" class="mw-redirect" title="Expression (programming)">expressions</a>. Constant expressions are pure by definition. An expression consisting of a function subexpression applied to one or more argument subexpressions is pure if both these statements about the subexpressions hold:</p>
+<ol>
+<li>The function and argument subexpressions are pure expressions.</li>
+<li>The function subexpression yields a pure function.</li>
+</ol>
+<p>Typically the function subexpression is simply a function identifier. Pure expressions are often referred to as being <a href="/wiki/Referential_transparency_(computer_science)" class="mw-redirect" title="Referential transparency (computer science)">referentially transparent</a>.</p>
+<p>Evaluation of a given pure expression will yield the same result regardless of when or how many times evaluation occurs during program execution. This property is what makes it meaningful to talk about an expression's "value". It also makes it possible to replace an expression with the corresponding value (or it with an equivalent alternative expression) without changing the meaning of a program.</p>
+<h2><span type="I/O_in_pure_functions"></span><span class="mw-headline" type="I.2FO_in_pure_functions">I/O in pure functions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=5" title="Edit section: I/O in pure functions">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>A function can perform input or output and still be pure if the sequence of operations on the relevant Input/Output devices is modeled explicitly as both an argument and a result, and I/O operations are taken to fail when the input sequence does not describe the operations actually taken since the program began execution.</p>
+<p>The second point ensures that the only sequence usable as an argument must change with each I/O action; the first allows different calls to an I/O-performing function to return different results on account of the sequence arguments having changed.<sup type="cite_ref-1" class="reference"><a href="#cite_note-1">[1]</a></sup><sup type="cite_ref-2" class="reference"><a href="#cite_note-2">[2]</a></sup></p>
+<p>The <a href="/wiki/I/O_monad" class="mw-redirect" title="I/O monad">I/O monad</a> is a <a href="/wiki/Programming_idiom" title="Programming idiom">programming idiom</a> typically used to perform input/output in pure functional languages.</p>
+<h2><span class="mw-headline" type="Impure_functions_in_pure_expressions">Impure functions in pure expressions</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=6" title="Edit section: Impure functions in pure expressions">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>The definitions above still allow some laxity with regard to purity. It is possible for a pure expression to yield an impure function (or more generally a value which contains one or more impure functions).</p>
+<p>It is also possible for an expression to be pure even if one or more of the argument subexpressions yields an impure function (or a value which contains one or more impure functions). In this case the impure function(s) in the argument must not be applied during evaluation (but may be incorporated in the result somehow). However, dealing with programs that allow impure and pure functions to be mixed like this can be quite difficult in practice, thus purely functional programming languages do not allow impure functions to be defined. <a href="/wiki/Effect_system" title="Effect system">Effect systems</a>, among other things, allow one to reason precisely and formally about the purity of certain expressions even in the presence of higher-order functions etc.; they even allow to prove that a certain function does not have any side effects although it uses impure operations (for example, uses a mutable array for computation internally, but does not expose it to the outer world or maintain its state between invocations).</p>
+<h2><span class="mw-headline" type="See_also">See also</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=7" title="Edit section: See also">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a href="/wiki/Compile_time_function_execution" title="Compile time function execution">Compile time function execution</a>: the evaluation of pure functions at compile time</li>
+<li><a href="/wiki/Purely_functional_data_structure" title="Purely functional data structure">Purely functional data structure</a></li>
+<li><a href="/wiki/Referential_transparency_(computer_science)" class="mw-redirect" title="Referential transparency (computer science)">Referential transparency (computer science)</a></li>
+<li><a href="/wiki/Lambda_calculus" title="Lambda calculus">Lambda calculus</a></li>
+<li><a href="/wiki/Side_effect_(computer_science)" title="Side effect (computer science)">Side effect (computer science)</a></li>
+<li><a href="/wiki/Reentrancy_(computing)" title="Reentrancy (computing)">Pure procedure</a></li>
+<li><a href="/wiki/Idempotence" title="Idempotence">Idempotence</a></li>
+<li><a href="/wiki/Fortran_95_language_features#Pure_Procedures" title="Fortran 95 language features">pure</a> keyword in Fortran annotating pure functions</li>
+<li><a href="/wiki/C%2B%2B11#constexpr_.E2.80.93_Generalized_constant_expressions" title="C++11">constexpr</a> keyword in C++ annotating pure functions usable at compile-time</li>
+</ul>
+<h2><span class="mw-headline" type="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=8" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;">
+<div class="mw-references-wrap">
+<ol class="references">
+<li type="cite_note-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-1">^</a></b></span> <span class="reference-text"><cite type="haskell98" class="citation book">Peyton Jones, Simon L. (2003). <a rel="nofollow" class="external text" href="http://it.bmc.uu.se/andlov/dev/books/haskell98-report.pdf"><i>Haskell 98 Language and Libraries: The Revised Report</i></a> <span style="font-size:85%;">(PDF)</span>. Cambridge, United Kingdom: Cambridge University Press. p.&#160;95. <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/0-521_826144" title="Special:BookSources/0-521 826144">0-521 826144</a><span class="reference-accessdate">. Retrieved <span class="nowrap">17 July</span> 2014</span>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3APure+function&amp;rft.aufirst=Simon+L.&amp;rft.aulast=Peyton+Jones&amp;rft.btitle=Haskell+98+Language+and+Libraries%3A+The+Revised+Report&amp;rft.date=2003&amp;rft.genre=book&amp;rft.isbn=0-521826144&amp;rft.pages=95&amp;rft.place=Cambridge%2C+United+Kingdom&amp;rft.pub=Cambridge+University+Press&amp;rft_id=http%3A%2F%2Fit.bmc.uu.se%2Fandlov%2Fdev%2Fbooks%2Fhaskell98-report.pdf&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&#160;</span></span></span></li>
+<li type="cite_note-2"><span class="mw-cite-backlink"><b><a href="#cite_ref-2">^</a></b></span> <span class="reference-text"><cite type="curry14" class="citation web">Hanus, Michael. <a rel="nofollow" class="external text" href="http://www.informatik.uni-kiel.de/~curry/papers/report.pdf">"Curry: An Integrated Functional Logic Language"</a> <span style="font-size:85%;">(PDF)</span>. <i><a rel="nofollow" class="external free" href="http://www-ps.informatik.uni-kiel.de/currywiki/">http://www-ps.informatik.uni-kiel.de/currywiki/</a></i>. Institut für Informatik, Christian-Albrechts-Universität zu Kiel. p.&#160;33<span class="reference-accessdate">. Retrieved <span class="nowrap">17 July</span> 2014</span>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3APure+function&amp;rft.atitle=Curry%3A+An+Integrated+Functional+Logic+Language&amp;rft.aufirst=Michael&amp;rft.aulast=Hanus&amp;rft.genre=unknown&amp;rft.jtitle=http%3A%2F%2Fwww-ps.informatik.uni-kiel.de%2Fcurrywiki%2F&amp;rft.pages=33&amp;rft_id=http%3A%2F%2Fwww.informatik.uni-kiel.de%2F~curry%2Fpapers%2Freport.pdf&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal" class="Z3988"><span style="display:none;">&#160;</span></span> <span style="font-size:100%" class="error citation-comment">External link in <code style="color:inherit; border:inherit; padding:inherit;">|website=</code> (<a href="/wiki/Help:CS1_errors#param_has_ext_link" title="Help:CS1 errors">help</a>)</span></span></li>
+</ol>
+</div>
+</div>
+<h2><span class="mw-headline" type="External_links">External links</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Pure_function&amp;action=edit&amp;section=9" title="Edit section: External links">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://publib.boulder.ibm.com/infocenter/comphelp/v111v131/index.jsp?topic=/com.ibm.xlf131.aix.doc/language_ref/pure.html">Pure attribute in Fortran</a></li>
+<li><a rel="nofollow" class="external text" href="http://en.cppreference.com/w/cpp/language/constexpr">constexpr attribute in C++</a></li>
+<li><a rel="nofollow" class="external text" href="http://www.digitalmars.com/d/2.0/function.html#pure-functions">Pure attribute in D language</a></li>
+</ul>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1324
+Cached time: 20171004224418
+Cache expiry: 1900800
+Dynamic content: false
+CPU time usage: 0.132 seconds
+Real time usage: 0.179 seconds
+Preprocessor visited node count: 547/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 27013/2097152 bytes
+Template argument size: 6429/2097152 bytes
+Highest expansion depth: 11/40
+Expensive parser function count: 4/500
+Lua time usage: 0.070/10.000 seconds
+Lua memory usage: 2.43 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  153.156      1 -total
+ 49.44%   75.726      3 Template:Ambox
+ 42.41%   64.954      1 Template:Multiple_issues
+ 36.65%   56.134      1 Template:Reflist
+ 26.02%   39.853      1 Template:Cite_book
+ 19.84%   30.379      1 Template:Cn
+ 17.69%   27.086      1 Template:Fix
+ 12.68%   19.415      1 Template:Disputed
+ 11.51%   17.623      1 Template:Delink
+  4.71%    7.219      1 Template:Cite_web
+-->
+</div>
+<!-- Saved in parser cache with key enwiki:pcache:idhash:5619321-0!canonical and timestamp 20171004224417 and revision type 785556868
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=Pure_function&amp;oldid=785556868">https://en.wikipedia.org/w/index.php?title=Pure_function&amp;oldid=785556868</a>"					</div>
+				<div type="catlinks" class="catlinks" data-mw="interface"><div type="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:Functional_programming" title="Category:Functional programming">Functional programming</a></li><li><a href="/wiki/Category:Subroutines" title="Category:Subroutines">Subroutines</a></li></ul></div><div type="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:CS1_errors:_external_links" title="Category:CS1 errors: external links">CS1 errors: external links</a></li><li><a href="/wiki/Category:Accuracy_disputes_from_February_2017" title="Category:Accuracy disputes from February 2017">Accuracy disputes from February 2017</a></li><li><a href="/wiki/Category:All_accuracy_disputes" title="Category:All accuracy disputes">All accuracy disputes</a></li><li><a href="/wiki/Category:Articles_needing_additional_references_from_July_2014" title="Category:Articles needing additional references from July 2014">Articles needing additional references from July 2014</a></li><li><a href="/wiki/Category:All_articles_needing_additional_references" title="Category:All articles needing additional references">All articles needing additional references</a></li><li><a href="/wiki/Category:All_articles_with_unsourced_statements" title="Category:All articles with unsourced statements">All articles with unsourced statements</a></li><li><a href="/wiki/Category:Articles_with_unsourced_statements_from_September_2016" title="Category:Articles with unsourced statements from September 2016">Articles with unsourced statements from September 2016</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div type="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div type="mw-head">
+									<div type="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 type="p-personal-label">Personal tools</h3>
+						<ul>
+							<li type="pt-anonuserpage">Not logged in</li><li type="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li type="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li type="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Pure+function" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li type="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Pure+function" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div type="left-navigation">
+										<div type="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 type="p-namespaces-label">Namespaces</h3>
+						<ul>
+														<li type="ca-nstab-main" class="selected"><span><a href="/wiki/Pure_function" title="View the content page [c]" accesskey="c">Article</a></span></li>
+							<li type="ca-talk"><span><a href="/wiki/Talk:Pure_function" rel="discussion" title="Discussion about the content page [t]" accesskey="t">Talk</a></span></li>
+						</ul>
+					</div>
+										<div type="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 type="p-variants-label">
+							<span>Variants</span>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div type="right-navigation">
+										<div type="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 type="p-views-label">Views</h3>
+						<ul>
+														<li type="ca-view" class="collapsible selected"><span><a href="/wiki/Pure_function">Read</a></span></li>
+							<li type="ca-edit" class="collapsible"><span><a href="/w/index.php?title=Pure_function&amp;action=edit" title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+							<li type="ca-history" class="collapsible"><span><a href="/w/index.php?title=Pure_function&amp;action=history" title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+						</ul>
+					</div>
+										<div type="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 type="p-cactions-label"><span>More</span></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div type="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" type="searchform">
+							<div type="simpleSearch">
+							<input type="search" libName="search" placeholder="Search Wikipedia" title="Search Wikipedia [f]" accesskey="f" type="searchInput"/><input type="hidden" value="Special:Search" libName="title"/><input type="submit" libName="fulltext" value="Search" title="Search Wikipedia for this text" type="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" libName="go" value="Go" title="Go to a page with this exact libName if it exists" type="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div type="mw-panel">
+				<div type="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" type='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 type='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li type="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li type="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li type="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li type="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li type="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li type="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 type='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li type="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li type="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li type="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li type="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-tb' aria-labelledby='p-tb-label'>
+			<h3 type='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li type="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Pure_function" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li type="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Pure_function" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li type="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li type="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li type="t-permalink"><a href="/w/index.php?title=Pure_function&amp;oldid=785556868" title="Permanent link to this revision of the page">Permanent link</a></li><li type="t-info"><a href="/w/index.php?title=Pure_function&amp;action=info" title="More information about this page">Page information</a></li><li type="t-wikibase"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q3075265" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li type="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Pure_function&amp;type=785556868" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 type='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li type="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Pure+function">Create a book</a></li><li type="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:ElectronPdf&amp;page=Pure+function&amp;action=show-download-screen">Download as PDF</a></li><li type="t-print"><a href="/w/index.php?title=Pure_function&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-lang' aria-labelledby='p-lang-label'>
+			<h3 type='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+						<li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/Fonction_pure" title="Fonction pure – French" lang="fr" hreflang="fr" class="interlanguage-link-target">Français</a></li><li class="interlanguage-link interwiki-ru"><a href="https://ru.wikipedia.org/wiki/%D0%A7%D0%B8%D1%81%D1%82%D0%BE%D1%82%D0%B0_%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8" title="Чистота функции – Russian" lang="ru" hreflang="ru" class="interlanguage-link-target">Русский</a></li><li class="interlanguage-link interwiki-zh"><a href="https://zh.wikipedia.org/wiki/%E7%BA%AF%E5%87%BD%E6%95%B0" title="纯函数 – Chinese" lang="zh" hreflang="zh" class="interlanguage-link-target">中文</a></li>					</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q3075265#sitelinks-wikipedia" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div type="footer" role="contentinfo">
+							<ul type="footer-info">
+											<li type="footer-info-lastmod"> This page was last edited on 14 June 2017, at 05:46.</li>
+											<li type="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul type="footer-places">
+											<li type="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li type="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li type="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li type="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li type="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li type="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li type="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=Pure_function&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul type="footer-icons" class="noprint">
+											<li type="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li type="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.132","walltime":"0.179","ppvisitednodes":{"value":547,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":27013,"limit":2097152},"templateargumentsize":{"value":6429,"limit":2097152},"expansiondepth":{"value":11,"limit":40},"expensivefunctioncount":{"value":4,"limit":500},"entityaccesscount":{"value":0,"limit":400},"timingprofile":["100.00%  153.156      1 -total"," 49.44%   75.726      3 Template:Ambox"," 42.41%   64.954      1 Template:Multiple_issues"," 36.65%   56.134      1 Template:Reflist"," 26.02%   39.853      1 Template:Cite_book"," 19.84%   30.379      1 Template:Cn"," 17.69%   27.086      1 Template:Fix"," 12.68%   19.415      1 Template:Disputed"," 11.51%   17.623      1 Template:Delink","  4.71%    7.219      1 Template:Cite_web"]},"scribunto":{"limitreport-timeusage":{"value":"0.070","limit":"10.000"},"limitreport-memusage":{"value":2548701,"limit":52428800}},"cachereport":{"origin":"mw1324","timestamp":"20171004224418","ttl":1900800,"transientcontent":false}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":84,"wgHostname":"mw1325"});});</script>
+	</body>
+</html>

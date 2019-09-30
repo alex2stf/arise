@@ -1,0 +1,8 @@
+version: '2'
+services:
+  redis:
+    image: redis
+    container_name: db.jentilapp.redis
+    domainname: db.jentilapp.redis
+    ports:
+      - "6379:6379"

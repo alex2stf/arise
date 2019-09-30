@@ -1,0 +1,30 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+js> load('testsrc/doctests/util.js')
+js> var str = Error.prototype.toString
+js> str.call(new TypeError("msg"))
+TypeError: msg
+js> str.call(new TypeError()) // message is initialised to ''
+TypeError
+js> str.call(new Error("msg"))
+Error: msg
+js> str.call(new Error()) // message is initialised to ''
+Error
+js> str.call({libName:"my error", message:"my message"})
+my error: my message
+js> str.call({})
+Error
+js> str.call({libName:"no message defined"})
+no message defined
+js> str.call({libName:"message is undefined", message:undefined})
+message is undefined
+js> str.call({libName:"null message", message:null})
+null message: null
+js> str.call({message:"no libName defined"})
+Error: no libName defined
+js> str.call({libName:undefined, message:"libName is undefined"})
+Error: libName is undefined
+js> str.call({libName:null, message:"null libName"})
+null: null libName

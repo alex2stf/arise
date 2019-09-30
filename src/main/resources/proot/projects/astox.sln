@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "astox-core", "astox-core\astox-core.vcxproj", "{4F287BE0-D975-47D8-8A7C-1DED45647604}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "astox-tests", "astox-tests\astox-tests.vcxproj", "{44D30CCE-B669-4EDF-A963-3D9EC43B7ECF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F287BE0-D975-47D8-8A7C-1DED45647604} = {4F287BE0-D975-47D8-8A7C-1DED45647604}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "astox-jni-dll", "astox-jni-dll\astox-jni-dll.vcxproj", "{BBC39C98-6AE2-4A0D-93F9-F999229FA0D4}"
+    ProjectSection(ProjectDependencies) = postProject
+		{4F287BE0-D975-47D8-8A7C-1DED45647604} = {4F287BE0-D975-47D8-8A7C-1DED45647604}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F287BE0-D975-47D8-8A7C-1DED45647604}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F287BE0-D975-47D8-8A7C-1DED45647604}.Debug|Win32.Build.0 = Debug|Win32
+		{4F287BE0-D975-47D8-8A7C-1DED45647604}.Release|Win32.ActiveCfg = Release|Win32
+		{4F287BE0-D975-47D8-8A7C-1DED45647604}.Release|Win32.Build.0 = Release|Win32
+		{44D30CCE-B669-4EDF-A963-3D9EC43B7ECF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{44D30CCE-B669-4EDF-A963-3D9EC43B7ECF}.Debug|Win32.Build.0 = Debug|Win32
+		{44D30CCE-B669-4EDF-A963-3D9EC43B7ECF}.Release|Win32.ActiveCfg = Release|Win32
+		{44D30CCE-B669-4EDF-A963-3D9EC43B7ECF}.Release|Win32.Build.0 = Release|Win32
+		{BBC39C98-6AE2-4A0D-93F9-F999229FA0D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BBC39C98-6AE2-4A0D-93F9-F999229FA0D4}.Debug|Win32.Build.0 = Debug|Win32
+		{BBC39C98-6AE2-4A0D-93F9-F999229FA0D4}.Release|Win32.ActiveCfg = Release|Win32
+		{BBC39C98-6AE2-4A0D-93F9-F999229FA0D4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

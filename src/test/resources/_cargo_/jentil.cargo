@@ -1,0 +1,249 @@
+
+
+#init in here the jentil generic model:
+
+namespace jentil.entities.taxonomy
+
+enum Gender MALE FEMALE UNKNOWN
+
+enum ContactType EMAIL PHONE
+
+embeddable public class Unit
+    private var value int
+    private var name string
+
+
+embeddable public class Actor
+    private var code string
+    private var source string
+
+embeddable public class Domain
+    private var code string
+    private var source string
+
+embeddable public class Audit
+    private var createdDate date
+    private var updatedDate date
+
+
+
+#locator service
+namespace jentil.entities.locator
+
+using type  Country jentil.entities.locator.Address
+using type City jentil.entities.locator.City
+using type Region jentil.entities.locator.Region
+using type Province jentil.entities.locator.Province
+
+persistable public class GeoLocation
+    private var latitude double
+    private var longitude double
+    private var description string
+
+persistable public class Location
+    private var address Address
+    private var location GeoLocation
+
+persistable public class Address
+    private var name string
+    private var street string
+    private var code string
+    private var code2 string
+    private var city City
+
+persistable public class City
+    private var name string
+    private var country Country
+    private var province Province
+
+persistable public class Province
+    private var region Region
+    private var cities City[]
+    private var name string
+    private var description string
+
+peristable public class Region
+    private var name string
+    private var provinces Province[]
+    private var country Country[]
+
+persistable public class Country
+    private var code2 string
+    private var code string
+    private var name string
+    private var description string
+    private var regions Region[]
+    private var cities City[]
+    private var provinces Province[]
+
+
+persistable public class Transport
+    private var from Location
+    private var to Location
+    private var item string
+    private var itemSource string
+
+
+
+#user service
+namespace jentil.entities.user
+
+persistable public class User
+     private var password char[]
+     private var email string
+     private var uid string
+     private var token string
+     private var status string
+
+
+persistable public class UserPreferences
+
+persistable public class UserGroup
+persistable public class UserRole
+    private var name string
+
+
+
+
+
+
+#social service
+namespace jentil.entities.social
+
+using type Comment jentil.entities.social.Comment
+using type Page jentil.entities.social.Page
+
+persistable public class Profile
+    private var interests string[]
+    private var preferences string[]
+    private var lastActive date
+    private var description string
+    private var bios string
+
+    private var showInterests bool
+    private var showPreferences bool
+    private var showDescription bool
+    private var showBios bool
+    private var user Actor
+
+
+persistable public class Topic
+    private var title string
+    private var description string
+    private var closed bool
+    private var comments Comment[]
+    private var author Actor
+    private var domain Domain
+
+persistable public class Post
+    private var page Page
+    private var comments Comment[]
+    private var content string
+    private var author Actor
+    private var tags string[]
+
+persistable public class Page
+    private var posts Post[]
+    private var author Actor
+
+
+persistable public class Complaint
+    private var text string
+    private var reporter Actor
+
+persistable public class Comment
+    private var text string
+    private var parent Comment
+    private var author Actor
+    private var page Page nullable
+    private var post Post nullable
+    private var topic Topic nullable
+
+persistable public class Contact
+    private var main bool
+    private var type string
+    private var value string
+
+#marketplace service
+namespace jentil.entities.marketplace
+
+
+persistable public class Product
+    private var price int
+    private var retailPrice int
+
+persistable public class Book extends Product
+     private var isbn string
+     private var displayedAuthor string
+     private var publisher string
+     private var title string
+     private var category string
+     private var description string
+     private var notes string
+
+peristable public class Transaction
+    private var sender Actor
+    private var receiver Actor
+    private var superviser Actor
+    private var watchers Actor[]
+    private var quantity Unit
+    private var notes string
+
+
+persistable public class Basket
+    private var owner Actor
+    private var creationDate date
+    private var shippingDate date
+    private var products Product[]
+
+
+
+namespace jentil.entities.business
+
+persistable public class Business
+    private var domain Domain
+    private var manager Actor
+
+
+persistable public class Company
+    private var businesses Business[]
+    private var manager Actor
+
+persistable public class Project
+    private var audit Audit
+
+
+persistable public class Organization
+    private var audit Audit
+    private var companies Company[]
+
+
+namespace jentil.entities.hr
+
+persistable public class Job
+    private var title string
+    private var maxSalary long
+    private var minSalary long
+
+
+persistable public class Employee
+
+
+persistable public class Department
+
+
+persistable public class JobHistory
+ private var employee Employee
+    private var startDate date
+    private var endDate date
+    private var job Job
+    private var department Department
+
+
+#dtos
+namespace jentil.dtos
+
+dto Composed
+    all_from JobHistory except job
+    all_from Job
+    prop organizationAudit from Organization audit

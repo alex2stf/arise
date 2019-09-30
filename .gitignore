@@ -1,0 +1,9 @@
+/build
+*.iml
+.idea
+Bunga_and_Kion.png
+arch/
+scripts/
+nohup.out
+lib/
+*_old.sh

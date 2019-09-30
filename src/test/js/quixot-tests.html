@@ -1,0 +1,37 @@
+<html>
+    <script src="../dist/quixot.js"></script>
+    <script src="quixot-tests.js"></script>
+
+    <body></body>
+
+    <script>
+        console.log('init browser based tests');
+        var $ = quixot.jQFuck;
+        for(var i = 0; i < 3; i++){
+            var div = $.place('div', 'item' + i);
+            $(div).removeClass('test');
+
+            $(div).addClass('item');
+            $(div).addClass('2nd class');
+            sancho.equals(document.getElementById('item' + i).getAttribute('class'), 'item 2nd class');
+
+/*
+            $(div).removeClass('2nd');
+
+            sancho.equals(document.getElementById('item' + i).getAttribute('class'), 'item class');
+*/
+            $(div).addClass('3');
+
+            $(div).removeClass('item 3');
+        }
+
+        sancho.module('coockie');
+
+        quixot.Cookie.setc('unu333', 'tst32ed');
+        sancho.isTrue(document.cookie.indexOf('unu333=tst32ed') > -1)
+        sancho.equals(quixot.Cookie.getc('unu333'), 'tst32ed');
+        quixot.Cookie.drop('unu333');
+        sancho.isTrue(document.cookie.indexOf('unu333=tst32ed') == -1);
+
+    </script>
+</html>

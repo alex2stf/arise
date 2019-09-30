@@ -1,0 +1,20 @@
+keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass astox_password -validity 360 -keysize 2048
+#pass: astox_password
+
+
+keytool -list -keystore keystore.jks
+keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.p12 -deststoretype PKCS12
+
+#setup source and destination password
+
+
+
+
+
+#V2
+https://ram.k0a1a.net/self-signed_https_cert_after_chrome_58
+
+
+#convert pem+key to p12
+ openssl pkcs12 -export -in server_rootCA.pem -inkey server_rootCA.key -out server_rootCA.p12
+

@@ -1,0 +1,81 @@
+{
+  "#__DEFINE": {
+    "QUIXOT_LIBS": "\"lib/000_propfix.js\", \"lib/001_libinit.js\", \"lib/002_fingerprint_data.js\", \"lib/003_utils.js\", \"lib/004_events.js\", \"lib/005_webgl_canvas.js\", \"lib/006_require.js\", \"lib/007_url_utils.js\",  \"lib/008_logger.js\", \"lib/009_cookie.js\",  \"lib/010_env.js\", \"lib/011_cache.js\",  \"lib/012_browser.js\", \"lib/014_sancho.js\",  \"lib/_libEnd.js\",   \"lib/015_tween.js\", \"lib/016_mingui.js\", \"lib/017_media.js\", \"lib/018_rtc.js\", \"lib/014_injectors.js\", \"lib/020_http.js\" "
+    , "NODEJS_PATH":  "\"/usr/local/bin/node\""
+    , "jsdoc2md_PATH": "\"/usr/local/bin/jsdoc2md\""
+  },
+
+  "axl.stf.cabaret.HelloTask": "this build is done today",
+
+  "axl.stf.cabaret.Kane": [
+    {
+      "@extend": ["package.json"],
+      "outputFiles": [
+        {
+          "path": "../../../../../../../../../workdir/sources/js/quixot-{version}-min.js",
+          "writers": [ "axl.stf.cabaret.MapMin", "axl.stf.cabaret.validate.GCWriter" ]
+        },
+        {
+          "path": "dist/quixot.js",
+          "writers": [ "axl.stf.cabaret.MapMin"]
+        },
+        {
+          "path": "dist/quixot-{version}-min.js",
+          "writers": [ "axl.stf.cabaret.MapMin", "axl.stf.cabaret.validate.GCWriter" ]
+        }
+      ],
+
+      "inputFiles": [
+        "lib/000_propfix.js",
+        "lib/001_libinit.js",
+        "lib/001_var_definitions.js",
+        "lib/002_fingerprint_data.js",
+        "lib/003_utils.js",
+        "lib/003_timeutils.js",
+        "lib/004_events.js",
+        "lib/005_webgl_canvas.js",
+        "lib/006_require.js",
+        "lib/007_url_utils.js",
+        "lib/008_logger.js",
+        "lib/009_cookie.js",
+        "lib/010_env.js",
+        "lib/011_cache.js",
+        "lib/012_browser.js",
+        "lib/014_sancho.js",
+        "lib/015_tween.js",
+        "lib/016_mingui.js",
+        "lib/016_1html4notification.js",
+        "lib/016_2html5notification.js",
+        "lib/16_3sysnotification.js",
+        "lib/017_media.js",
+        "lib/018_rtc.js",
+        "lib/019_injectors.js",
+        "lib/020_http.js",
+        "lib/021_dulcineea.js",
+        "lib/022_gog.js",
+        {
+          "content": "var quixot_pack_info = {version: \"{version}\", buildDate: \"{TIMESTAMP}\"};"
+        },
+        "lib/_libEnd.js"
+      ]
+    }
+  ],
+  "axl.stf.cabaret.FProc": {
+    "args": [
+      "{NODEJS_PATH}" ,
+      "{jsdoc2md_PATH}",
+      "lib/_libEnd.js"
+    ],
+    "outFile": "autodoc.md"
+  },
+  "axl.stf.cabaret.JsRun": {
+      "file": "dist/quixot.js"
+  },
+  "axl.stf.cabaret.FCp": [
+    {
+      "inputFiles": ["tests.js"],
+      "outputFiles": ["../../../../../../../../../workdir/sources/js/qtest.js"]
+    }
+  ]
+
+}

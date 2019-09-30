@@ -1,0 +1,11 @@
+int64 Assists = 2;
+    int64 Deaths = 3;
+    int64 Level = 4;
+    int64 LastHits = 5;
+    int64 Denies = 6;
+    int64 XpPerMin = 7;
+    int64 GoldPerMin = 8;
+    string GameMode = 9;
+    int64 Wins = 10;
+    int64 Losses = 11;
+    map<int64,int64> LatestHeroesPlayed = 12;

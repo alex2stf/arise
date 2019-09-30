@@ -1,0 +1,32 @@
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <display-libName>JentilApp</display-libName>
+    <description>
+        This is a simple web application with a source statusCode organization
+        based on the recommendations of the Application Developer's Guide.
+    </description>
+
+    <servlet>
+        <servlet-libName>RestServletProvider</servlet-libName>
+        <servlet-class>axl.stf.eminence.RestServletProvider</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-libName>RestServletProvider</servlet-libName>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+
+    <listener>
+        <listener-class>axl.stf.eminence.JentilApp</listener-class>
+    </listener>
+
+</web-app>

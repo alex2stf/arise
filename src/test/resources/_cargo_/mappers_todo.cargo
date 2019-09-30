@@ -1,0 +1,29 @@
+#mapper <type> <name>
+
+
+
+mapper sql-rs SQLMapper
+    object child as new com.pack.Child
+    object result as new com.pack.Class(int finalProp, string finalField)
+    int id result.setId
+    string code child.setCode
+    result.setChild(child)
+
+mapper http-req HTTPMapper
+    POST /admin
+        format application/json text/xml
+        body com.pack.Class
+        header X-ReferrerId as referrer
+        -> admin.Dashboard.index(body:?BODY,referrer:string)
+
+    GET /admin/{id}/{code}/{date}
+        header X-Authorization as authorization
+        -> admin.Dashboard.index(id:int,code:string,date:date,header:string)
+
+     POST /upload
+        -> admin.Dashboard.index(request:?REQUEST,response:?RESPONSE,body:?BODY,uri:?URL,transporter:?TRANSPORTER,files:?FILES)
+
+     GET /item/*any
+        -> admin.Dashboard.index(any:string)
+
+

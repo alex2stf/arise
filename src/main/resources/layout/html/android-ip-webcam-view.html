@@ -1,0 +1,137 @@
+<!--<html>-->
+<!--<body>-->
+<!--<title>-->
+    <!--VIEW-->
+<!--</title>-->
+<!--<script>-->
+    <!--{{quixot_js}}-->
+<!--</script>-->
+
+<!--<h1>-->
+    <!--VIEW-->
+<!--</h1>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--
+// Muaz Khan         - www.MuazKhan.com
+// MIT License       - www.WebRTC-Experiment.com/licence
+// Experiments       - github.com/muaz-khan/WebRTC-Experiment
+-->
+<!DOCTYPE html>
+<html type="home" lang="en">
+
+<head>
+    <script>
+            if(!location.hash.replace('#', '').length) {
+                location.href = location.href.split('#')[0] + '#' + (Math.random() * 100).toString().replace('.', '');
+                location.reload();
+            }
+        </script>
+
+    <title>WebRTC one-to-many video broadcasting</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta libName="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="author" type="text/html" href="https://plus.google.com/+MuazKhan">
+    <meta libName="author" content="Muaz Khan">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="https://cdn.webrtc-experiment.com/style.css">
+
+    <style>
+            audio, video {
+                -moz-transition: all 1s ease;
+                -ms-transition: all 1s ease;
+
+                -o-transition: all 1s ease;
+                -webkit-transition: all 1s ease;
+                transition: all 1s ease;
+                vertical-align: top;
+
+                width: 45%;
+            }
+
+            input {
+                border: 1px solid #d9d9d9;
+                border-radius: 1px;
+                font-size: 2em;
+                margin: .2em;
+                width: 70%;
+            }
+
+            .setup {
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+                font-size: 102%;
+                height: 47px;
+                margin-left: -9px;
+                margin-top: 8px;
+                position: absolute;
+            }
+
+            p { padding: 1em; }
+
+            li {
+                border-bottom: 1px solid rgb(189, 189, 189);
+                border-left: 1px solid rgb(189, 189, 189);
+                padding: .5em;
+            }
+        </style>
+    <script>
+            document.createElement('article');
+            document.createElement('footer');
+
+
+        </script>
+</head>
+
+<body>
+<h1 type="head"></h1>
+<article>
+
+    <table class="visible">
+        <tr>
+            <td style="text-align: right;">
+                <input type="text" type="conference-libName" placeholder="Broadcast Name">
+            </td>
+            <td>
+                <button type="start-conferencing">New Broadcast</button>
+            </td>
+        </tr>
+    </table>
+    <table type="rooms-list" class="visible"></table>
+
+    <table class="visible">
+        <tr>
+            <td style="text-align: center;">
+                <h2>
+                    <strong>Private Broadcast</strong> ?? <a href="" target="_blank" title="Open this link in new tab. Then your broadcasting room will be private!"><statusCode><strong type="unique-token">#123456789</strong></statusCode></a>
+                </h2>
+            </td>
+        </tr>
+    </table>
+
+    <div type="participants"></div>
+
+    <script src="https://cdn.webrtc-experiment.com/socket.io.js"> </script>
+    <script src="https://cdn.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>
+    <script src="https://cdn.webrtc-experiment.com/broadcast/broadcast.js"> </script>
+    <script src="https://cdn.webrtc-experiment.com/broadcast/broadcast-ui.js"> </script>
+</article>
+<!--<article>-->
+   <!---->
+
+<!--</article>-->
+
+
+
+
+<!--&lt;!&ndash; commits.js is useless for you! &ndash;&gt;-->
+<!--<script src="https://cdn.webrtc-experiment.com/commits.js" async> </script>-->
+
+<script>
+
+            document.getElementById('head').innerHTML = ((window.location+'').split('#')[1]);
+</script>
+</body>
+</html>

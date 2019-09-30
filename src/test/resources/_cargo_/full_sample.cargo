@@ -1,0 +1,120 @@
+#TODO
+#clone cpp as qt
+#using qt type string some.string.impl.in.cpp
+
+
+
+namespace cargo.tests.autogen.interfaces.packOne
+
+? free comment line
+public iterable interface InterfaceOne extends serializable cloneable
+
+
+namespace cargo.tests.autogen.interfaces.packTwo
+
+? free comment line
+public interface InterfaceTwo
+public interface TypedInterface1T<?>
+public interface TypedInterface2T<?,?>
+public interface TypedInterface3T<?,?,?>
+
+? comment Implementations
+class Implementations implements InterfaceOne InterfaceTwo
+
+
+namespace cargo.tests.autogen.abstractpack
+abstract class AbstractDefault
+    protected string code
+
+
+
+namespace cargo.tests.autogen.typed
+
+public class TypedClass<?,?>
+    private var interfaceProp InterfaceTwo
+
+public abstract class SingleTypedClass<?> extends TypedClass<?,InterfaceTwo> implements TypedInterface2T<?,InterfaceTwo>
+    private final var finalVar int
+
+public abstract class Abstract2Types extends TypedClass<PropsTestClass,InterfaceTwo>
+
+public class ExtendNoType extends SingleTypedClass<string>
+    private var prop string
+    private final var final2 double
+
+namespace cargo.tests.autogen.objects
+
+public class PropsTestClass
+    private final transient var xxx int 5
+    private final var id int
+    private var uid int
+    private var code string
+    private var someList list<string>
+    private final var somebool bool
+    protected var protStr string
+    public var pubStr string
+    private var privStrArr string[]
+    public var pubStrArr string[]
+    protected var potStrArr string[]
+    var defStrArr string[]
+
+
+namespace cargo.tests.autogen.enums
+
+public class Identifiable
+    private final var id int
+
+enum EnumTypeSample VAR1 VAR2 VAR3
+
+
+namespace cargo.tests.dtos
+
+dto SimpleDTOWithFinals
+     all_from ExtendNoType
+
+
+namespace cargo.tests.autogen.entities
+
+
+persistable public class TestPersistPrimitives alias tbl_tst_2 schema dh_loan
+    private var id int primary_key
+    private var uniqueCode string unique
+    private var notNullDate date notnull alias t_date
+    private var charType char alias char_t
+    private var strType string alias str_t
+    private var longType long alias long_t
+    private var intType int
+    private var date date
+    private var doubleType double
+    private var boolType bool
+    private var fileType file
+    private var blobType blob
+    private var tmstType timestamp
+    private var enumType EnumTypeSample
+
+
+
+!java:hibernate import javax.persistence.*;
+
+!java:hibernate @Entity
+!java:hibernate @Table(name = "table_name")
+!java:hibernate @SequenceGenerator(name = "sequenceGenerator", sequenceName = "loan_sequence", allocationSize = 1)
+? comment line 1
+? comment line 2
+
+persistable public class Persistable alias tbl_test_1 schema dh_loan extends Identifiable implements InterfaceOne InterfaceTwo
+    > id PRIMARY_KEY pkey_user_id COMMENT: primary key property
+
+    protected final var code string alias test_col_1
+
+    ? @Comment sample of hibernate property
+    !java:hibernate @Column(name = "code")
+    protected var email string alias test_col_2
+
+
+
+persistable iterable class PersistableIterable
+
+
+
+

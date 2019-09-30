@@ -1,0 +1,152 @@
+{{{header_html}}}
+
+
+
+        <div type="leftBlock" class="class" style="border: 1px solid black; overflow: scroll;">
+
+        </div>
+        <div type="rightBlock" style="background:red;">
+            <iframe type="vlc_controls" src="" style="width: 100%; height: 50%"></iframe>
+            <div type="currentFile" style="width: 100%; height: 50%">
+                <div type="fname"></div>
+                <div type="btn-area"></div>
+            </div>
+        </div>
+
+
+
+
+<script>
+    var device_json = {{{device_json}}};
+
+
+
+    console.log(device_json);
+
+
+function matchRuleShort(str, rule) {
+  return new RegExp("^" + rule.split("*").join(".*") + "$").test(str);
+}
+
+function getExt(str) {
+  var a = str.split('.');
+  if(a.length > 1){
+    return a[a.length -1];
+  }
+  return '';
+}
+
+    $(document).ready( function() {
+        console.log('loaded')
+		$('.class').fileTree({
+			root: device_json.roots[0].dir,
+			script: '/device/{{{deviceId}}}/list',
+			expandSpeed: 1000,
+			frontKey: '{{{front_end_key}}}',
+			deviceId: '{{{deviceId}}}',
+			collapseSpeed: 1000,
+			multiFolder: true
+		}, function(file) {
+		    document.getElementById('btn-area').innerHTML =  '';
+			for(var i  = 0; i < device_json.commands.length; i++){
+			    var command = device_json.commands[i];
+			    if(command.fileFilters){
+                    for(var j  = 0; j < command.fileFilters.length; j++){
+                        if( matchRuleShort (file, command.fileFilters[j]) ){
+                            console.log('match command' + file, command.alias);
+                            placeButtons(file, command);
+                        }
+                    }
+			    }
+			}
+		});
+	});
+
+
+
+    function placeButtons(f, c){
+        var t = '';
+        t+='<button onclick="exec(\''+ f.replace(/'/g, '\\\'') +'\', \'' + c.alias.replace(/'/g, '\\\'') + '\')">'+c.alias+'</button>';
+        document.getElementById('btn-area').innerHTML += t;
+    }
+
+
+
+
+
+	function exec(u, a){
+        quixot.Http.doGet('/device/{{{deviceId}}}/exec', {
+                    	    args: [u, '{{{local_ip}}}'],
+                    	    action: a,
+                    	    frontKey: '{{{front_end_key}}}'
+        }, function(A){
+           try {
+                eval(A);
+           } catch(e){
+                console.log(A);
+           }
+        });
+	}
+
+	function vlc_preview(protocol, port, pass){
+	    setTimeout(function(){
+            document.getElementById('vlc_controls').style.display='block';
+            document.getElementById('vlc_controls').src = protocol+'://{{{local_ip}}}:'+port+'?password=' + pass;
+	    }, 2000)
+	};
+
+
+    window.onresize = resizeUI;
+
+    function resizeUI(){
+
+        var w=window,
+        d=document,
+        e=d.documentElement,
+        g=d.getElementsByTagName('body')[0],
+        x=w.innerWidth||e.clientWidth||g.clientWidth,
+        y=w.innerHeight||e.clientHeight||g.clientHeight;
+
+
+        console.log(x, y);
+
+
+
+
+        if(x > y){
+         document.getElementById('leftBlock').style.display = 'inline-block';
+        document.getElementById('rightBlock').style.display = 'inline-block';
+            document.getElementById('leftBlock').style.width = (x / 2) - 20;
+            document.getElementById('leftBlock').style.height = y - 200;
+
+            document.getElementById('rightBlock').style.width = (x / 2) - 20;
+            document.getElementById('rightBlock').style.height = y - 200;
+
+            document.getElementById('rightBlock').style.display = 'inline-block';
+            document.getElementById('rightBlock').style.float = 'left';
+            document.getElementById('leftBlock').style.float = 'left';
+
+        } else {
+            document.getElementById('leftBlock').style.width = x;
+            document.getElementById('leftBlock').style.height = y / 2;
+
+            document.getElementById('rightBlock').style.width = x;
+            document.getElementById('rightBlock').style.height = y / 2;
+
+            document.getElementById('leftBlock').style.display = 'block';
+            document.getElementById('rightBlock').style.display = 'block';
+            document.getElementById('rightBlock').style.float = 'none';
+            document.getElementById('leftBlock').style.float = 'none';
+        }
+
+
+
+        console.log('resize')
+    }
+
+    resizeUI();
+
+</script>
+
+
+{{{footer_html}}}

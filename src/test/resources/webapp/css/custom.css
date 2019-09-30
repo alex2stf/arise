@@ -1,0 +1,31 @@
+.btn.btn-primary.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
+.appsetting.admin {
+    border: 1px solid grey;
+    padding: 2px;
+    margin: 2px;
+}
+
+.appsetting.admin .row{
+    margin-right: 0px!important;
+    margin-left: 0px!important;
+    display: inline-block!important;
+    min-height: 40px;
+    width: 33%;
+
+}
+
+.appsetting.admin .row label{
+    height: 40px;
+    width: 23%;
+}
+
+
+.appsetting.admin .row input,textarea{
+    height: 40px;
+    width: 75%;
+}
+
+

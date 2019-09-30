@@ -1,0 +1,5 @@
+java-home/bin/keytool -genkey -alias server-alias -keyalg RSA -keypass astox_password -storepass astox_password -keystore keystore.jks
+
+java-home/bin/keytool -export -alias server-alias -storepass astox_password -file server.cer -keystore keystore.jks
+
+keytool -import -v -trustcacerts -alias server-alias -file server.cer -keystore cacerts.jks -keypass astox_password -storepass astox_password

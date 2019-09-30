@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Liskov substitution principle - Wikipedia</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Liskov_substitution_principle","wgTitle":"Liskov substitution principle","wgCurRevisionId":804890505,"wgRevisionId":804890505,"wgArticleId":300568,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Articles needing additional references from September 2014","All articles needing additional references","Object-oriented programming","Type theory","Programming principles","Formal methods","Programming language semantics"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Liskov_substitution_principle","wgRelevantArticleId":300568,"wgRequestId":"Wd5sKQpAEKYAACBLd5gAAAAV","wgIsProbablyEditable":true,"wgRelevantPageIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{}},"wgStableRevisionId":null,"wgWikiEditorEnabledModules":{"toolbar":true,"preview":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":false,"wgPopupsShouldSendModuleToUser":false,"wgPopupsConflictsWithNavPopupGadget":false,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","pageVariantFallbacks":"en","usePageImages":true,"usePageDescriptions":true},"wgPreferredVariant":"en","wgMFExpandAllSectionsUserOption":false,"wgMFDisplayWikibaseDescriptions":{"search":true,"nearby":true,"watchlist":true,"tagline":false},"wgRelatedArticles":null,"wgRelatedArticlesUseCirrusSearch":true,"wgRelatedArticlesOnlyUseCirrusSearch":false,"wgULSCurrentAutonym":"English","wgNoticeProject":"wikipedia","wgCentralNoticeCookiesToDelete":[],"wgCentralNoticeCategoriesUsingLegacy":["Fundraising","fundraising"],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgWikibaseItemId":"Q957386","wgCentralAuthMobileDomain":false,"wgCodeMirrorEnabled":false,"wgVisualEditorToolbarScrollOffset":0,"wgVisualEditorUnsupportedEditParams":["undo","undoafter","veswitched"],"wgEditSubmitButtonLabelPublish":false});mw.loader.state({"ext.gadget.charinsert-styles":"ready","ext.globalCssJs.user.styles":"ready","ext.globalCssJs.site.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"ready","user.tokens":"loading","ext.math.styles":"ready","wikibase.client.init":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready","ext.globalCssJs.user":"ready","ext.globalCssJs.site":"ready"});mw.loader.implement("user.tokens@1dqfd7l",function ( $, jQuery, require, module ) {
+mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});/*@nomin*/
+
+});mw.loader.load(["ext.math.scripts","site","mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.toc","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.watchlist-notice","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","ext.gadget.extra-toolbar-buttons","ext.gadget.switcher","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging.subscriber","ext.wikimediaEvents","ext.navigationTiming","ext.uls.eventlogger","ext.uls.init","ext.uls.interface","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"]);});</script>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.math.styles%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
+<meta libName="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.charinsert-styles&amp;only=styles&amp;skin=vector"/>
+<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta libName="generator" content="MediaWiki 1.31.0-wmf.2"/>
+<meta libName="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Liskov_substitution_principle"/>
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit"/>
+<link rel="edit" title="Edit this page" href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://en.wikipedia.org/wiki/Liskov_substitution_principle"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+<!--[if lt IE 9]><script src="/resources/lib/html5shiv/html5shiv.min.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Liskov_substitution_principle rootpage-Liskov_substitution_principle vector-nav-directionality skin-vector action-view">		<div type="mw-page-base" class="noprint"></div>
+		<div type="mw-head-base" class="noprint"></div>
+		<div type="content" class="mw-body" role="main">
+			<a type="top"></a>
+
+							<div type="siteNotice" class="mw-body-content"><!-- CentralNotice --></div>
+						<div class="mw-indicators mw-body-content">
+</div>
+			<h1 type="firstHeading" class="firstHeading" lang="en">Liskov substitution principle</h1>
+									<div type="bodyContent" class="mw-body-content">
+									<div type="siteSub" class="noprint">From Wikipedia, the free encyclopedia</div>
+								<div type="contentSub"></div>
+												<div type="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-head">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div type="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><div role="note" class="hatnote navigation-not-searchable">"Substitutability" redirects here. For the economic principle, see <a href="/wiki/Substitute_good" title="Substitute good">Substitute good</a>.</div>
+<table class="plainlinks metadata ambox ambox-content ambox-Refimprove" role="presentation">
+<tr>
+<td class="mbox-image">
+<div style="width:52px"><a href="/wiki/File:Question_book-new.svg" class="image"><img alt="" src="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/50px-Question_book-new.svg.png" width="50" height="39" srcset="//upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/75px-Question_book-new.svg.png 1.5x, //upload.wikimedia.org/wikipedia/en/thumb/9/99/Question_book-new.svg/100px-Question_book-new.svg.png 2x" data-file-width="512" data-file-height="399" /></a></div>
+</td>
+<td class="mbox-text">
+<div class="mbox-text-span">This article <b>needs additional citations for <a href="/wiki/Wikipedia:Verifiability" title="Wikipedia:Verifiability">verification</a></b>. <span class="hide-when-compact">Please help <a class="external text" href="//en.wikipedia.org/w/index.php?title=Liskov_substitution_principle&amp;action=edit">improve this article</a> by <a href="/wiki/Help:Introduction_to_referencing_with_Wiki_Markup/1" title="Help:Introduction to referencing with Wiki Markup/1">adding citations to reliable sources</a>. Unsourced material may be challenged and removed.</span> <small><i>(September 2014)</i></small> <small class="hide-when-compact"><i>(<a href="/wiki/Help:Maintenance_template_removal" title="Help:Maintenance template removal">Learn how and when to remove this template message</a>)</i></small></div>
+</td>
+</tr>
+</table>
+<table class="vertical-navbox nowraplinks" style="float:right;clear:right;width:22.0em;margin:0 0 1.0em 1.0em;background:#f9f9f9;border:1px solid #aaa;padding:0.2em;border-spacing:0.4em 0;text-align:center;line-height:1.4em;font-size:88%">
+<tr>
+<th style="padding:0.2em 0.4em 0.2em;font-size:145%;line-height:1.2em"><a href="/wiki/SOLID_(object-oriented_design)" title="SOLID (object-oriented design)">SOLID</a></th>
+</tr>
+<tr>
+<th style="padding:0.1em">Principles</th>
+</tr>
+<tr>
+<td class="plainlist" style="padding:0 0.1em 0.4em">
+<ul>
+<li><a href="/wiki/Single_responsibility_principle" title="Single responsibility principle">Single Responsibility</a></li>
+<li><a href="/wiki/Open/closed_principle" title="Open/closed principle">Open/closed</a></li>
+<li><a class="mw-selflink selflink">Liskov substitution</a></li>
+<li><a href="/wiki/Interface_segregation_principle" title="Interface segregation principle">Interface segregation</a></li>
+<li><a href="/wiki/Dependency_inversion_principle" title="Dependency inversion principle">Dependency inversion</a></li>
+</ul>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-size:115%">
+<div class="plainlinks hlist navbar mini">
+<ul>
+<li class="nv-view"><a href="/wiki/Template:Solid_principles" title="Template:Solid principles"><abbr title="View this template">v</abbr></a></li>
+<li class="nv-talk"><a href="/w/index.php?title=Template_talk:Solid_principles&amp;action=edit&amp;redlink=1" class="new" title="Template talk:Solid principles (page does not exist)"><abbr title="Discuss this template">t</abbr></a></li>
+<li class="nv-edit"><a class="external text" href="//en.wikipedia.org/w/index.php?title=Template:Solid_principles&amp;action=edit"><abbr title="Edit this template">e</abbr></a></li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+<p><b>Substitutability</b> is a principle in <a href="/wiki/Object-oriented_programming" title="Object-oriented programming">object-oriented programming</a> stating that, in a <a href="/wiki/Computer_program" title="Computer program">computer program</a>, if S is a <a href="/wiki/Subtype" class="mw-redirect" title="Subtype">subtype</a> of T, then objects of <a href="/wiki/Datatype" class="mw-redirect" title="Datatype">type</a> T may be <i>replaced</i> with objects of type S (i.e. an object of type T may be <i>substituted</i> with any object of a subtype S) without altering any of the desirable properties of T (correctness, task performed, etc.). More formally, the <b>Liskov substitution principle</b> (<b>LSP</b>) is a particular definition of a <a href="/wiki/Subtyping" title="Subtyping">subtyping</a> relation, called <b>(strong) behavioral subtyping</b>, that was initially introduced by <a href="/wiki/Barbara_Liskov" title="Barbara Liskov">Barbara Liskov</a> in a 1987 conference <a href="/wiki/Keynote" title="Keynote">keynote</a> address titled <i>Data abstraction and hierarchy</i>. It is a <a href="/wiki/Formal_semantics_of_programming_languages" class="mw-redirect" title="Formal semantics of programming languages">semantic</a> rather than merely syntactic relation because it intends to guarantee semantic interoperability of <a href="/wiki/Data_type" title="Data type">types</a> in a hierarchy, <a href="/wiki/Object_(computer_science)" title="Object (computer science)">object types</a> in particular. Barbara Liskov and <a href="/wiki/Jeannette_Wing" title="Jeannette Wing">Jeannette Wing</a> formulated the principle succinctly in a 1994 paper as follows:</p>
+<blockquote>
+<p><i>Subtype Requirement</i>: Let <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>&#x03D5;<!-- ϕ --></mi>
+        <mo stretchy="false">(</mo>
+        <mi>x</mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \phi (x)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/546b660b2f3cfb5f34be7b3ed8371d54f5c74227" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:4.566ex; height:2.843ex;" alt="\phi (x)" /></span> be a property provable about objects <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>x</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle x}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/87f9e315fd7e2ba406057a97300593c4802b53e4" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.338ex; width:1.34ex; height:1.676ex;" alt="x" /></span> of type <span class="texhtml">T</span>. Then <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>&#x03D5;<!-- ϕ --></mi>
+        <mo stretchy="false">(</mo>
+        <mi>y</mi>
+        <mo stretchy="false">)</mo>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle \phi (y)}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/db7ffe2f7daf9bae8d3f2711b2fd67348aceb3dc" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.838ex; width:4.392ex; height:2.843ex;" alt="{\displaystyle \phi (y)}" /></span> should be true for objects <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>y</mi>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle y}</annotation>
+  </semantics>
+</math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/b8a6208ec717213d4317e666f1ae872e00620a0d" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -0.671ex; width:1.166ex; height:2.009ex;" alt="y" /></span> of type <span class="texhtml">S</span> where <span class="texhtml">S</span> is a subtype of <span class="texhtml">T</span>.</p>
+</blockquote>
+<p>In the same paper, Liskov and Wing detailed their notion of behavioral subtyping in an extension of <a href="/wiki/Hoare_logic" title="Hoare logic">Hoare logic</a>, which bears a certain resemblance to <a href="/wiki/Bertrand_Meyer" title="Bertrand Meyer">Bertrand Meyer</a>'s <a href="/wiki/Design_by_contract" title="Design by contract">design by contract</a> in that it considers the interaction of subtyping with <a href="/wiki/Precondition" title="Precondition">preconditions</a>, <a href="/wiki/Postcondition" title="Postcondition">postconditions</a> and <a href="/wiki/Invariant_(computer_science)" title="Invariant (computer science)">invariants</a>.</p>
+<p></p>
+<div type="toc" class="toc">
+<div class="toctitle">
+<h2>Contents</h2>
+</div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Principle"><span class="tocnumber">1</span> <span class="toctext">Principle</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Origins"><span class="tocnumber">2</span> <span class="toctext">Origins</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#See_also"><span class="tocnumber">3</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#References"><span class="tocnumber">4</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Bibliography"><span class="tocnumber">5</span> <span class="toctext">Bibliography</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#External_links"><span class="tocnumber">6</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" type="Principle">Principle</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=1" title="Edit section: Principle">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Liskov's notion of a behavioral subtype defines a notion of substitutability for objects; that is, if <i>S</i> is a subtype of <i>T</i>, then objects of type <i>T</i> in a program may be replaced with objects of type <i>S</i> without altering any of the desirable properties of that program (e.g. <a href="/wiki/Correctness_(computer_science)" title="Correctness (computer science)">correctness</a>).</p>
+<p>Behavioral subtyping is a stronger notion than typical <a href="/wiki/Subtyping_of_functions" class="mw-redirect" title="Subtyping of functions">subtyping of functions</a> defined in <a href="/wiki/Type_theory" title="Type theory">type theory</a>, which relies only on the <a href="/wiki/Covariance_and_contravariance_(computer_science)" title="Covariance and contravariance (computer science)">contravariance</a> of argument types and <a href="/wiki/Covariance_and_contravariance_(computer_science)" title="Covariance and contravariance (computer science)">covariance</a> of the return type. Behavioral subtyping is provably <a href="/wiki/Undecidable_problem" title="Undecidable problem">undecidable</a> in general: if <i>q</i> is the property "method for <i>x</i> <a href="/wiki/Halting_problem" title="Halting problem">always terminates</a>", then it is impossible for a program (e.g. a context) to verify that it holds true for some subtype <i>S</i> of <i>T</i>, even if <i>q</i> does hold for <i>T</i>. Nonetheless, the principle is useful in reasoning about the design of class hierarchies.</p>
+<p>Liskov's principle imposes some standard requirements on <a href="/wiki/Type_signature" title="Type signature">signatures</a> that have been adopted in newer object-oriented programming languages (usually at the level of classes rather than types; see <a href="/wiki/Subtype#Subtyping_schemes" class="mw-redirect" title="Subtype">nominal vs. structural subtyping</a> for the distinction):</p>
+<ul>
+<li><a href="/wiki/Covariance_and_contravariance_(computer_science)" title="Covariance and contravariance (computer science)">Contravariance</a> of method arguments in the subtype.</li>
+<li><a href="/wiki/Covariance_and_contravariance_(computer_science)" title="Covariance and contravariance (computer science)">Covariance</a> of return types in the subtype.</li>
+<li>No new exceptions should be thrown by methods of the subtype, except where those exceptions are themselves subtypes of exceptions thrown by the methods of the supertype.</li>
+</ul>
+<p>In addition to the signature requirements, the subtype must meet a number of behavioral conditions. These are detailed in a terminology resembling that of <a href="/wiki/Design_by_contract" title="Design by contract">design by contract</a> methodology, leading to some restrictions on how contracts can interact with <a href="/wiki/Inheritance_(computer_science)" class="mw-redirect" title="Inheritance (computer science)">inheritance</a>:</p>
+<ul>
+<li><a href="/wiki/Precondition" title="Precondition">Preconditions</a> cannot be strengthened in a subtype.</li>
+<li><a href="/wiki/Postcondition" title="Postcondition">Postconditions</a> cannot be weakened in a subtype.</li>
+<li><a href="/wiki/Invariant_(computer_science)" title="Invariant (computer science)">Invariants</a> of the supertype must be preserved in a subtype.</li>
+<li>History constraint (the "history rule"). Objects are regarded as being modifiable only through their methods (<a href="/wiki/Encapsulation_(computer_science)" class="mw-redirect" title="Encapsulation (computer science)">encapsulation</a>). Because subtypes may introduce methods that are not present in the supertype, the introduction of these methods may allow state changes in the subtype that are not permissible in the supertype. The history constraint prohibits this. It was the novel element introduced by Liskov and Wing. A violation of this constraint can be exemplified by defining a <i>mutable point</i> as a subtype of an <i>immutable point</i>. This is a violation of the history constraint, because in the history of the <i>immutable point</i>, the state is always the same after creation, so it cannot include the history of a <i>mutable point</i> in general. Fields added to the subtype may however be safely modified because they are not observable through the supertype methods. Thus, one can derive <i>a circle with fixed center but mutable radius</i> from <i>immutable point</i> without violating LSP.</li>
+</ul>
+<h2><span class="mw-headline" type="Origins">Origins</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=2" title="Edit section: Origins">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>The rules on pre- and postconditions are identical to those introduced by Bertrand Meyer in his 1988 book <i><a href="/wiki/Object-Oriented_Software_Construction" title="Object-Oriented Software Construction">Object-Oriented Software Construction</a></i>. Both Meyer, and later Pierre America, who was the first to use the term <i>behavioral subtyping</i>, gave <a href="/wiki/Proof-theoretic" class="mw-redirect" title="Proof-theoretic">proof-theoretic</a> definitions of some behavioral subtyping notions, but their definitions did not take into account <a href="/wiki/Aliasing_(computing)" title="Aliasing (computing)">aliasing</a> that may occur in programming languages that support references or pointers. Taking aliasing into account was the major improvement made by Liskov and Wing (1994), and a key ingredient is the history constraint. Under the definitions of Meyer and America, a MutablePoint would be a behavioral subtype of ImmutablePoint, whereas LSP forbids this.</p>
+<h2><span class="mw-headline" type="See_also">See also</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=3" title="Edit section: See also">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a href="/wiki/Composition_over_inheritance" title="Composition over inheritance">Composition over inheritance</a></li>
+<li><a href="/wiki/Program_refinement" class="mw-redirect" title="Program refinement">Program refinement</a></li>
+<li><a href="/wiki/Referential_transparency" title="Referential transparency">Referential transparency</a></li>
+<li><a href="/wiki/Subsumption_architecture" title="Subsumption architecture">Subsumption architecture</a></li>
+<li><a href="/wiki/Type_signature" title="Type signature">Type signature</a></li>
+<li><a href="/wiki/SOLID_(object-oriented_design)" title="SOLID (object-oriented design)">SOLID</a> – the "L" in "SOLID" stands for Liskov substitution principle</li>
+</ul>
+<h2><span class="mw-headline" type="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=4" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;"></div>
+<h2><span class="mw-headline" type="Bibliography">Bibliography</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=5" title="Edit section: Bibliography">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p><b>General references</b></p>
+<div class="refbegin" style="">
+<ul>
+<li><a href="/wiki/Gary_T._Leavens" title="Gary T. Leavens">Gary T. Leavens</a> and Krishna K. Dhara, <i>Concepts of Behavioral Subtyping and a Sketch of Their Extension to Component-Bases Systems</i> in Gary T. Leavens, Murali Sitaraman, (ed.) <i>Foundations of component-based systems</i>, Cambridge University Press, 2000 <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/0-521-77164-1" title="Special:BookSources/0-521-77164-1">0-521-77164-1</a>. This paper surveys various notions of behavioral subtyping, including Liskov and Wing's.</li>
+<li><cite class="citation conference"><a href="/wiki/Barbara_Liskov" title="Barbara Liskov">Liskov, B. H.</a>; <a href="/wiki/Jeannette_Wing" title="Jeannette Wing">Wing, J. M.</a> (November 1994). <i>A behavioral notion of subtyping</i>. <i><a href="/wiki/ACM_Transactions_on_Programming_Languages_and_Systems" title="ACM Transactions on Programming Languages and Systems">ACM Trans. Program. Lang. Syst.</a></i> <b>16</b> (6). pp.&#160;1811–1841. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F197320.197383">10.1145/197320.197383</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALiskov+substitution+principle&amp;rft.atitle=A+behavioral+notion+of+subtyping&amp;rft.au=Wing%2C+J.+M.&amp;rft.aufirst=B.+H.&amp;rft.aulast=Liskov&amp;rft.date=1994-11&amp;rft.genre=conference&amp;rft.issue=6&amp;rft.jtitle=ACM+Trans.+Program.+Lang.+Syst.&amp;rft.pages=1811-1841&amp;rft.volume=16&amp;rft_id=info%3Adoi%2F10.1145%2F197320.197383&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal" class="Z3988"><span style="display:none;">&#160;</span></span> An updated version appeared as CMU technical report: <cite class="citation web"><a href="/wiki/Barbara_Liskov" title="Barbara Liskov">Liskov, Barbara</a>; <a href="/wiki/Jeannette_Wing" title="Jeannette Wing">Wing, Jeannette</a> (July 1999). <a rel="nofollow" class="external text" href="http://reports-archive.adm.cs.cmu.edu/anon/1999/CMU-CS-99-156.ps">"Behavioral Subtyping Using Invariants and Constraints"</a> <span style="font-size:85%;">(<a href="/wiki/PostScript" title="PostScript">PS</a>)</span><span class="reference-accessdate">. Retrieved <span class="nowrap">2006-10-05</span></span>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALiskov+substitution+principle&amp;rft.au=Wing%2C+Jeannette&amp;rft.aufirst=Barbara&amp;rft.aulast=Liskov&amp;rft.btitle=Behavioral+Subtyping+Using+Invariants+and+Constraints&amp;rft.date=1999-07&amp;rft.genre=unknown&amp;rft_id=http%3A%2F%2Freports-archive.adm.cs.cmu.edu%2Fanon%2F1999%2FCMU-CS-99-156.ps&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&#160;</span></span> The formalization of the principle by its authors.</li>
+<li>Reinhold Plösch, <i>Contracts, scenarios and prototypes: an integrated approach to high quality software</i>, Springer, 2004, <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/3-540-43486-0" title="Special:BookSources/3-540-43486-0">3-540-43486-0</a>. Contains a gentler introduction to behavioral subtyping in its various forms in chapter 2.</li>
+<li><a href="/wiki/Robert_C._Martin" class="mw-redirect" title="Robert C. Martin">Robert C. Martin</a>, <a rel="nofollow" class="external text" href="https://web.archive.org/web/20151128004108/http://www.objectmentor.com/resources/articles/lsp.pdf">The Liskov Substitution Principle</a>, C++ Report, March 1996. An article popular in the object-oriented programming community that gives several examples of LSP violations.</li>
+<li>Kazimir Majorinc, Ellipse-Circle Dilemma and Inverse Inheritance, ITI 98, Proceedings of the 20th International Conference of Information Technology Interfaces, Pula, 1998, ISSN 1330-1012. This paper discusses LSP in the mentioned context.</li>
+</ul>
+</div>
+<p><b>Specific references</b></p>
+<div class="refbegin" style="">
+<ul>
+<li><cite class="citation journal"><a href="/wiki/Barbara_Liskov" title="Barbara Liskov">Liskov, B.</a> (May 1988). <a rel="nofollow" class="external text" href="http://dl.acm.org/ft_gateway.cfm?type=62141&amp;ftid=82843&amp;dwn=1&amp;CFID=601383556&amp;CFTOKEN=74895854">"Keynote address - data abstraction and hierarchy"</a>. <i>ACM SIGPLAN Notices</i>. <b>23</b> (5): 17–34. <a href="/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="//doi.org/10.1145%2F62139.62141">10.1145/62139.62141</a>.</cite><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALiskov+substitution+principle&amp;rft.atitle=Keynote+address+-+data+abstraction+and+hierarchy&amp;rft.aufirst=B.&amp;rft.aulast=Liskov&amp;rft.date=1988-05&amp;rft.genre=article&amp;rft.issue=5&amp;rft.jtitle=ACM+SIGPLAN+Notices&amp;rft.pages=17-34&amp;rft.volume=23&amp;rft_id=http%3A%2F%2Fdl.acm.org%2Fft_gateway.cfm%3Fid%3D62141%26ftid%3D82843%26dwn%3D1%26CFID%3D601383556%26CFTOKEN%3D74895854&amp;rft_id=info%3Adoi%2F10.1145%2F62139.62141&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal" class="Z3988"><span style="display:none;">&#160;</span></span> A keynote address in which Liskov first formulated the principle.</li>
+<li>Meyer B., <i><a href="/wiki/Object-oriented_Software_Construction" class="mw-redirect" title="Object-oriented Software Construction">Object-oriented Software Construction</a></i>, Prentice Hall, New York, 1988, <a href="/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&#160;<a href="/wiki/Special:BookSources/0-13-629031-0" title="Special:BookSources/0-13-629031-0">0-13-629031-0</a></li>
+</ul>
+</div>
+<h2><span class="mw-headline" type="External_links">External links</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit&amp;section=6" title="Edit section: External links">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://www.engr.mun.ca/~theo/Courses/sd/5895-downloads/sd-principles-3.ppt.pdf">The Liskov Substitution Principle</a>, T. S. Norvell, 2003.</li>
+</ul>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1227
+Cached time: 20171011190726
+Cache expiry: 1900800
+Dynamic content: false
+CPU time usage: 0.180 seconds
+Real time usage: 0.517 seconds
+Preprocessor visited node count: 1135/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 17248/2097152 bytes
+Template argument size: 1341/2097152 bytes
+Highest expansion depth: 15/40
+Expensive parser function count: 2/500
+Lua time usage: 0.073/10.000 seconds
+Lua memory usage: 2.76 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  332.132      1 -total
+ 29.43%   97.739      3 Template:ISBN
+ 20.00%   66.431      1 Template:Refimprove
+ 18.56%   61.638      1 Template:Cite_conference
+ 18.47%   61.351      1 Template:Ambox
+ 13.74%   45.629      3 Template:Catalog_lookup_link
+  9.64%   32.012      1 Template:Redirect
+  7.11%   23.630      1 Template:Reflist
+  6.08%   20.198      3 Template:Error-small
+  5.99%   19.907      9 Template:Yesno-no
+-->
+</div>
+<!-- Saved in parser cache with key enwiki:pcache:idhash:300568-0!canonical!math=5 and timestamp 20171011190749 and revision type 804890505
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://en.wikipedia.org/w/index.php?title=Liskov_substitution_principle&amp;oldid=804890505">https://en.wikipedia.org/w/index.php?title=Liskov_substitution_principle&amp;oldid=804890505</a>"					</div>
+				<div type="catlinks" class="catlinks" data-mw="interface"><div type="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="/wiki/Category:Object-oriented_programming" title="Category:Object-oriented programming">Object-oriented programming</a></li><li><a href="/wiki/Category:Type_theory" title="Category:Type theory">Type theory</a></li><li><a href="/wiki/Category:Programming_principles" title="Category:Programming principles">Programming principles</a></li><li><a href="/wiki/Category:Formal_methods" title="Category:Formal methods">Formal methods</a></li><li><a href="/wiki/Category:Programming_language_semantics" title="Category:Programming language semantics">Programming language semantics</a></li></ul></div><div type="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:Articles_needing_additional_references_from_September_2014" title="Category:Articles needing additional references from September 2014">Articles needing additional references from September 2014</a></li><li><a href="/wiki/Category:All_articles_needing_additional_references" title="Category:All articles needing additional references">All articles needing additional references</a></li></ul></div></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div type="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div type="mw-head">
+									<div type="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 type="p-personal-label">Personal tools</h3>
+						<ul>
+							<li type="pt-anonuserpage">Not logged in</li><li type="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li type="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li type="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=Liskov+substitution+principle" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li type="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=Liskov+substitution+principle" title="You're encouraged to log in; however, it's not mandatory. [o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div type="left-navigation">
+										<div type="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 type="p-namespaces-label">Namespaces</h3>
+						<ul>
+														<li type="ca-nstab-main" class="selected"><span><a href="/wiki/Liskov_substitution_principle" title="View the content page [c]" accesskey="c">Article</a></span></li>
+							<li type="ca-talk"><span><a href="/wiki/Talk:Liskov_substitution_principle" rel="discussion" title="Discussion about the content page [t]" accesskey="t">Talk</a></span></li>
+						</ul>
+					</div>
+										<div type="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 type="p-variants-label">
+							<span>Variants</span>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div type="right-navigation">
+										<div type="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 type="p-views-label">Views</h3>
+						<ul>
+														<li type="ca-view" class="collapsible selected"><span><a href="/wiki/Liskov_substitution_principle">Read</a></span></li>
+							<li type="ca-edit" class="collapsible"><span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=edit" title="Edit this page [e]" accesskey="e">Edit</a></span></li>
+							<li type="ca-history" class="collapsible"><span><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=history" title="Past revisions of this page [h]" accesskey="h">View history</a></span></li>
+						</ul>
+					</div>
+										<div type="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 type="p-cactions-label"><span>More</span></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div type="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" type="searchform">
+							<div type="simpleSearch">
+							<input type="search" libName="search" placeholder="Search Wikipedia" title="Search Wikipedia [f]" accesskey="f" type="searchInput"/><input type="hidden" value="Special:Search" libName="title"/><input type="submit" libName="fulltext" value="Search" title="Search Wikipedia for this text" type="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" libName="go" value="Go" title="Go to a page with this exact libName if it exists" type="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div type="mw-panel">
+				<div type="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" type='p-navigation' aria-labelledby='p-navigation-label'>
+			<h3 type='p-navigation-label'>Navigation</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li type="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li type="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li type="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li type="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li type="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li type="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-interaction' aria-labelledby='p-interaction-label'>
+			<h3 type='p-interaction-label'>Interaction</h3>
+
+			<div class="body">
+									<ul>
+						<li type="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li type="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li type="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li type="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li type="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-tb' aria-labelledby='p-tb-label'>
+			<h3 type='p-tb-label'>Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li type="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Liskov_substitution_principle" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li type="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Liskov_substitution_principle" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li type="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li type="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li type="t-permalink"><a href="/w/index.php?title=Liskov_substitution_principle&amp;oldid=804890505" title="Permanent link to this revision of the page">Permanent link</a></li><li type="t-info"><a href="/w/index.php?title=Liskov_substitution_principle&amp;action=info" title="More information about this page">Page information</a></li><li type="t-wikibase"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q957386" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li type="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Liskov_substitution_principle&amp;type=804890505" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
+			<h3 type='p-coll-print_export-label'>Print/export</h3>
+
+			<div class="body">
+									<ul>
+						<li type="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Liskov+substitution+principle">Create a book</a></li><li type="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:ElectronPdf&amp;page=Liskov+substitution+principle&amp;action=show-download-screen">Download as PDF</a></li><li type="t-print"><a href="/w/index.php?title=Liskov_substitution_principle&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" type='p-lang' aria-labelledby='p-lang-label'>
+			<h3 type='p-lang-label'>Languages</h3>
+
+			<div class="body">
+									<ul>
+						<li class="interlanguage-link interwiki-cs"><a href="https://cs.wikipedia.org/wiki/Liskovov%C3%A9_princip_zastoupen%C3%AD" title="Liskovové princip zastoupení – Czech" lang="cs" hreflang="cs" class="interlanguage-link-target">Čeština</a></li><li class="interlanguage-link interwiki-de"><a href="https://de.wikipedia.org/wiki/Liskovsches_Substitutionsprinzip" title="Liskovsches Substitutionsprinzip – German" lang="de" hreflang="de" class="interlanguage-link-target">Deutsch</a></li><li class="interlanguage-link interwiki-es"><a href="https://es.wikipedia.org/wiki/Principio_de_sustituci%C3%B3n_de_Liskov" title="Principio de sustitución de Liskov – Spanish" lang="es" hreflang="es" class="interlanguage-link-target">Español</a></li><li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/Principe_de_substitution_de_Liskov" title="Principe de substitution de Liskov – French" lang="fr" hreflang="fr" class="interlanguage-link-target">Français</a></li><li class="interlanguage-link interwiki-ko"><a href="https://ko.wikipedia.org/wiki/%EB%A6%AC%EC%8A%A4%EC%BD%94%ED%94%84_%EC%B9%98%ED%99%98_%EC%9B%90%EC%B9%99" title="리스코프 치환 원칙 – Korean" lang="ko" hreflang="ko" class="interlanguage-link-target">한국어</a></li><li class="interlanguage-link interwiki-it"><a href="https://it.wikipedia.org/wiki/Principio_di_sostituzione_di_Liskov" title="Principio di sostituzione di Liskov – Italian" lang="it" hreflang="it" class="interlanguage-link-target">Italiano</a></li><li class="interlanguage-link interwiki-nl"><a href="https://nl.wikipedia.org/wiki/Substitutieprincipe_van_Liskov" title="Substitutieprincipe van Liskov – Dutch" lang="nl" hreflang="nl" class="interlanguage-link-target">Nederlands</a></li><li class="interlanguage-link interwiki-ja"><a href="https://ja.wikipedia.org/wiki/%E3%83%AA%E3%82%B9%E3%82%B3%E3%83%95%E3%81%AE%E7%BD%AE%E6%8F%9B%E5%8E%9F%E5%89%87" title="リスコフの置換原則 – Japanese" lang="ja" hreflang="ja" class="interlanguage-link-target">日本語</a></li><li class="interlanguage-link interwiki-pl"><a href="https://pl.wikipedia.org/wiki/Zasada_podstawienia_Liskov" title="Zasada podstawienia Liskov – Polish" lang="pl" hreflang="pl" class="interlanguage-link-target">Polski</a></li><li class="interlanguage-link interwiki-pt"><a href="https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_substitui%C3%A7%C3%A3o_de_Liskov" title="Princípio da substituição de Liskov – Portuguese" lang="pt" hreflang="pt" class="interlanguage-link-target">Português</a></li><li class="interlanguage-link interwiki-ru"><a href="https://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%BF%D0%BE%D0%B4%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B8_%D0%91%D0%B0%D1%80%D0%B1%D0%B0%D1%80%D1%8B_%D0%9B%D0%B8%D1%81%D0%BA%D0%BE%D0%B2" title="Принцип подстановки Барбары Лисков – Russian" lang="ru" hreflang="ru" class="interlanguage-link-target">Русский</a></li><li class="interlanguage-link interwiki-uk"><a href="https://uk.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%BF%D1%96%D0%B4%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B8_%D0%9B%D1%96%D1%81%D0%BA%D0%BE%D0%B2" title="Принцип підстановки Лісков – Ukrainian" lang="uk" hreflang="uk" class="interlanguage-link-target">Українська</a></li><li class="interlanguage-link interwiki-zh"><a href="https://zh.wikipedia.org/wiki/%E9%87%8C%E6%B0%8F%E6%9B%BF%E6%8D%A2%E5%8E%9F%E5%88%99" title="里氏替换原则 – Chinese" lang="zh" hreflang="zh" class="interlanguage-link-target">中文</a></li>					</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q957386#sitelinks-wikipedia" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div type="footer" role="contentinfo">
+							<ul type="footer-info">
+											<li type="footer-info-lastmod"> This page was last edited on 11 October 2017, at 19:07.</li>
+											<li type="footer-info-copyright">Text is available under the <a rel="license" href="//en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="//creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="//wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="//wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="//www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul type="footer-places">
+											<li type="footer-places-privacy"><a href="https://wikimediafoundation.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
+											<li type="footer-places-about"><a href="/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li type="footer-places-disclaimer"><a href="/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li type="footer-places-contact"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li type="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li type="footer-places-cookiestatement"><a href="https://wikimediafoundation.org/wiki/Cookie_statement">Cookie statement</a></li>
+											<li type="footer-places-mobileview"><a href="//en.m.wikipedia.org/w/index.php?title=Liskov_substitution_principle&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul type="footer-icons" class="noprint">
+											<li type="footer-copyrightico">
+							<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>						</li>
+											<li type="footer-poweredbyico">
+							<a href="//www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.180","walltime":"0.517","ppvisitednodes":{"value":1135,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":17248,"limit":2097152},"templateargumentsize":{"value":1341,"limit":2097152},"expansiondepth":{"value":15,"limit":40},"expensivefunctioncount":{"value":2,"limit":500},"entityaccesscount":{"value":0,"limit":400},"timingprofile":["100.00%  332.132      1 -total"," 29.43%   97.739      3 Template:ISBN"," 20.00%   66.431      1 Template:Refimprove"," 18.56%   61.638      1 Template:Cite_conference"," 18.47%   61.351      1 Template:Ambox"," 13.74%   45.629      3 Template:Catalog_lookup_link","  9.64%   32.012      1 Template:Redirect","  7.11%   23.630      1 Template:Reflist","  6.08%   20.198      3 Template:Error-small","  5.99%   19.907      9 Template:Yesno-no"]},"scribunto":{"limitreport-timeusage":{"value":"0.073","limit":"10.000"},"limitreport-memusage":{"value":2896335,"limit":52428800}},"cachereport":{"origin":"mw1227","timestamp":"20171011190726","ttl":1900800,"transientcontent":false}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":69,"wgHostname":"mw1211"});});</script>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+# server_rootCA.csr.cnf
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+
+[dn]
+C=RO
+ST=Romania
+L=Bucharest
+O=astox
+OU=astox
+emailAddress=alex2stf@server.berlin
+CN = server.berlin
