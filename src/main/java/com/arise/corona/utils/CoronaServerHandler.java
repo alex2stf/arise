@@ -1,6 +1,8 @@
 package com.arise.corona.utils;
 
 
+import android.content.ContentProvider;
+
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
@@ -61,10 +63,19 @@ public class CoronaServerHandler extends HTTPServerHandler {
     return true;
   }
 
-  ContentInfoProvider contentInfoProvider = new ContentInfoProvider(new ContentInfoDecoder())
-          .addRoot(new File("/home"))
-          .addRoot(new File("/media/alex"))
-          .get();
+
+  public CoronaServerHandler setContentProvider(ContentInfoProvider contentProvider){
+    this.contentInfoProvider = contentProvider;
+    return this;
+  }
+
+  ContentInfoProvider contentInfoProvider;
+  /**
+   *  = new ContentInfoProvider(new ContentInfoDecoder())
+   *           .addRoot(new File("/home"))
+   *           .addRoot(new File("/media/alex"))
+   *           .get();
+   */
 
   Handler<HttpRequest> liveMjpegHandler;
   Handler<HttpRequest> liveJpegHandler;
