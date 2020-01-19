@@ -35,24 +35,43 @@ public class SYSUtils {
     public static String getDeviceName()
     {
         Map<String, String> env = System.getenv();
+        StringBuilder sb = new StringBuilder();
+
         if (env.containsKey("COMPUTERNAME")) {
-            return env.get("COMPUTERNAME");
+            sb.append(env.get("COMPUTERNAME"));
         }
-        else if (env.containsKey("HOSTNAME")) {
-            return env.get("HOSTNAME");
+        if (env.containsKey("HOSTNAME")) {
+            sb.append(env.get("HOSTNAME"));
         }
 
-        String name = null;
+        if (env.containsKey("USER")){
+            sb.append(env.get("USER"));
+        }
+
+        if (env.containsKey("DESKTOP_SESSION")){
+            sb.append(env.get("DESKTOP_SESSION"));
+        }
+
+        if (env.containsKey("XDG_SESSION_TYPE")){
+            sb.append(env.get("XDG_SESSION_TYPE"));
+        }
+
+        if (env.containsKey("XDG_SEAT")){
+            sb.append(env.get("XDG_SEAT"));
+        }
+
+        if (env.containsKey("USER")){
+            sb.append(env.get("USER"));
+        }
+
         if (ReflectUtil.classExists("android.os.Build")){
             Object model = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MODEL");
             Object manuf = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MANUFACTURER");
-            name = model != null ? String.valueOf(model) : "";
-            name += manuf != null ? " " + manuf : "";
+            sb.append(model != null ? String.valueOf(model) : "");
+            sb.append(manuf != null ? String.valueOf(manuf) : "");
         }
-        if (!StringUtil.hasContent(name)){
-            name = "Unknown device";
-        }
-        return name;
+
+        return sb.toString();
     }
 
 

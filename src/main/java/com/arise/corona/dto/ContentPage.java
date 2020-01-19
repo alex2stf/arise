@@ -26,12 +26,10 @@ public class ContentPage {
 
     @Override
     public String toString() {
-        return ContentInfo.serializeCollection(data);
-
-//                "{" +
-//                "\"i\":" + index +
-//                ", \"d\":" + ContentInfo.serializeCollection(data) +
-//                '}';
+        return "{" +
+                "\"i\":" + index +
+                ", \"d\":" + ContentInfo.serializeCollection(data) +
+                '}';
     }
 
     public ContentPage setData(List<ContentInfo> data) {

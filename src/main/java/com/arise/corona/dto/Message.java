@@ -101,6 +101,9 @@ public class Message {
                .replaceAll("ovies", "W")
                .replaceAll("usic", "R")
                .replaceAll("/", "7")
+               .replaceAll("mate", "M3")
+               .replaceAll("generic", "89")
+               .replaceAll("alex", "SAP")
                ;
     }
 

@@ -170,12 +170,25 @@ public class CoronaServerHandler extends HTTPServerHandler {
     }
 
     if (request.pathsStartsWith("media", "state", "save")){
-
+      String playlistId = request.getPathAt(3);
+      Integer position = request.getQueryParamInt("P");
+      String path = request.getQueryParam("X");
+      contentInfoProvider.saveState(path, position, playlistId);
+      return HttpResponse.json(deviceStat.toJson());
     }
 
+    if (request.pathsStartsWith("media", "next")){
+      return HttpResponse.json(contentInfoProvider.next().toString());
+    }
+    
     if (request.pathsStartsWith("media", "state", "get")){
-
+      return HttpResponse.json(contentInfoProvider.getCurrentState().toString());
     }
+
+
+
+
+
 
 
     if (request.pathsStartsWith("files", "open")){

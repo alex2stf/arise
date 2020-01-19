@@ -1,16 +1,13 @@
 package com.arise.corona.impl;
 
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.core.tools.models.FilterCriteria;
+import com.arise.corona.dto.CachedState;
 import com.arise.corona.dto.ContentInfo;
 import com.arise.corona.dto.ContentPage;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
@@ -198,5 +195,28 @@ public class ContentInfoProvider {
         contentPage.setData(Collections.unmodifiableList(info));
         contentPage.setIndex(rIndex + pageSize);
         return contentPage;
+    }
+
+    public final CachedState currentState = new CachedState();
+
+    public void saveState(String path, Integer position, String playlistId) {
+        String cnt =ContentInfo.encodePath(path) + "\n" + position + "\n" + playlistId;
+        File out = new File(FileUtil.findAppDir() + File.separator + "cache_state.aris");
+        FileUtil.writeStringToFile(out, cnt);
+    }
+
+    public  CachedState getCurrentState() {
+
+
+        throw new RuntimeException("TODO get currentState");
+//        ContentInfo contentInfo = decoder.decode(new File(path)).setPosition(position);
+//        currentState.setPlaylistId(playlistId).setCurrentInfo(contentInfo);
+//        persist(currentState);
+//        return currentState;
+    }
+
+
+    public ContentInfo next() {
+        throw new RuntimeException("TODO get next should be visible from everywhere");
     }
 }

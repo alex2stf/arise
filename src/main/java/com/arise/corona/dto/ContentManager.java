@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.arise.core.tools.CollectionUtil.smartIterate;
 import static com.arise.core.tools.StringUtil.jsonVal;
 
+
+@Deprecated
 public class ContentManager {
     Map<String, Playlist > map = new ConcurrentHashMap<>();
     Playlist currentPlaylist;

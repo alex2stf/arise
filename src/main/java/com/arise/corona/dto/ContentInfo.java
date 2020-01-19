@@ -237,15 +237,8 @@ public class ContentInfo implements Serializable {
 
 
         String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/").replaceAll("//", "/");
-        try {
-            String  pth = URLDecoder.decode(src, "UTF-8");
-            i.setPath(
-pth
-            );
-        } catch (UnsupportedEncodingException e) {
-e.printStackTrace();
-        }
 
+        i.setPath(decodePath(src));
         i.setArtist(MapUtil.getString(m, "F"));
         i.setComposer(MapUtil.getString(m, "X"));
         i.setTitle(MapUtil.getString(m, "T"));
@@ -282,12 +275,26 @@ e.printStackTrace();
 
 
         addVal(sb, "T", title);
-        try {
-            sb.append("\"P\":").append(URLEncoder.encode(path, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+            sb.append("\"P\":").append(jsonVal(encodePath(path)));
         sb.append("}");
         return sb.toString();
+    }
+
+    public static String decodePath(String s){
+        try {
+            return URLDecoder.decode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return s;
+        }
+    }
+
+    public static  String encodePath(String s){
+        String val;
+        try {
+            val = URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            val = s;
+        }
+        return val;
     }
 }
