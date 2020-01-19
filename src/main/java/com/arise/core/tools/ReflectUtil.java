@@ -2,9 +2,6 @@ package com.arise.core.tools;
 
 
 
-
-import static com.arise.core.tools.TypeUtil.isNull;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,10 +9,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.arise.core.tools.TypeUtil.isNull;
 
 
 
@@ -143,6 +142,8 @@ public class ReflectUtil {
         return getClassByName(classname).isAssignableFrom(object.getClass());
     }
 
+
+
     public static boolean classNameExtends(String className, Class clazz){
         java.lang.Class thatClass = getClassByName(className);
         if (thatClass != null){
@@ -257,6 +258,30 @@ public class ReflectUtil {
     }
 
 
+    public static Object getAnnotation(Method method, String name){
+        Class annotation = getClassByName(name);
+        if (annotation != null){
+            return method.getAnnotation(annotation);
+        }
+        return null;
+    }
+
+    public static Object getAnnotation(Parameter parameter, String name){
+        Class annotation = getClassByName(name);
+        if (annotation != null){
+            return parameter.getAnnotation(annotation);
+        }
+        return null;
+    }
+
+    public static Object getAnnotation(Class clazz, String name) {
+        Class annotation = getClassByName(name);
+        if (annotation != null){
+            return clazz.getAnnotation(annotation);
+        }
+        return null;
+    }
+
     public static boolean annotationsMatch(Annotation[] annotations, String [] names){
         for (Annotation a: annotations){
             for (String s: names){
@@ -286,6 +311,29 @@ public class ReflectUtil {
         }
         return getMethod(object.getClass(), object, methodName, parameterTypes);
     }
+
+    public static Object readStaticMember(Class clazz, String name) {
+        try {
+            Field f = clazz.getField(name);
+            return f.get(null);
+        } catch (NoSuchFieldException e) {
+            return null;
+        } catch (IllegalAccessException e) {
+            return null;
+        }
+    }
+
+    public static Integer getStaticIntProperty(Object o, String value) {
+        if (o != null){
+            try {
+                return o.getClass().getField(value).getInt(null);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
 
     public abstract static class IMethod<T>{
 
@@ -356,7 +404,26 @@ public class ReflectUtil {
             return callFor(String.class, args);
         }
 
+        public Object[] callForObjectList(Object ... args){
+           try {
+               return (Object[]) call(args);
+           }catch (Exception e){
+               return null;
+           }
+        }
+
+        public String[] callForStringList(Object ... args){
+            try {
+                return (String[]) call(args);
+            }catch (Exception e){
+                return null;
+            }
+        }
+
         public Object call(Object ... args){
+            if (method == null){
+                return null;
+            }
             try {
                 return method.invoke(instance, args);
             } catch (IllegalAccessException e) {
@@ -371,5 +438,12 @@ public class ReflectUtil {
             }
         }
 
+        public Integer callForInteger(Object ... args) {
+            try {
+                return (Integer) call(args);
+            }catch (Exception e){
+                return null;
+            }
+        }
     }
 }

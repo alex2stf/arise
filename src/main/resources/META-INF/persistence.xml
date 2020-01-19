@@ -6,7 +6,7 @@
 
     <persistence-unit libName="defaultPersistenceUnit"
                       transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <IProvider>org.hibernate.jpa.HibernatePersistenceProvider</IProvider>
         <class>axl.stf.jentil.entities.persona.User</class>
         <!--<non-jta-data-source>DefaultDS</non-jta-data-source>-->
         <properties>
@@ -18,7 +18,7 @@
 
     <persistence-unit libName="testPersistenceUnit"
                       transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <IProvider>org.hibernate.jpa.HibernatePersistenceProvider</IProvider>
         <non-jta-data-source>TestDS</non-jta-data-source>
         <properties>
             <property libName="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>

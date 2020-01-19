@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-
+JAVA_HOME="C:\Program Files (x86)\Java\jdk1.8.0_221"
 JAVA_BIN=java
-JAVA_CMP=javac
+JAVA_CMP="$JAVA_HOME\bin\javac"
 INIT_DIR=$(pwd)
 
 WORK_DIR=~/arise-local-workdir
@@ -10,29 +10,10 @@ EXPORT_DIR=~/arise-local/export
 
 
 export_full(){
-    echo "init project export in $EXPORT_DIR"
 
-    FULL_PACK="$EXPORT_DIR/full"
-
-
-    echo "export full at[ $FULL_PACK ]"
-    mkdir -p "$FULL_PACK/com"
-
-    cp -R $INIT_DIR/src/main/java/com/arise "$FULL_PACK/com"
+    "$JAVA_CMP" -d build/classes src/main/java/com/arise/**/*.java
 
 
-    cd $FULL_PACK
-
-    #remove android package and tests package
-    rm -rf com/arise/rapdroid
-    rm -rf com/arise/tests
-
-    mkdir -p "$FULL_PACK/classes"
-    "$JAVA_CMP" -d $FULL_PACK/classes $FULL_PACK/com/arise/**/*.java
-
-    echo "-----------------------------------"
-    echo "--- PROJECT IS COMPILABLE CLEAN ---"
-    echo "-----------------------------------"
 }
 
 export_cargo(){
@@ -101,4 +82,4 @@ echo "export and compile rapdroid at[ $DROID_PACK ]"
 }
 
 
-export_cargo
+export_full

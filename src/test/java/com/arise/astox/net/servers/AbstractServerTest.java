@@ -1,15 +1,15 @@
 package com.arise.astox.net.servers;
 
-import com.arise.astox.net.http.HttpRequestBuilder;
+import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.nio.NioSslPeer;
-import com.arise.astox.net.serviceHelpers.impl.DeviceStatusBuilder;
-import com.arise.core.models.DeviceStat;
+import com.arise.corona.dto.DeviceStat;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
-import java.security.SecureRandom;
+
 import javax.net.ssl.SSLContext;
+import java.security.SecureRandom;
 
 public abstract class AbstractServerTest {
 
@@ -45,22 +45,20 @@ public abstract class AbstractServerTest {
   public void initTest(){
    final AbstractServer server = serviceServer();
 
-    ThreadUtil.startThread(new Runnable() {
+    ThreadUtil.fireAndForget(new Runnable() {
       @Override
       public void run() {
         try {
           ServerTestHandler serverTestHandler = new ServerTestHandler(context);
 
-          DeviceStatusBuilder deviceStatusBuilder = new DeviceStatusBuilder();
-          DeviceStat stat = deviceStatusBuilder.getDeviceStat();
+
+          DeviceStat stat = new DeviceStat();
           stat
-              .setProp("friendIps", "http://localhost:8221,http://localhost:8221")
               .setBatteryLevel(45)
               .setBatteryScale(90)
               .scanIPV4();
 
-          serverTestHandler.addRoot("/handshake", deviceStatusBuilder)
-              .addRoot("/device-stat", deviceStatusBuilder);
+
 
           server
               .addRequestBuilder(new HttpRequestBuilder())
@@ -79,7 +77,7 @@ public abstract class AbstractServerTest {
   };
 
   public static void main(String[] args) {
-    System.out.println("HELLO WORL");
+
 
     new IOServerTest().initTest();
     new IOSecureServerTest().initTest();

@@ -1,6 +1,6 @@
 package com.arise.core.serializers;
 
-import com.arise.core.models.DeviceStat;
+import com.arise.corona.dto.DeviceStat;
 
 
 public class CoreSerializer {

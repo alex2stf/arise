@@ -1,20 +1,18 @@
 package com.arise.core.serializers.parser;
 
-import com.arise.core.models.DeviceStat;
-import com.arise.core.serializers.parser.Groot.Arr;
-import com.arise.core.serializers.parser.Groot.Obj;
+import com.arise.corona.dto.DeviceStat;
 import com.arise.core.serializers.parser.Groot.Syntax;
-import com.arise.core.tools.SYSUtils.OS;
+import com.arise.core.tools.Arr;
+import com.arise.core.tools.MapObj;
 import com.arise.core.tools.TypeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
 import javax.persistence.Transient;
+import java.util.List;
+import java.util.Map;
 
 public class GrootTest {
 
@@ -55,16 +53,16 @@ public class GrootTest {
 
   @Test
   public void jsonTest1(){
-    Obj obj = (Obj) Groot.decodeBytes("{}");
+    MapObj obj = (MapObj) Groot.decodeBytes("{}");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
-    obj = (Obj) Groot.decodeBytes("{ }");
+    obj = (MapObj) Groot.decodeBytes("{ }");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
 
-    obj = (Obj) Groot.decodeBytes(" { } ");
+    obj = (MapObj) Groot.decodeBytes(" { } ");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
@@ -177,18 +175,18 @@ public class GrootTest {
   @Test
   public void  testDeviceStat(){
     DeviceStat deviceStat = new DeviceStat();
-    deviceStat.setProp("one", "two");
     deviceStat.setBatteryLevel(23);
-
-    System.out.println(Groot.toJson(deviceStat));
-
   }
+
+
 
   class TestClass{
     String packageString;
 
     @JsonProperty(value = "property_name", required = true)
     String customNamed;
+
+    @JsonIgnore
     private String neverShowed;
 
 

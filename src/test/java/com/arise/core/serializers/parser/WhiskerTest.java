@@ -1,19 +1,25 @@
 package com.arise.core.serializers.parser;
 
-import static org.junit.Assert.*;
-
 import com.arise.core.serializers.parser.Whisker.Lambda;
 import com.arise.core.serializers.parser.Whisker.Token;
 import com.arise.core.serializers.parser.Whisker.TokenType;
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class WhiskerTest {
 
@@ -27,9 +33,9 @@ public class WhiskerTest {
     Whisker whisker = new Whisker();
     Token root = whisker.readNodes((input));
 
-    Assert.assertEquals(TokenType.TEXT, root.next.tokenType);
-    Assert.assertEquals(TokenType.PROP, root.next.next.tokenType);
-    Assert.assertEquals(TokenType.SECTION_START, root.next.next.next.next.tokenType);
+    assertEquals(TokenType.TEXT, root.next.tokenType);
+    assertEquals(TokenType.PROP, root.next.next.tokenType);
+    assertEquals(TokenType.SECTION_START, root.next.next.next.next.tokenType);
 
     Whisker.printNode(root);
   }
@@ -60,7 +66,7 @@ public class WhiskerTest {
 
     String out = new Whisker().compile(input, map);
 
-    Assert.assertEquals("property test: <<PROPERTY_VALUE>>\n"
+    assertEquals("property test: <<PROPERTY_VALUE>>\n"
         + "\n"
         + "{Student}:\n"
         + "Name: <<STUDENT_NAME>>, class: <<STUDENT_CLASS>> \n"
@@ -88,7 +94,7 @@ public class WhiskerTest {
 
     String out = new Whisker().compile(input, map);
 
-    Assert.assertEquals("students:\n"
+    assertEquals("students:\n"
         + "0) student_0 \n"
         + "1) student_1 \n"
         + "2) student_2 \n"
@@ -101,7 +107,7 @@ public class WhiskerTest {
     map.put("students", array);
     out = new Whisker().compile(input, map);
 
-    Assert.assertEquals("students:\n"
+    assertEquals("students:\n"
         + "0) student_0 \n"
         + "1) student_1 \n"
         + "2) student_2 \n"
@@ -127,7 +133,7 @@ public class WhiskerTest {
 
     String out = new Whisker().compile(input, manSample);
 
-    Assert.assertEquals("Hello Chris\n"
+    assertEquals("Hello Chris\n"
         + "You have just won 20 dollars!\n"
         + "Well, 6000 dollars, after taxes.", out);
     System.out.println(out);
@@ -156,7 +162,7 @@ public class WhiskerTest {
     });
 
     String out = whisker.compile(input, context);
-    Assert.assertEquals("Willy is awesome.", out);
+    assertEquals("Willy is awesome.", out);
 
   }
 
@@ -169,16 +175,16 @@ public class WhiskerTest {
     Whisker whisker = new Whisker();
 
     out = whisker.compile(input, context);
-    Assert.assertEquals("No repos :(", out);
+    assertEquals("No repos :(", out);
 
     context.put("repo", new HashSet<>());
     out = whisker.compile(input, context);
-    Assert.assertEquals("No repos :(", out);
+    assertEquals("No repos :(", out);
 
     context.put("repo", new String[]{"tst"});
 
     out = whisker.compile(input, context);
-    Assert.assertEquals("", out);
+    assertEquals("", out);
     System.out.println(out);
   }
 
@@ -197,7 +203,7 @@ public class WhiskerTest {
     String out;
     out = whisker.compile(input, context);
 
-    Assert.assertEquals("Init map:  map exists!!!\n"
+    assertEquals("Init map:  map exists!!!\n"
         + "unu=1, doi=2 start iteration:\n"
         + "Name: index: 0 key: name value:flow\n"
         + "Name: index: 1 key: unu value:1\n"
@@ -211,7 +217,7 @@ public class WhiskerTest {
     out = whisker.compile(input, context);
 
 
-    Assert.assertEquals("Iterating over a string: \n"
+    assertEquals("Iterating over a string: \n"
         + " h 0 h\n"
         + " e 1 e\n"
         + " l 2 l\n"
@@ -253,18 +259,61 @@ public class WhiskerTest {
 
     String out = new Whisker().compile(input, map);
 
-    Assert.assertEquals("test  test  test", out);
+    assertEquals("test  test  test", out);
+  }
 
-
-    System.out.println(out);
+  @Test
+  public void testGetters(){
+    String input = "abc{{#item}} {{scale}} {{/item}}def";
+    Map map = new HashMap();
+    map.put("item", new GXZ());
+    String out = new Whisker().compile(input, map);
+    assertEquals("abc 234xxt def", out);
   }
 
 
 
   @Test
-  public void testPartials(){
+  public void testStreams() throws IOException {
 
+    String input = "abc{{#item}} {{scale}} {{/item}}def";
+    Map map = new HashMap();
+    map.put("item", new GXZ());
+
+
+    InputStream targetStream = new ByteArrayInputStream(input.getBytes());
+    OutputStream outputStream = new ByteArrayOutputStream();
+    Writer writer = new OutputStreamWriter(outputStream);
+
+
+    new Whisker().compile(new InputStreamReader(targetStream), writer, new HashMap<>());
+
+    /**this should not be part of whisker, without writer#close nothing will be displayed**/
+    writer.close();
+    outputStream.close();
+    targetStream.close();
+    System.out.println(outputStream);
   }
+
+  @Test
+  public void testPartials() throws IOException {
+
+    Map map = new HashMap();
+    map.put("item", new GXZ());
+
+    String out = new Whisker().setTemplatesRoot("src/test/resources#_whisker_")
+            .setExtension(".htm")
+            .compile("test {{> partial}} ", map);
+    assertEquals("test SOME PARTIAL IN HERE  234xxt", out.trim());
+
+    out = new Whisker().setTemplatesRoot("src/test/resources#_whisker_")
+            .setExtension(".htm")
+            .compileTemplate("main", map);
+    assertEquals("MAIN 111 SOME PARTIAL IN HERE  234xxt  |", out);
+  }
+
+
+
 
   class ManSample {
     String name;
@@ -283,6 +332,12 @@ public class WhiskerTest {
     }
     public String getName() {
       return name;
+    }
+  }
+
+  class GXZ{
+    public String getScale(){
+      return "234xxt";
     }
   }
 

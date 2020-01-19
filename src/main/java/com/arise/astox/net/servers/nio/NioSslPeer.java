@@ -1,13 +1,22 @@
 package com.arise.astox.net.servers.nio;
 
 import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.ReadCompleteHandler;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
 
-
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +27,7 @@ import java.security.KeyStore;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.arise.astox.net.servers.nio.NIOChannelData.Type.*;
+import static com.arise.astox.net.servers.nio.NIOChannelData.Type.CLOSEABLE;
 
 /**
  * A class that represents an SSL/TLS peer, and can be extended to create a client or a server.
@@ -112,7 +121,8 @@ public abstract class NioSslPeer extends AbstractServer {
      * @return True if the connection handshake was successful or false if an error occurred.
      * @throws IOException - if an error occurs during read/write to the socket channel.
      */
-    protected static boolean doHandshake(SocketChannel socketChannel, SSLEngine engine, SelectionKey key, AbstractServer server) throws IOException {
+    protected static boolean doHandshake(SocketChannel socketChannel, SSLEngine engine,
+                                         final SelectionKey key, NIOServer server, final ReadCompleteHandler<ServerRequest> onHandshakeComplete) throws IOException {
 
 
 
@@ -136,9 +146,12 @@ public abstract class NioSslPeer extends AbstractServer {
         peerNetData.clear();
 
         handshakeStatus = engine.getHandshakeStatus();
+
         while (handshakeStatus != HandshakeStatus.FINISHED && handshakeStatus != HandshakeStatus.NOT_HANDSHAKING) {
             switch (handshakeStatus) {
             case NEED_UNWRAP:
+
+
                 if (socketChannel.read(peerNetData) < 0) {
                     if (engine.isInboundDone() && engine.isOutboundDone()) {
                         return false;
@@ -153,41 +166,46 @@ public abstract class NioSslPeer extends AbstractServer {
                     handshakeStatus = engine.getHandshakeStatus();
                     break;
                 }
+
+
                 peerNetData.flip();
+
                 try {
                     result = engine.unwrap(peerNetData, peerAppData);
                     peerNetData.compact();
                     handshakeStatus = result.getHandshakeStatus();
                 } catch (SSLException sslException) {
-                    sslException.printStackTrace();
-                    log.error("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly close connection...");
                     engine.closeOutbound();
                     handshakeStatus = engine.getHandshakeStatus();
+                    log.error("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly close connection... handshakeStatus = " + handshakeStatus);
                     break;
                 }
+
+
                 switch (result.getStatus()) {
-                case OK:
-                    break;
-                case BUFFER_OVERFLOW:
-                    // Will occur when peerAppData's capacity is smaller than the data derived from peerNetData's unwrap.
-                    peerAppData = enlargeApplicationBuffer(engine, peerAppData);
-                    break;
-                case BUFFER_UNDERFLOW:
-                    // Will occur either when no data was read from the peer or when the peerNetData buffer was too small to hold all peer's data.
-                    peerNetData = handleBufferUnderflow(engine, peerNetData);
-                    break;
-                case CLOSED:
-                    if (engine.isOutboundDone()) {
-                        return false;
-                    } else {
-                        engine.closeOutbound();
-                        handshakeStatus = engine.getHandshakeStatus();
+                    case OK:
                         break;
-                    }
-                default:
-                    throw new IllegalStateException("Invalid SSL status: " + result.getStatus());
+                    case BUFFER_OVERFLOW:
+                        // Will occur when peerAppData's capacity is smaller than the data derived from peerNetData's unwrap.
+                        peerAppData = enlargeApplicationBuffer(engine, peerAppData);
+                        break;
+                    case BUFFER_UNDERFLOW:
+                        // Will occur either when no data was read from the peer or when the peerNetData buffer was too small to hold all peer's data.
+                        peerNetData = handleBufferUnderflow(engine, peerNetData);
+                        break;
+                    case CLOSED:
+                        if (engine.isOutboundDone()) {
+                            return false;
+                        } else {
+                            engine.closeOutbound();
+                            handshakeStatus = engine.getHandshakeStatus();
+                            break;
+                        }
+                    default:
+                        throw new IllegalStateException("Invalid SSL status: " + result.getStatus());
                 }
-                break;
+            break; //exit NEED_UNWRAP
+
             case NEED_WRAP:
                 myNetData.clear();
                 try {
@@ -199,38 +217,40 @@ public abstract class NioSslPeer extends AbstractServer {
                     handshakeStatus = engine.getHandshakeStatus();
                     break;
                 }
+
                 switch (result.getStatus()) {
-                case OK :
-                    myNetData.flip();
-                    while (myNetData.hasRemaining()) {
-                        socketChannel.write(myNetData);
-                    }
-                    break;
-                case BUFFER_OVERFLOW:
-                    // Will occur if there is not enough space in myNetData buffer to write all the data that would be generated by the method wrap.
-                    // Since myNetData is set to session's packet size we should not get to this point because SSLEngine is supposed
-                    // to produce messages smaller or equal to that, but a general handling would be the following:
-                    myNetData = enlargePacketBuffer(engine, myNetData);
-                    break;
-                case BUFFER_UNDERFLOW:
-                    throw new SSLException("Buffer underflow occured after a wrap. I don't think we should ever get here.");
-                case CLOSED:
-                    try {
+                    case OK :
                         myNetData.flip();
                         while (myNetData.hasRemaining()) {
                             socketChannel.write(myNetData);
                         }
-                        // At this point the handshake status will probably be NEED_UNWRAP so we make sure that peerNetData is clear to read.
-                        peerNetData.clear();
-                    } catch (Exception e) {
-                        log.error("Failed to sendSync server's CLOSE message due to socket channel's failure.");
-                        handshakeStatus = engine.getHandshakeStatus();
+                        break;
+                    case BUFFER_OVERFLOW:
+                        // Will occur if there is not enough space in myNetData buffer to write all the data that would be generated by the method wrap.
+                        // Since myNetData is set to session's packet size we should not get to this point because SSLEngine is supposed
+                        // to produce messages smaller or equal to that, but a general handling would be the following:
+                        myNetData = enlargePacketBuffer(engine, myNetData);
+                        break;
+                    case BUFFER_UNDERFLOW:
+                        throw new SSLException("Buffer underflow occured after a wrap. I don't think we should ever get here.");
+                    case CLOSED:
+                        try {
+                            myNetData.flip();
+                            while (myNetData.hasRemaining()) {
+                                socketChannel.write(myNetData);
+                            }
+                            // At this point the handshake status will probably be NEED_UNWRAP so we make sure that peerNetData is clear to read.
+                            peerNetData.clear();
+                        } catch (Exception e) {
+                            log.error("Failed to sendSync server's CLOSE message due to socket channel's failure.");
+                            handshakeStatus = engine.getHandshakeStatus();
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid SSL status: " + result.getStatus());
                     }
-                    break;
-                default:
-                    throw new IllegalStateException("Invalid SSL status: " + result.getStatus());
-                }
-                break;
+            break; //exit NEED_WRAP
+
             case NEED_TASK:
                 Runnable task;
                 while ((task = engine.getDelegatedTask()) != null) {
@@ -249,10 +269,17 @@ public abstract class NioSslPeer extends AbstractServer {
         log.debug("handshake DONE for " + StringUtil.dump(socketChannel));
 
         if (key != null){
-            NIOChannelData channelData = new NIOChannelData(CLOSEABLE, engine);
-            ServerRequest request = server.extractAndValidate(peerAppData);
-            channelData.setRequest(request);
-            key.attach(channelData);
+            final NIOChannelData channelData = new NIOChannelData(CLOSEABLE, engine);
+            server.parseByteBuffer(peerAppData, new ReadCompleteHandler<ServerRequest>() {
+                @Override
+                public void onReadComplete(ServerRequest request) {
+                    channelData.setRequest(request);
+                    key.attach(channelData);
+                    onHandshakeComplete.onReadComplete(request);
+                }
+            });
+        } else {
+            onHandshakeComplete.onError();
         }
 
         return true;
@@ -319,16 +346,27 @@ public abstract class NioSslPeer extends AbstractServer {
      * @param engine - the engine used for encryption/decryption of the data exchanged between the two peers.
      * @throws IOException if an I/O error occurs to the socket channel.
      */
-    public static void closeConnection(SocketChannel socketChannel, SSLEngine engine, SelectionKey key, AbstractServer sslServer)  {
+    public static void closeConnection(final SocketChannel socketChannel, SSLEngine engine,
+                                       SelectionKey key, NIOServer sslServer)  {
         if (socketChannel == null || key == null || sslServer == null){
             return;
         }
         try {
             if (engine != null){
                 engine.closeOutbound();
-                doHandshake(socketChannel, engine, key, sslServer);
+                doHandshake(socketChannel, engine, key, sslServer, new ReadCompleteHandler<ServerRequest>() {
+                    @Override
+                    public void onReadComplete(ServerRequest data) {
+                        Util.close( socketChannel);
+                    }
+
+                    @Override
+                    public void onError() {
+                        Util.close( socketChannel);
+                    }
+                });
             }
-            socketChannel.close();
+
         } catch (IOException e){
            e.printStackTrace();
         }

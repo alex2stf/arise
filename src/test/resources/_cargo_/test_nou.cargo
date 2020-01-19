@@ -1,0 +1,31 @@
+#full test sample
+
+namespace cargo.tests.basic
+using java type Serializable java.io.Serializable
+using java type Collection java.util.Collection
+
+? my custom comment line to appear in TestInterface
+! my custom comment block to appear in TestInterface
+public interface TestInterface extends Serializable
+
+? my custom comment line to appear in TypedClass
+public class TypedClass<A,B> implements Serializable
+    private var typedVarA A
+    protected var typedVarB B
+    var status string
+    private var creationDate date
+    private var intVal int
+    public var pubLong long
+    public var strMap map<string,AnotherTypedClass>
+    var myChar char
+    private var  myBoolean bool
+    private var  myMap map<string,string>
+
+! my 1st custom comment block to appear in AnotherTypedClass
+! my 2nd custom comment block to appear in AnotherTypedClass
+! my 3rd custom comment block to appear in AnotherTypedClass
+public final class AnotherTypedClass<C,D> extends TypedClass<C,D> implements Serializable
+    private var status string
+    private var creationDate date
+    public var  hashSet set<C>
+    public var  dateSet set<Collection>

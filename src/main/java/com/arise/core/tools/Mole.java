@@ -2,9 +2,17 @@ package com.arise.core.tools;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
+import static com.arise.core.tools.ReflectUtil.classExists;
+import static com.arise.core.tools.StringUtil.dump;
+import static com.arise.core.tools.StringUtil.join;
+import static java.lang.Class.forName;
+import static java.lang.String.valueOf;
 
 
 /**
@@ -12,48 +20,39 @@ import java.util.logging.Level;
  */
 public class Mole {
 
+    private static Class<? extends Delegate> mainDelegate;
+    private static Set<Appender> appenders = new HashSet<>();
 
-
-    private static final Map<Class<? extends Delegate>, ValidityCondition> delegates = new ConcurrentHashMap<>();
 
     private static final String ANDROID_LOG1_CLASS = "android.util.Log";
     private static final String APACHE_LOG4J_CLASS = "org.apache.log4j.Logger";
 
-    public static <T extends Delegate> void registerDelegate(Class<T> tClass, ValidityCondition<T> condition){
-        if (!delegates.containsKey(tClass)){
-            delegates.put(tClass, condition);
+    private static <T extends Delegate> void setMainDelegate(Class<T> tClass){
+        mainDelegate = tClass;
+    }
+
+    public static void addAppender(Appender appender){
+        appenders.add(appender);
+    }
+
+    private synchronized static void searchDelegate(){
+        if (mainDelegate == null && ReflectUtil.classExists(ANDROID_LOG1_CLASS)){
+            setMainDelegate(AndroidLogDelegate.class);
+        }
+
+        else if (mainDelegate == null && ReflectUtil.classExists(APACHE_LOG4J_CLASS)){
+            setMainDelegate(Log4JDelegate.class);
+        }
+
+//        if (mainDelegate == null){
+//            setMainDelegate(JUtilDelegate.class);
+//        }
+
+        if (mainDelegate == null){
+            setMainDelegate(SysOutDelegate.class);
         }
     }
 
-    static {
-        registerDelegate(AndroidLogDelegate.class, new ValidityCondition<AndroidLogDelegate>() {
-            @Override
-            public boolean isValid(Class<AndroidLogDelegate> delegateClass) {
-                return ReflectUtil.classExists(ANDROID_LOG1_CLASS);
-            }
-        });
-
-        registerDelegate(Log4JDelegate.class, new ValidityCondition<Log4JDelegate>() {
-            @Override
-            public boolean isValid(Class<Log4JDelegate> delegateClass) {
-                return ReflectUtil.classExists(APACHE_LOG4J_CLASS);
-            }
-        });
-
-        registerDelegate(JUtilDelegate.class, new ValidityCondition<JUtilDelegate>() {
-            @Override
-            public boolean isValid(Class<JUtilDelegate> delegateClass) {
-                return false;
-            }
-        });
-
-        registerDelegate(SysOutDelegate.class, new ValidityCondition<SysOutDelegate>() {
-            @Override
-            public boolean isValid(Class<SysOutDelegate> delegateClass) {
-                return true;
-            }
-        });
-    }
 
 
 
@@ -73,62 +72,88 @@ public class Mole {
     }
 
     private Delegate delegate;
+    private String id;
 
     public Mole(String name){
-        scanDelegates(name);
-
+        searchDelegate();
+        try {
+            delegate = mainDelegate.getDeclaredConstructor(Object.class).newInstance(name);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        id = name;
     }
+
     public Mole(Class clazz){
-        scanDelegates(clazz);
+        searchDelegate();
+        try {
+            delegate = mainDelegate.getDeclaredConstructor(Object.class).newInstance(clazz);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        id = clazz.getName();
     }
 
 
-    private void scanDelegates(Object arg) {
-        for (Map.Entry<Class<? extends Delegate>, ValidityCondition> entry: delegates.entrySet()){
-            if (entry.getValue().isValid(entry.getKey())){
-                try {
-                    delegate = entry.getKey().getDeclaredConstructor(Object.class).newInstance(arg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    continue;
-                }
-//                System.out.println(String.valueOf(arg) + " Setup delegate " + entry.getKey());
-                break;
-            }
+
+    private void callAppenders(Bag bag, Object ... args){
+        for (Appender appender: appenders){
+            appender.append(
+                    id , bag,
+                    join(args, " ")
+            );
         }
     }
 
 
-
     public void log(Object ... args){
         delegate.log(args);
+        callAppenders(Bag.LOG, args);
     }
 
     public void trace(Object ... args) {
         delegate.trace(args);
+        callAppenders(Bag.TRACE, args);
     }
 
 
     public void debug(Object ... args) {
         delegate.debug(args);
+        callAppenders(Bag.DEBUG, args);
     }
 
 
     public void error(Object ... args) {
         delegate.error(args);
+        callAppenders(Bag.ERROR, args);
     }
 
 
     public void info(Object ... args) {
         delegate.info(args);
+        callAppenders(Bag.INFO, args);
     }
 
     public void warn(Object ... args) {
         delegate.warn(args);
+        callAppenders(Bag.WARN, args);
     }
 
     public void fatal(Object ... args) {
         delegate.fatal(args);
+        callAppenders(Bag.FATAL, args);
     }
 
     public boolean isTraceEnabled() {
@@ -168,14 +193,17 @@ public class Mole {
     }
 
 
-    private interface ValidityCondition<T extends Delegate>{
-        boolean isValid(Class<T> delegateClass);
+
+    public enum Bag {
+        LOG, WARN, ERROR, INFO, FATAL, TRACE, DEBUG;
     }
 
+    public interface Appender {
+        void append(String id, Bag bag, String text);
+    }
 
     public static abstract class Delegate{
         public Delegate(Object arg) throws Exception {
-
         }
         public abstract boolean error(Object ... args);
         public abstract boolean info(Object ... args);
@@ -195,7 +223,7 @@ public class Mole {
 
         public JUtilDelegate(Object arg) throws Exception {
             super(arg);
-            logger = java.util.logging.Logger.getLogger(String.valueOf(arg));
+            logger = java.util.logging.Logger.getLogger(valueOf(arg));
         }
 
 
@@ -205,15 +233,15 @@ public class Mole {
             }
             if (args.length == 1){
                 if (args[0] instanceof Throwable){
-                    logger.log(level, StringUtil.dump(args[0]));
+                    logger.log(level, dump(args[0]));
                 } else {
-                    logger.log(level, String.valueOf(args[0]));
+                    logger.log(level, valueOf(args[0]));
                 }
 
             } else if (args.length == 2 && args[1] instanceof Throwable){
-                logger.log(level, String.valueOf(args[0]), (Throwable) args[1]);
+                logger.log(level, valueOf(args[0]), (Throwable) args[1]);
             } else {
-                logger.log(level, StringUtil.joinFormat(args));
+                logger.log(level, join(args, ""));
             }
             return true;
 
@@ -283,9 +311,9 @@ public class Mole {
 
         public Log4JDelegate(Object arg) throws Exception {
             super(arg);
-            clzz =  Class.forName(clzName);
+            clzz = forName(clzName);
             if (clzz == null){
-                throw new RuntimeException("failed to init");
+                throw new RuntimeException("failed to refreshUI");
             }
             if (arg instanceof String){
                 log4J = clzz.getDeclaredMethod("getLogger", String.class).invoke(null, arg);
@@ -294,7 +322,7 @@ public class Mole {
             }
 
             if (log4J == null){
-                throw new RuntimeException("failed to init");
+                throw new RuntimeException("failed to refreshUI");
             }
         }
 
@@ -311,7 +339,7 @@ public class Mole {
                     clzz.getMethod(method, Object.class, Throwable.class).invoke(log4J, args[0], args[1]);
                 }
                 else {
-                    clzz.getMethod(method, Object.class).invoke(log4J, StringUtil.joinFormat(",", args));
+                    clzz.getMethod(method, Object.class).invoke(log4J, join(args, ","));
                 }
             }catch (Exception x){
                 return false;
@@ -388,7 +416,7 @@ public class Mole {
         if (arg instanceof Class){
             return  ((Class) arg).getSimpleName();
         } else {
-            return String.valueOf(arg);
+            return valueOf(arg);
         }
     }
 
@@ -402,7 +430,7 @@ public class Mole {
         }
 
         private boolean log(String level, Object ... args){
-            System.out.println( level + "| " + name + ": " + StringUtil.joinFormat(args));
+            System.out.println( level + "| " + name + ": " + join(args, " "));
             return true;
         }
 
@@ -477,17 +505,17 @@ public class Mole {
         private boolean log(String level, Object ... args){
             try {
                 if (args.length == 1) {
-                    Class.forName(ANDROID_LOG1_CLASS)
-                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, String.valueOf(args[0]));
+                    forName(ANDROID_LOG1_CLASS)
+                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, valueOf(args[0]));
                 }
                 else if (args.length == 2 && args[1] instanceof Throwable) {
-                    Class.forName(ANDROID_LOG1_CLASS)
+                    forName(ANDROID_LOG1_CLASS)
                             .getDeclaredMethod(level, String.class, String.class, Throwable.class)
-                            .invoke(null, tag, String.valueOf(args[0]), args[1]);
+                            .invoke(null, tag, valueOf(args[0]), args[1]);
                 }
                 else {
-                    Class.forName(ANDROID_LOG1_CLASS)
-                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, StringUtil.joinFormat(args));
+                    forName(ANDROID_LOG1_CLASS)
+                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, join(args, " "));
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -504,7 +532,7 @@ public class Mole {
 
         private boolean isLoggable(int level){
             try {
-                return (boolean) Class.forName(ANDROID_LOG1_CLASS)
+                return (boolean) forName(ANDROID_LOG1_CLASS)
                         .getDeclaredMethod("isLoggable").invoke(null, tag, level);
             } catch (Exception e) {
                 return false;
@@ -549,7 +577,6 @@ public class Mole {
         public boolean log(Object... args) {
             return log("i", args);
         }
-
 
         /**
          *     public static final int ASSERT = 7;

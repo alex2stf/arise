@@ -1,17 +1,22 @@
 package com.arise.core.tools;
 
-import java.security.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by alex on 19/10/2017.
@@ -367,14 +372,14 @@ public class StringEncoder {
     };
 
 
-    public static final List<String> getAlgorithmNames(Provider prov, Class<?> typeClass) {
+    public static final List<String> getAlgorithmNames(java.security.Provider prov, Class<?> typeClass) {
         List<String> r = new ArrayList<String>();
         String type = typeClass.getSimpleName();
 
-        List<Provider.Service> algos = new ArrayList<Provider.Service>();
+        List<java.security.Provider.Service> algos = new ArrayList<java.security.Provider.Service>();
 
-        Set<Provider.Service> services = prov.getServices();
-        for (Provider.Service service : services) {
+        Set<java.security.Provider.Service> services = prov.getServices();
+        for (java.security.Provider.Service service : services) {
             if (service.getType().equalsIgnoreCase(type)) {
                 algos.add(service);
             }
@@ -382,7 +387,7 @@ public class StringEncoder {
 
         if (!algos.isEmpty()) {
 //            System.out.printf(" --- Provider %s, version %.2f --- %n", prov.getLibName(), prov.getVersion());
-            for (Provider.Service service : algos) {
+            for (java.security.Provider.Service service : algos) {
                 String algo = service.getAlgorithm();
                 r.add(algo);
 //                System.out.printf("Algorithm name: \"%s\"%n", algo);
@@ -406,10 +411,10 @@ public class StringEncoder {
 
 
     public static final List<String> getAlgorithmNames(Class<?> typeClass){
-        Provider[] providers = Security.getProviders();
+        java.security.Provider[] providers = Security.getProviders();
         List<String> r = new ArrayList<String>();
-        for (Provider provider : providers) {
-            for (String s : getAlgorithmNames(provider, typeClass)){
+        for (java.security.Provider p : providers) {
+            for (String s : getAlgorithmNames(p, typeClass)){
                 r.add(s);
             }
         }
@@ -428,6 +433,18 @@ public class StringEncoder {
 
     public static String encode(String input, int index){
         return encode(input, String.valueOf(input.hashCode()), index);
+    }
+
+
+
+
+    public static String key(String input, int index){
+        String tmpst = itos(System.currentTimeMillis());
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "-" + String.valueOf(index) + "-");
+        String response = uuid + encode(input, String.valueOf(input.hashCode()), index);
+        response = response.replaceAll("-", String.valueOf(index * 2));
+        int mid = response.length() / 2;
+        return response.substring(0, mid) + tmpst + response.substring(mid);
     }
 
 

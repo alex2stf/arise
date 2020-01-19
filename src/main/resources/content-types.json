@@ -1,0 +1,27 @@
+[
+  {
+    "keys": [
+      "video/mp4",
+      "audio/wave",
+      "audio/wav",
+      "audio/x-wav"
+    ],
+    "processes": [
+      "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe",
+      "C:\\Program Files\\Windows Media Player\\wmplayer.exe"
+    ]
+  },
+  {
+    "keys": [
+      "text/plain",
+      "text/x-yaml",
+      "text/yaml",
+      "bat",
+      "html"
+    ],
+    "processes": [
+      "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",
+      "C:\\Windows\\System32\\notepad.exe"
+    ]
+  }
+]

@@ -1,9 +1,8 @@
 package com.arise.astox.net.serviceHelpers;
 
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
-
-import com.arise.astox.net.http.HttpRequest;
-import com.arise.astox.net.http.HttpResponse;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
@@ -25,13 +24,13 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
 
     @Override
     public void postInit(AbstractServer server) {
-        rootInfo = (server.getSslContext() != null ? "https://" : "http://") + server.getHost() + ":" + server.getPort() + "/";
+        rootInfo = server.getConnectionPath();
         log.info("SERVER STARTED AT " + rootInfo);
     }
 
     @Override
     public void onError(AbstractServer serviceServer, Throwable err) {
-        err.printStackTrace();
+//        System.out.println("");
     }
 
     public HTTPServerHandler addRoot(String route, ResponseBuilder responseBuilder) {
@@ -86,6 +85,7 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
     public void onDuplexClose(DuplexDraft.Connection c) {
         log.info("remove duplex " + c);
     }
+
 
     public void broadcast(String message) {
         for (DuplexDraft.Connection c : duplexConnections) {

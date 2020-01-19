@@ -1,11 +1,13 @@
 package com.arise.astox.net.models;
 
-import com.arise.core.tools.Util;
+import com.arise.astox.net.servers.nio.NIOServer;
 import com.arise.astox.net.servers.nio.NioSslPeer;
+import com.arise.core.tools.Util;
+
+import javax.net.ssl.SSLEngine;
 import java.net.Socket;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import javax.net.ssl.SSLEngine;
 
 /**
  * Wrapper class to solve duplex/long pooled communication issues. It can hold  {@link SocketChannel}
@@ -115,7 +117,9 @@ public class ConnectionSolver {
 
     public void closeStreamables() {
         Util.close(_socket);
-        NioSslPeer.closeConnection(_socketChannel, _sslEngine, _selectionKey, _abstractServer);
+        if (_abstractServer instanceof NIOServer){
+            NioSslPeer.closeConnection(_socketChannel, _sslEngine, _selectionKey, (NIOServer) _abstractServer);
+        }
     }
 
 }

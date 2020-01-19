@@ -1,26 +1,32 @@
 package com.arise.cargo;
 
-import static com.arise.core.tools.ListUtil.listContainsIgnorecase;
-import static com.arise.core.tools.StringUtil.removeLastChar;
 
-import com.arise.cargo.Plugin.Worker;
+import com.arise.cargo.model.AccessType;
+import com.arise.cargo.model.CGClass;
+import com.arise.cargo.model.CGType;
+import com.arise.cargo.model.CGVar;
+import com.arise.cargo.model.ClassFlavour;
+import com.arise.cargo.model.ParseUtil;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
-import com.arise.core.tools.ListUtil;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StreamUtil.LineIterator;
 import com.arise.core.tools.StringUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import static com.arise.core.tools.CollectionUtil.listContainsIgnorecase;
+import static com.arise.core.tools.StreamUtil.readLineByLine;
+import static com.arise.core.tools.StringUtil.removeLastChar;
 
 public class Cargo {
 
@@ -32,59 +38,24 @@ public class Cargo {
 
     String confPath;
     String[] currentNamespace = new String[]{};
-    ARIClazz currentClass;
 
-    ARIDto currentDto;
-
-    Map<String, ARIClazz> clazzez = new HashMap<>();
-    Set<ARINum> enums = new HashSet<>();
-    Set<ARIDto> dtos = new HashSet<>();
-    Set<Plugin> plugins = new HashSet<>();
     List<String> currentLines = new ArrayList<>();
     List<String> currentComments = new ArrayList<>();
 
-    Plugin.Worker currentWorker = null;
-
-    private Set<Context> contexts = new HashSet<>();
     private String[] rootNamespace;
 
-    public static String createClassId(String name, String[] namespaces){
-        if (namespaces == null || namespaces.length == 0){
-            return name;
-        }
-        return StringUtil.join(namespaces, ".") + "." + name;
+
+    private Set<Context> contextSet = new HashSet<>();
+
+    public Cargo addContext(Context context){
+        contextSet.add(context);
+        return this;
     }
 
-    static Comp calculateComp(String in, int lineNo){
-        Comp x = new Comp();
-        if (in.indexOf("<") > -1){
-            String[] p = in.split("<");
-            x.name = p[0].trim();
-            String rest = p[1];
-            if (rest.endsWith(">")){
-                rest  = removeLastChar(rest);
-            }
-            x.diamonds = rest.split(",");
 
-        } else {
-            x.name = in;
-        }
-        return x;
-    }
 
-    public Cargo addPlugin(Plugin plugin){
-      plugins.add(plugin);
-      return this;
-    }
 
-  public Plugin getPlugin(String id) {
-    for (Plugin p: plugins){
-      if (p.id().equalsIgnoreCase(id)){
-        return p;
-      }
-    }
-    return null;
-  }
+
 
     public Cargo readFromFile(String file) {
         return read(new File(file));
@@ -101,14 +72,14 @@ public class Cargo {
     }
 
     public Cargo read(InputStream inputStream) {
-        StreamUtil.readLineByLine(inputStream, new LineIterator() {
+        readLineByLine(inputStream, new LineIterator() {
             @Override
             public void onLine(int lineNo, String content) {
                 content = content.trim();
 
                 if(!content.isEmpty()  && !content.startsWith("#")) {
                     if (content.startsWith("!")){
-                        currentLines.add(content.substring(1));
+                        currentLines.add(content.substring(1).trim());
                     }
                     else if (content.startsWith("?")){
                         currentComments.add(content.substring(1).trim());
@@ -125,8 +96,6 @@ public class Cargo {
 
     private void digest(int lineNo, String[] queries) {
 
-
-
         if ("namespace".equalsIgnoreCase(queries[0])){
             System.out.println("    namespace " + queries[1]);
             currentNamespace = queries[1].split("\\.");
@@ -135,8 +104,6 @@ public class Cargo {
         else if ("root-namespace".equalsIgnoreCase(queries[0])){
             rootNamespace = queries[1].split("\\.");
         }
-
-
 
         else if ("enum".equalsIgnoreCase(queries[0])){
             pushEnum(queries, lineNo);
@@ -149,31 +116,15 @@ public class Cargo {
             setCurrentClass(queries, lineNo);
             currentLines = new ArrayList<>(); //clear existing currentLines after creating a class
             currentComments = new ArrayList<>(); //clear existing comments after creating a class
-            System.out.println("    class " + currentClass);
+
         }
 
-        else if (listContainsIgnorecase("using", queries) &&
-            listContainsIgnorecase("type", queries) &&
-            listContainsIgnorecase("java", queries) ){
+        else if (listContainsIgnorecase("using", queries) ){
             addType(queries, lineNo);
         }
 
         else if ("plugin".equalsIgnoreCase(queries[0])){
           System.out.println("required plugin " + queries[1]);
-          Plugin plugin = getPlugin(queries[1]);
-          if (plugin == null){
-              throw new LogicalException("Missing plugin " + queries[1], confPath, lineNo);
-          }
-
-          if (queries.length < 3){
-              throw new LogicalException("plugin <" + plugin.id() + "> requires at least one worker name ", confPath, lineNo);
-          }
-
-          currentWorker = plugin.getWorker(queries[2]);
-          if (currentWorker == null){
-              throw new LogicalException("Invalid worker " + queries[2] + " for " + plugin);
-          }
-          currentWorker.setNamespace(currentNamespace);
         }
 
         else if("->".equalsIgnoreCase(queries[0])){
@@ -181,7 +132,6 @@ public class Cargo {
           for (int i = 1; i < queries.length; i++){
             args[i-1] = queries[i];
           }
-          currentWorker.addInstructions(args);
         }
 
         else if ("dto".equalsIgnoreCase(queries[0])){
@@ -221,62 +171,47 @@ public class Cargo {
         String name = stringAfter("prop", queries, lineNo, true, confPath);
         String thatType = stringAfter("from", queries, lineNo, true, confPath);
         String thatName = stringAfter(thatType, queries, lineNo, true, confPath);
-        currentDto.addProp(name, thatName, thatType);
+
     }
 
     private void addDtoFull(String[] queries, int lineNo) {
         String name = stringAfter("all_from", queries, lineNo, true, confPath);
         String[] excepts = stringsAfter("except", queries);
-        currentDto.addFull(name, excepts);
+
     }
 
     private void setCurrentDto(String[] queries, int lineNo) {
         String name = stringAfter("dto", queries, lineNo, true, confPath);
 
 
-        currentDto = new ARIDto(name, currentNamespace);
-        currentDto.setLines(currentLines);
-        currentDto.setComments(currentComments);
-        addAttributes(currentDto, queries, lineNo);
-        dtos.add(currentDto);
-        currentComments.clear();
-        currentLines.clear();
+
+
 
     }
 
-    private void addAttributes(ARILined lined, String[] queries, int lineNo){
-        String[] attributes = stringsAfter("attributes:", queries);
-        lined.setAttributes(attributes);
-    }
+
 
     private void pushEnum(String[] queries, int lineNo) {
-        String name = queries[1];
-        String [] variants = new String[queries.length - 2];
-        for (int i = 2; i < variants.length + 2; i++){
-            variants[i - 2] = queries[i];
-        }
-
-        String[] attributes = stringsAfter("attributes:", queries);
-
-        ARINum ARINum = new ARINum(name, currentNamespace, variants);
-        ARINum.setLines(currentLines);
-        ARINum.setComments(currentComments);
-        ARINum.setAttributes(attributes);
-        enums.add(ARINum);
-
-        currentLines.clear();
-        currentComments.clear();
-
-        registerType(ARINum);
+        System.out.println("ENUM" + StringUtil.join(queries, ""));
 
     }
 
-    private void addProperty(String[] queries, int lineNo) {
+    private void addProperty(String[] queries, int lineNo){
+        for (Context context: contextSet){
+            addProperty(context.getCurrentClass(), queries, lineNo);
+        }
+    }
+
+    private void addProperty(CGClass currentClass, String[] queries, int lineNo) {
         String mxS = stringAfter("maxlength", queries);
         String mnS = stringAfter("minlength", queries);
         String name = stringAfter("var", queries, lineNo, true, confPath);
 
-        if (currentClass.hasPropertyName(name)){
+        if (!StringUtil.hasText(name)){
+            throw new SyntaxException("Property without name is not allowed" + currentClass.getName() + "]", confPath, lineNo);
+        }
+
+        if (currentClass.hasProperty(name)){
             throw new SyntaxException("Property [" + name + "] already exists for class [" + currentClass.getName() + "]", confPath, lineNo);
         }
 
@@ -287,6 +222,11 @@ public class Cargo {
             typeName = removeLastChar(removeLastChar(typeName));
         }
 
+
+
+
+
+
         String alias = stringAfter("alias", queries);
         boolean noGet = listContainsIgnorecase("noget", queries);
         boolean noSet =  listContainsIgnorecase("noset", queries);
@@ -294,8 +234,6 @@ public class Cargo {
         boolean isFinal = listContainsIgnorecase("final", queries);
         boolean isStatic = listContainsIgnorecase("static", queries);
         boolean isTranzient  = listContainsIgnorecase("transient", queries);
-
-
         boolean pKey = listContainsIgnorecase("primaryKey", queries);
         boolean unique = listContainsIgnorecase("unique", queries);
         String fetchType = stringAfter("fetch", queries);
@@ -303,41 +241,34 @@ public class Cargo {
         Integer maxLength  = StringUtil.toInt(mxS);
         Integer minLength = StringUtil.toInt(mnS);
         String defaultVal = stringAfter("default", queries);
-
-
-
         boolean nullable = true;
-
         if (listContainsIgnorecase("notnull", queries)){
             nullable = false;
         }
+        ParseUtil.Composition composition = ParseUtil.parse(typeName);
+        CGVar cgVar = new CGVar()
+                .setArray(isArray)
+                .setAlias(alias)
+                .setAllowGetter(!noGet)
+                .setAllowSetter(!noSet)
+                .setAccessType(accessType)
+                .setFinal(isFinal)
+                .setStatic(isStatic)
+                .setTranzient(isTranzient)
+                .setPrimaryKey(pKey)
+                .setUnique(unique)
+                .setFetchType(fetchType)
+                .setMaxlength(maxLength)
+                .setMinlength(minLength)
+                .setDefaultValue(defaultVal)
+                .setName(name)
+                .setType(composition.getName())
+                .setTypedParameters(composition.getTypedParameters())
+                .setNullable(nullable)
+                .setCommentLines(currentLines)
+                .setCommentBlocks(currentComments);
 
-        ARIProp prop = new ARIProp.Builder(currentClass, name)
-            .setTypeName(typeName)
-            .setIsArray(isArray)
-            .setAlias(alias)
-            .setNoGet(noGet)
-            .setNoSet(noSet)
-            .setAccessType(accessType).setIsFinal(isFinal)
-            .setIsStatic(isStatic)
-            .setIsTranzient(isTranzient)
-            .setIsPrimaryKey(pKey)
-            .setUnique(unique)
-            .setFetchType(fetchType)
-            .setMaxLength(maxLength)
-            .setMinLength(minLength)
-            .setDefaultValue(defaultVal)
-            .setNullable(nullable)
-            .setVolatile(listContainsIgnorecase("volatile", queries))
-            .build();
-
-        prop.setComments(currentComments);
-        prop.setLines(currentLines);
-        addAttributes(prop, queries, lineNo);
-
-
-
-        currentClass.addProperty(prop);
+        currentClass.addProperty(cgVar);
 
         currentLines.clear();
         currentComments.clear();
@@ -345,39 +276,30 @@ public class Cargo {
 
     private void addType(String[] queries, int lineNo) {
         String compilerName = queries[1].trim();
-        String typeName = stringAfter("type", queries, lineNo, true, confPath);
+        boolean iterable = "iterable".equalsIgnoreCase(queries[2]);
+        String typeName = stringAfter("type", queries, lineNo, true, confPath); //Map<?,?>
         String requirement = stringAfter("require", queries);
 
+        for (Context c: contextSet){
+            if (c.getId().equals(compilerName)){
+                ParseUtil.Composition composition = ParseUtil.parse(queries[queries.length -1]);
 
-
-        Context context = getCompilerById(compilerName);
-        boolean iterable = listContainsIgnorecase("iterable", queries);
-        String fullName[] = stringsAfter(typeName, queries);
-
-        if (fullName == null || fullName.length == 0){
-            throw new SyntaxException("Cannot register type " + typeName + " without a fullName");
-        }
-
-        if (context != null){
-            context.registerType(typeName, StringUtil.join(fullName, " "), iterable, requirement);
-        } else {
-            for (Context c: contexts){
-                c.registerType(typeName, StringUtil.join(fullName, " "), iterable, requirement);
+                CGType cgType = new CGType().setName(typeName)
+                        .setRequirement(requirement)
+                        .setIterable(iterable)
+                        .setNativeIdentifier(composition.getName())
+                        .setTypedParameters(composition.getTypedParameters());
+                c.registerType(cgType);
             }
         }
+
+
     }
 
-    Context getCompilerById(String id){
-        for (Context c: contexts){
-            if (id.equalsIgnoreCase(c.getId())){
-                return c;
-            }
-        }
-        return null;
-    }
+
 
     private void setCurrentClass(String[] queries, int lineNo) {
-        ClazzMode clazzMode = ClazzMode.STANDARD;
+        ClassFlavour classFlavour = ClassFlavour.CLAZZ;
         boolean persistable = listContainsIgnorecase("persistable", queries);
         boolean embeddable = listContainsIgnorecase("embeddable", queries);
         boolean isFinal = listContainsIgnorecase("final", queries);
@@ -387,7 +309,7 @@ public class Cargo {
 
         if (fullname == null){
             fullname = stringAfter("interface", queries, lineNo, true, confPath);
-            clazzMode = ClazzMode.INTERFACE;
+            classFlavour = ClassFlavour.INTERFACE;
             isAbstract = true;
         }
 
@@ -399,35 +321,51 @@ public class Cargo {
 
         String schema =  stringAfter("schema", queries);
 
-        Comp c = calculateComp(fullname, lineNo);
-
 
         if (listContainsIgnorecase("abstract", queries)){
-            clazzMode = ClazzMode.ABSTRACT;
+            classFlavour = ClassFlavour.ABSTRACT;
+            isAbstract = true;
         }
 
         AccessType accessType = getAccessType(queries, lineNo);
         String[] extendName = stringBetween("extends", queries, "implements");
         String[] implementsNames = stringsAfter("implements", queries);
 
-        currentClass = new ARIClazz(c.name, currentNamespace, persistable, embeddable, clazzMode, isFinal, isAbstract, accessType, extendName,
-            implementsNames, tableName, schema, iterable, c.diamonds);
-        addAttributes(currentClass, queries, lineNo);
-        currentClass.setLines(currentLines);
-        currentClass.setComments(currentComments);
+        ParseUtil.Composition composition = ParseUtil.parse(fullname);
 
-        clazzez.put(currentClass.getId(), currentClass);
 
-        registerType(currentClass);
+
+
+
+        for (Context context: contextSet){
+
+            CGClass currentClass = new CGClass()
+                    .setAbstract(isAbstract)
+                    .setAccessType(accessType)
+                    .setEmbeddable(embeddable)
+                    .setExtend(extendName)
+                    .setImplement(implementsNames)
+                    .setPersistable(persistable)
+                    .setIterable(iterable)
+                    .setName(composition.getName())
+                    .setTable(tableName)
+                    .setSchema(schema)
+                    .setFinal(isFinal)
+                    .setFlavour(classFlavour)
+                    .setNamespace(currentNamespace)
+                    .setCommentLines(currentComments)
+                    .setCommentBlocks(currentLines)
+                    .setTypedParameters(composition.getTypedParameters());
+
+            context.setCurrentClass(currentClass);
+
+        }
+
+
         currentLines.clear();
         currentComments.clear();
      }
 
-     private void registerType(ARIType t){
-        for (Context c: contexts){
-            c.registerType(t);
-        }
-     }
 
      private String[] stringBetween( String start, String[] args, String end){
          boolean allow = false;
@@ -446,7 +384,7 @@ public class Cargo {
              }
 
          }
-         return ListUtil.toArray(s);
+         return CollectionUtil.toArray(s);
 
      }
 
@@ -462,7 +400,7 @@ public class Cargo {
                 accept = true;
             }
         }
-        return ListUtil.toArray(r);
+        return CollectionUtil.toArray(r);
     }
 
     private AccessType getAccessType(String[] queries, int lineNo) {
@@ -494,35 +432,13 @@ public class Cargo {
         return null;
     }
 
-    public Cargo compile() {
-
-        for (Context context : contexts){
-            context
-                .setRootNamespace(rootNamespace)
-                .setClasses(clazzez)
-                .setDtos(dtos)
-                .setEnums(enums)
-                .setPlugins(plugins)
-                .validateDataTypes()
-                .compile();
-        }
 
 
-        return this;
-    }
-
-    public Cargo addContext(Context context) {
-        this.contexts.add(context);
-        return this;
-    }
 
     public Cargo loadBasicTypes() {
         this.read(StreamUtil.readResource("_cargo_/basic_types.cargo"));
         return this;
     }
 
-    static class Comp {
-        public String name;
-        public String[] diamonds;
-    }
+
 }

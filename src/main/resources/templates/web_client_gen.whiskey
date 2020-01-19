@@ -1,0 +1,14 @@
+    this.{{name}} = function({{#argumentsLine}}{{argumentsLine}}, {{/argumentsLine}}_K, _X){
+        var _M = '{{httpMehod}}',
+        _U = '{{classRootUri}}{{path}}',
+        _P = { {{pathObject}}},
+        _L = [{{pathLine}}],
+        _H = { {{headerObject}}},
+        _Q = { {{queryLine}}}
+        _B = [{{bodiesLine}}];
+        {{#acceptLine}}
+        _H['Accept'] = '{{acceptLine}}';
+        {{/acceptLine}}
+        {{#consumesLine}}_H['Content-Type'] = '{{consumesLine}}';{{/consumesLine}}
+        return {{nextCall}}({{rootVar}}, _M, _U, _P, _L, _H, _Q, _B, _K, _X);
+    };

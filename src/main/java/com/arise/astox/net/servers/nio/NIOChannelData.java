@@ -6,7 +6,6 @@ import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 
 import javax.net.ssl.SSLEngine;
-
 import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

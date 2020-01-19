@@ -1,11 +1,14 @@
 package com.arise.astox.net.models;
 
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 public abstract class AbstractPeer {
     protected String name = "service-server";
@@ -55,6 +58,17 @@ public abstract class AbstractPeer {
         return this;
     }
 
+    public AbstractPeer readUri(String input){
+        try {
+            URI uri = new URI(input);
+            this.setHost(uri.getHost());
+            this.setPort(uri.getPort());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
     public Integer getPort() {
         return port;
     }
@@ -80,5 +94,14 @@ public abstract class AbstractPeer {
     public AbstractPeer setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
         return this;
+    }
+
+
+    protected String getConnectionProtocol(){
+        return "http";
+    }
+
+    public String getConnectionPath() {
+        return (getSslContext() != null ? getConnectionProtocol() + "s" : getConnectionProtocol()) + "://" + (getHost() != null ? getHost() : "localhost") + ":" + getPort() + "/";
     }
 }

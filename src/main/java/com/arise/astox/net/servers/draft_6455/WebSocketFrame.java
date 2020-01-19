@@ -16,12 +16,12 @@
 package com.arise.astox.net.servers.draft_6455;
 
 
-
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.core.tools.ByteUtil;
-//import com.neovisionaries.ws.client.PerMessageCompressionExtension;
-//import com.arise.astox.net.servers.draft_6455.WebSocketCloseCode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.BINARY;
 import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.CLOSE;
@@ -29,9 +29,9 @@ import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.CONTINUATIO
 import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.PING;
 import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.PONG;
 import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.TEXT;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+//import com.neovisionaries.ws.client.PerMessageCompressionExtension;
+//import com.arise.astox.net.servers.draft_6455.WebSocketCloseCode;
 
 
 /**

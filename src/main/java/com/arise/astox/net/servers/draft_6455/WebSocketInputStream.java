@@ -16,10 +16,8 @@
 package com.arise.astox.net.servers.draft_6455;
 
 
-import com.arise.astox.net.exceptions.InsufficientDataException;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.core.tools.StringUtil;
-
 
 import java.io.FilterInputStream;
 import java.io.IOException;

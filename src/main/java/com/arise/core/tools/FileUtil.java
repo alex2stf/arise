@@ -1,12 +1,31 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.StringUtil.JoinIterator;
-import java.io.*;
+import com.arise.core.serializers.parser.Groot;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
+
+import static com.arise.core.tools.CollectionUtil.*;
 
 public class FileUtil {
 
@@ -119,6 +138,10 @@ public class FileUtil {
                     "getDataDirectory")
                     .callFor(File.class);
 
+        }
+        if (result == null){
+            result = new File("application_directory");
+            result.mkdir();
         }
 
         return result;
@@ -298,12 +321,23 @@ public class FileUtil {
         return true;
     }
 
+
+   
     static File [] listFiles(File directory){
+        return listFiles(directory, null);
+    }
+
+    static File [] listFiles(File directory, FilenameFilter filenameFilter){
         if(!fileExists(directory)){
             return new File[]{};
         }
 
-        File[] files = directory.listFiles();
+        File[] files;
+        if (filenameFilter != null){
+            files = directory.listFiles(filenameFilter);
+        } else {
+            files = directory.listFiles();
+        }
         if (files == null){
             log.debug("no files found inside " + directory.getAbsolutePath() );
             return new File[]{};
@@ -313,12 +347,15 @@ public class FileUtil {
     }
 
     public static void recursiveScan(File directory, FileFoundHandler fileFoundHandler){
+        recursiveScan(null, directory, fileFoundHandler);
+    }
+    public static void recursiveScan(FilenameFilter filenameFilter, File directory, FileFoundHandler fileFoundHandler){
         if (!fileExists(directory)){
             return;
         }
 
 
-        File[] files = listFiles(directory);
+        File[] files = listFiles(directory, filenameFilter);
 
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()){
@@ -483,10 +520,19 @@ public class FileUtil {
         return new File(path + File.separator + location.alias() + "_"+ timeStamp + "." + contentType.mainExtension());
     }
 
+
+
     public abstract static class FileFoundHandler {
         public abstract void foundFile(File file);
         public void foundDir(File file){};
     }
+
+
+
+
+
+
+
 
 
 

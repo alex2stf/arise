@@ -1,0 +1,1 @@
+<button class="btn btn-primary center-block" onclick="{{action}}">{{btn_text}}</button>

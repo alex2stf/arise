@@ -2,8 +2,7 @@ package com.arise.astox.net.servers;
 
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
-import java.io.IOException;
-import java.util.Vector;
+
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.DeviceClass;
 import javax.bluetooth.DiscoveryAgent;
@@ -12,13 +11,15 @@ import javax.bluetooth.LocalDevice;
 import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
+import java.io.IOException;
+import java.util.Vector;
 
 public class BluetoothUtil {
 
     private static final Mole log = Mole.getInstance(BluetoothUtil.class);
 
     public static void scan(String [] names, String [] uids){
-        ThreadUtil.startThread(new BluetoothScanner(names, uids));
+        ThreadUtil.fireAndForget(new BluetoothScanner(names, uids));
     }
 
 

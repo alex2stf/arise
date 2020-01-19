@@ -1,42 +1,47 @@
 package com.arise.core.serializers.parser;
 
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.models.FilterCriteria;
+import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
-public class Whisker {
+import static com.arise.core.tools.ReflectUtil.hasAnyOfTheAnnotations;
+import static com.arise.core.tools.StringUtil.trim;
+import static com.arise.core.tools.TypeUtil.getField;
+import static com.arise.core.tools.TypeUtil.isSingleKeyIterable;
 
+public class Whisker extends GenericTypeWorker {
+
+
+  public Whisker(){
+    setMethodCriteria(new FilterCriteria<Method>() {
+      @Override
+      public boolean isAcceptable(Method m) {
+        return m != null && !Modifier.isStatic(m.getModifiers())
+                && !hasAnyOfTheAnnotations(m, TypeUtil.jsonIgnoreAnnotations);
+      }
+    });
+  }
 
   private char s1 = '{';
   private char s2 = '{';
   private char e1 = '}';
   private char e2 = '}';
+  private String tplRoot = "";
+  private String defaultExt = "";
 
-  Whisker setS1(char c){
-    this.s1 = c;
-    return this;
-  }
-
-  Whisker setS2(char c){
-    this.s2 = c;
-    return this;
-  }
-
-  Whisker setE1(char c){
-    this.e1 = c;
-    return this;
-  }
-
-  Whisker setE2(char c){
-    this.e2 = c;
-    return this;
-  }
 
   public Whisker setStartDelimiter(String in){
     s1 = in.charAt(0);
@@ -55,7 +60,7 @@ public class Whisker {
     return s1 + ""  + s2 + " " + e1 + e2;
   }
 
-  Token readNodes(String in){
+  public Token readNodes(String in){
     DigestResult result = new DigestResult();
     for(int i = 0; i < in.length(); i++){
       result = digest(in.charAt(i), result);
@@ -66,7 +71,7 @@ public class Whisker {
     return result.root;
   }
 
-  Token readNodes(Reader reader) throws IOException {
+  public Token readNodes(Reader reader) throws IOException {
     int r;
 
     DigestResult result = new DigestResult();
@@ -96,8 +101,16 @@ public class Whisker {
 
 
 
+
     if (a == s1 && b == s2) {
-      dig.add(new Token( dig.sb.substring(0, dig.sb.length() - 2), TokenType.TEXT));
+
+      //skip newline for tag end
+      String nextText = dig.sb.substring(0, dig.sb.length() - 2);
+      if (dig.selected.tokenType.equals(TokenType.SECTION_END) && nextText.endsWith("\n")){
+        nextText = nextText.substring(0, nextText.length() - 1);
+      }
+
+      dig.add(new Token( nextText, TokenType.TEXT));
       dig.sb = new StringBuilder();
       dig.lwe = false;
     }
@@ -120,7 +133,12 @@ public class Whisker {
         dig.add(new Token(txt, TokenType.UNESCAPED));
       }
       else {
-        dig.add(new Token(dig.sb.toString(), this));
+        Token nextToken = new Token(dig.sb.toString(), this);
+        //skip newline for tag end
+        if (dig.selected.tokenType.equals(TokenType.SECTION_END) && nextToken.t.endsWith("\n") && nextToken.tokenType.equals(TokenType.TEXT)){
+          nextToken.t = nextToken.t.substring(0, nextToken.t.length() - 1);
+        }
+        dig.add(nextToken);
       }
 
       dig.sb = new StringBuilder();
@@ -133,25 +151,107 @@ public class Whisker {
   }
 
   public static void printNode(Token token){
-//    System.out.println(token.tokenType + " " + token.t);
+    System.out.println(token.tokenType + " " + token.t);
     if (token.next != null){
       printNode(token.next);
     }
   }
 
-  public String compile(String input, Object context) {
-    Token token = readNodes(input);
-    printNode(token);
+
+  /**
+   * this method is not closing the writer
+   * @param reader
+   * @param writer
+   * @param context
+   * @throws IOException
+   */
+  public void compile(Reader reader, Writer writer, Object context) throws IOException {
+    Token token = readNodes(reader);
+    if (!token.tokenType.equals(TokenType.ROOT)){
+      throw new SyntaxException("First token must be ROOT");
+    }
+//    printNode(token);
+    compileFromFirstToken(token, writer, context);
+  }
+
+
+  /**
+   * @param reader
+   * @param context
+   * @throws IOException
+   */
+  public String compile(Reader reader, Object context) throws IOException {
+    Token token = readNodes(reader);
     if (!token.tokenType.equals(TokenType.ROOT)){
       throw new SyntaxException("First token must be ROOT");
     }
     StringWriter stringWriter = new StringWriter();
+    compileFromFirstToken(token, stringWriter, context);
+    stringWriter.close();
+    return stringWriter.toString();
+  }
+
+
+  public String compileTemplate(String templateId, Object context){
+    StringWriter stringWriter = new StringWriter();
+    compileTemplate(templateId, stringWriter, context);
     try {
-      compileNodes(token.next, stringWriter, context, 0, null, null);
+      stringWriter.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
     return stringWriter.toString();
+  }
+
+  public void compileTemplate(String templateId, Writer writer, Object context){
+    InputStream inputStream = FileUtil.findStream(tplRoot + templateId + defaultExt);
+    try {
+      compile(new InputStreamReader(inputStream), writer, context);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String compile(String input, Object context) {
+    Token token = readNodes(input);
+    if (!token.tokenType.equals(TokenType.ROOT)){
+      throw new SyntaxException("First token must be ROOT");
+    }
+    StringWriter stringWriter = new StringWriter();
+    compileFromFirstToken(token, stringWriter, context);
+    try {
+      stringWriter.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return stringWriter.toString();
+  }
+
+  private void compileFromFirstToken(Token token, Writer writer, Object ctx){
+    try {
+      compileNodes(token.next, writer, ctx, 0, null, null);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String compilePartial(String partial, Object ctx){
+    partial = trim(partial);
+    String path = tplRoot + partial + defaultExt;
+    InputStream inputStream = FileUtil.findStream(path);
+    StringWriter stringWriter = new StringWriter();
+    try {
+      compile(new InputStreamReader(inputStream), stringWriter, ctx);
+    } catch (Exception e) {
+      throw new LogicalException("Failed to read partial " + path, e);
+    }
+    try {
+      stringWriter.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return stringWriter.toString();
+
   }
 
   public void compileNodes(Token token, final Writer writer, final Object context, int index, Object key, final Object value) throws IOException {
@@ -180,13 +280,16 @@ public class Whisker {
       case UNESCAPED:
         writer.write(String.valueOf(getValue(token.t, context)));
         break;
+      case PARTIAL:
+        writer.write(compilePartial(token.t, context));
+        break;
 
       case INVERTED_SECTION: {
         Object newContext = getValue(token.t, context);
         Token tokenToCompile = token.next;
         token.next = searchEnd(tokenToCompile, token.t, 1, TokenType.SECTION_END, TokenType.INVERTED_SECTION);
         if (TypeUtil.invert(newContext)){
-          compileNodes(tokenToCompile, writer, context, index, key, value);
+          compileNodes(tokenToCompile.clone(), writer, context, index, key, value);
         }
       }
       break;
@@ -219,7 +322,7 @@ public class Whisker {
         token.next = searchEnd(tokenToCompile, token.t, 1, TokenType.SECTION_END, TokenType.SECTION_START);
 
         //if context is just a boolean check, keep original context
-        if (TypeUtil.isBooleanTrue(newContext)){
+        if (TypeUtil.isBooleanTrue(newContext) ){
           compileNodes(tokenToCompile, writer, context, index, key, value);
         }
 
@@ -233,12 +336,12 @@ public class Whisker {
 
 
           //iterables and arrays
-          else if (TypeUtil.isSingleKeyIterable(newContext)){
+          else if (isSingleKeyIterable(newContext)){
             TypeUtil.forEach(newContext, new IteratorHandler() {
               @Override
               public void found(Object key, Object localContext, int index) {
                 try {
-                  compileNodes(tokenToCompile, writer, localContext, index, key, value);
+                  compileNodes(tokenToCompile.clone(), writer, localContext, index, key, value);
                 } catch (IOException e) {
                   e.printStackTrace();
                 }
@@ -246,14 +349,29 @@ public class Whisker {
             });
           }
 
+
+
           //objects
           else {
-            compileNodes(tokenToCompile, writer, newContext, index, key, value);
+            //string check:
+//            if ((newContext instanceof String || newContext instanceof Boolean) && !TypeUtil.isBooleanTrue(newContext)){
+            if ((newContext instanceof String || newContext instanceof Boolean) && !TypeUtil.isBooleanTrue(newContext)){
+              ;;//TODO improve this
+
+//              System.out.println("|||||||||||||||| THIS SHIT THROWS ERRORS!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+            else {
+              compileNodes(tokenToCompile, writer, newContext, index, key, value);
+            }
           }
+
+
         }
 
         break;
     }
+
+
     if (token.next != null){
       compileNodes(token.next, writer, context, index, key, value);
     }
@@ -270,33 +388,75 @@ public class Whisker {
 
 
   Token searchEnd(Token token, String name, int count, TokenType finish, TokenType init){
+
     if (token == null){
       throw new SyntaxException("Unmatched end section for " + name);
     }
-    if (token.t.equals(name) && token.tokenType.equals(finish)){
 
-      if (finish.equals(token.tokenType)){
-        count--;
+    Token current = token.next;
+    int skips = 0;
+    while(current != null){
+//      System.out.println("search end for " + name);
+      if (init.equals(current.tokenType) && current.t.equals(name)){
+        //new node, skip next finish
+        skips++;
       }
-      else if(init.equals(token.tokenType)){
-        count++;
-      }
+      else if (finish.equals(current.tokenType) && current.t.equals(name)){
+        skips--;
+        if (skips <= 0){
 
-      if (count == 0){
-        Token result = token.next;
-        token.next = null;
-        return result;
+          Token result = current.next;
+          current.next = null;
+          return result;
+        }
+
       }
+      current = current.next;
     }
-    return searchEnd(token.next, name, count, finish, init);
+
+    return current;
+//    if (token == null){
+//      throw new SyntaxException("Unmatched end section for " + name);
+//    }
+//    if (token.t.equals(name) && token.tokenType.equals(finish)){
+//
+//      if (finish.equals(token.tokenType)){
+//        count--;
+//      }
+//      else if(refreshUI.equals(token.tokenType)){
+//        count++;
+//      }
+//
+//      if (count == 0){
+//        Token result = token.next;
+//        token.next = null;
+//        return result;
+//      }
+//    }
+//    return searchEnd(token.next, name, count, finish, refreshUI);
   }
+
+
 
   private Object getValue(String name, Object context){
     if (context == null){
       throw new SyntaxException("NULL context for " + name);
     }
 
-    return TypeUtil.getField(name, context);
+    return getField(name, context, getFieldCriteria(), getMethodCriteria());
+  }
+
+  public Whisker setTemplatesRoot(String s) {
+    this.tplRoot = s;
+    if (!s.endsWith("/")){
+      this.tplRoot += "/";
+    }
+    return this;
+  }
+
+  public Whisker setExtension(String s){
+    this.defaultExt = s;
+    return this;
   }
 
 
@@ -407,6 +567,14 @@ public class Whisker {
     private Token(String in, TokenType tokenType){
       this.tokenType = tokenType;
       this.t = in;
+    }
+
+    public Token clone(){
+      Token token = new Token(this.t, this.tokenType);
+      if (this.next != null){
+        token.next = this.next.clone();
+      }
+      return token;
     }
 
 

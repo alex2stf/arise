@@ -1,0 +1,16 @@
+[
+  {
+    "name": "CMD_SUCCESS",
+    "accessibleTo": "FULL"
+  },
+  {
+    "name": "CMD_FAILED",
+    "accessibleTo": "FULL"
+  },
+  {
+    "name": "NODE_CREATED",
+    "accessibleTo": ["CREATE_NODE"]
+  }
+]
+
+

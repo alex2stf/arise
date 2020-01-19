@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class StreamUtil {
 
@@ -50,6 +51,21 @@ public class StreamUtil {
     public static String toString(InputStream inputStream){
         BufferedInputStream bis = new BufferedInputStream(inputStream);
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        transfer(bis, buf);
+        try {
+            bis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            buf.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return buf.toString();
+    }
+
+    public static void transfer(InputStream bis, OutputStream buf){
         int result = 0;
         try {
             result = bis.read();
@@ -60,7 +76,6 @@ public class StreamUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return buf.toString();
     }
 
     public static InputStream readResource(String resource){

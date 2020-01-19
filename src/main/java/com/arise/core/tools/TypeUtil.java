@@ -1,31 +1,43 @@
 package com.arise.core.tools;
 
-import static com.arise.core.tools.ReflectUtil.hasAnyOfTheAnnotations;
-import static com.arise.core.tools.StringUtil.capFirst;
-
 import com.arise.core.tools.ReflectUtil.InvokeHelper;
+import com.arise.core.tools.models.FilterCriteria;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.CollectionUtil.mapContains;
+import static com.arise.core.tools.ReflectUtil.hasAnyOfTheAnnotations;
+import static com.arise.core.tools.StringUtil.capFirst;
+import static com.arise.core.tools.StringUtil.hasContent;
+import static com.arise.core.tools.StringUtil.hasText;
 
 public class TypeUtil {
 
 
     /**
      * returns true if object is instance of {@link Boolean} and equals TRUE or is true
+     * retuns true is object is instance of {@link String} and {@link StringUtil#hasText(String)}
      * @param c
      * @return
      */
     public static boolean isBooleanTrue(Object c){
         if (c != null){
+            if (c instanceof String){
+                return hasText((String) c);
+            }
             if (c instanceof Boolean ){
                 return Boolean.TRUE.equals(c);
             }
@@ -42,36 +54,63 @@ public class TypeUtil {
      * @return
      */
     public static boolean isSingleKeyIterable(Object o) {
-        return o != null && !(o instanceof Map) && (o instanceof Iterable || o.getClass().isArray());
+        return o != null && !(o instanceof Map) &&
+                (testClasses(o, Iterable.class, Set.class, List.class) || o.getClass().isArray());
     }
 
-    private static final String[] jsonIgnoreAnnotations = new String[]{
+    private static final String[] ignorableAnnotations = new String[]{
             "com.arise.core.models.Transient",
             "javax.persistence.Transient",
             "java.beans.Transient",
+    };
+
+    public static final String[] jsonIgnoreAnnotations = new String[]{
+            ignorableAnnotations[0],
+            ignorableAnnotations[1],
+            ignorableAnnotations[2],
             "com.fasterxml.jackson.annotation.JsonIgnore"
     };
 
-    /**
-     * to be used for extensions
-     * @return
-     */
-    @SuppressWarnings("unused")
-    public static final String[] getJsonIgnoreAnnotationsAnnotations(){
-      return jsonIgnoreAnnotations;
-    }
+
+
+
+
+
+    public static final FilterCriteria<Method> getterMethodFiltering = new FilterCriteria<Method>() {
+        @Override
+        public boolean isAcceptable(Method m) {
+            return m != null && !Modifier.isStatic(m.getModifiers())
+                    && isGetter(m)
+                    && !hasAnyOfTheAnnotations(m, jsonIgnoreAnnotations);
+        }
+    };
+
+    public static final FilterCriteria<Field> defaultFieldFiltering = new FilterCriteria<Field>() {
+        @Override
+        public boolean isAcceptable(Field field) {
+            return field != null && !Modifier.isFinal(field.getModifiers())
+                    && !field.getName().startsWith("this")
+                    && !Modifier.isStatic(field.getModifiers())
+                    && !hasAnyOfTheAnnotations(field, jsonIgnoreAnnotations);
+        }
+    };
+
+
+
 
     public static void forEach(Object o, IteratorHandler iterator) {
-      forEach(o, iterator, false, jsonIgnoreAnnotations);
+      forEach(o, iterator, false, getterMethodFiltering, defaultFieldFiltering);
     }
 
 
     public static void forEach(Object o, IteratorHandler iterator, boolean ignoreNulls) {
-        forEach(o, iterator, ignoreNulls, jsonIgnoreAnnotations);
+        forEach(o, iterator, ignoreNulls, getterMethodFiltering, defaultFieldFiltering);
     }
 
     public static void forEach(Object o, IteratorHandler iterator,
-                               boolean ignoreNulls, String[] skippablesAnnotations){
+                               boolean ignoreNulls,
+                               final FilterCriteria<Method> methodFilterCriteria,
+                               FilterCriteria<Field> fieldFilterCriteria){
         if (o == null){
             return;
         }
@@ -118,28 +157,29 @@ public class TypeUtil {
         }
 
         else {
-                List<Field> fields = findAllFields(o.getClass());
-                Set<String> usedNames = new HashSet<>();
+                List<Field> fields = findAllFields(o.getClass(), fieldFilterCriteria);
+                final Set<String> usedNames = new HashSet<>();
 
                 for (Field field: fields){
                     //skip references to self
-                    if (Modifier.isFinal(field.getModifiers()) && field.getName().startsWith("this$")){
+                    if (field.getType().equals(java.lang.reflect.Constructor.class)){
                         continue;
                     }
+
                     String name = field.getName();
                     Object value = null;
                     boolean skippable = true;
 
-                    //first scan for getter:
+                    //first searchIcons for getter:
                     InvokeHelper helper = ReflectUtil.findGetter(o, field.getName());
-                    if (helper != InvokeHelper.NULL && !hasAnyOfTheAnnotations(helper.getMethod(), skippablesAnnotations)){
+                    if (helper != InvokeHelper.NULL && helper.getMethod() != null && methodFilterCriteria.isAcceptable(helper.getMethod())){
                         value = helper.call();
                         skippable = false;
                         usedNames.add(helper.getMethod().getName());
                     }
-                    //skip private fields
-                    else if(!Modifier.isPrivate(field.getModifiers()) && !hasAnyOfTheAnnotations(field, skippablesAnnotations)){
 
+                    //skip private fields
+                    else {
                         try {
                             field.setAccessible(true);
                             value = field.get(o);
@@ -161,10 +201,9 @@ public class TypeUtil {
                 List<Method> getters = findAllMethods(o.getClass(), new FilterCriteria<Method>() {
                     @Override
                     public boolean isAcceptable(Method m) {
-                        return isGetter(m) && !hasAnyOfTheAnnotations(m, skippablesAnnotations) && !usedNames.contains(m.getName());
+                        return methodFilterCriteria.isAcceptable(m) && !usedNames.contains(m.getName());
                     }
                 });
-
                 for (Method m: getters){
                     InvokeHelper helper = InvokeHelper.of(m, o);
                     iterator.found(StringUtil.lowFirst(m.getName().substring(3)), helper.call(), i);
@@ -175,18 +214,39 @@ public class TypeUtil {
 
 
     private static boolean isGetter(Method m){
-        boolean cc = m.getName().startsWith("get") && m.getParameterCount() == 0 && !"getClass".equals(m.getName());
-        boolean bb = m.getName().startsWith("is") && m.getParameterCount() == 0 && ( Boolean.class.equals(m.getReturnType()) || boolean.class.equals(m.getReturnType())) ;
+        int cpp = countMethodParameters(m);
+        boolean cc = m.getName().startsWith("get") && cpp == 0 && !"getClass".equals(m.getName());
+        boolean bb = m.getName().startsWith("is") && cpp == 0 && ( Boolean.class.equals(m.getReturnType()) || boolean.class.equals(m.getReturnType())) ;
         return cc || bb;
     }
 
+    private static int countMethodParameters(Method m){
+        Integer count = ReflectUtil.getMethod(m, "getParameterCount").callForInteger();
+        if (count == null){
+            Object params[] = ReflectUtil.getMethod(m, "getParameters").callForObjectList();
+            if (params != null){
+                count = params.length;
+            } else {
+                params = ReflectUtil.getMethod(m, "getParameterTypes").callForObjectList();
+                if (params != null){
+                    count = params.length;
+                }
+            }
+        }
+        return count != null ? count : 0;
+    }
 
-    public static List<Field> findAllFields(final Class<?> cls) {
+
+    public static List<Field> findAllFields(final Class<?> cls,  FilterCriteria<Field> filter) {
         final List<Field> allFields = new ArrayList<>();
         Class<?> currentClass = cls;
         while (currentClass != null) {
             final Field[] declaredFields = currentClass.getDeclaredFields();
-            Collections.addAll(allFields, declaredFields);
+            for (Field f: declaredFields){
+                if (filter.isAcceptable(f)){
+                    allFields.add(f);
+                }
+            }
             currentClass = currentClass.getSuperclass();
         }
         return allFields;
@@ -211,35 +271,10 @@ public class TypeUtil {
 
 
 
-    /**
-     * json specific.move to groot
-     * @param in
-     * @return
-     */
-    @Deprecated
-    public static boolean isJsonTrueSequence(byte [] in){
-        return in.length == "true".length() &&
-            (in[0] == 't') &&
-            (in[1] == 'r') &&
-            (in[2] == 'u') &&
-            (in[3] == 'e');
-    }
 
 
-    /**
-     * json specific.move to groot
-     * @param in
-     * @return
-     */
-    @Deprecated
-    public static boolean isJsonFalseSequence(byte [] in){
-        return in.length == "false".length() &&
-            (in[0] == 'f') &&
-            (in[1] == 'a') &&
-            (in[2] == 'l') &&
-            (in[3] == 's') &&
-            (in[4] == 'e');
-    }
+
+
 
     /**
      * returns true if the object is null, is false or is an empty list
@@ -250,8 +285,12 @@ public class TypeUtil {
         if (c == null){
             return true;
         }
+        if (c instanceof String){
+            return !hasContent((String) c);
+        }
+
         if (isBoolean(c) && !isBooleanTrue(c)){
-            return false;
+            return true;
         }
         if (c instanceof Collection){
             return ((Collection)c).isEmpty();
@@ -259,6 +298,8 @@ public class TypeUtil {
         if (c.getClass().isArray()){
             return Array.getLength(c) == 0;
         }
+
+
         return false;
     }
 
@@ -415,7 +456,8 @@ public class TypeUtil {
 
 
     public static boolean isNumber(Object o){
-        return testClasses(o, Number.class, int.class, float.class, double.class, long.class, Integer.class, Float.class, Double.class, Long.class);
+        return testClasses(o, int.class, float.class, double.class, long.class,
+                Number.class, Integer.class, Float.class, Double.class, Long.class, BigDecimal.class);
     }
 
 
@@ -424,7 +466,7 @@ public class TypeUtil {
             return false;
         }
         for (Class t: cls){
-            if (o.getClass().equals(t) || o.getClass().isAssignableFrom(t)){
+            if (o == t || o.equals(t) || o.getClass().equals(t) || t.isAssignableFrom(o.getClass())){
                 return true;
             }
         }
@@ -463,32 +505,176 @@ public class TypeUtil {
         void found(Object key, Object value, int index);
     }
 
-    public static boolean isPrimitive(Object o) {
-        return o instanceof String || isNumber(o);
+    public interface IteratorConverter {
+        IteratorConverter VALUE = new IteratorConverter() {
+            @Override
+            public Object convert(Object key, Object value, int index) {
+                return value;
+            }
+        };
+
+        Object convert(Object key, Object value, int index);
     }
 
-    public static Object getField(String name, Object obj){
-        if (obj == null || !StringUtil.hasText(name)){
+    public static boolean isPrimitive(Object o) {
+        return isNull(o) || o instanceof String || isNumber(o) || isBoolean(o) || o.equals(String.class)
+                || o.equals(Object.class);
+    }
+
+
+    public static Object getField(final String name, Object obj,
+                                  final FilterCriteria<Field> fieldFilterCriteria,
+                                  final FilterCriteria<Method> methodFilterCriteria){
+        if (isNull(obj) || !hasText(name)){
             return null;
         }
 
-        if (obj instanceof Map && ((Map)obj).containsKey(name)){
+        if (mapContains(obj, name)){
             return ((Map) obj).get(name);
         }
 
-        try {
-            Field field = obj.getClass().getDeclaredField(name);
-            if (!Modifier.isPrivate(field.getModifiers())){
-                field.setAccessible(true);
+        Object response = null;
+        List<Field> fields = findAllFields(obj.getClass(), new FilterCriteria<Field>() {
+            @Override
+            public boolean isAcceptable(Field data) {
+                return fieldFilterCriteria.isAcceptable(data) && name.equals(data.getName());
             }
-            field.getModifiers();
-            return field.get(obj);
-        } catch (NoSuchFieldException e) {
-//            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-            return null;
+        });
+        if (!isEmpty(fields)){
+            Field field = fields.get(0);
+            field.setAccessible(true);
+            try {
+                response = field.get(obj);
+                return response;
+            } catch (IllegalAccessException e) {
+                response = null;
+            }
         }
+
+        List<Method> methods = findAllMethods(obj.getClass(), new FilterCriteria<Method>() {
+            @Override
+            public boolean isAcceptable(Method m) {
+                boolean isAcceptable = methodFilterCriteria.isAcceptable(m);
+                boolean isGetter1 = ("get" + capFirst(name)).equals(m.getName());
+                boolean isGetter2 = ("is" + capFirst(name)).equals(m.getName());
+                boolean isInlineMethod = name.equals(m.getName());
+                boolean hasNoArgs = m.getParameterCount() == 0;
+                return methodFilterCriteria.isAcceptable(m) && hasNoArgs && (isGetter1 || isGetter2 || isInlineMethod);
+            }
+        });
+
+
+        if (!isEmpty(methods)){
+            Method m = methods.get(0);
+            m.setAccessible(true);
+            try {
+                response = m.invoke(obj);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if (response == null){
+//            throw new RuntimeException("Unable to find field " + name + " inside class" + obj.getClass());
+        }
+
+
+
+
+
+
+
+        return response;
+    }
+
+
+    public static Object search(String[] keys, Object o, int i,
+                                FilterCriteria<Field> fieldFilterCriteria, FilterCriteria<Method> methodFilterCriteria){
+        String ckey = keys[i];
+        Object next = getField(ckey, o, fieldFilterCriteria, methodFilterCriteria);
+        if (next != null && i < keys.length -1){
+            return search(keys, next, i+1, fieldFilterCriteria, methodFilterCriteria);
+        }
+        return next;
+    }
+
+    public static Object search(String []keys, Object o, int index) {
+        return search(keys, o, index, defaultFieldFiltering, getterMethodFiltering);
+    }
+
+    public static Object search(String []keys, Object o) {
+        return search(keys, o, 0, defaultFieldFiltering, getterMethodFiltering);
+    }
+
+
+    public static Map<String, Object> objectToMap(Object s){
+        return objectToMap(s, false, IteratorConverter.VALUE, defaultFieldFiltering, getterMethodFiltering);
+    }
+
+    public static boolean testClassesByReflection(Object o, String ... classNames){
+        List<Class> classesToCheck = new ArrayList<>();
+        for (String s: classNames){
+            Class t = ReflectUtil.getClassByName(s);
+            if (t != null){
+                classesToCheck.add(t);
+            }
+        }
+        Class [] items = new Class[classesToCheck.size()];
+        classesToCheck.toArray(items);
+        return testClasses(o, items);
+    }
+
+    public static boolean isDate(Object o){
+        return testClassesByReflection(o, "sun.util.calendar.Gregorian$Date", "java.util.Date");
+    }
+
+    public static <T> Map<String, Object> objectToMap(Object s, final boolean ignoreNulls,
+                                                      final IteratorConverter converter,
+                                                      final FilterCriteria<Field> fieldFilterCriteria,
+                                                      final FilterCriteria<Method> methodFilterCriteria){
+        final Map<String, Object> response = new HashMap<>();
+        final Set<Object> buffer = new HashSet<>();
+        buffer.add(s);
+        forEach(s, new IteratorHandler() {
+            @Override
+            public void found(Object key, Object value, int index) {
+                if (isPrimitive(value) || isDate(value)){
+                    response.put(String.valueOf(key), converter.convert(key, value, index));
+                }
+                else if(!buffer.contains(value)) {
+                    Object inner = objectToMap(value, ignoreNulls, converter, fieldFilterCriteria, methodFilterCriteria);
+                    response.put(String.valueOf(key), inner);
+                    buffer.add(value);
+                }
+            }
+        }, ignoreNulls, methodFilterCriteria, fieldFilterCriteria);
+        return response;
+    }
+
+
+
+    public static void setField(String name, Object object, Object value){
+        Field field = null;
+        try {
+            field = object.getClass().getDeclaredField(String.valueOf(name));
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+            field = null;
+        }
+
+        if (field == null){
+            ReflectUtil.getMethod(object, "set" + StringUtil.capFirst(name), value.getClass())
+                    .call(value);
+        }
+    }
+
+
+    public interface Convertor {
+        Object convert(Object value);
     }
 }

@@ -1,13 +1,34 @@
 package com.arise.core.tools;
 
 
+import com.arise.core.tools.models.FilterCriteria;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.TypeUtil.search;
+
 
 public class StringUtil {
 
@@ -66,11 +87,81 @@ public class StringUtil {
     }
 
 
+    public static URLDecodeResult urlDecode(String in){
+        in = in.trim();
+        URLDecodeResult urlDecodeResult = new URLDecodeResult();
+        if ("/".equals(in)){
+            return urlDecodeResult;
+        }
+        int index = in.indexOf("?");
+        String parts[] = (index > -1 ? in.substring(0, index) : in).split("/");
+
+        for (String s: parts){
+            if (StringUtil.hasContent(s)){
+                urlDecodeResult.paths.add(s);
+            }
+        }
+        String qrs = in.substring(index + 1 );
+        try {
+            String dec  = URLDecoder.decode(qrs);
+            qrs = dec;
+        }catch (Exception e){
+
+        }
+        decodeQuery(qrs, urlDecodeResult.queryParams);
+
+        return urlDecodeResult;
+    }
+
+
+    public static void decodeQuery(String in, Map<String, List<String>> buffer){
+        if (in == null){
+            return;
+        }
+        int eIndex = in.indexOf("=");
+        if (eIndex < 0){
+            return;
+        }
+        String key = in.substring(0, eIndex);
+        buffer.put(key, new ArrayList<>());
+
+        String rest = in.substring(eIndex + 1);
+        int sIndex = rest.indexOf("&");
+        if (sIndex < 0){
+            buffer.get(key).add(rest);
+            return;
+        } else {
+            //1=2&3=4
+            String value = rest.substring(0, sIndex);
+            buffer.get(key).add(value);
+            decodeQuery(rest.substring(sIndex + 1), buffer);
+        }
+    }
+
+    public static boolean endsWithNewline(String s) {
+        return s.endsWith("\n") || s.endsWith("\r\n");
+    }
+
+    public static class URLDecodeResult {
+        List<String> paths = new ArrayList<>();
+        Map<String, List<String>> queryParams = new LinkedHashMap<>();
+
+        public List<String> getPaths() {
+            return paths;
+        }
+
+        public Map<String, List<String>> getQueryParams() {
+            return queryParams;
+        }
+    }
+
+
+
     public static Map<String, List<String>> getQueryParams(String uri){
 
 
         Map<String, List<String>> r = new HashMap<String, List<String>>();
-        if (uri == null || uri.trim().isEmpty() || uri.trim().equalsIgnoreCase("/")){
+        if (!hasText(uri) || "/".equalsIgnoreCase(uri.trim())){
             return r;
         }
         String p[] = uri.split("\\&");
@@ -99,12 +190,7 @@ public class StringUtil {
 
 
     public static String toCSV(String list[]){
-        String r = "";
-        r+=list[0];
-        for (int i = 1; i < list.length; i++){
-            r+="," + list[i];
-        }
-        return r;
+        return join(list, ",");
     }
 
     public static String toCSV(Collection<String> strings){
@@ -181,28 +267,9 @@ public class StringUtil {
         }
     }
 
-    public static String joinFormat(Object ... args){
-        return joinArgs(" ", args);
-    }
 
-    public static String joinArgs(String delimiter, Object ... args)
-    {
-        boolean first = true;
-        StringBuilder out = new StringBuilder();
-        for (Object s: args){
-            if (first)
-            {
-                first = false;
-            }
-            else
-            {
-                out.append(delimiter);
-            }
-            out.append(String.valueOf(s));
-        }
 
-        return out.toString();
-    }
+
 
 
 
@@ -253,11 +320,15 @@ public class StringUtil {
             }
         }
 
+
+
         if (o instanceof Socket){
             Socket c = (Socket) o;
             return String.valueOf(c.getLocalAddress() + ":" + c.getLocalPort()
                     + "|" + c.getRemoteSocketAddress());
         }
+
+
         return String.valueOf(o);
     }
 
@@ -498,6 +569,24 @@ public class StringUtil {
         return hasContent(in);
     }
 
+    public static String trim(String input) {
+        return (input != null ? input.trim() : input);
+    }
+
+    public static <A, B> String merge(A[]a, B[]b, String d1, String d2, JoinIterator<A> aj, JoinIterator<B> bj) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.length; i++){
+            if (i > 0){
+                sb.append(d2);
+            }
+            sb.append(aj.toString(a[i]));
+            sb.append(d1);
+            sb.append(bj.toString(b[i]));
+
+        }
+        return sb.toString();
+    }
+
     public interface JoinIterator<T> {
         String toString(T value);
     }
@@ -512,4 +601,114 @@ public class StringUtil {
 
         return s;
     }
+
+
+    public static String map(String value, Map<String, Object> map){
+        return map(value, map, TypeUtil.defaultFieldFiltering, TypeUtil.getterMethodFiltering);
+    }
+
+
+    /**
+     * @param value
+     * @param map
+     * @return
+     */
+    public static String map(String value, Map<String, Object> map, FilterCriteria<Field> ff, FilterCriteria<Method> mf){
+        if (!hasText(value) || value.length() < 3 || isEmpty(map)){
+            return value;
+        }
+        Matcher m = Pattern.compile("(?<!\\\\)\\{(.*?)\\}").matcher(value);
+        while (m.find()){
+            String s = m.group();
+            String key = s.substring(1, s.length() - 1);
+            Object vr = null;
+            if (key.indexOf('.') > -1){
+                vr = search(key.split("\\."), map, 0, ff, mf);
+            } else {
+                vr = map.get(key);
+            }
+            value = value.replaceAll(Pattern.quote(s), String.valueOf(vr));
+        }
+        return value;
+    }
+
+
+    public static String jsonEscape(String s){
+        StringBuffer sb = new StringBuffer();
+        StringUtil.jsonEscape(String.valueOf(s), sb);
+        return sb.toString();
+    }
+
+    public static String jsonVal(Object s){
+       if (s == null){
+           return "null";
+       }
+       if (s instanceof CharSequence){
+           return "\"" + jsonEscape(String.valueOf(s)) + "\"";
+       }
+       return s.toString();
+    }
+
+
+    public static String jsonVal(Collection s){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[")
+        .append(join(s, ",", new JoinIterator<Object>() {
+            @Override
+            public String toString(Object v) {
+                return  jsonVal(v);
+            }
+        })).append("]");
+        return sb.toString();
+    }
+
+
+
+    public static void jsonEscape(String s, StringBuffer sb) {
+        final int len = s.length();
+        for(int i=0;i<len;i++){
+            char ch=s.charAt(i);
+            switch(ch){
+                case '"':
+                    sb.append("\\\"");
+                    break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                case '/':
+                    sb.append("\\/");
+                    break;
+                default:
+                    //Reference: http://www.unicode.org/versions/Unicode5.1.0/
+                    if((ch>='\u0000' && ch<='\u001F') || (ch>='\u007F' && ch<='\u009F') || (ch>='\u2000' && ch<='\u20FF')){
+                        String ss=Integer.toHexString(ch);
+                        sb.append("\\u");
+                        for(int k=0;k<4-ss.length();k++){
+                            sb.append('0');
+                        }
+                        sb.append(ss.toUpperCase());
+                    }
+                    else{
+                        sb.append(ch);
+                    }
+            }
+        }//for
+    }
+
+
 }

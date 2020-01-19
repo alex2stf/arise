@@ -7,6 +7,6 @@ public class IOServerTest extends AbstractServerTest {
 
   @Override
   public AbstractServer serviceServer() {
-    return new IOServer().setPort(8221);
+    return new IOServer().setHost(null).setPort(8221);
   }
 }

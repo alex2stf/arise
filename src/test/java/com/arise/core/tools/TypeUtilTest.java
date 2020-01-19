@@ -1,12 +1,23 @@
 package com.arise.core.tools;
 
 import com.arise.core.tools.TypeUtil.IteratorHandler;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 public class TypeUtilTest {
+
+  @Test
+  public void testDates(){
+
+    Map<String, Object> map = TypeUtil.objectToMap(new Date());
+    System.out.println(map);
+  }
+
 
   @Test
   public void testSimpleIterator(){
@@ -105,7 +116,7 @@ public class TypeUtilTest {
       }
     });
 
-    Assert.assertEquals(4, entries.size());
+    Assert.assertEquals(5, entries.size());
   }
 
 

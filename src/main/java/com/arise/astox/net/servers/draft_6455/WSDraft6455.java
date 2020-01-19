@@ -1,9 +1,10 @@
 package com.arise.astox.net.servers.draft_6455;
 
+import com.arise.astox.net.models.HttpProtocol;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
-import com.arise.astox.net.http.HttpRequest;
-import com.arise.astox.net.http.HttpResponse;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.core.tools.Base64;
@@ -40,7 +41,7 @@ public class WSDraft6455 extends DuplexDraft<ServerRequest, ServerResponse> {
             String concatenatedKey = key + WS_ACC_KEY;
             byte[] sha1 =  MessageDigest.getInstance("SHA-1").digest(concatenatedKey.getBytes("UTF-8"));
             HttpResponse response = new HttpResponse();
-            response.setProtocol("HTTP/1.1")
+            response.setProtocol(HttpProtocol.V1_0)
                     .setStatusCode(101)
                     .setStatusText("Switching Protocols")
                     .addHeader("Connection", "Upgrade")

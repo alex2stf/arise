@@ -16,32 +16,25 @@
 
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/net.sf.bluecove/bluecove -->
         <dependency>
             <groupId>net.sf.bluecove</groupId>
             <artifactId>bluecove</artifactId>
             <version>2.1.0</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/net.sf.bluecove/bluecove-gpl -->
         <dependency>
             <groupId>net.sf.bluecove</groupId>
             <artifactId>bluecove-gpl</artifactId>
             <version>2.1.0</version>
         </dependency>
 
-
-
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+            <scope>test</scope>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -49,8 +42,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -58,19 +49,10 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5.jre7</version>
             <scope>test</scope>
         </dependency>
 
@@ -81,6 +63,30 @@
             <scope>test</scope>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.2.1.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
+
+        <!--        <dependency>-->
+<!--            <groupId>ro.orange</groupId>-->
+<!--            <artifactId>sftp-engine-avro-events</artifactId>-->
+<!--            <version>0.1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -88,7 +94,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
@@ -96,8 +101,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -105,7 +108,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
@@ -113,8 +115,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -122,17 +122,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--BLUECOVE-->
-        <!--<dependency>-->
-            <!--<groupId>net.sf.bluecove</groupId>-->
-            <!--<artifactId>bluecove</artifactId>-->
-            <!--<version>2.1.0</version>-->
-        <!--</dependency>-->
-
-
-
-
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -140,115 +129,92 @@
             <scope>test</scope>
         </dependency>
 
-
-
-        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protoc -->
-        <!--<dependency>-->
-            <!--<groupId>com.google.protobuf</groupId>-->
-            <!--<artifactId>protobuf-bom</artifactId>-->
-            <!--<version>RELEASE</version>-->
-        <!--</dependency>-->
-
-
-
-        <!--<dependency>-->
-            <!--<groupId>com.google.guava</groupId>-->
-            <!--<artifactId>guava</artifactId>-->
-            <!--<version>18.0</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-
-
-
-        <dependency>
-            <groupId>org.lesscss</groupId>
-            <artifactId>lesscss</artifactId>
-            <version>1.7.0.1.1</version>
-        </dependency>
-
-
-
-
-        <!-- https://mvnrepository.com/artifact/com.google.javascript/closure-context -->
-        <!--<dependency>-->
-            <!--<groupId>com.google.javascript</groupId>-->
-            <!--<artifactId>closure-context</artifactId>-->
-            <!--<version>r2388</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-
-
-
-        <!-- https://mvnrepository.com/artifact/javax.persistence/persistence-api -->
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
-
-        <!--SQL DRIVERS:-->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.35</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.4.1211.jre7</version>
-        </dependency>
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
-        </dependency>
-
-
-        <!--NOSL-->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-
-
-
-
-
-
-
-        <!-- https://mvnrepository.com/artifact/org.sonarsource.scanner.maven/sonar-maven-plugin -->
-        <dependency>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
-
-
-
-
     </dependencies>
 
     <profiles>
         <profile>
-            <id>sonar</id>
+            <id>full</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <!-- Optional URL to server. Default value is http://localhost:9000 -->
-                <sonar.host.url>
-                    http://localhost:9000
-                </sonar.host.url>
-            </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                            <excludes>
+                                <exclude>**/rapdroid/</exclude>
+                                <exclude>**/android/</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                    </plugin>
+                </plugins>
+
+            </build>
+        </profile>
+
+        <profile>
+            <id>canter-lib</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                            <excludes>
+                                <exclude>**/rapdroid/</exclude>
+                                <exclude>**/android/</exclude>
+                                <exclude>**/astox</exclude>
+                                <exclude>**/cargo</exclude>
+                                <exclude>**/geeks</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <classifier>canter-lib</classifier>
+                            <excludes>
+                                <exclude>**/astox</exclude>
+                                <exclude>**/cargo</exclude>
+                                <exclude>**/geeks</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -256,113 +222,8 @@
     <build>
         <directory>build</directory>
         <sourceDirectory>src/main/java</sourceDirectory>
-
-
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-
-
-
-
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <excludes>
-                        <exclude>**/rapdroid/</exclude>
-                        <exclude>**/android/</exclude>
-                    </excludes>
-
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
-                <executions>
-                    <execution>
-                        <id>copy-cpp-libs</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>build/classes</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>bin</directory>
-                                    <includes>
-                                        <include>**/*.dll</include>
-                                        <include>**/*.lib</include>
-                                        <include>**/*.so</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-context-plugin</artifactId>
-                <version>3.6.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <excludes>
-                        <exclude>**/rapdroid/</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
-
-
-
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>src/main/resources</directory>
-                            <filtering>true</filtering>
-                        </resource>
-                    </webResources>
-                    <webXml>
-                        src/main/resources/WEB-INF/web.xml
-                    </webXml>
-                    <warName>jentilapp</warName>
-                    <!--<outputDirectory>-->
-                        <!--D:\apache-tomcat-8.5.23\apache-tomcat-8.5.23\webapps\jentilapp-->
-                    <!--</outputDirectory>-->
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                    </execution>
-                </executions>
-
-            </plugin>
-
-
-
-        </plugins>
     </build>
+
+
 
 </project>

@@ -1,13 +1,17 @@
 package com.arise.core.tools;
 
 import com.arise.core.tools.StreamUtil.LineIterator;
-import java.io.BufferedReader;
+import com.arise.core.tools.models.CompleteHandler;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.util.List;
+import java.util.Map;
+
+import static com.arise.core.tools.StreamUtil.readLineByLine;
+import static com.arise.core.tools.StringUtil.jsonEscape;
+import static com.arise.core.tools.StringUtil.jsonVal;
 
 
 public class SYSUtils {
@@ -24,6 +28,32 @@ public class SYSUtils {
     }
 
 
+    public static String getDeviceId(){
+        return (os.qualifiedName() + getDeviceName()).replaceAll("\\s+","");
+    }
+
+    public static String getDeviceName()
+    {
+        Map<String, String> env = System.getenv();
+        if (env.containsKey("COMPUTERNAME")) {
+            return env.get("COMPUTERNAME");
+        }
+        else if (env.containsKey("HOSTNAME")) {
+            return env.get("HOSTNAME");
+        }
+
+        String name = null;
+        if (ReflectUtil.classExists("android.os.Build")){
+            Object model = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MODEL");
+            Object manuf = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MANUFACTURER");
+            name = model != null ? String.valueOf(model) : "";
+            name += manuf != null ? " " + manuf : "";
+        }
+        if (!StringUtil.hasContent(name)){
+            name = "Unknown device";
+        }
+        return name;
+    }
 
 
 
@@ -53,7 +83,7 @@ public class SYSUtils {
                         public void onStdoutLine(int line, String content) {
 
                         }
-                    }, true);
+                    }, true, false);
 
 //                try {
 //                    Process proc = new ProcessBuilder("x-terminal-emulator", "/home/alex/Dropbox/arise/bin/socket").start();
@@ -77,6 +107,11 @@ public class SYSUtils {
         System.out.println(os);
     }
 
+    public static Result exec(List<String> list){
+        String args[] = new String[list.size()];
+        list.toArray(args);
+        return exec(args);
+    }
 
     public static Result exec(String ... args){
 
@@ -92,18 +127,16 @@ public class SYSUtils {
             public void onErrLine(int line, String content) {
                 eb.append(content);
             }
-        }, false);
-        return new Result(sb.toString(), eb.toString());
+        }, false, false);
+        return new Result(args, sb.toString(), eb.toString());
     }
 
 
-    public static void exec(String[] args, ProcessOutputHandler outputHandler){
-        exec(args, outputHandler, false);
-    }
 
 
-    public static void exec(String[] args, final ProcessOutputHandler outputHandler, boolean useBuilder){
-        System.out.println(StringUtil.join(args, "  "));
+
+    public static void exec(String[] args, final ProcessOutputHandler outputHandler, boolean useBuilder, boolean async){
+        log.info("exec: " + StringUtil.join(args, "  "));
         Process proc = null;
         if (!useBuilder){
             Runtime rt = Runtime.getRuntime();
@@ -124,15 +157,19 @@ public class SYSUtils {
             try {
                 proc = processBuilder.start();
                 final Process finalProc = proc;
-                ThreadUtil.startThread(new Runnable() {
+                ThreadUtil.fireAndForget(new Runnable() {
                     @Override
                     public void run() {
-                        outputHandler.handle(finalProc.getInputStream());
-                        outputHandler.handleErr(finalProc.getErrorStream());
+                        if (outputHandler != null){
+                            outputHandler.handle(finalProc.getInputStream());
+                            outputHandler.handleErr(finalProc.getErrorStream());
+                        }
                     }
                 });
 
-                proc.waitFor();
+                if (!async) {
+                    proc.waitFor();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -141,19 +178,42 @@ public class SYSUtils {
 
         }
 
-    }
-
-
-    public static Result which(String executable){
-        if (isLinux()){
-            return exec(new String[]{"which", executable});
-
-        } else {
-            System.out.println("METHOD NOT IMPLEMENTED FOR WINDOWS");
+        if (outputHandler != null){
+            outputHandler.onComplete(proc);
         }
-        return null;
+
     }
 
+
+    public static boolean isAndroid(){
+        return ReflectUtil.classExists( "android.util.Log");
+    }
+
+    private static String osName(){
+        return String.valueOf(System.getProperty("os.name"));
+    }
+
+
+    public static boolean isWindows() {
+
+        return (osName().toLowerCase().indexOf("win") >= 0);
+
+    }
+
+    public static boolean isMac() {
+        return (osName().toLowerCase().indexOf("mac") >= 0);
+
+    }
+
+    public static boolean isUnix() {
+        String osl = osName().toLowerCase();
+        return (osl.indexOf("nix") >= 0 || osl.indexOf("nux") >= 0 || osl.indexOf("aix") > 0 );
+
+    }
+
+    public static boolean isSolaris() {
+        return (osName().toLowerCase().indexOf("sunos") >= 0);
+    }
 
 
 
@@ -162,43 +222,34 @@ public class SYSUtils {
     }
 
 
-    public static class bins {
-        public static final String NODE_JS = which("node").nullable();
-        public static final String CHROME;
-        public static final String FIREFOX = which("firefox").nullable();
-        public static final String ANY_BROWSER;
-        static {
-            String[] vars = new String[]{"chrome", "chromium-browser"};
-            String c = null;
-            for (String s: vars){
-                Result r = which(s);
-                if (r.validExe()){
-                   c = r.stdout();
-                   break;
-                }
-            }
-            CHROME = c;
 
-            if (CHROME != null){
-                ANY_BROWSER = CHROME;
-            }
-            else if (FIREFOX != null){
-                ANY_BROWSER = FIREFOX;
-            }
-            else {
-                ANY_BROWSER = null;
+
+    public static void open(String path) {
+        File f = new File(path);
+        ContentType contentType = ContentType.search(f);
+        for (String s: contentType.processes()){
+            File proc = new File(s);
+            if (proc.exists() && proc.canExecute()){
+                exec(new String[]{proc.getAbsolutePath(), path}, null, true, true);
+                return;
             }
         }
     }
 
 
+
+
+
+
     public static class Result {
+        private final String args[];
         private final String o;
         private final String e;
 
-        public Result(String o, String e){
+        public Result(String args[], String o, String e){
             this.o = o;
             this.e = e;
+            this.args = args;
         }
 
         public boolean validExe(){
@@ -222,6 +273,21 @@ public class SYSUtils {
         }
 
 
+        public String toJson(){
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("{").append("\"validExe\":").append(validExe()).append(",")
+                    .append("\"stdout\":").append("\"" + jsonEscape(o) + "\"").append(",")
+                    .append("\"err\":").append("\"" + jsonEscape(e) + "\"").append(",")
+                    .append("\"args\":[").append(StringUtil.join(args, ",", new StringUtil.JoinIterator<String>() {
+                        @Override
+                        public String toString(String value) {
+                            return "\"" + jsonEscape(value) + "\"";
+                        }
+                    })).append("]}");
+            return sb.toString();
+        }
+
     }
 
 
@@ -230,7 +296,7 @@ public class SYSUtils {
         private final String version;
         private final String arch;
 
-        private OS(String name, String version, String arch){
+        public OS(String name, String version, String arch){
             this.name = name;
             this.version = version;
             this.arch = arch;
@@ -247,15 +313,26 @@ public class SYSUtils {
         public String qualifiedName(){
             return name + " " + version + " " + arch;
         }
+
+        @Override
+        public String toString() {
+            return "{\"name\":" + jsonVal(name) +
+                    ",\"version\":" + jsonVal(version) +
+                    ",\"arch\":" + jsonVal(arch) + "}";
+        }
     }
 
-    public interface ProcessOutputHandler {
-        void handle(InputStream inputStream);
-        void handleErr(InputStream errorStream);
+    public static abstract class ProcessOutputHandler implements CompleteHandler<Process> {
+        public abstract void handle(InputStream inputStream);
+        public abstract void handleErr(InputStream errorStream);
+
+        public void onComplete(Process process){
+
+        };
     }
 
 
-    public abstract static class ProcessLineReader implements ProcessOutputHandler{
+    public abstract static class ProcessLineReader extends ProcessOutputHandler {
 
 
         private LineIterator stdoutIterator;
@@ -280,12 +357,12 @@ public class SYSUtils {
 
         @Override
         public final void handle(InputStream inputStream) {
-            StreamUtil.readLineByLine(inputStream, stdoutIterator);
+            readLineByLine(inputStream, stdoutIterator);
         }
 
         @Override
         public final void handleErr(InputStream errorStream) {
-            StreamUtil.readLineByLine(errorStream, errIterator);
+            readLineByLine(errorStream, errIterator);
         }
 
 

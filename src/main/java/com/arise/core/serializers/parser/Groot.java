@@ -1,21 +1,35 @@
 package com.arise.core.serializers.parser;
 
-import com.arise.core.models.DeviceStat;
+import com.arise.core.tools.Arr;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapObj;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import static com.arise.core.tools.TypeUtil.*;
+import static com.arise.core.tools.TypeUtil.isBoolean;
+import static com.arise.core.tools.TypeUtil.isBooleanTrue;
+import static com.arise.core.tools.TypeUtil.isNull;
+import static com.arise.core.tools.TypeUtil.isNumber;
+import static com.arise.core.tools.TypeUtil.isNumericSequence;
+import static com.arise.core.tools.TypeUtil.toNumber;
 
 public class Groot {
 
   public static Object decodeBytes(byte[] in, int firstIndex, int offset, Syntax s){
     //TODO improve this
 
-    debug("IN", in, firstIndex, offset);
+//    debug("IN", in, firstIndex, offset);
 
     while (s.isWhitespace(in[firstIndex])){
       firstIndex++;
@@ -75,65 +89,157 @@ public class Groot {
 
 
   public static String toJson(Object obj) {
-   return  toJson(obj, Syntax.STANDARD);
+    return  toJson(obj, Syntax.STANDARD);
   }
 
-  public static String toJson(Object obj, Syntax s) {
+  public static String toJson(Object obj, Syntax s){
+    GRiter gRiter = new GRiter(new StringWriter(), s);
+    toJson(obj, gRiter);
+    return gRiter.close().toString();
+  }
+
+  public static void toJson(Object obj, GRiter gRiter) {
+
     if (isNull(obj)){
-      return "null";
+      gRiter.writeNull();
     }
-    if (isNumber(obj)){
-      return obj.toString();
-    }
-
-    if (isBoolean(obj)){
-      return isBooleanTrue(obj) ? s.vtrue() : s.vfalse();
+    else if (isNumber(obj)){
+      gRiter.writeNumber(obj);
     }
 
-    //TODO improve this
-    if (obj instanceof String){
-      return "\"" + escapeToString(obj) + "\"";
+    else if ("true".equals(obj.toString()) || "false".equals(obj.toString())){
+      gRiter.writeBoolean(obj);
     }
 
-    boolean isArray = TypeUtil.isSingleKeyIterable(obj);
-
-    StringBuilder sb = new StringBuilder();
-    char end;
-    if (isArray){
-      sb.append(s.a1());
-      end = s.a2();
-    } else {
-      sb.append(s.o1());
-      end = s.o2();
+    else if (obj instanceof CharSequence){
+      gRiter.writeString(obj);
     }
 
+    else {
+      boolean isArray = TypeUtil.isSingleKeyIterable(obj);
 
-    TypeUtil.forEach(obj, new IteratorHandler() {
-      @Override
-      public void found(Object key, Object value, int index) {
 
-        if (isArray){
-          sb.append(toJson(value, s));
-        } else {
-          sb.append("\"")
-              .append(escapeToString(key))
-              .append("\":")
-              .append(toJson(value, s));
-        }
-        sb.append(",");
+      if (isArray){
+        gRiter.writeArrayStart();
+      } else {
+        gRiter.writeObjectStart();
       }
-    }, false, getJsonIgnoreAnnotationsAnnotations());
 
 
-    sb.setCharAt(sb.length() - 1, end);
-    return sb.toString();
+      final int[] i = {-1};
+      TypeUtil.forEach(obj, new IteratorHandler() {
+        @Override
+        public void found(Object key, Object value, int index) {
+
+          i[0]++;
+          if (i[0] > 0){
+            gRiter.write(",");
+          }
+
+          if (isArray){
+            toJson(value, gRiter);
+          } else {
+            gRiter.write("\"")
+                    .write(StringUtil.jsonEscape(String.valueOf(key)))
+                    .write("\":");
+            toJson(value, gRiter);
+          }
+        }
+
+      }, false);
+
+      if (isArray){
+        gRiter.writeArrayEnd();
+      } else {
+        gRiter.writeObjectEnd();
+      }
+
+    }//exit else
   }
 
 
 
-  private static String escapeToString(Object s){
-    return String.valueOf(s);
+
+  static class GRiter {
+    private final Writer writer;
+    private final Syntax s;
+
+    public GRiter(Writer writer, Syntax syntax){
+      this.writer = writer;
+      this.s = syntax;
+    }
+
+    public GRiter close(){
+      try {
+        writer.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return this;
+    }
+
+    public GRiter writeNull() {
+      return write("null");
+    }
+
+    public GRiter writeNumber(Object obj) {
+      return write(obj.toString());
+    }
+
+    private GRiter write(String bytes){
+      try {
+        writer.write(bytes);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return this;
+    }
+
+    private GRiter write(char c){
+      try {
+        writer.write(c);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return this;
+    }
+
+    public GRiter writeBoolean(Object obj) {
+      boolean b = (boolean) obj;
+      if (b){
+        return write(s.vtrue());
+      }
+      return write(s.vfalse());
+    }
+
+    public GRiter writeString(Object obj) {
+      return write( "\"" + StringUtil.jsonEscape((String) obj) + "\"");
+    }
+
+    public GRiter writeArrayStart() {
+      return write(s.a1());
+    }
+
+    public GRiter writeObjectStart() {
+      return write(s.o1());
+    }
+
+    @Override
+    public String toString() {
+      return writer.toString();
+    }
+
+    public GRiter writeArrayEnd() {
+      return write(s.a2());
+    }
+
+    public GRiter writeObjectEnd() {
+      return write(s.o2());
+    }
   }
+
+
+
 
 
   static class BufHelper {
@@ -223,7 +329,7 @@ public class Groot {
 
 
   private static Object decodeObject(byte[] in, int from, int to, Syntax s) {
-    Obj response = new Obj();
+    MapObj response = new MapObj();
 
 
     int cursor = from;
@@ -259,7 +365,7 @@ public class Groot {
   }
 
 
-  private static void debug(String prefix, byte[] bytes, int from, int to){
+  private static String debug(String prefix, byte[] bytes, int from, int to){
 //    StringBuilder full = new StringBuilder();
     StringBuilder sb = new StringBuilder();
     for (int i = from; i < to; i++){
@@ -267,6 +373,7 @@ public class Groot {
     }
 //    System.out.println(" FULL " + new String(bytes));
     System.out.println(prefix + "  (" + from + " to " + to + ")=" + sb.toString());
+    return sb.toString();
   }
 
 
@@ -296,13 +403,20 @@ public class Groot {
    return decodeBytes(in.getBytes(), 0, in.getBytes().length, Syntax.STANDARD);
   }
 
-  public static class Obj extends HashMap<String, Object> {
-
+  public static Object decodeBytes(byte in[]){
+    return decodeBytes(in, 0, in.length, Syntax.STANDARD);
   }
 
-  public static class Arr extends ArrayList {
-
-  }
+//  public static class Obj extends LinkedHashMap<String, Object> {
+//
+//    public String getString(String name) {
+//      return String.valueOf(get(name));
+//    }
+//  }
+//
+//  public static class Arr extends ArrayList {
+//
+//  }
 
   public interface Syntax {
 

@@ -2,30 +2,52 @@ package com.arise;
 
 
 import com.arise.astox.net.models.AbstractPeer;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
+import java.util.Random;
 
 public class StressTests {
+    public static final int MAX_Y = 400;
+    public static final int MAX_X = 400;
+    public static final int FIVE_SECONDS = 5000;
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
+
+//        Random random = new Random();
+//        java.awt.Robot r = null;
+//        try {
+//            r = new java.awt.Robot();
+//            java.awt.GraphicsEnvironment graphicsEnvironment = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+//            java.awt.GraphicsDevice graphicsDevice = graphicsEnvironment.getScreenDevices()[0];
+//            for (int i = 0; i < graphicsDevice.getDisplayMode().getHeight(); i++){
+//                r.mouseMove(0, i);
+//                System.out.println("i = " + i );
+//                Thread.sleep(10);
+//
+//            }
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
 
 
-        for (int i = 0; i < Integer.valueOf(args[2]); i++){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        tst(args[0], Integer.valueOf(args[1]), "true".equals(args[3]));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
+//        for (int i = 0; i < Integer.valueOf(args[2]); i++){
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        tst(args[0], Integer.valueOf(args[1]), "true".equals(args[3]));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+//        }
 
     }
 

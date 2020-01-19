@@ -1,0 +1,19 @@
+[
+  {
+    "id": "closeProcessByName",
+    "arguments": ["processName"],
+    "parent": "process-exec",
+    "properties": {
+      "process-args": ["taskkill", "/IM", "{processName}", "/F"]
+    }
+  },
+
+  {
+    "id": "closeProcessByPid",
+    "arguments": ["pid"],
+    "parent": "process-exec",
+    "properties": {
+      "process-args": ["taskkill", "/PID", "{pid}", "/F"]
+    }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "eventName": "CMD_SUCCESS",
+    "execute": [
+      "!async @base64Encode {auth} | @onSucccess CMD_SUCCESS | @onFail CMD_FAILED ",
+      {
+        "command-id": "print",
+        "arguments": ["hello 2", "hello from print2"],
+        "async": true
+      }
+    ]
+
+  }
+]

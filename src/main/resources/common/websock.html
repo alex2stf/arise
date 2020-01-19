@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8"/>
 </head>
-
+AICI
 <!--<video id="vid_container" cwidth="320" height="240" controls="controls" autoplay="autoplay">-->
     <!--<source src="VID_0_20181217_160625.mp4" type="video/mp4">-->
 <!--</video>-->
@@ -22,7 +22,7 @@
 
 
 <!--<video autoplay id="my-video" class="video-js" controls preload="auto" width="640" height="360"-->
-       <!--poster="https://ubcdn.co/static/images/enterprise/overview/unifi-video-overview-2x.png" data-setup="{}">-->
+       <!--poster="https://ubcdn.co/static/images/enterprise/overview/unifi-video-overview-2x.png" data-refreshUI="{}">-->
     <!--<source src="rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov" type='rtmp/mp4'>-->
     <!--<p class="vjs-no-js">-->
         <!--To view this video please enable JavaScript, and consider upgrading to a web browser that-->
@@ -77,10 +77,11 @@ Client requested:
 <script>
 
     // var ws = new WebSocket("ws://localhost:7004");
-    var url = "{{ws_host}}://localhost:{{port}}";
-    // var url = "{{ws_host}}://localhost:6003";
+    // var url = "{{ws_host}}://localhost:{{port}}";
+    var url = "{{ws_host}}://localhost:8778";
+    // var url = "{{ws_host}}://localhost:8221";
     // var url = "ws://localhost:7003";
-    var msgs = {{{test_messages}}};
+    var msgs = {{test_messages}};
     var tmsg = {};
     var totalSize = 0;
     var tps = 0;

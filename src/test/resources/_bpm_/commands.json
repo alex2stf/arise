@@ -1,0 +1,29 @@
+[
+    {
+      "id": "CREATE_NODE",
+      "arguments": ["rootApi", "auth"],
+      "type": "rest-template",
+      "variables": {
+        "encodedAuth": "!async @base64Encode {auth} | @onSuccess CMD_SUCCESS | @onFail CMD_FAILED ",
+        "print1": "@print 'hello'",
+        "print2": {
+             "command-id": "print",
+             "arguments": ["hello 2", "hello from print2"],
+             "async": true,
+             "onSuccess": "CMD_SUCCESS",
+             "onFail": "CMD_FAILED"
+        }
+      },
+      "properties": {
+        "method": "POST",
+        "url": "{rootApi}/nodes",
+        "headers": {
+          "Authorization": "{encodedAuth}"
+        },
+        "body": {
+          "description": "create node task \\{a\\}"
+        }
+      }
+    }
+
+]

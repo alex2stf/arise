@@ -192,12 +192,12 @@ public class CCompiler {
 
                 System.out.println(StringUtil.join(args, " "));
 
-                SYSUtils.exec(args, new ProcessLineReader() {
-                    @Override
-                    public void onStdoutLine(int line, String content) {
-                        System.out.println(content);
-                    }
-                }, true);
+//                SYSUtils.exec(args, new ProcessLineReader() {
+//                    @Override
+//                    public void onStdoutLine(int line, String content) {
+//                        System.out.println(content);
+//                    }
+//                }, true);
             } else {
                 System.out.println(main.getAbsolutePath() + " not found");
             }
@@ -210,12 +210,12 @@ public class CCompiler {
 
         for (File f: executables){
             if (s.equals(f.getName())){
-                SYSUtils.exec(new String[]{f.getAbsolutePath()}, new ProcessLineReader() {
-                    @Override
-                    public void onStdoutLine(int line, String content) {
-                        System.out.println(content);
-                    }
-                }, true);
+//                SYSUtils.exec(new String[]{f.getAbsolutePath()}, new ProcessLineReader() {
+//                    @Override
+//                    public void onStdoutLine(int line, String content) {
+//                        System.out.println(content);
+//                    }
+//                }, true);
                 return this;
             }
         }

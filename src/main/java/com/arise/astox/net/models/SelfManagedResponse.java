@@ -1,6 +1,6 @@
 package com.arise.astox.net.models;
 
-import com.arise.astox.net.http.HttpResponse;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer.WriteCompleteEvent;
 import com.arise.core.tools.Mole;
 

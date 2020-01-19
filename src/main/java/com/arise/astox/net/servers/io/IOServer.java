@@ -2,13 +2,14 @@ package com.arise.astox.net.servers.io;
 
 
 import com.arise.astox.net.models.StreamedServer;
+
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.net.ssl.SSLServerSocketFactory;
 
 /**
  * Created by alex on 12/21/2017.
@@ -32,7 +33,7 @@ public class IOServer extends StreamedServer<ServerSocket, Socket> {
                     return sslServerSocketFactory.createServerSocket(getPort());
                 }
             } else {
-                if (getHost() != null){
+                if (getHost() != null && !"localhost".equals(getHost())){
                     InetAddress serverAddr = InetAddress.getByName(getHost());
                     return new ServerSocket(getPort(), 20, serverAddr);
                 } else {

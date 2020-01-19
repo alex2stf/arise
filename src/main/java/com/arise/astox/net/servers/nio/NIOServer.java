@@ -1,26 +1,22 @@
 package com.arise.astox.net.servers.nio;
 
-import static com.arise.astox.net.servers.nio.NIOChannelData.Type.CLOSEABLE;
-import static com.arise.astox.net.servers.nio.NIOChannelData.Type.DUPLEX;
-import static com.arise.astox.net.servers.nio.NioSslPeer.closeConnection;
-import static com.arise.astox.net.servers.nio.NioSslPeer.doHandshake;
-import static com.arise.astox.net.servers.nio.NioSslPeer.enlargeApplicationBuffer;
-import static com.arise.astox.net.servers.nio.NioSslPeer.enlargePacketBuffer;
-import static com.arise.astox.net.servers.nio.NioSslPeer.handleBufferUnderflow;
-import static com.arise.astox.net.servers.nio.NioSslPeer.handleEndOfStream;
-
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ConnectionSolver;
 import com.arise.astox.net.models.DuplexDraft;
+import com.arise.astox.net.models.ReadCompleteHandler;
 import com.arise.astox.net.models.ServerMessage;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerRequestBuilder;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.servers.draft_6455.WebSocketException;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -31,9 +27,15 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLEngineResult;
-import javax.net.ssl.SSLException;
+
+import static com.arise.astox.net.servers.nio.NIOChannelData.Type.CLOSEABLE;
+import static com.arise.astox.net.servers.nio.NIOChannelData.Type.DUPLEX;
+import static com.arise.astox.net.servers.nio.NioSslPeer.closeConnection;
+import static com.arise.astox.net.servers.nio.NioSslPeer.doHandshake;
+import static com.arise.astox.net.servers.nio.NioSslPeer.enlargeApplicationBuffer;
+import static com.arise.astox.net.servers.nio.NioSslPeer.enlargePacketBuffer;
+import static com.arise.astox.net.servers.nio.NioSslPeer.handleBufferUnderflow;
+import static com.arise.astox.net.servers.nio.NioSslPeer.handleEndOfStream;
 
 
 /**
@@ -90,6 +92,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
      */
     public void start() throws Exception {
 
+        System.out.println("NIO START");
 
 
         selector = SelectorProvider.provider().openSelector();
@@ -130,7 +133,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
 
                 iterateThroughMessages();
             }
-
+            System.out.println("loop, wait for keys isActive() " + isActive());
         }
 
 
@@ -188,14 +191,10 @@ public class NIOServer extends AbstractServer<SocketChannel> {
     }
 
     @Override
-    protected ServerRequest extractSingleRequestBeforeValidation(ServerRequestBuilder builder, SocketChannel socketChannel) throws Exception {
-        return builder.readHeader(socketChannel);
+    protected void solveInterceptor(ServerRequestBuilder builder, SocketChannel socketChannel, ReadCompleteHandler<ServerRequest> handler) {
+            builder.readSocketChannel(socketChannel, handler);
     }
 
-    @Override
-    protected void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, SocketChannel socketChannel) throws Exception {
-        builder.solveRequestAfterValidation(request, socketChannel);
-    }
 
 
     /**
@@ -206,8 +205,8 @@ public class NIOServer extends AbstractServer<SocketChannel> {
      * @param key - the key dedicated to the {@link ServerSocketChannel} used by the server to listen to new connection requests.
      * @throws Exception
      */
-    private void accept(SelectionKey key) throws Exception {
-        SocketChannel socketChannel = ((ServerSocketChannel) key.channel()).accept();
+    private void accept(final SelectionKey key) throws Exception {
+        final SocketChannel socketChannel = ((ServerSocketChannel) key.channel()).accept();
         socketChannel.configureBlocking(false);
         log.debug("New connection request from " + StringUtil.dump(socketChannel));
         //SSL block
@@ -216,13 +215,26 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             engine.setUseClientMode(false);
             engine.beginHandshake();
 
+            doHandshake(socketChannel, engine, key, this, new ReadCompleteHandler<ServerRequest>() {
+                @Override
+                public void onReadComplete(ServerRequest data) {
+                    try {
 
-            if (doHandshake(socketChannel, engine, key, this)) {
-                socketChannel.register(selector, SelectionKey.OP_READ, key.attachment());
-            } else {
-                socketChannel.close();
-                log.debug("Connection closed due to handshake failure.");
-            }
+
+//                        socketChannel.configureBlocking(false);
+                       SelectionKey result = socketChannel.register(key.selector(), SelectionKey.OP_READ, key.attachment());
+                        read(result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError() {
+                    Util.close(socketChannel);
+                    log.debug("Connection closed due to handshake failure.");
+                }
+            });
         }
 
         else {
@@ -244,6 +256,8 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         byte [] bytes = null;
 
         ServerResponse response = channelData.getResponse();
+        System.out.println("RESPONSE: ");
+
         if (channelData.isCloseable()){
             System.out.println("WRITE HTTP TO " + StringUtil.dump(socketChannel));
             if (response == null){
@@ -253,7 +267,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             if (response.isSelfManageable()){
                 final ServerResponse finalResponse = response;
                 final NIOServer self = this;
-                ThreadUtil.startThread(new Runnable() {
+                ThreadUtil.fireAndForget(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -300,6 +314,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         NIOChannelData channelData = (NIOChannelData) key.attachment();
         SSLEngine engine = channelData.getSslEngine();
+
         if (isSecure()){
             try {
                 readSecure(key, socketChannel, channelData, engine, this);
@@ -317,17 +332,30 @@ public class NIOServer extends AbstractServer<SocketChannel> {
     }
     public static final int RCVBUF = 16384;
 
-    private void readStandard(NIOChannelData channelData, SocketChannel socketChannel, SelectionKey key) throws Exception {
+    private void readStandard(final NIOChannelData channelData, final SocketChannel socketChannel, final SelectionKey key) throws Exception {
         if (channelData.isCloseable()){
-            ServerRequest serverRequest = extractRequestBeforeValidation(socketChannel);
-            if (serverRequest == null || !requestHandler.validate(serverRequest)){
-                Util.close(socketChannel);
-                key.cancel();
-                return;
-            }
-            solveRequestAfterValidation(serverRequest, socketChannel);
-            channelData.setRequest(serverRequest);
-            postRead(channelData, socketChannel, null, null, key);
+            readPayload(socketChannel, new ReadCompleteHandler<ServerRequest>() {
+                @Override
+                public void onReadComplete(ServerRequest serverRequest) {
+                    if (serverRequest == null || !requestHandler.validate(serverRequest)){
+                        Util.close(socketChannel);
+                        key.cancel();
+                        return;
+                    }
+
+                    channelData.setRequest(serverRequest);
+                    try {
+                        postRead(channelData, socketChannel, null, null, key);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (WebSocketException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+
         } else { //DUPLEX
             int bulkLimit = RCVBUF;
             int read;
@@ -395,38 +423,48 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             log.debug("Goodbye client!");
         }
 
-        if (readSuccess){
+        if (readSuccess || bytesRead == 0){
             nioBytesSolver.add(peerAppData);
             sslServer.postReadSSL(channelData, nioBytesSolver.getAll(), key, socketChannel, engine);
         }
     }
 
-    private void postReadSSL(NIOChannelData channelData, byte[] finallyBytes, SelectionKey key, SocketChannel socketChannel, SSLEngine engine) throws IOException, WebSocketException {
+    private void postReadSSL(final NIOChannelData channelData, final byte[] finallyBytes, final SelectionKey key, final SocketChannel socketChannel, final SSLEngine engine) throws IOException, WebSocketException {
         if (channelData.isCloseable()){
             ByteBuffer buffer = ByteBuffer.allocate(finallyBytes.length);
             buffer.put(finallyBytes);
-            ServerRequest request = extractAndValidate(buffer);
-            if (request == null){
-                closeHttpConnection(key, socketChannel, engine);
-                return;
-            }
-            channelData.setRequest(request);
+            parseByteBuffer(buffer, new ReadCompleteHandler<ServerRequest>() {
+                @Override
+                public void onReadComplete(ServerRequest request) {
+                    System.out.println("SSL READ COMPLETE");
+                    if (request == null){
+                        closeHttpConnection(key, socketChannel, engine);
+                        return;
+                    }
+                    channelData.setRequest(request);
+                    try {
+                        postRead(channelData, socketChannel, finallyBytes, engine, key);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (WebSocketException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } else {
+            postRead(channelData, socketChannel, finallyBytes, engine, key);
         }
-        postRead(channelData, socketChannel, finallyBytes, engine, key);
+
     }
 
 
-    @Override
-    public ServerRequest extractAndValidate(Object input) {
+    public ServerRequest parseByteBuffer(Object input, ReadCompleteHandler<ServerRequest> handler) {
         for (ServerRequestBuilder b: getBuilders()){
-            ServerRequest request = null;
             try {
-                request = b.fromByteBuffer((ByteBuffer) input);
+                b.readByteBuffer((ByteBuffer) input, handler);
             } catch (Exception e) {
                 fireError(e);
-            }
-            if (request != null){
-                return request;
             }
         }
         return null;

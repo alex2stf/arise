@@ -1,97 +1,79 @@
 package com.arise.astox.net.models;
 
+import com.arise.astox.net.clients.JHttpClient;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.models.CompleteHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
-    protected ServerResponseBuilder builder;
-    protected volatile boolean connected;
-
-    public ServerResponseBuilder getBuilder() {
-        return builder;
-    }
-
-    public AbstractClient setBuilder(ServerResponseBuilder serverResponseBuilder) {
-        this.builder = serverResponseBuilder;
-        return this;
-    }
-
-    protected abstract CONNECTION getConnection() throws Exception;
-
-    protected CONNECTION gConn;
 
 
-    public void connect(final CompletionHandler<CONNECTION> completionHandler){
-        ThreadUtil.startThread(new Runnable() {
+    protected abstract CONNECTION getConnection(final I request) throws Exception;
+
+    public void connect(final I request, final CompleteHandler<CONNECTION> connectHandler){
+        ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                if (!connected){
-                    try {
-                        gConn = getConnection();
-                    } catch (Exception e) {
-                       onError(e);
-                    }
-                }
-                completionHandler.onComplete(gConn);
-
-            }
-        });
-    }
-
-
-
-    //TODO make queue
-
-    /**
-     *
-     * @param request
-     * @param completionHandler
-     */
-    public void send(final I request, final CompletionHandler<O> completionHandler){
-        this.connect(new CompletionHandler<CONNECTION>() {
-            @Override
-            public void onComplete(CONNECTION localConection) {
-                OutputStream outputStream = getOutputStream(localConection);
                 try {
-                    outputStream.write(request.getBytes());
-                } catch (IOException e) {
-                    onError(e);
-                }
-                InputStream inputStream = getInputStream(localConection);
-                if (inputStream != null) {
-                    ServerResponse response = builder.buildFromInputStream(inputStream);
-                    completionHandler.onComplete((O) response);
-                    Util.close(localConection);
+                    final CONNECTION connection = getConnection(request);
+                    System.out.println("connected");
+                    connectHandler.onComplete(connection);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
 
 
-    public void send(final I request){
-        this.send(request, new CompletionHandler<O>() {
+    public void send(final I request, final CompleteHandler<CONNECTION> handler){
+        connect(request, new CompleteHandler<CONNECTION>() {
             @Override
-            public void onComplete(O response) {
-                System.out.println("SENT DONE " + response);
+            public void onComplete(CONNECTION connection) {
+                write(connection, request);
+                handler.onComplete(connection);
             }
         });
     }
 
+    protected abstract void write(CONNECTION connection,  I request);
+    protected abstract void read(CONNECTION connection, CompleteHandler<O> responseHandler);
 
-    protected abstract OutputStream getOutputStream(CONNECTION connection);
-    protected abstract InputStream getInputStream(CONNECTION connection);
 
+
+
+
+    public void sendAndReceive(final I request, final CompleteHandler<O> responseHandler){
+        this.send(request, new CompleteHandler<CONNECTION>() {
+            @Override
+            public void onComplete(CONNECTION data) {
+                read(data, responseHandler);
+            }
+        });
+    }
 
 
     protected void onError(Throwable t){
-        t.printStackTrace();
+       if (errorHandler != null){
+           errorHandler.onComplete(t);
+       }
     }
 
-    public interface CompletionHandler<O> {
-        void onComplete(O response);
+
+
+    private CompleteHandler<Throwable> errorHandler = null;
+
+
+    public AbstractClient setErrorHandler(CompleteHandler<Throwable> errorHandler) {
+        this.errorHandler = errorHandler;
+        return this;
     }
+
+    public void close(){
+
+    };
+
+
+
+
 }

@@ -1,0 +1,18 @@
+<div id="{{id}}_FG" class="form-group">
+    {{#label}}
+    <label for="{{id}}"> {{label}} </label>
+    {{/label}}
+    <{{ctxInputType}} id="{{id}}"
+    {{^ctxRequiresComplexComposition}}
+         type="{{type}}"
+         {{#ctxValue}}value="{{ctxValue}}"{{/ctxValue}}
+    {{/ctxRequiresComplexComposition}}
+    class="form-control"
+     {{#readonly}}readonly{{/readonly}}
+    {{#description}}aria-describedby="{{id}}_help"{{/description}}
+    >{{#ctxRequiresComplexComposition}}{{#ctxValue}}{{ctxValue}}{{/ctxValue}}</{{ctxInputType}}>{{/ctxRequiresComplexComposition}}
+    {{#description}}
+    <small id="{{id}}_help" class="form-text text-muted">{{description}}</small>
+    {{/description}}
+</div>
+

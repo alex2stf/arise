@@ -1,26 +1,24 @@
 package com.arise.astox.net.servers;
 
-import com.arise.astox.net.serviceHelpers.DefaultServerHandler;
-import com.arise.core.exceptions.LogicalException;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-
-import com.arise.core.tools.StreamUtil;
-import com.arise.astox.net.http.HttpClient;
-import com.arise.astox.net.http.HttpEntity.Protocol;
-import com.arise.astox.net.http.HttpRequest;
-import com.arise.astox.net.http.HttpResponse;
-import com.arise.astox.net.models.AbstractClient.CompletionHandler;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.net.ssl.SSLContext;
+import com.arise.canter.Registry;
+import com.arise.corona.utils.CoronaServerHandler;
+import com.arise.core.exceptions.LogicalException;
+import com.arise.core.serializers.parser.Groot;
+import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
 
-public class ServerTestHandler extends DefaultServerHandler {
+import javax.net.ssl.SSLContext;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ServerTestHandler extends CoronaServerHandler {
     private static final Mole log = new Mole(ServerTestHandler.class);
     private static final Map<String, String> msgs = new HashMap<>();
 
@@ -50,28 +48,23 @@ public class ServerTestHandler extends DefaultServerHandler {
 
     @Override
     public void postInit(AbstractServer server) {
-        super.postInit(server);
-        HttpClient httpClient = null;
-        try {
-            httpClient = new HttpClient("localhost", 9221);
-                //HttpClient.httpClientWithSslTrustAll("localhost", 9222);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(server + "post init");
+//        super.postInit(server);
+//        HttpClient httpClient = null;
+//        try {
+//            httpClient = new HttpClient("localhost", 9221);
+//                //HttpClient.httpClientWithSslTrustAll("localhost", 9222);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        List<String> pathParams = new ArrayList<>();
+//        pathParams.add("ping");
+//
+//        HttpRequest httpRequest = new HttpRequest("GET", pathParams, new HashMap<String, List<String>>(), new HashMap<String, String>(), Protocol.HTTP_1_1.text());
+//
 
-
-        List<String> pathParams = new ArrayList<>();
-        pathParams.add("ping");
-
-        HttpRequest httpRequest = new HttpRequest("GET", pathParams, new HashMap<String, List<String>>(), new HashMap<String, String>(), Protocol.HTTP_1_1.text());
-
-
-        httpClient.send(httpRequest, new CompletionHandler<HttpResponse>() {
-            @Override
-            public void onComplete(HttpResponse response) {
-                System.out.println(response);
-            }
-        });
 
 //        JHttpClient.disableSSL();
 //
@@ -119,14 +112,15 @@ public class ServerTestHandler extends DefaultServerHandler {
         }
         
         String text = StreamUtil.toString(FileUtil.findStream("src/main/resources#common/websock.html"));
-//        Template tmpl = Mustache.compiler().compile(text);
-//        Map<String, String> args = new HashMap<String, String>();
-//        args.put("port", String.valueOf(server.getPort()));
-//        args.put("ws_host", server.getSslContext() != null ? "wss" : "ws");
-//        args.put("request_debug", request.toString());
-//        args.put("test_messages", new Gson().toJson(msgs));
-//
-        return HttpResponse.html(text);
+        Whisker whisker = new Whisker();
+
+        Map<String, String> args = new HashMap<String, String>();
+        args.put("port", String.valueOf(server.getPort()));
+        args.put("test_messages", Groot.toJson(msgs));
+        args.put("ws_host", server.getSslContext() != null ? "wss" : "ws");
+        args.put("request_debug", request.toString());
+
+        return HttpResponse.html(whisker.compile(text, args));
     }
 
     @Override

@@ -1,13 +1,15 @@
 package com.arise.astox.net.models;
 
-import static com.arise.core.tools.Util.close;
-
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
+
+import static com.arise.core.tools.Util.close;
 
 public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends AbstractServer<InputStream> {
 
@@ -59,7 +61,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
             } finally {
                 if (connection != null){
                     final CONNECTION finalConnection = connection;
-                    ThreadUtil.startThread(new Runnable() {
+                    ThreadUtil.fireAndForget(new Runnable() {
                         @Override
                         public void run() {
                             handle(finalConnection);
@@ -72,34 +74,53 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
-    protected void handle(CONNECTION connection){
+
+    protected void handle(final CONNECTION connection){
         try {
 
-            //fa openStream si open just once
 
             InputStream inputStream = getInputStream(connection);
 
 
-            ServerRequest serverRequest = extractRequestBeforeValidation(inputStream);
-            if (serverRequest == null){
-                log.warn("NULL server request");
-                return;
-            }
-            if (!requestHandler.validate(serverRequest)){
-                close(connection);
-                return;
-            }
+            readPayload(inputStream, new ReadCompleteHandler<ServerRequest>() {
+                @Override
+                public void onReadComplete(ServerRequest serverRequest) {
 
-            solveRequestAfterValidation(serverRequest, inputStream);
-            DuplexDraft draft = requestToDuplex(serverRequest);
+                    System.out.println("RECEIVED " + serverRequest);
+                    if (serverRequest == null){
+                        log.warn("NULL server request");
+                        return;
+                    }
+                    if (!requestHandler.validate(serverRequest)){
+                        close(connection);
+                        return;
+                    }
 
-            OutputStream outputStream = getOutputStream(connection);
-            if (draft != null){
-                handleDuplex(connection, draft, serverRequest, outputStream);
-            }
-            else {
-                handleNonDuplex(serverRequest, connection, outputStream);
-            }
+                    DuplexDraft draft = requestToDuplex(serverRequest);
+
+                    OutputStream outputStream = getOutputStream(connection);
+
+                    try {
+                        if (draft != null){
+                            handleDuplex(connection, draft, serverRequest, outputStream);
+                        }
+                        else {
+                            if (outputStream == null){
+                                log.error("Nothing to write into a null outputstream");
+                                close(connection);
+                                return;
+                            }
+                            handleNonDuplex(serverRequest, connection, outputStream);
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+
+
         } catch (Exception ex){
             fireError(ex);
         }
@@ -152,8 +173,16 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
-    private void handleNonDuplex(ServerRequest serverRequest, CONNECTION connection, OutputStream outputStream) throws IOException {
-        ServerResponse response = requestHandler.getResponse(this, serverRequest);
+    protected void handleNonDuplex(ServerRequest serverRequest, CONNECTION connection, OutputStream outputStream) throws IOException {
+        ServerResponse response;
+        try {
+            response = requestHandler.getResponse(this, serverRequest);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            response = requestHandler.getDefaultResponse(this);
+        }
+
+        System.out.println("RESPONSE " + response);
         if (response != null){
             response.setServerName(getName());
             if (response.isSelfManageable()){
@@ -161,11 +190,23 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
             } else {
                try {
                    outputStream.write(response.bytes());
-               }catch (SocketException e){
+               } catch (SocketException e){
                    if (e.getMessage().contains("closed by remote host")){
                        log.warn(e.getMessage());
                        close(connection);
-                   } else {
+                   }
+
+                   else {
+                       throw e;
+                   }
+               } catch (Exception e){
+                   if ( (StringUtil.hasContent(e.getMessage())) && e.getMessage().contains("connection was aborted by the software in your host machine"))
+                   {
+                       log.warn(e.getMessage());
+                       close(connection);
+                   }
+                    else
+                   {
                        throw e;
                    }
                }
@@ -178,14 +219,20 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
     @Override
-    protected ServerRequest extractSingleRequestBeforeValidation(ServerRequestBuilder builder, InputStream data) throws Exception {
-        return builder.readHeader(data);
+    protected void solveInterceptor(ServerRequestBuilder builder, InputStream data, ReadCompleteHandler<ServerRequest> completeHandler) {
+        builder.readInputStream(data, completeHandler);
     }
 
-    @Override
-    protected void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, InputStream data) throws Exception {
-        builder.solveRequestAfterValidation(request, data);
-    }
+
+    //    @Override
+//    protected ServerRequest extractSingleRequestBeforeValidation(ServerRequestBuilder builder, InputStream data) throws Exception {
+//        return builder.readHeader(data);
+//    }
+//
+//    @Override
+//    protected void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, InputStream data) throws Exception {
+//        builder.solveRequestAfterValidation(request, data);
+//    }
 
 
     protected abstract InputStream getInputStream(CONNECTION connection);

@@ -120,7 +120,7 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
 
     protected void firePostInit(){
         final AbstractServer s = this;
-        ThreadUtil.startThread(new Runnable() {
+        ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
                 stateObserver.postInit(s);
@@ -132,41 +132,32 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
         stateObserver.onError(this, t);
     }
 
-    public ServerRequest extractRequestBeforeValidation(READABLE input){
-        for (ServerRequestBuilder b: getBuilders()){
-            ServerRequest request = null;
-            try {
-                request = extractSingleRequestBeforeValidation(b, input);
-            } catch (Exception e) {
-                fireError(e);
-            }
-            if (request != null){
-                return request;
-            }
+
+
+
+    protected void readPayload(READABLE stream, ReadCompleteHandler<ServerRequest> completeHandler){
+        for (ServerRequestBuilder interceptor: getBuilders()){
+            solveInterceptor(interceptor, stream, completeHandler);
         }
-        return null;
-    }
+    };
+
+
+//    public void solveRequestAfterValidation(ServerRequest serverRequest, READABLE input) {
+//        for (ServerRequestBuilder b: getBuilders()){
+//            try {
+//                solveSingleRequestAfterValidation(serverRequest, b,  input);
+//            } catch (Exception e) {
+//                fireError(e);
+//            }
+//        }
+//    }
+
+
+    protected abstract void solveInterceptor(ServerRequestBuilder builder, READABLE data, ReadCompleteHandler<ServerRequest> completeHandler);
+//    protected abstract void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, READABLE data) throws Exception;
 
 
 
-    public void solveRequestAfterValidation(ServerRequest serverRequest, READABLE input) {
-        for (ServerRequestBuilder b: getBuilders()){
-            try {
-                solveSingleRequestAfterValidation(serverRequest, b,  input);
-            } catch (Exception e) {
-                fireError(e);
-            }
-        }
-    }
-
-
-    protected abstract ServerRequest extractSingleRequestBeforeValidation(ServerRequestBuilder builder, READABLE data) throws Exception;
-    protected abstract void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, READABLE data) throws Exception;
-
-
-    public ServerRequest extractAndValidate(Object input){
-        throw new IllegalArgumentException("By default this method should not be called");
-    }
 
     public DuplexDraft<ServerRequest, ServerResponse> requestToDuplex(ServerRequest request){
         for (DuplexDraft<ServerRequest, ServerResponse> draft: duplexDrafts){
@@ -221,6 +212,8 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
         void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection);
         ServerResponse getDefaultResponse(AbstractServer server);
         void onDuplexClose(DuplexDraft.Connection c);
+
+//        ServerResponse serverError(Exception ex);
     }
 
     public abstract static class WriteCompleteEvent {

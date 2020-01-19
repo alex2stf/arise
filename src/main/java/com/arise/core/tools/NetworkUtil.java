@@ -49,7 +49,7 @@ public class NetworkUtil {
 
     public static void inetAddresses(final AddressIterator c){
         final List<InetAddress> rsp = new ArrayList<>();
-        Util.ThreadFactory.asyncTask(new Runnable() {
+        ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
                 List<NetworkInterface> intfs = networkInterfaces();
@@ -168,15 +168,6 @@ public class NetworkUtil {
     public interface AddressIterator {
         void onIterate(InetAddress inetAddress, NetworkInterface networkInterface);
         void onComplete(Iterable<InetAddress> inetAddresses);
-    }
-
-
-
-    public static abstract class AbstractIterator implements AddressIterator {
-        @Override
-        public void onComplete(Iterable<InetAddress> inetAddresses) {
-
-        }
     }
 
     public static abstract class IPIterator {

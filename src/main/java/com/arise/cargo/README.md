@@ -1,1 +1,1 @@
-Cargo is a free tool who generates that piece of code you hate to write
+COde GEneratioN Tools
