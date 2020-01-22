@@ -25,11 +25,11 @@ import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfo implements Serializable {
-    private byte[] emb;
+//    private transient byte[] emb;
+    private transient String name;
     private String albumName;
     private String path;
     private ContentType contentType;
-    private transient String name;
     private String artist;
     private String composer;
     private String title;
@@ -37,6 +37,27 @@ public class ContentInfo implements Serializable {
     private int width = 0;
     private int height = 0;
     private int position = 0;
+    private int duration = 0;
+    private String thumbnailId;
+    private String playlistId;
+
+    public String getPlaylistId() {
+        return playlistId;
+    }
+
+    public ContentInfo setPlaylistId(String playlistId) {
+        this.playlistId = playlistId;
+        return this;
+    }
+
+    public String getThumbnailId() {
+        return thumbnailId;
+    }
+
+    public ContentInfo setThumbnailId(String thumbnailId) {
+        this.thumbnailId = thumbnailId;
+        return this;
+    }
 
     public int getPosition() {
         return position;
@@ -136,18 +157,17 @@ public class ContentInfo implements Serializable {
         return path;
     }
 
-
-
-
-
-
-    public ContentInfo setEmbeddedPic(byte[] emb) {
-        this.emb = emb;
-        return this;
+    public String getAlbumName() {
+        return albumName;
     }
 
-    public byte[] embeddedPic(){
-        return emb;
+    public int getDuration() {
+        return duration;
+    }
+
+    public ContentInfo setDuration(int duration) {
+        this.duration = duration;
+        return this;
     }
 
     public ContentInfo setAlbumName(String albumName) {
@@ -179,9 +199,15 @@ public class ContentInfo implements Serializable {
 
 
 
-    private void addVal(StringBuilder sb, String key, Object val){
+    private void addVal(StringBuilder sb, String key, String val){
         if (val != null){
-            sb.append('"').append(key).append("\":").append(jsonVal(val)).append(",");
+            sb.append('"').append(key).append("\":").append(jsonVal(encodePath(val))).append(",");
+        }
+    }
+
+    private void addVal(StringBuilder sb, String key, int val){
+        if (val > 0){
+            sb.append('"').append(key).append("\":").append(val).append(",");
         }
     }
 
@@ -231,21 +257,30 @@ public class ContentInfo implements Serializable {
         return contentType;
     }
 
+
+    public static String getMediaPath(Map m){
+        String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/").replaceAll("//", "/");
+        return decodePath(src);
+    }
+
     public static ContentInfo fromMap(Map m) {
         ContentInfo i = new ContentInfo();
         i.setAlbumName(MapUtil.getString(m, "A"));
 
 
-        String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/").replaceAll("//", "/");
 
-        i.setPath(decodePath(src));
-        i.setArtist(MapUtil.getString(m, "F"));
-        i.setComposer(MapUtil.getString(m, "X"));
-        i.setTitle(MapUtil.getString(m, "T"));
+
+        i.setPath(getMediaPath(m));
+        i.setArtist(decodeString(m, "F"));
+        i.setComposer(decodeString(m, "X"));
+        i.setThumbnailId(decodeString(m, "Q"));
+        i.setTitle(decodeString(m, "T"));
         i.setVisited(MapUtil.getInt(m, "V", 0));
         i.setWidth(MapUtil.getInt(m, "w", 0));
         i.setHeight(MapUtil.getInt(m, "h", 0));
         i.setPosition(MapUtil.getInt(m, "p", 0));
+        i.setDuration(MapUtil.getInt(m, "g", 0));
+        i.setPlaylistId(decodeString(m, "F"));
 
 
         String cnt = MapUtil.getString(m, "Z");
@@ -254,33 +289,36 @@ public class ContentInfo implements Serializable {
         return i;
     }
 
+    private static String decodeString(Map m, String key){
+        return decodePath(MapUtil.getString(m, key));
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder().append("{");
         addVal(sb, "A", albumName);
         addVal(sb, "F", artist);
-        addVal(sb, "X", composer);
-        if (visited > 0){
-            addVal(sb, "V", visited);
-        }
-        if (width > 0){
-            addVal(sb, "w", width);
-        }
-        if (height > 0){
-            addVal(sb, "h", height);
-        }
-        if (position > 0){
-            addVal(sb, "p", position);
-        }
+        addVal(sb, "X",  composer);
+        addVal(sb, "T",  title);
+        addVal(sb, "V", visited);
+        addVal(sb, "Q", thumbnailId);
+        addVal(sb, "F", playlistId);
+        addVal(sb, "w", width);
+        addVal(sb, "h", height);
+        addVal(sb, "p", position);
+        addVal(sb, "g", duration);
 
 
-        addVal(sb, "T", title);
-            sb.append("\"P\":").append(jsonVal(encodePath(path)));
+
+        sb.append("\"P\":").append(jsonVal(encodePath(path)));
         sb.append("}");
         return sb.toString();
     }
 
     public static String decodePath(String s){
+        if (s == null){
+            return null;
+        }
         try {
             return URLDecoder.decode(s, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -289,6 +327,7 @@ public class ContentInfo implements Serializable {
     }
 
     public static  String encodePath(String s){
+
         String val;
         try {
             val = URLEncoder.encode(s, "UTF-8");

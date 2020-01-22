@@ -297,14 +297,17 @@ public class FileUtil {
             return;
         }
 
-        File[] files = listFiles(directory);
-        for (File f: files){
-            if (f.isDirectory()){
-                fileFoundHandler.foundDir(f);
-            } else {
-                fileFoundHandler.foundFile(f);
+        recursiveScan(directory, new FileFoundHandler() {
+            @Override
+            public void foundFile(File file) {
+                fileFoundHandler.foundFile(file);
             }
-        }
+
+            @Override
+            public boolean acceptDir(File file) {
+                return false;
+            }
+        });
     }
 
 
@@ -339,7 +342,7 @@ public class FileUtil {
             files = directory.listFiles();
         }
         if (files == null){
-            log.debug("no files found inside " + directory.getAbsolutePath() );
+//            log.debug("no files found inside " + directory.getAbsolutePath() );
             return new File[]{};
         }
 
@@ -358,11 +361,11 @@ public class FileUtil {
         File[] files = listFiles(directory, filenameFilter);
 
         for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()){
-                if (fileFoundHandler != null){
-                    fileFoundHandler.foundDir(files[i]);
-                }
-                recursiveScan(files[i], fileFoundHandler);
+            if (files[i].isDirectory()
+                 && fileFoundHandler != null
+                 && fileFoundHandler.acceptDir(files[i])
+            ){
+                    recursiveScan(files[i], fileFoundHandler);
             } else {
                 if (fileFoundHandler != null){
                     fileFoundHandler.foundFile(files[i]);
@@ -524,7 +527,9 @@ public class FileUtil {
 
     public abstract static class FileFoundHandler {
         public abstract void foundFile(File file);
-        public void foundDir(File file){};
+        public boolean acceptDir(File file){
+            return !file.getName().startsWith(".");
+        };
     }
 
 

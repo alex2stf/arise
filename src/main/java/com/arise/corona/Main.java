@@ -2,30 +2,18 @@ package com.arise.corona;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ServerRequestBuilder;
-import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
-import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.servers.draft_6455.WSDraft6455;
-import com.arise.astox.net.servers.io.IOServer;
-import com.arise.canter.Command;
-import com.arise.canter.Registry;
-import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.corona.impl.IDeviceController;
+import com.arise.corona.impl.ContentInfoProvider;
+import com.arise.corona.impl.PCDecoder;
+import com.arise.corona.utils.Boostrap;
 import com.arise.corona.utils.CoronaServerHandler;
-import com.arise.corona.utils.URLBeautifier;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
-
-import static com.arise.canter.Defaults.PROCESS_EXEC;
-import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
+import java.io.File;
 
 public class Main {
 
@@ -49,7 +37,7 @@ public class Main {
         context = null;
     }
 
-    final AbstractServer server = new IOServer();
+    AbstractServer server;
     private final CoronaServerHandler coronaServerHandler;
     Object bluetoothServer;;
 
@@ -58,79 +46,7 @@ public class Main {
         this.coronaServerHandler = coronaServerHandler;
     }
 
-    public static CoronaServerHandler buildHandler(String[] args){
-        try {
-            ContentType.loadDefinitions();
-            log.info("Successfully loaded content-type definitions");
-        } catch (Exception e){
-            log.error("Failed to load content-type definitions", e);
-        }
 
-        Registry registry = new Registry();
-        registry.addCommand(PROCESS_EXEC)
-                .addCommand(PROCESS_EXEC_WHEN_FOUND);
-
-        try {
-            registry.loadJsonResource("src/main/resources#/corona/config/commons/commands.json");
-            if (SYSUtils.isWindows()){
-                registry.loadJsonResource("src/main/resources#/corona/config/win/commands.json");
-            } else {
-                registry.loadJsonResource("src/main/resources#/corona/config/unix/commands.json");
-            }
-            log.info("Successfully loaded commands definitions");
-        } catch (Exception e){
-            log.error("Failed to load commands definitions", e);
-        }
-
-        CoronaServerHandler coronaServerHandler = new CoronaServerHandler();
-
-        coronaServerHandler.onFileOpenRequest(new CoronaServerHandler.Handler<HttpRequest>() {
-            @Override
-            public HttpResponse handle(HttpRequest request) {
-                SYSUtils.open(request.getQueryParam("path"));
-                return null;
-            }
-        });
-
-        coronaServerHandler.onCommandExecRequest(new CoronaServerHandler.Handler<HttpRequest>() {
-            @Override
-            public HttpResponse handle(HttpRequest request) {
-                Command command = registry.getCommand(request.pathAt(2));
-                if (command == null){
-                    return HttpResponse.plainText(request.pathAt(2) + " cmd not found");
-                }
-                String[] args = new String[request.getQueryParams().size()];
-                int i = 0;
-                for (Map.Entry<String, List<String>> entry: request.getQueryParams().entrySet() ){
-                    args[i] = entry.getValue().get(0);
-                    i++;
-                }
-
-                if ("browserOpen".equalsIgnoreCase(command.getId())){
-                    args = URLBeautifier.beautify(args);
-                }
-
-                return HttpResponse.json(
-                        registry.getCommand(request.pathAt(2)).execute(args).toString()
-                );
-            }
-        });
-
-
-        if (ReflectUtil.classExists("com.arise.corona.impl.PCDeviceController")){
-            IDeviceController iDeviceController =
-                    (IDeviceController) ReflectUtil.newInstance("com.arise.corona.impl.PCDeviceController");
-            coronaServerHandler.onDeviceControlsUpdate(new CoronaServerHandler.Handler<HttpRequest>() {
-                @Override
-                public HttpResponse handle(HttpRequest request) {
-                    iDeviceController.update(request.getQueryParams());
-                    return null;
-                }
-            });
-        }
-
-        return coronaServerHandler;
-    }
 
     public static AbstractServer start(CoronaServerHandler handler){
         corona = new Main(handler);
@@ -144,35 +60,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        ContentInfoProvider contentInfoProvider =
+                new ContentInfoProvider(new PCDecoder())
+                        .addRoot(new File("/"))
+                .get();
         start(
-                buildHandler(args)
+                Boostrap.buildHandler(args, contentInfoProvider)
         );
     }
 
     public AbstractServer run(){
-        server.setPort(8221)
-               .setName("CS_" + SYSUtils.getDeviceName())
-                .setUuid(UUID.randomUUID().toString());
-
-
-
-
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    server
-                            .addRequestBuilder(new HttpRequestBuilder())
-                            .addDuplexDraft(new WSDraft6455())
-                            .setHost("localhost")
-                            .setStateObserver(coronaServerHandler)
-                            .setRequestHandler(coronaServerHandler)
-                            .start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        server = Boostrap.startHttpServer(coronaServerHandler);
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override

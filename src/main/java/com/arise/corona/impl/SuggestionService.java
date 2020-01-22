@@ -7,12 +7,8 @@ import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.corona.dto.BinResult;
+import com.arise.corona.IDGen;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,16 +22,7 @@ import static com.arise.core.tools.TypeUtil.isNull;
 
 public class SuggestionService {
     MapObj root = new MapObj();
-    CacheManager cacheManager;
 
-    public CacheManager getCacheManager() {
-        return cacheManager;
-    }
-
-    public SuggestionService setCacheManager(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-        return this;
-    }
 
     public SuggestionService load(String path){
         InputStream inputStream = FileUtil.findStream(path);
@@ -73,17 +60,9 @@ public class SuggestionService {
         return null;
     }
 
-    public SuggestionService searchIcons(String filename, CompleteHandler<BinResult> completeHandler) {
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-                searchIconsSync(filename, completeHandler);
-            }
-        });
-        return this;
-    }
 
-    private SuggestionService searchIconsSync(String filename, CompleteHandler<BinResult> completeHandler) {
+
+    public SuggestionService searchIcons(String filename, Manager manager) {
 
 
         if (!StringUtil.hasContent(filename)){
@@ -113,7 +92,7 @@ public class SuggestionService {
                 List<String> icons = MapUtil.getList(x, "icons");
                 if (!isEmpty(icons)){
                     for (String ic: icons){
-                        if (download(ic, completeHandler)){
+                        if (validUrl(ic, manager, filename)){
                             return this;
                         }
                     }
@@ -121,39 +100,27 @@ public class SuggestionService {
             }
         }
 
-        completeHandler.onComplete(null);
 
         return this;
     }
 
-    private boolean download(String url, CompleteHandler<BinResult> completeHandler){
+    private boolean validUrl(String url, Manager manager, String path){
         URL uri;
         String id;
         try {
             uri = new URL(url);
-            id = uri.getPath().replaceAll("/", "_").replaceAll("\\s+","");
+            id = IDGen.fromURL(uri);
         } catch (Exception e) {
             return false;
         }
 
-        if (cacheManager.getBytes(id) != null){
-            completeHandler.onComplete(cacheManager.getBytes(id));
-            return true;
-        }
-
-
-        try {
-            InputStream inputStream = uri.openStream();
-            cacheManager.put(id, inputStream);
-            Util.close(inputStream);
-            completeHandler.onComplete(cacheManager.getBytes(id));
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+        return manager.manage(id, path, uri);
     }
 
 
+    public interface Manager {
+        boolean manage(String id, String path, URL url);
+    }
 
 
     char disallowed[] = new char[]{'~', '-'};
@@ -192,13 +159,8 @@ public class SuggestionService {
         return r;
     }
 
-    public interface CacheManager {
 
-        void put(String filename, InputStream inputStream);
 
-        BinResult getBytes(String filename);
-
-    }
 
 
 }

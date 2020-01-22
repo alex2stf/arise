@@ -1,7 +1,6 @@
 package com.arise.corona.utils;
 
 
-import android.content.ContentProvider;
 
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
@@ -13,6 +12,7 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.models.CompleteHandler;
 import com.arise.corona.dto.*;
 import com.arise.corona.impl.ContentInfoDecoder;
 import com.arise.corona.impl.ContentInfoProvider;
@@ -116,6 +116,12 @@ public class CoronaServerHandler extends HTTPServerHandler {
     return this;
   }
 
+
+  public CoronaServerHandler onPlayAdvice(CompleteHandler<ContentInfo> contentInfoCompleteHandler){
+      this.contentInfoProvider.onPlayAdvice(contentInfoCompleteHandler);
+      return this;
+  }
+
   public <I> HttpResponse dispatch(Handler<I> handler, I data){
     if (handler != null){
       return handler.handle(data);
@@ -148,7 +154,6 @@ public class CoronaServerHandler extends HTTPServerHandler {
     }
 
     if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
-
       return liveWav;
     }
 
@@ -170,6 +175,12 @@ public class CoronaServerHandler extends HTTPServerHandler {
       return HttpResponse.json(deviceStat.toJson());
     }
 
+    if (request.pathsStartsWith("thumbnail")){
+      String id = request.getPathAt(1);
+      return contentInfoProvider.getMediaPreview(id);
+    }
+
+    //list media based on type
     if(request.pathsStartsWith("media", "list")){
       Integer index = request.getQueryParamInt("index");
       String what = request.getPathAt(2);
@@ -180,21 +191,38 @@ public class CoronaServerHandler extends HTTPServerHandler {
       return HttpResponse.json(page.toString());
     }
 
-    if (request.pathsStartsWith("media", "state", "save")){
-      String playlistId = request.getPathAt(3);
-      Integer position = request.getQueryParamInt("P");
-      String path = request.getQueryParam("X");
-      contentInfoProvider.saveState(path, position, playlistId);
-      return HttpResponse.json(deviceStat.toJson());
+
+    if ("/queue/add".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
+      Map obj = (Map) Groot.decodeBytes(request.payload());
+      ContentInfo info = contentInfoProvider.getDecoder().find(obj);
+      contentInfoProvider.addToQueue(info);
+      return HttpResponse.oK();
     }
 
-    if (request.pathsStartsWith("media", "next")){
-      return HttpResponse.json(contentInfoProvider.next().toString());
+    if (request.pathsStartsWith("media", "shuffle")){
+      String playlistId = request.getPathAt(2);
+      contentInfoProvider.shuffle(playlistId);
+      return HttpResponse.oK();
     }
+
+    if (request.pathsStartsWith("media", "autoplay")){
+      String playlistId = request.getPathAt(2);
+      String mode = request.getPathAt(3);
+      AutoplayMode autoplayMode = null;
+      try {
+        autoplayMode = AutoplayMode.valueOf(mode);
+      }catch (Throwable t){
+        return HttpResponse.plainText(t.getMessage());
+      }
+      contentInfoProvider.setAutoplay(playlistId, autoplayMode);
+      return HttpResponse.oK();
+    }
+
+//    if (request.pathsStartsWith("media", "next")){
+//      return HttpResponse.json(contentInfoProvider.next("music").toString());
+//    }
     
-    if (request.pathsStartsWith("media", "state", "get")){
-      return HttpResponse.json(contentInfoProvider.getCurrentState().toString());
-    }
+
 
 
 

@@ -176,7 +176,9 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
                         .setContentLength(con.getContentLength());
 
         for (Map.Entry<String, List<String>> entry: con.getHeaderFields().entrySet()){
-            httpResponse.addHeader(entry.getKey(), StringUtil.join(entry.getValue(), ","));
+            if (entry.getKey() != null){
+                httpResponse.addHeader(entry.getKey(), StringUtil.join(entry.getValue(), ","));
+            }
         }
         InputStream inputStream;
         try  {

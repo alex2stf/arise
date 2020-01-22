@@ -266,7 +266,13 @@ public enum ContentType  {
     }
 
     public static boolean isPicture(File f) {
-        return false;
+        return isPicture(f.getAbsolutePath());
+    }
+
+    private static boolean isPicture(String s) {
+        return s.endsWith(".jpg")
+                || s.endsWith(".png")
+                || s.endsWith(".jpeg");
     }
 
 

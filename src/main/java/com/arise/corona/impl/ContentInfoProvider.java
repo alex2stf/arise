@@ -1,20 +1,31 @@
 package com.arise.corona.impl;
 
+import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.corona.dto.CachedState;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
+import com.arise.core.tools.models.CompleteHandler;
+import com.arise.corona.dto.AutoplayMode;
 import com.arise.corona.dto.ContentInfo;
 import com.arise.corona.dto.ContentPage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfoProvider {
 
     List<File> roots = new ArrayList<>();
-
+    private Mole log = Mole.getInstance(ContentInfoDecoder.class);
 
     private volatile boolean scanned = false;
 
@@ -52,24 +63,30 @@ public class ContentInfoProvider {
         return false;
     }
 
-    private void saveCache(List<ContentInfo> infos){
-        File dir = FileUtil.findAppDir();
-        File path = new File(dir + File.separator + "cache.json");
-        FileUtil.writeStringToFile(path, ContentInfo.serializeCollection(infos));
-    }
 
-    private List<ContentInfo> getCache(){
-        File dir = FileUtil.findAppDir();
-        File path = new File(dir + File.separator + "cache.json");
-        try {
-            String data = FileUtil.read(path);
-            return ContentInfo.deserializeCollection(data);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    Map<String, AutoplayMode> autoplayLists = new ConcurrentHashMap<>();
+
 
     private void asyncScan(){
+        File cache = autoplayCache();
+        String cnt = null;
+
+            if (cache.exists()){
+                try {
+                    cnt = FileUtil.read(cache);
+                    String parts[] = cnt.split("\n");
+                    if (parts.length > 1){
+                        String playlistId = parts[0].trim();
+                        String mode = parts[1];
+                        AutoplayMode autoplayMode = AutoplayMode.valueOf(mode.trim());
+                        setAutoplay(playlistId, autoplayMode);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         fireAndForget(new Runnable() {
             @Override
             public void run() {
@@ -77,63 +94,58 @@ public class ContentInfoProvider {
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
-                            if (isMusic(file)){
-                                music.add(decoder.decode(file));
-                            }
 
-                            else if (isVideo(file)){
-                                videos.add(decoder.decode(file));
-                            }
-                            else if (isPicture(file)){
-                                pictures.add(decoder.decode(file));
-                            }
-                            else if (isGame(file)){
-                                games.add(decoder.decode(file));
-                            }
-                            else if (isPresentation(file)){
-                                presentations.add(decoder.decode(file));
-                            }
+                            if (!file.getName().startsWith(".")){
+                                if (isMusic(file)){
+                                    music.add(decoder.decode(file).setPlaylistId("M"));
+                                }
 
-//                            System.out.println(file.getAbsolutePath());
-//                            if (ContentType.isMusic(file)){
-//                                ContentInfo info = decoder.decode(file);
-//                                add(ContentType.Location.MUSIC, info);
-//                                cache.add(info);
-//                            }
-//                            else if (ContentType.isVideo(file)){
-//                                ContentInfo info = decoder.decode(file);
-//                                add(ContentType.Location.MOVIES, info);
-//                                cache.add(info);
-//                            }
+                                else if (isVideo(file)){
+                                    videos.add(decoder.decode(file).setPlaylistId("V"));
+                                }
+                                else if (isPicture(file)){
+                                    pictures.add(decoder.decode(file).setPlaylistId("I"));
+                                }
+                                else if (isGame(file)){
+                                    games.add(decoder.decode(file).setPlaylistId("G"));
+                                }
+                                else if (isPresentation(file)){
+                                    presentations.add(decoder.decode(file).setPlaylistId("P"));
+                                }
+                            }
                         }
                     });
                 }
                 scanned = true;
-                System.out.println("SCAN COMPLETE");
-//                dispatch();
-//                saveCache(cache);
+                if (shuffleMusic) {
+                    Collections.shuffle(music);
+                    log.trace("Scan complete shuffle music");
+                }
+
+                if (shuffleVideos) {
+                    Collections.shuffle(videos);
+                    log.trace("Scan complete shuffle videos");
+                }
+
+                for (Map.Entry<String, AutoplayMode> entry: autoplayLists.entrySet()){
+                    if (AutoplayMode.on.equals(entry.getValue()) || AutoplayMode.on_shuffle.equals(entry.getValue())){
+                        ContentInfo info = next(entry.getKey());
+                        playAdviceHandler.onComplete(info);
+                        log.trace("Scan complete play advice " + info.getPath());
+                        break;
+                    }
+                }
+                log.trace("RECURSIVE SCAN COMPLETE");
             }
         });
     }
 
     public ContentInfoProvider get(){
-//        if (!CollectionUtil.isEmpty(cache)){
-//            for (ContentInfo info: cache){
-//                if (ContentType.isVideo(info.getPath())){
-//                    add(ContentType.Location.MOVIES, info);
-//                }
-//                else if (ContentType.isMusic(info.getPath())){
-//                    add(ContentType.Location.MUSIC, info);
-//                }
-//            }
-//            scanned = true;
-//            dispatch();
-//            return this;
-//        }
-
         asyncScan();
         return this;
     }
+
+
 
 
 
@@ -170,53 +182,220 @@ public class ContentInfoProvider {
             rIndex = index;
         }
 
+        AutoplayMode autoplayMode = autoplayLists.containsKey(location) ? autoplayLists.get(location): AutoplayMode.off;
+
         List<ContentInfo> source = getPlaylist(location);
         int sourceSize = source.size();
 
         if (sourceSize == 0){
             if (!scanned){
-                return new ContentPage().setData(Collections.emptyList()).setIndex(rIndex);
+                return new ContentPage().setData(Collections.emptyList()).setIndex(rIndex).setAutoplayMode(autoplayMode);
             }
             else {
-                return new ContentPage().setData(Collections.emptyList()).setIndex(null);
+                return new ContentPage().setData(Collections.emptyList()).setIndex(null).setAutoplayMode(autoplayMode);
             }
         }
 
         List<ContentInfo> info = new ArrayList<>();
 
-        if (pageSize > sourceSize){
-            pageSize = sourceSize;
+        int limit = rIndex + pageSize;
+
+        if (limit > sourceSize){
+            limit = sourceSize;
         }
-        for (int i = rIndex; i < rIndex + pageSize; i++){
+
+
+        log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + location);
+        if (rIndex == limit && scanned){
+            return new ContentPage().setData(Collections.emptyList()).setIndex(null).setAutoplayMode(autoplayMode);
+        }
+        for (int i = rIndex; i < limit; i++){
             info.add(source.get(i));
         }
 
-        ContentPage contentPage = new ContentPage();
-        contentPage.setData(Collections.unmodifiableList(info));
-        contentPage.setIndex(rIndex + pageSize);
-        return contentPage;
-    }
-
-    public final CachedState currentState = new CachedState();
-
-    public void saveState(String path, Integer position, String playlistId) {
-        String cnt =ContentInfo.encodePath(path) + "\n" + position + "\n" + playlistId;
-        File out = new File(FileUtil.findAppDir() + File.separator + "cache_state.aris");
-        FileUtil.writeStringToFile(out, cnt);
-    }
-
-    public  CachedState getCurrentState() {
-
-
-        throw new RuntimeException("TODO get currentState");
-//        ContentInfo contentInfo = decoder.decode(new File(path)).setPosition(position);
-//        currentState.setPlaylistId(playlistId).setCurrentInfo(contentInfo);
-//        persist(currentState);
-//        return currentState;
+        return new ContentPage()
+                .setData(Collections.unmodifiableList(info))
+                .setIndex(limit)
+                .setAutoplayMode(autoplayMode);
     }
 
 
-    public ContentInfo next() {
-        throw new RuntimeException("TODO get next should be visible from everywhere");
+
+
+    public  ContentInfo getCurrentInfo() {
+        return decoder.currentInfo;
     }
+
+
+
+    public HttpResponse getMediaPreview(String id) {
+        HttpResponse response = new HttpResponse();
+        InputStream inputStream = FileUtil.findStream("src/main/resources#corona/icons/download.jpg");
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        StreamUtil.transfer(inputStream, buffer);
+        response.setBytes(buffer.toByteArray())
+        .setContentType(ContentType.IMAGE_JPEG);
+        Util.close(inputStream);
+        Util.close(buffer);
+
+        return response;
+    }
+
+
+
+    public ContentInfoDecoder getDecoder() {
+        return decoder;
+    }
+
+    public void addToQueue(ContentInfo info) {
+
+    }
+
+
+    public final void saveState(ContentInfo currentInfo) {
+        decoder.saveState(currentInfo);
+    }
+
+    private boolean shuffleMusic = false;
+    private boolean shuffleVideos = false;
+
+    public void shuffle(String playlistId) {
+        if (scanned){
+            switch (playlistId){
+                case "music":
+                    Collections.shuffle(music);
+                    log.trace("Instant shuffle music");
+                    break;
+                case "videos":
+                    Collections.shuffle(videos);
+                    log.trace("Instant shuffle videos");
+                    break;
+            }
+        }
+        else {
+            switch (playlistId){
+                case "music":
+                    shuffleMusic = true;
+                    break;
+                case "videos":
+                    shuffleVideos = true;
+                    break;
+            }
+        }
+    }
+
+
+
+
+    public void setAutoplay(String playlistId, AutoplayMode autoplayMode) {
+        for (String s: autoplayLists.keySet()){
+            autoplayLists.put(s, AutoplayMode.off);
+        }
+        log.trace(playlistId + " auto " + autoplayMode);
+        autoplayLists.put(playlistId, autoplayMode);
+        File cache = autoplayCache();
+        String cnt = playlistId + "\n" + autoplayMode.name();
+        FileUtil.writeStringToFile(cache, cnt);
+    }
+
+
+
+    File autoplayCache(){
+        File cacheDir = decoder.getStateDirectory();
+        return new File(cacheDir, "auto.play");
+    }
+
+
+    public void onPlayComplete(ContentInfo currentInfo) {
+        currentInfo.incrementVisit();
+
+
+        if (!scanned){
+            return;
+        }
+
+        String currentPlaylistId = getPlaylistId(currentInfo);
+
+        if (!StringUtil.hasText(currentPlaylistId)){
+            return;
+        }
+
+        //increment visit
+        for (ContentInfo info: getPlaylist(currentPlaylistId)){
+            if (info.getPath().equalsIgnoreCase(currentInfo.getPath())){
+                info.incrementVisit();
+            }
+        }
+
+        //play next if autoplay
+        for (Map.Entry<String, AutoplayMode> entry: autoplayLists.entrySet()){
+            if (entry.getKey().equalsIgnoreCase(currentPlaylistId) && !AutoplayMode.off.equals(entry.getValue())){
+                ContentInfo next = next(currentPlaylistId);
+                if (next != null && playAdviceHandler != null){
+                   playAdviceHandler.onComplete(next);
+                }
+            }
+        }
+    }
+
+    private String getPlaylistId(ContentInfo currentInfo) {
+        switch (currentInfo.getPlaylistId()){
+            case "M":
+                return "music";
+            case "I":
+                return "images";
+            case "V":
+                return "videos";
+            case "G":
+                return "games";
+            case "P":
+                return "presentations";
+        }
+        return null;
+    }
+
+    private CompleteHandler<ContentInfo> playAdviceHandler;
+
+    public ContentInfoProvider onPlayAdvice(CompleteHandler<ContentInfo> playAdviceHandler) {
+        this.playAdviceHandler = playAdviceHandler;
+        return this;
+    }
+
+    public ContentInfo next(String playlistId){
+        List<ContentInfo> data = getPlaylist(playlistId);
+
+        if (data.isEmpty()){
+            return null;
+        }
+        ContentInfo[] res = new ContentInfo[1];
+        CollectionUtil.smartIterate(data, new CollectionUtil.SmartHandler<ContentInfo>() {
+            @Override
+            public void handle(ContentInfo t1, ContentInfo t2) {
+                ContentInfo tmp;
+                if (t2 != null){
+                    if (t1.getVisited() < t2.getVisited()){
+                        tmp = t1;
+                    } else {
+                        tmp = t2;
+                    }
+                }
+                else {
+                    tmp = t1;
+                }
+
+                if (res[0] == null){
+                    res[0] = tmp;
+                } else {
+                    if (tmp.getVisited() < res[0].getVisited()){
+                        res[0] = tmp;
+                    }
+                }
+            }
+        });
+        res[0].incrementVisit();
+        log.trace("next " + playlistId + " = " + res[0].getPath());
+        return res[0];
+    }
+
+
 }

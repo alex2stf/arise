@@ -9,9 +9,13 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
+import com.arise.corona.dto.AutoplayMode;
 import com.arise.corona.dto.ContentInfo;
+import com.arise.corona.dto.ContentPage;
 import com.arise.corona.dto.DeviceStat;
 import com.arise.corona.dto.Message;
+
+import java.util.Map;
 
 public class Client  {
 
@@ -164,4 +168,54 @@ public class Client  {
             }
         });
     }
+    public void mediaList(String playlistId, Integer index, CompleteHandler<ContentPage> completeHandler, CompleteHandler onError) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/media/list/" + playlistId + "?index=" + index);
+        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+               if (data.bodyBytes() == null){
+                   onError.onComplete("RETRY");
+                   return;
+               }
+              try {
+                  Map obj = (Map) Groot.decodeBytes(data.bodyBytes());
+                  ContentPage contentPage = ContentPage.fromMap(obj);
+                  completeHandler.onComplete(contentPage);
+
+
+              } catch (Exception ex){
+
+                  log.error("DECODE FAILED FOR " + data);
+                  onError.onComplete(ex);
+              }
+            }
+        });
+    }
+
+
+    public void findThumbnail(String id, CompleteHandler<byte[]> success, CompleteHandler onError){
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/thumbnail/" + id);
+        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+                success.onComplete(data.bodyBytes());
+            }
+        });
+    }
+
+    public void shuffle(String playlistId, CompleteHandler onComplete) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/media/shuffle/" + playlistId);
+        currentClient.sendAndReceive(request, onComplete);
+    }
+
+    public void autoplay(String playlistId, AutoplayMode autoplayMode, CompleteHandler onComplete) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/media/autoplay/" + playlistId  + "/" + autoplayMode.name());
+        currentClient.sendAndReceive(request, onComplete);
+    }
+
+
 }

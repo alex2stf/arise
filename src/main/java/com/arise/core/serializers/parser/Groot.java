@@ -74,6 +74,7 @@ public class Groot {
     }
 
     for (char c: s.quotes()){
+      //TODO check quotes are not escaped
       if (in[firstIndex] == c && in[lastIndex] == c){
         return decodeString(in, firstIndex + 1, lastIndex);
       }
@@ -513,7 +514,7 @@ public class Groot {
 
     @Override
     public char[] quotes() {
-      return new char[]{'\'', '"'};
+      return new char[]{'"'};
     }
 
     @Override

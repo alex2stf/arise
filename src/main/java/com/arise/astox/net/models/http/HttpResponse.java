@@ -66,7 +66,7 @@ public class HttpResponse extends ServerResponse {
 
 
     public String headerLine() {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append(protocol.value()).append(" ").append(statusCode).append(" ").append(statusText);
         if (!_headers.isEmpty()) {
             sb.append("\n");
@@ -209,7 +209,8 @@ public class HttpResponse extends ServerResponse {
     }
 
     public static HttpResponse oK() {
-        return new HttpResponse().setStatusCode(200)
+        return new HttpResponse()
+                .setStatusCode(200)
                 .setStatusText("OK")
                 .setProtocol(HttpProtocol.V1_0)
                 .addHeader("Server", "Astox-Srv")

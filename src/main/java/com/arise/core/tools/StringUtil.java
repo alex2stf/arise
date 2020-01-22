@@ -641,7 +641,7 @@ public class StringUtil {
 
     public static String jsonVal(Object s){
        if (s == null){
-           return "null";
+           return null;
        }
        if (s instanceof CharSequence){
            return "\"" + jsonEscape(String.valueOf(s)) + "\"";
