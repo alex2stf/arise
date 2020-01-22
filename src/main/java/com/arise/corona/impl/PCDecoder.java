@@ -15,11 +15,22 @@ import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.images.Artwork;
 
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+
 
 public class PCDecoder extends ContentInfoDecoder {
     Map<String, ContentInfo> cache = new HashMap<>();
@@ -32,14 +43,59 @@ public class PCDecoder extends ContentInfoDecoder {
         }
         ContentInfo info = new ContentInfo(file);
 
+        String s = info.getExt();
         if (!file.getName().endsWith("mp3")){
             return info;
         }
-        tryAudioTagger(info, file);
+        System.out.println(s);
+//        tryAudioTagger(info, file);
+        trySwing(info, file);
 
         cache.put(file.getAbsolutePath(), info);
 
         return info;
+    }
+
+
+
+    private void trySwing(ContentInfo info, File file) {
+        Icon ico = javax.swing.filechooser.FileSystemView.getFileSystemView().getSystemIcon(
+               file
+        );
+
+
+
+
+
+
+        BufferedImage bi;
+        bi = new BufferedImage(ico.getIconWidth(),ico.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+
+        Graphics g = bi.createGraphics();
+        ico.paintIcon(null, g, 0, 0);
+        g.setColor(Color.WHITE);
+        g.drawString("text", 10, 20);
+        g.dispose();
+
+//         ByteArrayOutputStream os = new ByteArrayOutputStream();
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(new File(info.getExt() + "thumb.jpg"));
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
+        try {
+            ImageIO.write(bi, "jpg", os);
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+        try {
+            os.close();
+        }catch (Throwable t){
+
+        }
     }
 
 

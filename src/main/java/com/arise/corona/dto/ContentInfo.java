@@ -145,12 +145,32 @@ public class ContentInfo implements Serializable {
     }
 
     public String getName() {
-        String prts[] = path.split("//");
-        prts = prts[prts.length - 1].split(File.separator);
+        try {
+            String prts[] = path.split("/");
+            prts = prts[prts.length - 1].split("\\\\");
 
-        return prts[prts.length - 1];
+            String x = prts[prts.length - 1];
+            if (x.indexOf(".") > -1){
+                x = x.substring(0, x.lastIndexOf("."));
+            }
+            return x;
+        } catch (Exception e){
+            e.printStackTrace();
+            return path;
+        }
     }
 
+
+    public String getExt(){
+        if (path.indexOf(".") > -1){
+            String parts[] = path.split("\\.");
+
+            System.out.println(parts.length);
+            String x = parts[parts.length - 1];
+            return x;
+        }
+        return "cinf";
+    }
 
 
     public String getPath() {
