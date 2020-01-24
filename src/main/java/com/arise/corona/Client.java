@@ -15,6 +15,7 @@ import com.arise.corona.dto.ContentPage;
 import com.arise.corona.dto.DeviceStat;
 import com.arise.corona.dto.Message;
 
+import java.net.URLEncoder;
 import java.util.Map;
 
 public class Client  {
@@ -95,7 +96,7 @@ public class Client  {
 
     public void openFile(String s) {
         HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/files/open?path=" + s);
+                .setMethod("GET").setUri("/files/open?path=" + URLEncoder.encode(s));
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse data) {

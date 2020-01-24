@@ -7,8 +7,8 @@
       "audio/x-wav"
     ],
     "processes": [
-      "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe",
-      "C:\\Program Files\\Windows Media Player\\wmplayer.exe"
+      "C:\\Program Files\\Windows Media Player\\wmplayer.exe",
+      "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe"
     ]
   },
   {
@@ -18,6 +18,17 @@
       "text/yaml",
       "bat",
       "html"
+    ],
+    "processes": [
+      "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",
+      "C:\\Windows\\System32\\notepad.exe"
+    ]
+  },
+  {
+    "keys": [
+      "jpg",
+      "jpeg",
+      "png"
     ],
     "processes": [
       "C:\\Program Files (x86)\\Notepad++\\notepad++.exe",

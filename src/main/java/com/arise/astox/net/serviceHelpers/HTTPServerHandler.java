@@ -57,7 +57,7 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
                 return entry.getValue().build(request);
             }
         }
-        return null;
+        return HttpResponse.oK();
     }
 
     @Override

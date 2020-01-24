@@ -16,7 +16,6 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
             public void run() {
                 try {
                     final CONNECTION connection = getConnection(request);
-                    System.out.println("connected");
                     connectHandler.onComplete(connection);
                 } catch (Exception e) {
                     e.printStackTrace();

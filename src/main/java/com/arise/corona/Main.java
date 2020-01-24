@@ -49,6 +49,7 @@ public class Main {
 
 
     public static AbstractServer start(CoronaServerHandler handler){
+
         corona = new Main(handler);
         return corona.run();
     }
@@ -62,7 +63,7 @@ public class Main {
     public static void main(String[] args) {
         ContentInfoProvider contentInfoProvider =
                 new ContentInfoProvider(new PCDecoder())
-                        .addRoot(new File("/"))
+                        .addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"))
                 .get();
         start(
                 Boostrap.buildHandler(args, contentInfoProvider)

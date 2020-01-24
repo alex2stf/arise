@@ -40,17 +40,18 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
 
 
     @Override
-    protected BluetoothSocket getConnection(HttpRequest request) throws Exception {
+    protected synchronized BluetoothSocket getConnection(HttpRequest request) throws Exception {
         BluetoothSocket mmSocket = null;
 
+
+        mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString(getUuid()));
         try {
-            mmSocket = mmDevice.createRfcommSocketToServiceRecord(UUID.fromString(getUuid()));
             mmSocket.connect();
         } catch (Exception e) {
             log.e("Socket's create() method failed", e);
             Util.close(mmSocket);
             onError(e);
-            return null;
+            return mmSocket;
         }
 
         return mmSocket;
@@ -58,36 +59,42 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
 
     @Override
     protected void write(BluetoothSocket socket, HttpRequest request) {
-        try {
-            socket.getOutputStream().write(request.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        synchronized (socket){
+            try {
+                socket.getOutputStream().write(request.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     protected void read(BluetoothSocket socket, CompleteHandler<HttpResponse> responseHandler) {
-        try {
-            InputStream inputStream = socket.getInputStream();
-            httpResponseBuilder.readInputStream(inputStream, new CompleteHandler<HttpResponse>() {
-                @Override
-                public void onComplete(HttpResponse data) {
-                    //first dispatch event, then close streams
-                    responseHandler.onComplete(data);
+            synchronized (socket){
+                try {
+                    InputStream inputStream  = socket.getInputStream();
+                    httpResponseBuilder.readInputStream(inputStream, new CompleteHandler<HttpResponse>() {
+                        @Override
+                        public void onComplete(HttpResponse data) {
+                            //first dispatch event, then close streams
+                            responseHandler.onComplete(data);
 
-                    try {
-                        inputStream.close();
-                        socket.getOutputStream().close();
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                            try {
+                                inputStream.close();
+                                socket.getOutputStream().close();
+                                socket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            }
+
     }
 
 

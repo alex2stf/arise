@@ -1,6 +1,8 @@
 package com.arise.corona.impl;
 
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
@@ -20,6 +22,7 @@ public abstract class ContentInfoDecoder {
     protected Map<String, ContentInfo> contentCache = new HashMap<>();
 
     ContentInfo currentInfo;
+    protected ContentInfoProvider provider;
 
     public ContentInfoDecoder(){
         File cache = getCache();
@@ -68,4 +71,12 @@ public abstract class ContentInfoDecoder {
     };
 
 
+
+    public abstract byte[] getThumbnail(String id);
+
+    public abstract ContentType getThumbnailContentType(String id);
+
+    public void setProvider(ContentInfoProvider contentInfoProvider) {
+        this.provider = contentInfoProvider;
+    }
 }

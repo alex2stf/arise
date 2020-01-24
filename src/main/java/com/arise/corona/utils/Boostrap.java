@@ -14,6 +14,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.corona.impl.ContentInfoProvider;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,6 +58,12 @@ public class Boostrap {
         coronaServerHandler.onFileOpenRequest(new CoronaServerHandler.Handler<HttpRequest>() {
             @Override
             public HttpResponse handle(HttpRequest request) {
+                String path = request.getQueryParam("path");
+                System.out.println("OPEN " + path);
+                if (ContentType.isPicture(new File(path))){
+                    SYSUtils.exec("%SystemRoot%\\System32\\rundll32.exe", "%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll", path);
+                    return null;
+                }
                 SYSUtils.open(request.getQueryParam("path"));
                 return null;
             }

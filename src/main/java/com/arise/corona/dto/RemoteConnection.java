@@ -20,4 +20,8 @@ public class RemoteConnection {
     public void updatePingResponse(DeviceStat data) {
         deviceStat = data;
     }
+
+    public String getName(){
+        return deviceStat.getDisplayName();
+    }
 }

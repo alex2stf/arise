@@ -1,5 +1,0 @@
-﻿  socket.cpp
-  astox-tests.cpp
-\\VBOXSVR\cpp\test\include\threadtest.h(58): warning C4101: 'thread_id': unreferenced local variable
-  Generating Code...
-  astox.vcxproj -> G:\Debug\astox.exe

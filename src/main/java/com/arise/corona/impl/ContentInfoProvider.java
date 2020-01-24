@@ -39,6 +39,7 @@ public class ContentInfoProvider {
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
+        decoder.setProvider(this);
     }
 
 
@@ -230,13 +231,16 @@ public class ContentInfoProvider {
 
     public HttpResponse getMediaPreview(String id) {
         HttpResponse response = new HttpResponse();
-        InputStream inputStream = FileUtil.findStream("src/main/resources#corona/icons/download.jpg");
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        StreamUtil.transfer(inputStream, buffer);
-        response.setBytes(buffer.toByteArray())
-        .setContentType(ContentType.IMAGE_JPEG);
-        Util.close(inputStream);
-        Util.close(buffer);
+//        InputStream inputStream = FileUtil.findStream("src/main/resources#corona/icons/download.jpg");
+//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//        StreamUtil.transfer(inputStream, buffer);
+//
+        byte[] bytes = decoder.getThumbnail(id);
+        ContentType contentType = decoder.getThumbnailContentType(id);
+        response.setBytes(bytes)
+                .setContentType(contentType);
+//        Util.close(inputStream);
+//        Util.close(buffer);
 
         return response;
     }

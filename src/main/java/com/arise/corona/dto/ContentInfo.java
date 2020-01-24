@@ -1,5 +1,6 @@
 package com.arise.corona.dto;
 
+
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
@@ -25,7 +26,7 @@ import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfo implements Serializable {
-//    private transient byte[] emb;
+    //    private transient byte[] emb;
     private transient String name;
     private String albumName;
     private String path;
@@ -161,11 +162,12 @@ public class ContentInfo implements Serializable {
     }
 
 
+
+
     public String getExt(){
         if (path.indexOf(".") > -1){
             String parts[] = path.split("\\.");
 
-            System.out.println(parts.length);
             String x = parts[parts.length - 1];
             return x;
         }
@@ -356,4 +358,6 @@ public class ContentInfo implements Serializable {
         }
         return val;
     }
+
+
 }

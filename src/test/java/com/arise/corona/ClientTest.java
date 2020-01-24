@@ -26,7 +26,7 @@ public class ClientTest {
         DeviceStat deviceStat = new DeviceStat();
 //        System.out.println(deviceStat);
 
-        ContentInfo mediaInfo = new ContentInfo().setEmbeddedPic(new byte[]{1, 2, 3, 4, 5})
+        ContentInfo mediaInfo = new ContentInfo()
                 .setAlbumName("albm");
 
 

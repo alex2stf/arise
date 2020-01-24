@@ -174,8 +174,11 @@ public class GrootTest {
 
   @Test
   public void  testDeviceStat(){
-    DeviceStat deviceStat = new DeviceStat();
-    deviceStat.setBatteryLevel(23);
+
+    String data = "{\"i\":10,\"d\":[{\"A\":\"Brand Music\",\"F\":\"Samsung\",\"T\":\"Over the Horizon\",\"P\":\"%2Fstorage%2Femulated%2F0%2FSamsung%2FMusic%2FOver_the_Horizon.mp3\"},{\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+White+Lies.mp3\"},{\"A\":\"Greatest Hits\",\"F\":\"Bruce Springsteen\",\"X\":\"Bruce Springsteen\",\"T\":\"Better Days\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Better+Days.mp3\"},{\"A\":\"Born In The U.S.A.\",\"F\":\"Bruce Springsteen\",\"X\":\"Bruce Springsteen\",\"T\":\"Bobby Jean\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Bobby+Jean.mp3\"},{\"A\":\"Born In The U.S.A.\",\"F\":\"Bruce Springsteen\",\"X\":\"Bruce Springsteen\",\"T\":\"Cover Me\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Cover+Me.mp3\"},{\"A\":\"Born In The U.S.A.\",\"F\":\"Bruce Springsteen\",\"X\":\"Bruce Springsteen\",\"T\":\"Downbound Train\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Downbound+Train.mp3\"},{\"A\":\"1999 - 18 tracks\",\"F\":\"Bruce Springsteen\",\"T\":\"Growin'up\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Growin%27up.mp3\"},{\"A\":\"1999 - 18 tracks\",\"F\":\"Bruce Springsteen\",\"T\":\"Hearts of stone\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+Hearts+of+stone.mp3\"},{\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+I+hung+my+head.mp3\"},{\"A\":\"Born In The U.S.A.\",\"F\":\"Bruce Springsteen\",\"X\":\"Bruce Springsteen\",\"T\":\"I'm Goin' Down\",\"P\":\"%2Fstorage%2Femulated%2F0%2FMusic%2FBruce+Springsteen+-+I%27m+Goin%27+Down.mp3\"}]}";
+//   data = data.replaceAll("//s+", "");
+    Object m = (Groot.decodeBytes(data));
+    System.out.println(m);
   }
 
 

@@ -15,10 +15,16 @@
     </properties>
 
 
+
     <dependencies>
 
+
+        <!-- https://mvnrepository.com/artifact/xuggle/xuggle-xuggler -->
+
+
+
         <dependency>
-            <groupId>com.arise</groupId>
+            <groupId>org.jaudiotagger</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>2.2.3</version>
             <type>jar</type>
@@ -26,8 +32,36 @@
             <systemPath>${basedir}/libs/jaudiotagger-2.2.3.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.vlcj</groupId>
+            <artifactId>vlcj</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/vlcj-3.0.1.jar</systemPath>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.vlcj</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.5.2</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/jna-3.5.2.jar</systemPath>
+        </dependency>
 
 
+
+
+        <dependency>
+            <groupId>org.vlcj</groupId>
+            <artifactId>platform</artifactId>
+            <version>3.5.2</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/platform-3.5.2.jar</systemPath>
+        </dependency>
 
 
 
@@ -63,7 +97,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.1</version>
+            <version>LATEST</version>
             <scope>test</scope>
         </dependency>
 
@@ -122,7 +156,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.3.6</version>
+            <version>LATEST</version>
             <scope>test</scope>
         </dependency>
 

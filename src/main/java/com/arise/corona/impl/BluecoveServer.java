@@ -67,14 +67,13 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
         return null;
     }
 
-    StreamConnection currentStreamConnection;
+//    StreamConnection currentStreamConnection;
     @Override
     protected StreamConnection acceptConnection(StreamConnectionNotifier streamConnectionNotifier) throws Exception {
         if (streamConnectionNotifier == null){
            throw new LogicalException("StreamConnectionNotifier is null");
         }
-        currentStreamConnection = streamConnectionNotifier.acceptAndOpen();
-        return currentStreamConnection;
+        return streamConnectionNotifier.acceptAndOpen();
     }
 
     @Override
@@ -106,8 +105,14 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
                     System.out.println("RESPONSE " + response);
                     outputStream.write(response.bytes());
                 } catch (IOException e) {
+                    e.printStackTrace();
                     System.out.println("CLOSING CONNECTION");
-                    close();
+//                    close();
+                    try {
+                        connection.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
                 finally {
                     try {
@@ -122,32 +127,42 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
     }
 
 
-    OutputStream outputStream;
-    InputStream inputStream;
+//    OutputStream outputStream;
+//    InputStream inputStream;
 
     @Override
     protected InputStream getInputStream(StreamConnection streamConnection) {
-        if (inputStream == null){
-            try {
-                inputStream = streamConnection.openInputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//        if (inputStream == null){
+//            try {
+//                inputStream = streamConnection.openInputStream();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return inputStream;
+        try {
+            return streamConnection.openInputStream();
+        } catch (IOException e) {
+            return null;
         }
-        return inputStream;
     }
 
 
     @Override
     protected OutputStream getOutputStream(StreamConnection streamConnection) {
-        if (outputStream == null){
-            try {
-                outputStream = streamConnection.openOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            return  streamConnection.openOutputStream();
+        } catch (IOException e) {
+            return null;
         }
-        return outputStream;
+//        if (outputStream == null){
+//            try {
+//                outputStream = streamConnection.openOutputStream();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return outputStream;
     }
 
 
@@ -162,15 +177,7 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
     }
 
     public void close(){
-        if (currentStreamConnection != null){
-            try {
-                currentStreamConnection.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            inputStream = null;
-            outputStream = null;
-        }
+
     }
 
 

@@ -3,11 +3,13 @@ package com.arise.rapdroid;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
@@ -58,6 +60,16 @@ public class AndroidContentDecoder extends ContentInfoDecoder
             f.mkdirs();
         }
         return f;
+    }
+
+    @Override
+    public byte[] getThumbnail(String id) {
+        return bytesCache.containsKey(id) ? bytesCache.get(id) : new byte[]{0,0};
+    }
+
+    @Override
+    public ContentType getThumbnailContentType(String id) {
+        return ContentType.IMAGE_JPEG;
     }
 
 
@@ -263,6 +275,12 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
 
+    public Drawable getDrawable(String binaryId){
+        if (drawableCache.containsKey(binaryId)){
+            return drawableCache.get(binaryId);
+        }
+        return null;
+    }
 
     public void getPreview(Object worker, ContentInfo contentInfo, CompleteHandler<BitmapDrawable> completeHandler){
         String binaryId = contentInfo.getThumbnailId();
@@ -299,6 +317,8 @@ public class AndroidContentDecoder extends ContentInfoDecoder
                 return;
             }
         }
+
+
 
         if (AppUtil.workerIsLocalhost(worker)){
             return;
