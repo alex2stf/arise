@@ -1,13 +1,10 @@
 package com.arise.core.tools;
 
-import com.arise.corona.dto.ContentInfo;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.arise.core.tools.TypeUtil.isDate;
 import static com.arise.core.tools.TypeUtil.isNull;
 
 public class CollectionUtil {

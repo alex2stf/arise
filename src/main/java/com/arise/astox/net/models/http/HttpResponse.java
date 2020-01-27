@@ -59,7 +59,12 @@ public class HttpResponse extends ServerResponse {
 
 
     public HttpResponse setContentType(ContentType contentType) {
-        addHeader("Content-Type", contentType.toString());
+        if(contentType == null){
+            System.out.println("WTF?");
+        }
+        else {
+            addHeader("Content-Type", contentType.toString());
+        }
         return this;
     }
 

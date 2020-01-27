@@ -9,10 +9,9 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import com.arise.astox.net.models.SelfManagedResponse;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.core.tools.Mole;
-import com.arise.corona.utils.WavResponse;
+import com.arise.weland.utils.WavResponse;
 
 
 public class WavRecorderResponse extends WavResponse {

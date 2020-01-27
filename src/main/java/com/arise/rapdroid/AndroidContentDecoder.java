@@ -14,12 +14,12 @@ import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.corona.IDGen;
-import com.arise.corona.dto.ContentInfo;
-import com.arise.corona.impl.ContentInfoDecoder;
-import com.arise.corona.impl.SuggestionService;
+import com.arise.weland.IDGen;
+import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.impl.ContentInfoDecoder;
+import com.arise.weland.impl.SuggestionService;
 import com.arise.rapdroid.media.server.AppUtil;
-import com.arise.rapdroid.media.server.CoronaClient;
+import com.arise.rapdroid.media.server.WelandClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -325,7 +325,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
 
         //TODO check worker is not localhost
-        CoronaClient.findThumbnail(worker, binaryId, new CompleteHandler<byte[]>() {
+        WelandClient.findThumbnail(worker, binaryId, new CompleteHandler<byte[]>() {
             @Override
             public void onComplete(byte[] data) {
                 if (data != null){

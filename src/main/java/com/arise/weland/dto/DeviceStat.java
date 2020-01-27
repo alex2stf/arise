@@ -1,10 +1,9 @@
-package com.arise.corona.dto;
+package com.arise.weland.dto;
 
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.arise.corona;
+package com.arise.weland;
 
 import java.io.File;
 import java.net.URL;

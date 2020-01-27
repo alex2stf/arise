@@ -1,4 +1,4 @@
-package com.arise.corona.impl;
+package com.arise.weland.impl;
 
 
 import com.arise.astox.net.models.AbstractServer;

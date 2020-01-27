@@ -108,7 +108,7 @@ public class Builder {
                     .jarLib("libs/bluecove-2.1.0.jar" )
                     .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "corona")
                     .resourceFiles(RES_ROOT + "content-types.json")
-                    .mainClass("com.arise.corona.Main")
+                    .mainClass("com.arise.weland.Main")
                     .named("corona")
                     .version("1.0")
 

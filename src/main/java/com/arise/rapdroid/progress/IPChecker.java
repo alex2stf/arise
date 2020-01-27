@@ -1,15 +1,8 @@
 package com.arise.rapdroid.progress;
 
-import com.arise.astox.net.clients.JHttpClient;
-import com.arise.core.serializers.CoreSerializer;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.Util;
-import com.arise.corona.dto.DeviceStat;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import com.arise.weland.dto.DeviceStat;
 
 
 public class IPChecker {

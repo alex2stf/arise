@@ -1,4 +1,4 @@
-package com.arise.corona.utils;
+package com.arise.weland.utils;
 
 import com.arise.astox.net.models.SelfManagedResponse;
 import com.arise.astox.net.models.ServerRequest;

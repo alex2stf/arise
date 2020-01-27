@@ -1,14 +1,12 @@
-package com.arise.corona.impl;
+package com.arise.weland.impl;
 
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.Util;
-import com.arise.corona.dto.ContentInfo;
+import com.arise.core.tools.*;
+import com.arise.weland.dto.ContentInfo;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.InvalidBoxHeaderException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
@@ -21,7 +19,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PCDecoder extends ContentInfoDecoder {
@@ -36,32 +35,9 @@ public class PCDecoder extends ContentInfoDecoder {
 
     private static final Mole log = Mole.getInstance(PCDecoder.class);
 
-    static {
-        NativeLibrary.addSearchPath(
-                RuntimeUtil.getLibVlcLibraryName(), "C:\\Program Files (x86)\\VideoLAN\\VLC");
 
-        String vlcLibName = RuntimeUtil.getLibVlcName();
-        String vlcLibCoreName = RuntimeUtil.getLibVlcCoreName();
-        try {
-            Native.loadLibrary(vlcLibName, LibVlc.class);
-        } catch (Throwable e){
 
-        }
-        try {
-            Native.loadLibrary("C:\\Program Files (x86)\\VideoLAN\\VLC\\libvlc.dll", LibVlc.class);
-        }
-        catch (Throwable t){
 
-        }
-        try {
-            Native.loadLibrary("C:\\Program Files (x86)\\VideoLAN\\VLC\\libvlccore.dll", LibVlc.class);
-        }catch (Throwable r){
-
-        }
-    }
-
-    MediaPlayerFactory factory = new MediaPlayerFactory();
-    MediaPlayer mediaPlayer = factory.newEmbeddedMediaPlayer();
 
     @Override
     protected ContentInfo decodeFile(File file) {
@@ -70,7 +46,7 @@ public class PCDecoder extends ContentInfoDecoder {
         }
         ContentInfo info = new ContentInfo(file);
 
-        System.out.println("decode " + file);
+//        System.out.println("decode " + file);
         String s = info.getExt();
 
 
@@ -81,70 +57,27 @@ public class PCDecoder extends ContentInfoDecoder {
 
         }
 
-        tryAudioTagger(info, file);
+//        try {
+//            tryAudioTagger(info, file);
+//        }catch (InvalidBoxHeaderException t){
+//
+//        }
 
+        VLCPlayer.getInstance().solveSnapshot(info);
 
         cache.put(file.getAbsolutePath(), info);
 
+        //VLCPlayer.getInstance().checkSnpUeue();
         return info;
     }
 
 
 
-    //todo recursive
-    private void vlcSnap(ContentInfo info){
-        mediaPlayer.stop();
-        mediaPlayer.setVolume(0);
-        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter(){
-
-            @Override
-            public void videoOutput(MediaPlayer m, int newCount) {
-                System.out.println("videoOutput::::");
-                m.setVolume(0);
-                String id = info.getName() + "vlcsnap.jpg";
-                mediaPlayer.saveSnapshot(new File(getStateDirectory(), id), 200, 200);
-                mediaPlayer.pause();
-                info.setThumbnailId(id);
-
-            }
-
-            @Override
-            public void mediaStateChanged(MediaPlayer mediaPlayer, int newState) {
-                System.out.println("mediaStateChanged::::");
-                mediaPlayer.setVolume(0);
-            }
-
-            @Override
-            public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
-                System.out.println("snapshotTaken(filename=" + filename + ")");
-            }
-
-            @Override
-            public void playing(MediaPlayer mediaPlayer) {
-                System.out.println("playing::::");
-                mediaPlayer.setVolume(0);
-            }
-        });
 
 
 
-        mediaPlayer.prepareMedia(info.getPath());
-        mediaPlayer.parseMedia();
 
-        MediaMeta mediaMeta = mediaPlayer.getMediaMeta();
-        int duration = (int) mediaMeta.getLength();
-        info.setDuration(duration)
-                .setArtist(mediaMeta.getArtist())
-                .setTitle(mediaMeta.getTitle());
-
-
-        mediaPlayer.play();
-
-
-    }
-
-
-
+    private Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
     private void trySwing(ContentInfo info, File file) {
 
@@ -164,8 +97,11 @@ public class PCDecoder extends ContentInfoDecoder {
 
         FileOutputStream os = null;
         String id = info.getExt() + "thumb.jpg";
+
+
+        File out = null;
         try {
-            File out = new File(getStateDirectory(), id);
+            out = new File(getStateDirectory(), id);
             os = new FileOutputStream(out);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -176,9 +112,17 @@ public class PCDecoder extends ContentInfoDecoder {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (out != null && out.exists() && !bytesCache.containsKey(id)){
+                try {
+                    bytesCache.put(id, StreamUtil.fullyReadFileToBytes(out));
+                } catch (IOException e) {
+                    bytesCache.remove(id);
+                }
+            }
         }
         info.setThumbnailId(id);
         Util.close(os);
+
     }
 
 
@@ -186,7 +130,7 @@ public class PCDecoder extends ContentInfoDecoder {
         AudioFile f = null;
         try {
             f = AudioFileIO.read(file);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             f = null;
         }
         if (f == null){
@@ -220,7 +164,7 @@ public class PCDecoder extends ContentInfoDecoder {
             byte [] data = artwork.getBinaryData();
             String id = info.getName() + "_art.jpg";
             File out = new File(getStateDirectory(), id);
-            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream = new FileOutputStream(out);
             fileOutputStream.write(data);
             fileOutputStream.flush();
             fileOutputStream.close();
@@ -237,12 +181,15 @@ public class PCDecoder extends ContentInfoDecoder {
 
     @Override
     public byte[] getThumbnail(String id) {
+        if (bytesCache.containsKey(id)){
+            return bytesCache.get(id);
+        }
         return new byte[0];
     }
 
     @Override
     public ContentType getThumbnailContentType(String id) {
-        return null;
+        return ContentType.IMAGE_JPEG;
     }
 
 }

@@ -7,12 +7,11 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.TextureView;
 
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
-import com.arise.corona.utils.JPEGOfferResponse;
-import com.arise.corona.utils.MJPEGResponse;
+import com.arise.weland.utils.JPEGOfferResponse;
+import com.arise.weland.utils.MJPEGResponse;
 import com.arise.rapdroid.components.CameraWorker;
 
 

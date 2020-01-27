@@ -1,4 +1,4 @@
-package com.arise.corona.utils;
+package com.arise.weland.utils;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.http.HttpRequest;
@@ -12,7 +12,7 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.corona.impl.ContentInfoProvider;
+import com.arise.weland.impl.ContentInfoProvider;
 
 import java.io.File;
 import java.util.List;
@@ -25,7 +25,7 @@ import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
 public class Boostrap {
     private static final Mole log = Mole.getInstance(Boostrap.class);
 
-    public static CoronaServerHandler buildHandler(String[] args, ContentInfoProvider contentInfoProvider){
+    public static WelandServerHandler buildHandler(String[] args, ContentInfoProvider contentInfoProvider){
         try {
             ContentType.loadDefinitions();
             log.info("Successfully loaded content-type definitions");
@@ -38,24 +38,24 @@ public class Boostrap {
                 .addCommand(PROCESS_EXEC_WHEN_FOUND);
 
         try {
-            registry.loadJsonResource("src/main/resources#/corona/config/commons/commands.json");
+            registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
             if (SYSUtils.isWindows()){
-                registry.loadJsonResource("src/main/resources#/corona/config/win/commands.json");
+                registry.loadJsonResource("src/main/resources#/weland/config/win/commands.json");
             } else {
-                registry.loadJsonResource("src/main/resources#/corona/config/unix/commands.json");
+                registry.loadJsonResource("src/main/resources#/weland/config/unix/commands.json");
             }
             log.info("Successfully loaded commands definitions");
         } catch (Exception e){
             log.error("Failed to load commands definitions", e);
         }
 
-//        Object decoder = ReflectUtil.newInstance("com.arise.corona.impl.PCDecoder");
+//        Object decoder = ReflectUtil.newInstance("com.arise.weland.impl.PCDecoder");
 
 //        ContentInfoProvider
-        CoronaServerHandler coronaServerHandler = new CoronaServerHandler()
+        WelandServerHandler welandServerHandler = new WelandServerHandler()
                                                     .setContentProvider(contentInfoProvider);
 
-        coronaServerHandler.onFileOpenRequest(new CoronaServerHandler.Handler<HttpRequest>() {
+        welandServerHandler.onFileOpenRequest(new WelandServerHandler.Handler<HttpRequest>() {
             @Override
             public HttpResponse handle(HttpRequest request) {
                 String path = request.getQueryParam("path");
@@ -69,7 +69,7 @@ public class Boostrap {
             }
         });
 
-        coronaServerHandler.onCommandExecRequest(new CoronaServerHandler.Handler<HttpRequest>() {
+        welandServerHandler.onCommandExecRequest(new WelandServerHandler.Handler<HttpRequest>() {
             @Override
             public HttpResponse handle(HttpRequest request) {
                 Command command = registry.getCommand(request.pathAt(2));
@@ -94,10 +94,10 @@ public class Boostrap {
         });
 
 
-//        if (ReflectUtil.classExists("com.arise.corona.impl.PCDeviceController")){
+//        if (ReflectUtil.classExists("com.arise.weland.impl.PCDeviceController")){
 //            IDeviceController iDeviceController =
-//                    (IDeviceController) ReflectUtil.newInstance("com.arise.corona.impl.PCDeviceController");
-//            coronaServerHandler.onDeviceControlsUpdate(new CoronaServerHandler.Handler<HttpRequest>() {
+//                    (IDeviceController) ReflectUtil.newInstance("com.arise.weland.impl.PCDeviceController");
+//            welandServerHandler.onDeviceControlsUpdate(new WelandServerHandler.Handler<HttpRequest>() {
 //                @Override
 //                public HttpResponse handle(HttpRequest request) {
 //                    iDeviceController.update(request.getQueryParams());
@@ -106,11 +106,11 @@ public class Boostrap {
 //            });
 //        }
 
-        return coronaServerHandler;
+        return welandServerHandler;
     }
 
 
-    public static AbstractServer startHttpServer(CoronaServerHandler coronaServerHandler){
+    public static AbstractServer startHttpServer(WelandServerHandler welandServerHandler){
         AbstractServer server = new IOServer()
                 .setPort(8221)
                 .setName("DR_" + SYSUtils.getDeviceName())
@@ -124,8 +124,8 @@ public class Boostrap {
                             .addRequestBuilder(new HttpRequestBuilder())
                             .addDuplexDraft(new WSDraft6455())
                             .setHost("localhost")
-                            .setStateObserver(coronaServerHandler)
-                            .setRequestHandler(coronaServerHandler)
+                            .setStateObserver(welandServerHandler)
+                            .setRequestHandler(welandServerHandler)
                             .start();
                 } catch (Exception e) {
                     e.printStackTrace();

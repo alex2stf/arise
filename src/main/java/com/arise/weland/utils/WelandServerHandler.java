@@ -1,4 +1,4 @@
-package com.arise.corona.utils;
+package com.arise.weland.utils;
 
 
 
@@ -13,17 +13,15 @@ import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.corona.dto.*;
-import com.arise.corona.impl.ContentInfoDecoder;
-import com.arise.corona.impl.ContentInfoProvider;
+import com.arise.weland.dto.*;
+import com.arise.weland.impl.ContentInfoProvider;
 
 
-import java.io.File;
 import java.util.Map;
 
-public class CoronaServerHandler extends HTTPServerHandler {
+public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
-  private Mole log = Mole.getInstance(CoronaServerHandler.class);
+  private Mole log = Mole.getInstance(WelandServerHandler.class);
 
   private static final DeviceStat deviceStat = new DeviceStat();
   static {
@@ -35,24 +33,24 @@ public class CoronaServerHandler extends HTTPServerHandler {
   JPEGOfferResponse liveJpeg;
   WavResponse liveWav;
 
-  public CoronaServerHandler setLiveMjpegStream(MJPEGResponse liveMjpegStream) {
+  public WelandServerHandler setLiveMjpegStream(MJPEGResponse liveMjpegStream) {
     this.liveMjpegStream = liveMjpegStream;
     return this;
   }
 
-  public CoronaServerHandler setLiveJpeg(JPEGOfferResponse liveJpeg) {
+  public WelandServerHandler setLiveJpeg(JPEGOfferResponse liveJpeg) {
     this.liveJpeg = liveJpeg;
     return this;
   }
 
-  public CoronaServerHandler setLiveWav(WavResponse liveWav) {
+  public WelandServerHandler setLiveWav(WavResponse liveWav) {
     this.liveWav = liveWav;
     return this;
   }
 
 
 
-  public CoronaServerHandler() {
+  public WelandServerHandler() {
 
   }
 
@@ -64,7 +62,7 @@ public class CoronaServerHandler extends HTTPServerHandler {
   }
 
 
-  public CoronaServerHandler setContentProvider(ContentInfoProvider contentProvider){
+  public WelandServerHandler setContentProvider(ContentInfoProvider contentProvider){
     this.contentInfoProvider = contentProvider;
     return this;
   }
@@ -86,38 +84,38 @@ public class CoronaServerHandler extends HTTPServerHandler {
 
 
 
-  public CoronaServerHandler onCommandExecRequest(Handler<HttpRequest> commandExecHandler) {
+  public WelandServerHandler onCommandExecRequest(Handler<HttpRequest> commandExecHandler) {
     this.commandExecHandler = commandExecHandler;
     return this;
   }
 
-  public CoronaServerHandler onFileOpenRequest(Handler<HttpRequest> fileOpenHanlder) {
+  public WelandServerHandler onFileOpenRequest(Handler<HttpRequest> fileOpenHanlder) {
     this.fileOpenHandler = fileOpenHanlder;
     return this;
   }
 
-  public CoronaServerHandler onMessageReceived(Handler<Message> messageHandler) {
+  public WelandServerHandler onMessageReceived(Handler<Message> messageHandler) {
     this.messageHandler = messageHandler;
     return this;
   }
 
-  public CoronaServerHandler beforeLiveMJPEG(Handler<HttpRequest> liveMjpegRequest) {
+  public WelandServerHandler beforeLiveMJPEG(Handler<HttpRequest> liveMjpegRequest) {
     this.liveMjpegHandler = liveMjpegRequest;
     return this;
   }
 
-  public CoronaServerHandler beforeLiveJPEG(Handler<HttpRequest> liveJpegHandler) {
+  public WelandServerHandler beforeLiveJPEG(Handler<HttpRequest> liveJpegHandler) {
     this.liveJpegHandler = liveJpegHandler;
     return this;
   }
 
-  public CoronaServerHandler onDeviceControlsUpdate(Handler<HttpRequest> deviceControlsUpdate) {
+  public WelandServerHandler onDeviceControlsUpdate(Handler<HttpRequest> deviceControlsUpdate) {
     this.deviceControlsUpdate = deviceControlsUpdate;
     return this;
   }
 
 
-  public CoronaServerHandler onPlayAdvice(CompleteHandler<ContentInfo> contentInfoCompleteHandler){
+  public WelandServerHandler onPlayAdvice(CompleteHandler<ContentInfo> contentInfoCompleteHandler){
       this.contentInfoProvider.onPlayAdvice(contentInfoCompleteHandler);
       return this;
   }
