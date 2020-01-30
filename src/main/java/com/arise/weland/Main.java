@@ -63,7 +63,7 @@ public class Main {
     public static void main(String[] args) {
         ContentInfoProvider contentInfoProvider =
                 new ContentInfoProvider(new PCDecoder())
-                        .addRoot(new File("D:\\FILME"))
+                        .addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"))
                 .get();
         start(
                 Boostrap.buildHandler(args, contentInfoProvider)

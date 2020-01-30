@@ -44,7 +44,7 @@ public abstract class HttpRequestReader extends HttpReader<HttpRequest> {
 
 
 //        if (!hasHeaders){
-//            headersRead = true;
+//            headersReaded = true;
 //            onHeadersReadComplete(reset());
 //        }
     }

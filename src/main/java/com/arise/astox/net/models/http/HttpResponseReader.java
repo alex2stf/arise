@@ -17,6 +17,7 @@ public abstract class HttpResponseReader extends HttpReader<HttpResponse> {
     @Override
     protected void onHeadersParsed(Map<String, String> headers) {
         response.setHeaders(headers);
+//        handleRest(this);
     }
 
     @Override
@@ -34,6 +35,11 @@ public abstract class HttpResponseReader extends HttpReader<HttpResponse> {
         if (status != null){
             onStatusFound(status);
         }
+    }
+
+    @Override
+    protected void onStatusFound(Integer status) {
+        response.setStatusCode(status);
     }
 
     @Override

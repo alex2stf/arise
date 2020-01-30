@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +15,9 @@ public abstract class HttpReader<TYPE> {
     protected StringBuffer builder = new StringBuffer();
     protected ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
 
-    protected boolean headersRead = false;
+    protected volatile boolean headersReaded = false;
     int limit = -1;
-    int readed = 0;
+    protected int readedBytes = 0;
 
     public HttpReader setLimit(int limit) {
         this.limit = limit;
@@ -32,33 +33,43 @@ public abstract class HttpReader<TYPE> {
 
 
     public synchronized void readChar(byte b) {
-        readed++;
+        readedBytes++;
 
 
-        if(headersRead) {
-            bodyBytes.write(b);
-            return;
-        }
-        else {
-            builder.append((char) b);
+        bodyBytes.write(b);
 
-            if (builder.toString().endsWith("\n\n") || builder.toString().endsWith("\r\n\r\n")){
-                onHeaderReadComplete(reset());
-                headersRead = true;
+        if(!headersReaded) {
+            try {
+                String data = bodyBytes.toString("UTF-8");
+                if (data.endsWith("\n\n") || data.endsWith("\r\n\r\n")){
+                    onHeaderReadComplete(data);
+                    headersReaded = true;
+                    try {
+                        bodyBytes.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    bodyBytes = new ByteArrayOutputStream();
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-
         }
 
 
-
-
-
-
-
-
-
-
-
+//        if(headersReaded) {
+//            bodyBytes.write(b);
+//            return;
+//        }
+//        else {
+//            builder.append((char) b);
+//
+//            if (builder.toString().endsWith("\n\n") || builder.toString().endsWith("\r\n\r\n")){
+//                onHeaderReadComplete(reset());
+//                headersReaded = true;
+//            }
+//
+//        }
 
     }
 
@@ -84,7 +95,7 @@ public abstract class HttpReader<TYPE> {
 
 
     protected void onHeaderReadComplete(String text){
-
+        headersReaded = true;
         if (!StringUtil.hasContent(text)){
             return;
         }
@@ -103,7 +114,7 @@ public abstract class HttpReader<TYPE> {
                 headers.put(key.trim(), value.trim());
             }
         }
-        headersRead = true;
+
         onHeadersParsed(headers);
     }
 
@@ -166,9 +177,12 @@ public abstract class HttpReader<TYPE> {
             }
             return readed;
         } catch (IOException e) {
-            e.printStackTrace();
+            onError(e);
         }
         return 0;
+    }
+
+    public void onError(IOException e) {
     }
 
     public void flush(){
@@ -181,8 +195,8 @@ public abstract class HttpReader<TYPE> {
 
         }
         bodyBytes = new ByteArrayOutputStream();
-        headersRead = false;
-        readed = 0;
+        headersReaded = false;
+        readedBytes = 0;
     }
 
 }

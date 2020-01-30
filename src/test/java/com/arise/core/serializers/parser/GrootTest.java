@@ -1,6 +1,5 @@
 package com.arise.core.serializers.parser;
 
-import com.arise.corona.dto.DeviceStat;
 import com.arise.core.serializers.parser.Groot.Syntax;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.MapObj;

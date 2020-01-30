@@ -321,6 +321,10 @@ public class SYSUtils {
             this.arch = arch;
         }
 
+        public String getArch() {
+            return arch;
+        }
+
         public String getName() {
             return name;
         }

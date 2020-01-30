@@ -73,6 +73,9 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
     };
 
 
+   public String getId(){
+       return getConnectionPath();
+   }
 
 
 }

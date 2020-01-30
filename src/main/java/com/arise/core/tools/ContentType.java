@@ -240,7 +240,7 @@ public enum ContentType  {
     }
 
     public static boolean isVideo(String path) {
-        return path.endsWith(".mp3") || path.endsWith(".mp4") || path.endsWith(".3gp")
+        return  path.endsWith(".mp4") || path.endsWith(".3gp")
                 || path.endsWith(".mkv")
                 || path.endsWith(".avi");
 

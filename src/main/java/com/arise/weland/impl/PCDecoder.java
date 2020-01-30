@@ -20,6 +20,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,7 +64,9 @@ public class PCDecoder extends ContentInfoDecoder {
 //
 //        }
 
-        VLCPlayer.getInstance().solveSnapshot(info);
+
+        VLCPlayer.getInstance().solveSnapshot(info, getStateDirectory());
+
 
         cache.put(file.getAbsolutePath(), info);
 
@@ -72,10 +75,12 @@ public class PCDecoder extends ContentInfoDecoder {
     }
 
 
-
-
-
-
+    @Override
+    public void onScanComplete() {
+        if (VLCPlayer.getInstance().snapshotMediaComponent != null){
+            VLCPlayer.getInstance().snapshotMediaComponent.onScanComplete();
+        }
+    }
 
     private Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
@@ -183,6 +188,20 @@ public class PCDecoder extends ContentInfoDecoder {
     public byte[] getThumbnail(String id) {
         if (bytesCache.containsKey(id)){
             return bytesCache.get(id);
+        }
+
+        File f = new File(getStateDirectory(), id);
+        if (f.exists()){
+            byte[] res;
+            try {
+                res = StreamUtil.fullyReadFileToBytes(f);
+            } catch (IOException e) {
+                res = null;
+            }
+            if (res != null && res.length > 1){
+                bytesCache.put(id, res);
+                return res;
+            }
         }
         return new byte[0];
     }

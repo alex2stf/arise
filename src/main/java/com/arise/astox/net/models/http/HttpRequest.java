@@ -162,7 +162,7 @@ public class HttpRequest extends ServerRequest {
 
     protected String headerLine(){
         StringBuilder sb = new StringBuilder();
-        sb.append(_method).append(" ").append(getUri());
+        sb.append(StringUtil.hasText(_method) ? _method : "GET").append(" ").append(getUri());
         sb.append(" ").append(getProtocol().value());
 
 
@@ -301,5 +301,12 @@ public class HttpRequest extends ServerRequest {
 
     public String pathAt(int i) {
         return pathParams.get(i);
+    }
+
+    public void addHeader(String key, String value) {
+        if (headers == null){
+            headers = new HashMap<>();
+        }
+        headers.put(key, value);
     }
 }

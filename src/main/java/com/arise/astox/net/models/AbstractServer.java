@@ -135,6 +135,7 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
 
 
 
+    @Deprecated
     protected void readPayload(READABLE stream, ReadCompleteHandler<ServerRequest> completeHandler){
         for (ServerRequestBuilder interceptor: getBuilders()){
             solveInterceptor(interceptor, stream, completeHandler);

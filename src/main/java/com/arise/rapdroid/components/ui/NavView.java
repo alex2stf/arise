@@ -2,16 +2,11 @@ package com.arise.rapdroid.components.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-
-import com.arise.rapdroid.components.ui.views.LIFolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,45 +17,33 @@ public class NavView extends LinearLayout {
 
     LinearLayout leftMenu;
     ScrollView scrollView;
-    FrameLayout page;
+    FrameLayout pageContainer;
     private final Context context;
 
-    private int implodedBtnRes;
-    private int expandedBtnRes;
-    List<LIFolder> liFolders = new ArrayList<>();
-
-    Map<View, View> views = new HashMap<>();
-    Map<View, View> menus = new HashMap<>();
-    List<View> indexes = new ArrayList<>();
+    private int menuSelectedColor = Color.GREEN;
+    private int menuReleasedColor = Color.YELLOW;
 
     public NavView(Context context) {
         super(context);
         this.context = context;
-
     }
 
-    public NavView addToggleButton(int implodedBtnRes, int expandedBtnRes){
-        compose();
-        ImageButton imageButton = new ImageButton(context);
-        imageButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
-        imageButton.setImageResource(implodedBtnRes);
-        leftMenu.addView(imageButton, Layouts.wrapContentWrapContent());
+
+    public NavView setSelectedColor(int color){
+        menuSelectedColor = color;
         return this;
     }
 
-    public NavView addButton(int implodedBtnRes, int expandedBtnRes, OnClickListener onClickListener) {
+    public NavView setReleasedColor(int color){
+        menuReleasedColor = color;
+        return this;
+    }
+
+    public NavView addButton(int resource, OnClickListener onClickListener) {
         compose();
-        this.implodedBtnRes = implodedBtnRes;
-        this.expandedBtnRes = expandedBtnRes;
         ImageButton imageButton = new ImageButton(context);
         imageButton.setOnClickListener(onClickListener);
-        imageButton.setImageResource(implodedBtnRes);
-        imageButton.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+        imageButton.setImageResource(resource);
         leftMenu.addView(imageButton, Layouts.wrapContentWrapContent());
         return this;
     }
@@ -72,86 +55,97 @@ public class NavView extends LinearLayout {
             leftMenu = new LinearLayout(context);
             scrollView.addView(leftMenu, Layouts.matchParentMatchParent());
             leftMenu.setOrientation(VERTICAL);
-            page = new FrameLayout(context);
-            this.addView(scrollView);
-            this.addView(page);
+            leftMenu.setPadding(0, 0, 0, 0);
+            pageContainer = new FrameLayout(context);
+            scrollView.setBackgroundColor(menuReleasedColor);
+            this.addView(scrollView, Layouts.wrapContentMatchParent());
+            this.addView(pageContainer);
         }
         return this;
     }
 
 
+    private final OnClickListener onClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View current) {
+            for (Container c: pages){
+                if (c.menu == current){
+                   c.enable();
+                }
+                else {
+                   c.disable();
+                }
+            }
+        }
+    };
 
 
 
-    public NavView addMenu(int implodedBtnRes, String text, View xx){
-        if (xx == null){
+    private List<Container> pages = new ArrayList<>();
+
+    public NavView addMenu(int selectedRes, int releasedRes, String id, View rightPage){
+        if (rightPage == null){
             return this;
         }
         compose();
         ImageButton button = new ImageButton(context);
-        button.setImageResource(implodedBtnRes);
-        LIFolder btn = new LIFolder(context)
-                .setup(text, implodedBtnRes, null, button)
-                .hideText();
-        views.put(button, xx);
-        menus.put(button, btn);
-        indexes.add(button);
-
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for (View v: views.values()){
-                    v.setVisibility(INVISIBLE);
-                }
-                for (View v: menus.values()){
-                    v.setBackgroundColor(Color.GREEN);
-                }
-                views.get(view).setVisibility(VISIBLE);
-                menus.get(view).setBackgroundColor(Color.RED);
-                views.get(view).setBackgroundColor(Color.RED);
-            }
-        });
-        liFolders.add(btn);
-        leftMenu.addView(btn);
-        page.addView(xx);
+        button.setImageResource(selectedRes);
+        rightPage.setPadding(10, 10, 10, 10);
+        leftMenu.addView(button);
+        pageContainer.addView(rightPage);
+        pages.add(new Container(button, rightPage, selectedRes, releasedRes));
+        button.setOnClickListener(onClickListener);
+        show(0);
         requestLayout();
         return this;
     }
 
+
+
+
     public void show(int index){
-        for (int i = 0; i < indexes.size(); i++){
+        for (int i = 0; i < pages.size(); i++){
             if (i == index){
-                views.get(indexes.get(i)).setVisibility(VISIBLE);
-                menus.get(indexes.get(i)).setBackgroundColor(Color.RED);
+                pages.get(i).enable();
             }
             else {
-                views.get(indexes.get(i)).setVisibility(INVISIBLE);
-                menus.get(indexes.get(i)).setBackgroundColor(Color.GREEN);
+                pages.get(i).disable();
             }
         }
     }
 
-    boolean collapsed = true;
 
-    public void toggle(){
-        if (collapsed){
-            scrollView.setLayoutParams( Layouts.matchParentMatchParent088f());
-            page.setLayoutParams( Layouts.matchParentMatchParent012f());
-            collapsed = false;
-//            mainBtn.setImageResource(implodedBtnRes);
-            for(LIFolder lf: liFolders){
-                lf.hideText();
-            }
-        } else {
-            scrollView.setLayoutParams( Layouts.matchParentMatchParent012f());
-            page.setLayoutParams( Layouts.matchParentMatchParent088f());
-            collapsed = true;
-//            mainBtn.setImageResource(expandedBtnRes);
-            for(LIFolder lf: liFolders){
-                lf.showText();
-            }
+
+    private class Container {
+        final ImageButton menu;
+        final View page;
+        private final int selected;
+        private final int released;
+
+
+        private Container(ImageButton menu, View page, int selected, int released) {
+            this.menu = menu;
+            this.page = page;
+            this.selected = selected;
+            this.released = released;
+        }
+
+        public void enable() {
+            menu.setBackgroundColor(menuSelectedColor);
+            menu.setImageResource(selected);
+            page.setBackgroundColor(menuSelectedColor);
+            page.setVisibility(VISIBLE);
+        }
+
+        public void disable() {
+            menu.setBackgroundColor(Color.TRANSPARENT);
+            menu.setImageResource(released);
+            page.setVisibility(INVISIBLE);
         }
     }
+
+
+
 
 
 }

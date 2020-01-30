@@ -60,5 +60,4 @@ public class HttpClient extends AbstractStreamedSocketClient<HttpRequest, HttpRe
 
 
 
-
 }

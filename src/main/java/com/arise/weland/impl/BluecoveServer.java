@@ -7,7 +7,11 @@ import com.arise.astox.net.models.ServerMessage;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.StreamedServer;
+import com.arise.astox.net.models.http.HttpReader;
+import com.arise.astox.net.models.http.HttpRequestReader;
+import com.arise.astox.net.models.http.HttpResponseReader;
 import com.arise.core.exceptions.LogicalException;
+import com.arise.core.tools.Util;
 
 import javax.bluetooth.LocalDevice;
 import javax.bluetooth.UUID;
@@ -17,6 +21,7 @@ import javax.microedition.io.StreamConnectionNotifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, StreamConnection> {
 
@@ -76,59 +81,69 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
         return streamConnectionNotifier.acceptAndOpen();
     }
 
+
     @Override
     protected void handle(StreamConnection connection) {
-        InputStream localInputStream = null;
+
+       AbstractServer self = this;
+        final boolean[] allow = {true};
+
+        OutputStream outputStream;
+        InputStream inputStream;
         try {
-            localInputStream = connection.openInputStream();
+            outputStream = connection.openOutputStream();
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
-        AbstractServer self = this;
-        InputStream finalLocalInputStream = localInputStream;
-        readPayload(localInputStream, new ReadCompleteHandler<ServerRequest>() {
-            @Override
-            public void onReadComplete(ServerRequest serverRequest) {
-                System.out.println("RECEIVED " + serverRequest);
-                OutputStream outputStream = null;
-                try {
-                    outputStream = connection.openOutputStream();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                ServerResponse response = requestHandler.getResponse(self, serverRequest);
-                if (response == null){
-                    response = requestHandler.getDefaultResponse(self);
-                }
+        try {
+            inputStream = connection.openInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        HttpRequestReader httpRequestReader = new HttpRequestReader() {
+            @Override
+            public void handleRest(HttpReader reader) {
+                request.setBytes(bodyBytes.toByteArray());
+                System.out.println("RECEIVED " + request);
+                ServerResponse response = requestHandler.getResponse(self, request);
                 try {
-                    System.out.println("RESPONSE " + response);
                     outputStream.write(response.bytes());
+                    outputStream.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.out.println("CLOSING CONNECTION");
-//                    close();
-                    try {
-                        connection.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    Util.close(outputStream);
+                    Util.close(inputStream);
+                    Util.close(connection);
+                    allow[0] = false;
                 }
-                finally {
-                    try {
-                        outputStream.close();
-                        finalLocalInputStream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                System.out.println("SENT " + response);
+                flush();
             }
-        });
+
+            @Override
+            public void onError(IOException e) {
+                allow[0] = false;
+                e.printStackTrace();
+                Util.close(outputStream);
+                Util.close(inputStream);
+                Util.close(connection);
+            }
+        };
+
+
+        while (allow[0]){
+            httpRequestReader.readInputStream(inputStream);
+        }
+
+
     }
 
 
-//    OutputStream outputStream;
-//    InputStream inputStream;
+
 
     @Override
     protected InputStream getInputStream(StreamConnection streamConnection) {
@@ -140,6 +155,7 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
 //            }
 //        }
 //        return inputStream;
+
         try {
             return streamConnection.openInputStream();
         } catch (IOException e) {

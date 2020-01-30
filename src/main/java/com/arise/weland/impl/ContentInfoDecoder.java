@@ -74,4 +74,9 @@ public abstract class ContentInfoDecoder {
     public void setProvider(ContentInfoProvider contentInfoProvider) {
         this.provider = contentInfoProvider;
     }
+
+    public void onScanComplete() {
+
+
+    }
 }

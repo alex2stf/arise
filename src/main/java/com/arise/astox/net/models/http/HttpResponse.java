@@ -195,7 +195,7 @@ public class HttpResponse extends ServerResponse {
 
     public byte[] bytes() {
 
-        byte[] headBytes = (headerLine().getBytes(Charset.forName("UTF-8")));
+        byte[] headBytes = (headerLine().getBytes());
         int bodyLength = 0;
         if (bytes != null) {
             bodyLength = bytes.length;
@@ -223,4 +223,8 @@ public class HttpResponse extends ServerResponse {
     }
 
 
+    public HttpResponse addCorelationId(String correlationId) {
+        addHeader("Correlation-Id", correlationId);
+        return this;
+    }
 }

@@ -1,21 +1,27 @@
 package com.arise.weland.dto;
 
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.weland.dto.ContentInfo.addVal;
+import static com.arise.weland.dto.ContentInfo.decodeString;
 
 public class DeviceStat {
 
-    protected Set<String> ipv4Addrs;
+    protected Set<String> ipv4Addrs = new HashSet<>();
     private int batteryScale;
     private int batteryLevel;
     private String deviceName;
@@ -26,98 +32,77 @@ public class DeviceStat {
     private String serverUUID;
     private String conversationId;
 
-    private boolean pbr;
-    private boolean dbr;
-    private boolean ubr;
-    private boolean cbr;
-    private boolean apm;
 
 
+    public String toJson() {
+        StringBuilder sb = new StringBuilder().append("{");
+        addVal(sb, "B1", batteryScale);
+        addVal(sb, "B2", batteryLevel);
+        addVal(sb, "P", serverStatus);
+        addVal(sb, "D", displayName);
+        addVal(sb, "U", serverUUID);
+        addVal(sb, "C", conversationId);
+        if (!isEmpty(screens)){
+            sb.append("\"S\":").append(jsonVal(screens)).append(",");
+        }
+
+        if (!isEmpty(ipv4Addrs)){
+            sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
+        }
+        addVal(sb, "x", os.getName());
+        addVal(sb, "v", os.getVersion());
+        addVal(sb, "a", os.getArch());
+
+        sb.append("\"N\":").append(jsonVal(ContentInfo.encodePath(deviceName)));
+        sb.append("}");
+        return sb.toString();
+    }
 
     public static DeviceStat fromMap(Map obj) {
         DeviceStat deviceStat = new DeviceStat(false);
-        deviceStat.ipv4Addrs = MapUtil.getSet(obj, "ipv4Addrs");
-        deviceStat.batteryLevel = MapUtil.getInt(obj, "batteryLevel", 0);
-        deviceStat.batteryScale = MapUtil.getInt(obj,"batteryScale", 0);
-        deviceStat.deviceName = MapUtil.getString(obj, "deviceName");
-        deviceStat.serverStatus = MapUtil.getString(obj, "serverStatus");
-        deviceStat.serverUUID = MapUtil.getString(obj, "serverUUID");
-        deviceStat.displayName = MapUtil.getString(obj, "displayName");
-        deviceStat.conversationId = MapUtil.getString(obj, "conversationId");
-        deviceStat.pbr = MapUtil.getBool(obj, "pbr");
-        deviceStat.dbr = MapUtil.getBool(obj, "dbr");
-        deviceStat.ubr = MapUtil.getBool(obj, "ubr");
-        deviceStat.cbr = MapUtil.getBool(obj, "cbr");
-        deviceStat.apm = MapUtil.getBool(obj, "apm");
+        deviceStat.batteryScale = MapUtil.getInt(obj,"B1", 0);
+        deviceStat.batteryLevel = MapUtil.getInt(obj, "B2", 0);
+        deviceStat.deviceName =  decodeString(obj, "N");
+        deviceStat.serverStatus =  decodeString(obj, "P");
+        deviceStat.displayName = decodeString(obj, "D");
+        deviceStat.serverUUID = decodeString(obj, "U");
+        deviceStat.conversationId = decodeString(obj, "C");
 
-        List screensList = MapUtil.getList(obj, "screens");
+
+        List ipv4Addrs = MapUtil.getList(obj, "I4");
+        if (!isEmpty(ipv4Addrs)){
+            for (Object s: ipv4Addrs){
+                if (s != null) {
+                    deviceStat.ipv4Addrs.add(String.valueOf(s));
+                }
+            }
+        }
+
+
+        List screensList = MapUtil.getList(obj, "S");
         if (screensList != null){
             for (Object o: screensList){
                 if (o instanceof Map){
                     Map scr = (Map) o;
-                    int width = MapUtil.getInt(scr, "width", -1);
-                    int height = MapUtil.getInt(scr, "height", -1);
+                    int width = MapUtil.getInt(scr, "W", -1);
+                    int height = MapUtil.getInt(scr, "H", -1);
                     deviceStat.screens.add(new Screen(width, height));
                 }
             }
         }
 
-        Map os = MapUtil.getMap(obj, "os");
-        if (os != null){
-            String name = MapUtil.getString(os, "name");
-            String version = MapUtil.getString(os, "version");
-            String arch = MapUtil.getString(os, "arch");
-            deviceStat.os = new SYSUtils.OS(name, version, arch);
-        }
+        String name = decodeString(obj, "x");
+        String version = decodeString(obj, "v");
+        String arch = decodeString(obj, "a");
+        deviceStat.os = new SYSUtils.OS(name, version, arch);
 
         return deviceStat;
     }
 
 
-    public boolean isPbr() {
-        return pbr;
-    }
 
-    public DeviceStat setPbr(boolean pbr) {
-        this.pbr = pbr;
-        return this;
-    }
 
-    public boolean isDbr() {
-        return dbr;
-    }
 
-    public DeviceStat setDbr(boolean dbr) {
-        this.dbr = dbr;
-        return this;
-    }
-
-    public boolean isUbr() {
-        return ubr;
-    }
-
-    public DeviceStat setUbr(boolean ubr) {
-        this.ubr = ubr;
-        return this;
-    }
-
-    public boolean isCbr() {
-        return cbr;
-    }
-
-    public DeviceStat setCbr(boolean cbr) {
-        this.cbr = cbr;
-        return this;
-    }
-
-    public boolean isApm() {
-        return apm;
-    }
-
-    public DeviceStat setApm(boolean apm) {
-        this.apm = apm;
-        return this;
-    }
 
     public String getConversationId() {
         return conversationId;
@@ -268,29 +253,12 @@ public class DeviceStat {
         @Override
         public String toString() {
             return "{" +
-                    "\"width\":\"" + width +
-                    "\",\"height\":\"" + height +
+                    "\"W\":\"" + width +
+                    "\",\"H\":\"" + height +
                     "\"}";
         }
     }
 
 
-    public String toJson() {
-        return "{" +
-                "\"batteryScale\":" + batteryScale +
-                ",\"batteryLevel\":" + batteryLevel +
-                ",\"deviceName\":" + jsonVal(deviceName) +
-                ",\"os\":" + os +
-                ",\"screens\":" + jsonVal(screens) +
-                ",\"serverStatus\":" + jsonVal(serverStatus) +
-                ",\"displayName\":" + jsonVal(displayName) +
-                ",\"serverUUID\":" + jsonVal(serverUUID) +
-                ",\"conversationId\":" + jsonVal(conversationId) +
-                ",\"pbr\":" + jsonVal(pbr) +
-                ",\"dbr\":" + jsonVal(dbr) +
-                ",\"ubr\":" + jsonVal(ubr) +
-                ",\"cbr\":" + jsonVal(cbr) +
-                ",\"apm\":" + jsonVal(apm) +
-                '}';
-    }
+
 }

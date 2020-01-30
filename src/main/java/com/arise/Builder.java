@@ -14,7 +14,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 public class Builder {
 
@@ -104,12 +103,12 @@ public class Builder {
             /**
              * CORONA	COntROl aNy mAchine
             */
-            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "corona")
+            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland")
                     .jarLib("libs/bluecove-2.1.0.jar" )
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "corona")
+                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
                     .resourceFiles(RES_ROOT + "content-types.json")
                     .mainClass("com.arise.weland.Main")
-                    .named("corona")
+                    .named("weland")
                     .version("1.0")
 
 
@@ -118,7 +117,7 @@ public class Builder {
             */
             ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "cargo",
                            ROOT + "astox/net/models", ROOT + "astox/net/clients")
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "corona")
+                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
                     .named("jumper")
                     .version("1.0")
 

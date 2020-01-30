@@ -17,6 +17,8 @@ import com.arise.weland.dto.Message;
 
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client  {
 
@@ -24,7 +26,6 @@ public class Client  {
 
 
     protected static AbstractClient currentClient;
-    static HttpResponseBuilder builder = new HttpResponseBuilder();
 
     public Client(){
 
@@ -36,6 +37,10 @@ public class Client  {
     }
 
 
+
+    public String clientId(){
+        return currentClient.getId();
+    }
 
 
 
@@ -205,6 +210,8 @@ public class Client  {
             }
         });
     }
+
+
 
     public void shuffle(String playlistId, CompleteHandler onComplete) {
         HttpRequest request = new HttpRequest()

@@ -132,7 +132,7 @@ public class ContentInfoProvider {
                     }
                 }
                 log.trace("RECURSIVE SCAN COMPLETE");
-
+                decoder.onScanComplete();
             }
         });
     }
@@ -226,6 +226,7 @@ public class ContentInfoProvider {
 
 
     public HttpResponse getMediaPreview(String id) {
+        System.out.println("RECEIVED A REQUEST TO DISPLAY THUMBNAIL " + id);
         HttpResponse response = new HttpResponse();
 //        InputStream inputStream = FileUtil.findStream("src/main/resources#weland/icons/download.jpg");
 //        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -235,6 +236,8 @@ public class ContentInfoProvider {
         ContentType contentType = decoder.getThumbnailContentType(id);
         response.setBytes(bytes)
                 .setContentType(contentType);
+
+
 //        Util.close(inputStream);
 //        Util.close(buffer);
 

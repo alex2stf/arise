@@ -12,6 +12,7 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.*;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -133,6 +134,10 @@ public class WelandServerHandler extends HTTPServerHandler {
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
 
+    String correlationId = "";
+    if (StringUtil.hasText(request.getHeaderParam("Correlation-Id"))){
+      correlationId = request.getHeaderParam("Correlation-Id");
+    }
 
     deviceStat.setServerUUID(server.getUuid());
     deviceStat.setDisplayName(SYSUtils.getDeviceName());
@@ -143,12 +148,12 @@ public class WelandServerHandler extends HTTPServerHandler {
       MapObj mapObj = (MapObj) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       dispatch(messageHandler, message);
-      return HttpResponse.json(deviceStat.toJson());
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
     }
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
       dispatch(deviceControlsUpdate, request);
-      return HttpResponse.json(deviceStat.toJson());
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
     }
 
     if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
@@ -166,16 +171,16 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if ("/health".equalsIgnoreCase(request.path())){
-      return HttpResponse.json(deviceStat.toJson());
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
     }
 
     if ("/device/stat".equals(request.path())){
-      return HttpResponse.json(deviceStat.toJson());
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
     }
 
     if (request.pathsStartsWith("thumbnail")){
       String id = request.getPathAt(1);
-      return contentInfoProvider.getMediaPreview(id);
+      return contentInfoProvider.getMediaPreview(id).addCorelationId(correlationId);
     }
 
     //list media based on type
@@ -186,7 +191,7 @@ public class WelandServerHandler extends HTTPServerHandler {
         what = "pictures";
       }
       ContentPage page = contentInfoProvider.getPage(what, index);
-      return HttpResponse.json(page.toString());
+      return HttpResponse.json(page.toString()).addCorelationId(correlationId);
     }
 
 
@@ -194,13 +199,13 @@ public class WelandServerHandler extends HTTPServerHandler {
       Map obj = (Map) Groot.decodeBytes(request.payload());
       ContentInfo info = contentInfoProvider.getDecoder().find(obj);
       contentInfoProvider.addToQueue(info);
-      return HttpResponse.oK();
+      return HttpResponse.oK().addCorelationId(correlationId);
     }
 
     if (request.pathsStartsWith("media", "shuffle")){
       String playlistId = request.getPathAt(2);
       contentInfoProvider.shuffle(playlistId);
-      return HttpResponse.oK();
+      return HttpResponse.oK().addCorelationId(correlationId);
     }
 
     if (request.pathsStartsWith("media", "autoplay")){
@@ -210,10 +215,10 @@ public class WelandServerHandler extends HTTPServerHandler {
       try {
         autoplayMode = AutoplayMode.valueOf(mode);
       }catch (Throwable t){
-        return HttpResponse.plainText(t.getMessage());
+        return HttpResponse.plainText(t.getMessage()).addCorelationId(correlationId);
       }
       contentInfoProvider.setAutoplay(playlistId, autoplayMode);
-      return HttpResponse.oK();
+      return HttpResponse.oK().addCorelationId(correlationId);
     }
 
 //    if (request.pathsStartsWith("media", "next")){
@@ -230,11 +235,11 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if (request.pathsStartsWith("files", "open")){
       dispatch(fileOpenHandler, request);
-      return HttpResponse.plainText(request.getQueryParam("path"));
+      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
     }
 
     if (request.pathsStartsWith("commands", "exec")){
-      return dispatch(commandExecHandler, request);
+      return dispatch(commandExecHandler, request).addCorelationId(correlationId);
     }
 
 
@@ -243,7 +248,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       for (Map.Entry<String, String> entry : request.getHeaders().entrySet()){
         serverResponse.addHeader(entry.getKey() + "-Response" , entry.getValue() + "-Response");
       }
-      serverResponse.setText("PONG");
+      serverResponse.setText("PONG").addCorelationId(correlationId);
       return serverResponse;
     }
 

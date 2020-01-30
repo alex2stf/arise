@@ -217,13 +217,13 @@ public class ContentInfo implements Serializable {
 
 
 
-    private void addVal(StringBuilder sb, String key, String val){
+    static void addVal(StringBuilder sb, String key, String val){
         if (val != null){
             sb.append('"').append(key).append("\":").append(jsonVal(encodePath(val))).append(",");
         }
     }
 
-    private void addVal(StringBuilder sb, String key, int val){
+    static void addVal(StringBuilder sb, String key, int val){
         if (val > 0){
             sb.append('"').append(key).append("\":").append(val).append(",");
         }
@@ -307,7 +307,7 @@ public class ContentInfo implements Serializable {
         return i;
     }
 
-    private static String decodeString(Map m, String key){
+    static String decodeString(Map m, String key){
         return decodePath(MapUtil.getString(m, key));
     }
 

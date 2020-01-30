@@ -2,12 +2,22 @@ package com.arise.rapdroid;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
@@ -39,7 +49,6 @@ public class AndroidContentDecoder extends ContentInfoDecoder
             .load("corona/config/commons/suggestions.json");
 
 
-    Map<String, BitmapDrawable> drawableCache = new HashMap<>();
     Map<String, Bitmap> bitmapCache = new HashMap<>();
     Map<String, byte[]> bytesCache = new HashMap<>();
 
@@ -189,7 +198,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
     public File getAppDir(){
-        File root = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "CoronaApp");
+        File root = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Laynee");
         if (!root.exists()){
             root.mkdirs();
         }
@@ -275,14 +284,14 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
 
-    public Drawable getDrawable(String binaryId){
-        if (drawableCache.containsKey(binaryId)){
-            return drawableCache.get(binaryId);
-        }
-        return null;
-    }
+//    public Drawable getDrawable(String binaryId){
+//        if (drawableCache.containsKey(binaryId)){
+//            return drawableCache.get(binaryId);
+//        }
+//        return null;
+//    }
 
-    public void getPreview(Object worker, ContentInfo contentInfo, CompleteHandler<BitmapDrawable> completeHandler){
+    public void getPreview(ContentInfo contentInfo, CompleteHandler<Bitmap> completeHandler){
         String binaryId = contentInfo.getThumbnailId();
         if (!StringUtil.hasContent(binaryId)){
             //TODO default behaviour
@@ -290,8 +299,8 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
 
 
-        if (drawableCache.containsKey(binaryId)){
-            completeHandler.onComplete(drawableCache.get(binaryId));
+        if (bitmapCache.containsKey(binaryId)){
+            completeHandler.onComplete(bitmapCache.get(binaryId));
             return;
         }
 
@@ -301,49 +310,44 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
 
 
-        final BitmapDrawable[] bitmapDrawable = {null};
+        final Drawable[] bitmapDrawable = {null};
         if (bytes != null && bytes.length > 1){
-            bitmapDrawable[0] = new BitmapDrawable(getMinifiedBitmap(binaryId, bytes));
-            drawableCache.put(binaryId, bitmapDrawable[0]);
-            completeHandler.onComplete(bitmapDrawable[0]);
+            completeHandler.onComplete(getMinifiedBitmap(binaryId, bytes));
             return;
         }
 
-        System.out.println("CONTINUE");
-
-        if (worker instanceof URI){
-            URI url = (URI) worker;
-            if (url.getHost().equals("localhost")){
-                return;
-            }
-        }
-
-
-
-        if (AppUtil.workerIsLocalhost(worker)){
-            return;
-        }
-
-        //TODO check worker is not localhost
-        WelandClient.findThumbnail(worker, binaryId, new CompleteHandler<byte[]>() {
-            @Override
-            public void onComplete(byte[] data) {
-                if (data != null){
-                    bitmapDrawable[0] = new BitmapDrawable(getMinifiedBitmap(binaryId, data));
-                    drawableCache.put(binaryId, bitmapDrawable[0]);
-                    completeHandler.onComplete(bitmapDrawable[0]);
-                }
-            }
-        });
+        completeHandler.onComplete(null);
     }
 
+//    public BitmapDrawable getBitmapDrawable(String binaryId, byte[] bytes){
 
-    Bitmap getMinifiedBitmap(String binaryId, byte bytes[]){
+//        BitmapDrawable bitmapDrawable = new BitmapDrawable(getMinifiedBitmap(binaryId, bytes));
+//        drawableCache.put(binaryId, bitmapDrawable);
+//        return bitmapDrawable;
+//    }
+
+
+//    public Drawable getBitmapDrawable(String binaryId, byte[] bytes){
+//        if (drawableCache.containsKey(binaryId) && drawableCache.get(binaryId) != null ){
+//            return drawableCache.get(binaryId);
+//        }
+//        Bitmap bitmap = getMinifiedBitmap(binaryId, bytes);
+//        RoundedBitmapDrawable roundedBitmapDrawable =
+//                RoundedBitmapDrawableFactory.create(null, bitmap);
+//        roundedBitmapDrawable.setCornerRadius(30f);
+//        return roundedBitmapDrawable;
+//    }
+
+
+    public Bitmap getMinifiedBitmap(String binaryId, byte bytes[]){
         if (bitmapCache.containsKey(binaryId)){
             return bitmapCache.get(binaryId);
         }
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        return getMinifiedVersion(binaryId, bitmap);
+        if (bitmap != null) {
+            return getMinifiedVersion(binaryId, bitmap);
+        }
+        return null;
     }
 
     Bitmap getMinifiedVersion(String binaryId, Bitmap bitmap){
@@ -352,8 +356,8 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
         int height = bitmap.getHeight();
         int width = bitmap.getWidth();
-        int newWidth = (width * 420) / height;
-        Bitmap min = Bitmap.createScaledBitmap(bitmap, newWidth, 420, false);
+        int newWidth = (width * 320) / height;
+        Bitmap min = Bitmap.createScaledBitmap(bitmap, newWidth, 320, false);
         bitmapCache.put(binaryId, min);
         return min;
     }
