@@ -5,13 +5,16 @@ import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.AutoplayMode;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
+import com.arise.weland.dto.Playlist;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,8 +30,8 @@ public class ContentInfoProvider {
     final ContentInfoDecoder decoder;
 
     List<ContentInfo> music = new ArrayList<>();
+    List<ContentInfo> streams = new ArrayList<>();
     List<ContentInfo> videos = new ArrayList<>();
-    List<ContentInfo> pictures = new ArrayList<>();
     List<ContentInfo> games = new ArrayList<>();
     List<ContentInfo> presentations = new ArrayList<>();
 
@@ -47,9 +50,7 @@ public class ContentInfoProvider {
         return ContentType.isVideo(f);
     }
 
-    private boolean isPicture(File f){
-        return ContentType.isPicture(f);
-    }
+
 
     private boolean isGame(File f){
         return false;
@@ -60,7 +61,7 @@ public class ContentInfoProvider {
     }
 
 
-    Map<String, AutoplayMode> autoplayLists = new ConcurrentHashMap<>();
+    Map<Playlist, AutoplayMode> autoplayLists = new ConcurrentHashMap<>();
 
 
     private void asyncScan(){
@@ -75,7 +76,7 @@ public class ContentInfoProvider {
                         String playlistId = parts[0].trim();
                         String mode = parts[1];
                         AutoplayMode autoplayMode = AutoplayMode.valueOf(mode.trim());
-                        setAutoplay(playlistId, autoplayMode);
+                        setAutoplay(Playlist.find(playlistId), autoplayMode);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -93,20 +94,16 @@ public class ContentInfoProvider {
 
                             if (!file.getName().startsWith(".")){
                                 if (isMusic(file)){
-                                    music.add(decoder.decode(file).setPlaylistId("M"));
+                                    music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
                                 }
-
                                 else if (isVideo(file)){
-                                    videos.add(decoder.decode(file).setPlaylistId("V"));
-                                }
-                                else if (isPicture(file)){
-                                    pictures.add(decoder.decode(file).setPlaylistId("I"));
+                                    videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
                                 }
                                 else if (isGame(file)){
-                                    games.add(decoder.decode(file).setPlaylistId("G"));
+                                    games.add(decoder.decode(file).setPlaylist(Playlist.GAMES));
                                 }
                                 else if (isPresentation(file)){
-                                    presentations.add(decoder.decode(file).setPlaylistId("P"));
+                                    presentations.add(decoder.decode(file).setPlaylist(Playlist.PRESENTATIONS));
                                 }
                             }
                         }
@@ -123,7 +120,7 @@ public class ContentInfoProvider {
                     log.trace("Scan complete shuffle videos");
                 }
 
-                for (Map.Entry<String, AutoplayMode> entry: autoplayLists.entrySet()){
+                for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
                     if (AutoplayMode.on.equals(entry.getValue()) || AutoplayMode.on_shuffle.equals(entry.getValue())){
                         ContentInfo info = next(entry.getKey());
                         playAdviceHandler.onComplete(info);
@@ -155,33 +152,33 @@ public class ContentInfoProvider {
     }
 
 
-    private List<ContentInfo> getPlaylist(String name){
-        switch (name){
-            case "music":
+    private List<ContentInfo> getPlaylist(Playlist playlist){
+        switch (playlist){
+            case MUSIC:
                 return music;
-            case "videos":
+            case VIDEOS:
                 return videos;
-            case "games":
+            case GAMES:
                 return games;
-            case "presentations":
+            case  PRESENTATIONS:
                 return presentations;
-            case "images":
-                return pictures;
+            case STREAMS:
+                return streams;
         }
-        return pictures;
+        return music;
     }
 
 
-    public ContentPage getPage(String location, Integer index) {
+    public ContentPage getPage(Playlist playlist, Integer index) {
         int rIndex = 0;
         int pageSize = 10;
         if (index != null){
             rIndex = index;
         }
 
-        AutoplayMode autoplayMode = autoplayLists.containsKey(location) ? autoplayLists.get(location): AutoplayMode.off;
+        AutoplayMode autoplayMode = autoplayLists.containsKey(playlist) ? autoplayLists.get(playlist): AutoplayMode.off;
 
-        List<ContentInfo> source = getPlaylist(location);
+        List<ContentInfo> source = getPlaylist(playlist);
         int sourceSize = source.size();
 
         if (sourceSize == 0){
@@ -202,7 +199,7 @@ public class ContentInfoProvider {
         }
 
 
-        log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + location);
+        log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scanned){
             return new ContentPage().setData(Collections.emptyList()).setIndex(null).setAutoplayMode(autoplayMode);
         }
@@ -290,14 +287,14 @@ public class ContentInfoProvider {
 
 
 
-    public void setAutoplay(String playlistId, AutoplayMode autoplayMode) {
-        for (String s: autoplayLists.keySet()){
+    public void setAutoplay(Playlist playlist, AutoplayMode autoplayMode) {
+        for (Playlist s: autoplayLists.keySet()){
             autoplayLists.put(s, AutoplayMode.off);
         }
-        log.trace(playlistId + " auto " + autoplayMode);
-        autoplayLists.put(playlistId, autoplayMode);
+        log.trace(playlist + " auto " + autoplayMode);
+        autoplayLists.put(playlist, autoplayMode);
         File cache = autoplayCache();
-        String cnt = playlistId + "\n" + autoplayMode.name();
+        String cnt = playlist.name() + "\n" + autoplayMode.name();
         FileUtil.writeStringToFile(cache, cnt);
     }
 
@@ -317,23 +314,23 @@ public class ContentInfoProvider {
             return;
         }
 
-        String currentPlaylistId = getPlaylistId(currentInfo);
+        Playlist playlist = currentInfo.getPlaylist();
 
-        if (!StringUtil.hasText(currentPlaylistId)){
+        if (playlist == null){
             return;
         }
 
         //increment visit
-        for (ContentInfo info: getPlaylist(currentPlaylistId)){
+        for (ContentInfo info: getPlaylist(playlist)){
             if (info.getPath().equalsIgnoreCase(currentInfo.getPath())){
                 info.incrementVisit();
             }
         }
 
         //play next if autoplay
-        for (Map.Entry<String, AutoplayMode> entry: autoplayLists.entrySet()){
-            if (entry.getKey().equalsIgnoreCase(currentPlaylistId) && !AutoplayMode.off.equals(entry.getValue())){
-                ContentInfo next = next(currentPlaylistId);
+        for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
+            if (entry.getKey().equals(playlist) && !AutoplayMode.off.equals(entry.getValue())){
+                ContentInfo next = next(playlist);
                 if (next != null && playAdviceHandler != null){
                    playAdviceHandler.onComplete(next);
                 }
@@ -341,21 +338,10 @@ public class ContentInfoProvider {
         }
     }
 
-    private String getPlaylistId(ContentInfo currentInfo) {
-        switch (currentInfo.getPlaylistId()){
-            case "M":
-                return "music";
-            case "I":
-                return "images";
-            case "V":
-                return "videos";
-            case "G":
-                return "games";
-            case "P":
-                return "presentations";
-        }
-        return null;
-    }
+//    private Playlist getPlaylist(ContentInfo currentInfo) {
+//        String id = currentInfo.getPlaylistId();
+//        return Playlist.find(id);
+//    }
 
     private CompleteHandler<ContentInfo> playAdviceHandler;
 
@@ -364,8 +350,8 @@ public class ContentInfoProvider {
         return this;
     }
 
-    public ContentInfo next(String playlistId){
-        List<ContentInfo> data = getPlaylist(playlistId);
+    public ContentInfo next(Playlist playlist){
+        List<ContentInfo> data = getPlaylist(playlist);
 
         if (data.isEmpty()){
             return null;
@@ -396,9 +382,71 @@ public class ContentInfoProvider {
             }
         });
         res[0].incrementVisit();
-        log.trace("next " + playlistId + " = " + res[0].getPath());
+        log.trace("next " + playlist + " = " + res[0].getPath());
         return res[0];
     }
 
 
+    public ContentInfoProvider importJson(String path) {
+        InputStream inputStream = FileUtil.findStream(path);
+        if (inputStream == null){
+            return this;
+        }
+
+        String cnt = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
+        if (!StringUtil.hasContent(cnt)){
+            return this;
+        }
+        List<ContentInfo> infos = ContentInfo.deserializeCollection(cnt);
+
+        for (ContentInfo info: infos){
+            System.out.println(info);
+            Playlist playlist = info.getPlaylist();
+            if (playlist == null){
+                log.warn("Content Info" + info.getPath() + " has no playlist defined");
+                continue;
+            }
+            push(playlist, info);
+        }
+
+        return this;
+    }
+
+    private void push(Playlist playlist, ContentInfo info){
+        switch (playlist){
+            case STREAMS:
+                streams.add(info);
+                break;
+        }
+    }
+
+    public ContentInfo findByPath(String path) {
+        if (!scanned){
+            log.warn("Scan not completed");
+            return null;
+        }
+        ContentInfo info = findByPathInList(music, path);
+        if (info == null){
+            info = findByPathInList(videos, path);
+        }
+        if (info == null){
+            info = findByPathInList(streams, path);
+        }
+        if (info == null){
+            info = findByPathInList(games, path);
+        }
+        if (info == null){
+            info = findByPathInList(presentations, path);
+        }
+        return info;
+    }
+
+    private ContentInfo findByPathInList(List<ContentInfo> contentInfos, String path){
+        for (ContentInfo info: contentInfos){
+            if (info.getPath().equals(path)){
+                return info;
+            }
+        }
+        return null;
+    }
 }

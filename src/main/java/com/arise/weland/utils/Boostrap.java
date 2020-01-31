@@ -13,8 +13,8 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.OpenFileHandler;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,19 +55,8 @@ public class Boostrap {
         WelandServerHandler welandServerHandler = new WelandServerHandler()
                                                     .setContentProvider(contentInfoProvider);
 
-        welandServerHandler.onFileOpenRequest(new WelandServerHandler.Handler<HttpRequest>() {
-            @Override
-            public HttpResponse handle(HttpRequest request) {
-                String path = request.getQueryParam("path");
-                System.out.println("OPEN " + path);
-                if (ContentType.isPicture(new File(path))){
-                    SYSUtils.exec("%SystemRoot%\\System32\\rundll32.exe", "%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll", path);
-                    return null;
-                }
-                SYSUtils.open(request.getQueryParam("path"));
-                return null;
-            }
-        });
+        OpenFileHandler openFileHandler = new OpenFileHandler(contentInfoProvider, registry);
+        welandServerHandler.onFileOpenRequest(openFileHandler);
 
         welandServerHandler.onCommandExecRequest(new WelandServerHandler.Handler<HttpRequest>() {
             @Override
@@ -84,7 +73,7 @@ public class Boostrap {
                 }
 
                 if ("browserOpen".equalsIgnoreCase(command.getId())){
-                    args = URLBeautifier.beautify(args);
+                    args = new String[]{ URLBeautifier.beautify(args[0])};
                 }
 
                 return HttpResponse.json(
@@ -93,18 +82,6 @@ public class Boostrap {
             }
         });
 
-
-//        if (ReflectUtil.classExists("com.arise.weland.impl.PCDeviceController")){
-//            IDeviceController iDeviceController =
-//                    (IDeviceController) ReflectUtil.newInstance("com.arise.weland.impl.PCDeviceController");
-//            welandServerHandler.onDeviceControlsUpdate(new WelandServerHandler.Handler<HttpRequest>() {
-//                @Override
-//                public HttpResponse handle(HttpRequest request) {
-//                    iDeviceController.update(request.getQueryParams());
-//                    return null;
-//                }
-//            });
-//        }
 
         return welandServerHandler;
     }

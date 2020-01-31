@@ -1,8 +1,12 @@
 package com.arise.weland.impl;
 
+import com.arise.astox.net.clients.JHttpClient;
+import com.arise.cargo.management.Dependencies;
+import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -25,6 +29,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.LinkedTransferQueue;
@@ -34,14 +39,27 @@ import java.util.concurrent.LinkedTransferQueue;
  */
 public class VLCPlayer {
 
-    public static final String VLC_PATH =
-            "C:\\Users\\alexandru2.stefan\\Downloads\\vlc-2.1.0-win32\\vlc-2.1.0";
-    public static final String VLC_PATH_LIB_VLC = VLC_PATH + File.separator + "libvlc.dll";
-    public static final String VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
 
     private static final Mole log = Mole.getInstance(VLCPlayer.class);
 
     static {
+        JHttpClient.disableSSL();
+        String VLC_PATH = null;
+        try {
+            VLC_PATH = DependencyManager.solve(Dependencies.VLC_2_1_0).getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        String VLC_PATH_LIB_VLC = VLC_PATH + File.separator + "libvlc.dll";
+        String VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
+
+        try {
+            DependencyManager.solve(Dependencies.NWJS_0_12_0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
 
         System.setProperty("VLC_PLUGIN_PATH", VLC_PATH + "\\plugins");
         NativeLibrary.addSearchPath(
@@ -81,19 +99,20 @@ public class VLCPlayer {
 
 
 
-
+    JFrame mainFrame;
     private VLCPlayer(){
         Logger.setLevel(Logger.Level.ERROR);
-        JFrame frame = new JFrame("VLC Player");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocation(100, 100);
-        frame.setSize(1200, 800);
+
+        mainFrame = new JFrame("VLC Player");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocation(100, 100);
+        mainFrame.setSize(1200, 800);
 
         mediaPlayerComponent = new MyStandardEmbeddedMediaPlayerComponent();
-        frame.setContentPane(mediaPlayerComponent);
-        frame.setVisible(false);
+        mainFrame.setContentPane(mediaPlayerComponent);
+        mainFrame.setVisible(false);
 
-        frame.addKeyListener(new KeyAdapter() {
+        mainFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
 
@@ -103,14 +122,10 @@ public class VLCPlayer {
                 }
             }
         });
-//        frame.setVisible(false);
-
-//        mediaPlayer.addMediaPlayerEventListener(SNAPSHOT_ADAPTER);
     }
 
 
-//    volatile boolean isDoingSnpshot= false;
-//    volatile boolean cnDoSnpshot = false;
+
 
     volatile ContentInfo currentInfo = null;
 
@@ -119,10 +134,14 @@ public class VLCPlayer {
         mediaPlayerComponent.play(info);
     }
 
+    public synchronized void play(String path){
+        mainFrame.setVisible(true);
+        mediaPlayerComponent.play(path);
+    }
+
 
 
     public synchronized void solveSnapshot(ContentInfo contentInfo, File outputDirectory) {
-
         snapshotMediaComponent.takeSnapshot(contentInfo, outputDirectory);
     }
 
@@ -150,17 +169,22 @@ public class VLCPlayer {
             }
             fetchPrepareInfo(info);
 
-            System.out.println("PLAY " + info.getPath());
+            System.out.println("PLAY ContentInfo " + info.getPath());
+            mediaPlayer.play();
+        }
+
+        public void play(String path){
+            System.out.println("PLAY path " + path);
+            if(mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            preparePath(path);
             mediaPlayer.play();
         }
 
         void fetchPrepareInfo(ContentInfo info){
             currentInfo = info;
-            File file = new File(info.getPath());
-//            URI uri = file.toURI();
-
-            mediaPlayer.prepareMedia(file.toURI().toASCIIString().replace("file:/", "file:///"));
-            mediaPlayer.parseMedia();
+            preparePath(info.getPath());
             MediaMeta mediaMeta = mediaPlayer.getMediaMeta();
             int duration = (int) mediaMeta.getLength();
             info.setDuration(duration)
@@ -168,12 +192,20 @@ public class VLCPlayer {
                     .setTitle(mediaMeta.getTitle());
 
 
+
             BufferedImage artwork = mediaMeta.getArtwork();
             if (artwork != null){
                 System.out.println(artwork);
             }
+        }
 
-
+        void preparePath(String path){
+            File file = new File(path);
+            if (!file.exists()){
+                throw new RuntimeException("File " + file.getAbsolutePath() + " does not exist");
+            }
+            mediaPlayer.prepareMedia(file.toURI().toASCIIString().replace("file:/", "file:///"));
+            mediaPlayer.parseMedia();
         }
     }
 
@@ -255,10 +287,11 @@ public class VLCPlayer {
 
         @Override
         public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
+            log.info("snapshot taken event");
             mediaPlayer.setVolume(0);
             File f = new File(filename);
             if (f.exists()){
-                log.info( "snapshotTaken " + filename);
+                log.info( "snapshot verified at " + filename);
                 mediaPlayer.pause();
                 currentInfo.setThumbnailId(thumbnailId(currentInfo));
                 checking = false;
@@ -282,6 +315,7 @@ public class VLCPlayer {
 
 
 
+        int fucked = 0;
         private void check() {
             if (checking){
                 return;
@@ -303,17 +337,45 @@ public class VLCPlayer {
                     check();
                 } else {
                     List<TrackInfo> trackInfos = mediaPlayer.getTrackInfo(TrackType.VIDEO);
-                    if (!CollectionUtil.isEmpty(trackInfos)){
-                        checking = true;
-
-                        for (TrackInfo trackInfo: trackInfos){
-                            if (trackInfo instanceof VideoTrackInfo){
+                    if(!CollectionUtil.isEmpty(trackInfos)) {
+                        for (TrackInfo trackInfo : trackInfos) {
+                            if (trackInfo instanceof VideoTrackInfo) {
                                 VideoTrackInfo videoTrackInfo = (VideoTrackInfo) trackInfo;
                                 currentInfo.setWidth(videoTrackInfo.width());
                                 currentInfo.setHeight(videoTrackInfo.height());
                             }
                         }
+                    }
+
+                    boolean shouldCheck = !CollectionUtil.isEmpty(trackInfos) &&
+                            currentInfo.getHeight() > 0 && currentInfo.getWidth() > 0 && currentInfo.getDuration() > 10;
+                    if (shouldCheck){
+                        checking = true;
+
+
                         mediaPlayer.play();
+                        ThreadUtil.timerTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                String level = "is";
+                                if (fucked > 100){
+                                    level = "is absolutely completely";
+                                }
+                                else if (fucked > 50){
+                                    level = "is really";
+                                }
+                                else if (fucked > 10){
+                                    level = "seems pretty";
+                                }
+
+
+                                log.info("Dude this " + level + " fucked ! No event dispatch for " + currentInfo.getPath() );
+                                mediaPlayer.stop();
+                                checking = false;
+                                check();
+                                fucked ++;
+                            }
+                        }, 25 * 1000);
                     }
                     else {
                         log.info("Skip " + currentInfo.getPath());

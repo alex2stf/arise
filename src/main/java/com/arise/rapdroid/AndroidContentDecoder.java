@@ -46,7 +46,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 {
 
     public final SuggestionService suggestionService = new SuggestionService()
-            .load("corona/config/commons/suggestions.json");
+            .load("weland/config/commons/suggestions.json");
 
 
     Map<String, Bitmap> bitmapCache = new HashMap<>();

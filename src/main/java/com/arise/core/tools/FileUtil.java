@@ -110,17 +110,17 @@ public class FileUtil {
         return documentsDir;
     }
 
-    public static File findOrCreateUserPackage(String ... names){
+    public static File findOrCreateUserDirectory(String name){
         String usrHome = System.getProperty("user.home");
+        if (!StringUtil.hasText(usrHome)){
+            usrHome = "usr_dir";
+        }
         if (!usrHome.endsWith(File.separator)){
             usrHome += File.separator;
         }
 
-        for (int i = 0; i < names.length; i++){
-            usrHome += names[i] + File.separator;
-        }
 
-        File f = new File(usrHome);
+        File f = new File(usrHome, name);
         if (!f.exists()){
             f.mkdirs();
         }
@@ -140,9 +140,9 @@ public class FileUtil {
 
         }
         if (result == null){
-            result = new File("application_directory");
-            result.mkdir();
+            result = findOrCreateUserDirectory("arise-app");
         }
+
 
         return result;
     }

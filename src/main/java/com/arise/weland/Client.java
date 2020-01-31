@@ -14,6 +14,7 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
+import com.arise.weland.dto.Playlist;
 
 import java.net.URLEncoder;
 import java.util.Map;
@@ -219,9 +220,9 @@ public class Client  {
         currentClient.sendAndReceive(request, onComplete);
     }
 
-    public void autoplay(String playlistId, AutoplayMode autoplayMode, CompleteHandler onComplete) {
+    public void autoplay(Playlist playlist, AutoplayMode autoplayMode, CompleteHandler onComplete) {
         HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/media/autoplay/" + playlistId  + "/" + autoplayMode.name());
+                .setMethod("GET").setUri("/media/autoplay/" + playlist.name()  + "/" + autoplayMode.name());
         currentClient.sendAndReceive(request, onComplete);
     }
 

@@ -187,10 +187,8 @@ public class WelandServerHandler extends HTTPServerHandler {
     if(request.pathsStartsWith("media", "list")){
       Integer index = request.getQueryParamInt("index");
       String what = request.getPathAt(2);
-      if (what == null){
-        what = "pictures";
-      }
-      ContentPage page = contentInfoProvider.getPage(what, index);
+      Playlist playlist = Playlist.find(what);
+      ContentPage page = contentInfoProvider.getPage(playlist, index);
       return HttpResponse.json(page.toString()).addCorelationId(correlationId);
     }
 
@@ -217,14 +215,12 @@ public class WelandServerHandler extends HTTPServerHandler {
       }catch (Throwable t){
         return HttpResponse.plainText(t.getMessage()).addCorelationId(correlationId);
       }
-      contentInfoProvider.setAutoplay(playlistId, autoplayMode);
+      Playlist playlist = Playlist.find(playlistId);
+      contentInfoProvider.setAutoplay(playlist, autoplayMode);
       return HttpResponse.oK().addCorelationId(correlationId);
     }
 
-//    if (request.pathsStartsWith("media", "next")){
-//      return HttpResponse.json(contentInfoProvider.next("music").toString());
-//    }
-    
+
 
 
 
@@ -234,7 +230,10 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if (request.pathsStartsWith("files", "open")){
-      dispatch(fileOpenHandler, request);
+      HttpResponse response = dispatch(fileOpenHandler, request);
+      if (response != null){
+        return response;
+      }
       return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
     }
 

@@ -120,7 +120,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
                     Util.close(connection);
                     allow[0] = false;
                 }
-                System.out.println("SENT " + response);
                 flush();
             }
 
@@ -147,15 +146,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
 
     @Override
     protected InputStream getInputStream(StreamConnection streamConnection) {
-//        if (inputStream == null){
-//            try {
-//                inputStream = streamConnection.openInputStream();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return inputStream;
-
         try {
             return streamConnection.openInputStream();
         } catch (IOException e) {
@@ -171,14 +161,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
         } catch (IOException e) {
             return null;
         }
-//        if (outputStream == null){
-//            try {
-//                outputStream = streamConnection.openOutputStream();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return outputStream;
     }
 
 

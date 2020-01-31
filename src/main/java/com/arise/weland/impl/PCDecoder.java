@@ -1,25 +1,19 @@
 package com.arise.weland.impl;
 
-import com.arise.core.tools.*;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.dto.ContentInfo;
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.InvalidBoxHeaderException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.player.MediaMeta;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -64,8 +58,10 @@ public class PCDecoder extends ContentInfoDecoder {
 //
 //        }
 
+        if (ContentType.isMedia(file)){
+            VLCPlayer.getInstance().solveSnapshot(info, getStateDirectory());
+        }
 
-        VLCPlayer.getInstance().solveSnapshot(info, getStateDirectory());
 
 
         cache.put(file.getAbsolutePath(), info);
@@ -181,7 +177,11 @@ public class PCDecoder extends ContentInfoDecoder {
 
     @Override
     protected File getStateDirectory() {
-        return FileUtil.findAppDir();
+        File f = new File(FileUtil.findAppDir(), "wlndicns");
+        if (!f.exists()){
+            f.mkdirs();
+        }
+        return f;
     }
 
     @Override

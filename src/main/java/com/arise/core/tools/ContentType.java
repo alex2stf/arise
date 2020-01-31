@@ -243,17 +243,6 @@ public enum ContentType  {
         return  path.endsWith(".mp4") || path.endsWith(".3gp")
                 || path.endsWith(".mkv")
                 || path.endsWith(".avi");
-
-//       try {
-//           String mime = URLConnection.guessContentTypeFromName(path);
-//           if (mime.startsWith("video")){
-//               return true;
-//           }
-//       } catch (Exception e){
-//
-//       }
-
-
     }
 
 
@@ -269,7 +258,7 @@ public enum ContentType  {
         return isPicture(f.getAbsolutePath());
     }
 
-    private static boolean isPicture(String s) {
+    public static boolean isPicture(String s) {
         return s.endsWith(".jpg")
                 || s.endsWith(".png")
                 || s.endsWith(".jpeg");

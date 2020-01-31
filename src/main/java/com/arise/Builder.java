@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.Attributes;
@@ -104,12 +105,16 @@ public class Builder {
              * CORONA	COntROl aNy mAchine
             */
             ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland")
-                    .jarLib("libs/bluecove-2.1.0.jar" )
+                    .jarLib("libs/bluecove-2.1.0.jar", "libs/jaudiotagger-2.2.3.jar")
+                    .jarLib("libs/jna-3.5.2.jar" )
+                    .jarLib("libs/platform-3.5.2.jar" )
+                    .jarLib("libs/vlcj-3.0.1.jar" )
                     .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
                     .resourceFiles(RES_ROOT + "content-types.json")
                     .mainClass("com.arise.weland.Main")
                     .named("weland")
                     .version("1.0")
+                    .pack()
 
 
             /**
@@ -125,6 +130,9 @@ public class Builder {
 
 
     };
+
+
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -162,6 +170,16 @@ public class Builder {
             outClasses.delete();
             buildDir.delete();
 
+            if (lib.shouldPack){
+                File batFile = new File(lib.name + ".bat");
+                String batContent =  "java -cp \"out/"+lib.name + "-" + lib.vrs +".jar;libs\\*\" " + lib.mainClazz;
+
+                try (PrintStream out = new PrintStream(new FileOutputStream(batFile))) {
+                    out.print(batContent);
+                }
+
+            }
+
         }
 
 
@@ -195,20 +213,24 @@ public class Builder {
     static class Lib {
         List<File> files = new ArrayList<>();
         List<File> resources = new ArrayList<>();
-        private String vrs;
-        private String name;
-        private String[] resDirs;
-        private String[] srcDirs;
-        private String mainClazz;
-        private String[] jarlibs;
-        private String[] srcFiles;
-        private String[] resourceFiles;
-
+        String vrs;
+        String name;
+        String[] resDirs;
+        String[] srcDirs;
+        String mainClazz;
+        List<String> jarlibs;
+        String[] srcFiles;
+        String[] resourceFiles;
+        boolean shouldPack = false;
 
         Lib(String ... dirs){
             srcDirs = dirs;
         }
 
+        Lib pack() {
+            shouldPack = true;
+            return this;
+        }
 
 
         Lib version(String vrs){
@@ -228,20 +250,20 @@ public class Builder {
             }
 
             int extra = 3;
-            if (jarlibs != null){
+            if (jarlibs != null && !jarlibs.isEmpty()){
                 extra = 5;
             }
 
             String[] r = new String[files.size() + extra];
 
-            if (jarlibs == null){
+            if (jarlibs == null || jarlibs.isEmpty()){
                 r[0] = javac.getAbsolutePath();
                 r[1] = "-d";
                 r[2] = output.getAbsolutePath();
             } else {
                 r[0] = javac.getAbsolutePath();
                 r[1] = "-cp";
-                r[2] = jarlibs[0];//TODO join
+                r[2] = concat(jarlibs, ";");
                 r[3] = "-d";
                 r[4] = output.getAbsolutePath();
             }
@@ -250,6 +272,17 @@ public class Builder {
                 r[i+extra] = files.get(i).getAbsolutePath();
             }
             return r;
+        }
+
+        String concat(List<String> values, String delimiter){
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < values.size(); i++){
+                if (i > 0){
+                    sb.append(delimiter);
+                }
+                sb.append(values.get(i));
+            }
+            return sb.toString();
         }
 
         void buildJar(String inputDir, String output, String root) throws IOException {
@@ -339,7 +372,7 @@ public class Builder {
             finally {
                 if (in != null)
                     in.close();
-            }
+                }
 
         }
 
@@ -358,8 +391,13 @@ public class Builder {
             return this;
         }
 
-        public Lib jarLib(String ... jarlibs) {
-            this.jarlibs = jarlibs;
+        public Lib jarLib(String ... x) {
+            if (jarlibs == null){
+                jarlibs = new ArrayList<>();
+            }
+            for (String s: x){
+                jarlibs.add(s);
+            }
             return this;
         }
 

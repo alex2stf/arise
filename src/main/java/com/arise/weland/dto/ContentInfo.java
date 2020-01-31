@@ -5,6 +5,7 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.StringUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -38,14 +39,7 @@ public class ContentInfo implements Serializable {
     private String thumbnailId;
     private String playlistId;
 
-    public String getPlaylistId() {
-        return playlistId;
-    }
 
-    public ContentInfo setPlaylistId(String playlistId) {
-        this.playlistId = playlistId;
-        return this;
-    }
 
     public String getThumbnailId() {
         return thumbnailId;
@@ -283,13 +277,9 @@ public class ContentInfo implements Serializable {
 
     public static ContentInfo fromMap(Map m) {
         ContentInfo i = new ContentInfo();
-        i.setAlbumName(MapUtil.getString(m, "A"));
-
-
-
-
+        i.setAlbumName(MapUtil.getString(m, "H"));
         i.setPath(getMediaPath(m));
-        i.setArtist(decodeString(m, "F"));
+        i.setArtist(decodeString(m, "B"));
         i.setComposer(decodeString(m, "X"));
         i.setThumbnailId(decodeString(m, "Q"));
         i.setTitle(decodeString(m, "T"));
@@ -298,7 +288,7 @@ public class ContentInfo implements Serializable {
         i.setHeight(MapUtil.getInt(m, "h", 0));
         i.setPosition(MapUtil.getInt(m, "p", 0));
         i.setDuration(MapUtil.getInt(m, "g", 0));
-        i.setPlaylistId(decodeString(m, "F"));
+        i.playlistId = (decodeString(m, "F"));
 
 
         String cnt = MapUtil.getString(m, "Z");
@@ -314,8 +304,8 @@ public class ContentInfo implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder().append("{");
-        addVal(sb, "A", albumName);
-        addVal(sb, "F", artist);
+        addVal(sb, "H", albumName);
+        addVal(sb, "B", artist);
         addVal(sb, "X",  composer);
         addVal(sb, "T",  title);
         addVal(sb, "V", visited);
@@ -325,9 +315,6 @@ public class ContentInfo implements Serializable {
         addVal(sb, "h", height);
         addVal(sb, "p", position);
         addVal(sb, "g", duration);
-
-
-
         sb.append("\"P\":").append(jsonVal(encodePath(path)));
         sb.append("}");
         return sb.toString();
@@ -356,4 +343,15 @@ public class ContentInfo implements Serializable {
     }
 
 
+    public Playlist getPlaylist(){
+        if (StringUtil.hasContent(playlistId)){
+            return Playlist.find(playlistId);
+        }
+        return null;
+    }
+
+    public ContentInfo setPlaylist(Playlist music) {
+        playlistId = music.shortId();
+        return this;
+    }
 }

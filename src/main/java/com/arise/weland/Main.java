@@ -9,6 +9,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.PCDecoder;
+import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.utils.Boostrap;
 import com.arise.weland.utils.WelandServerHandler;
 
@@ -61,10 +62,19 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        VLCPlayer.getInstance();
+        File roots[] = File.listRoots();
+
         ContentInfoProvider contentInfoProvider =
                 new ContentInfoProvider(new PCDecoder())
-                        .addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"))
-                .get();
+                        .importJson("weland/config/commons/content-infos.json");
+
+        for (File f: roots){
+            contentInfoProvider.addRoot(f);
+        }
+//        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"));
+//        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Videos"));
+        contentInfoProvider.get();
         start(
                 Boostrap.buildHandler(args, contentInfoProvider)
         );
