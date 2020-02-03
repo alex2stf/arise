@@ -1,28 +1,25 @@
 package com.arise.weland.impl;
 
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
+import uk.co.caprica.vlcj.player.MediaMeta;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 
 public class PCDecoder extends ContentInfoDecoder {
@@ -52,14 +49,61 @@ public class PCDecoder extends ContentInfoDecoder {
 
         }
 
-//        try {
-//            tryAudioTagger(info, file);
-//        }catch (InvalidBoxHeaderException t){
-//
-//        }
 
-        if (ContentType.isMedia(file)){
+        if (ContentType.isVideo(file)){
             VLCPlayer.getInstance().solveSnapshot(info, getStateDirectory());
+        }
+        else if (ContentType.isMusic(file)){
+            MediaMeta mediaMeta = VLCPlayer.getInstance().fetchData(info, getStateDirectory());
+
+            if (mediaMeta != null && mediaMeta.getArtworkUrl() != null){
+                System.out.println("\n");
+                System.out.println("FOR " + info.getName() + " found META " + mediaMeta.getArtworkUrl());
+                System.out.println("\n");
+
+            }
+
+
+            else {
+                File currDir = file.getParentFile();
+
+                File images[] = currDir.listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File file, String s) {
+                        return ContentType.isPicture(s);
+                    }
+                });
+
+                if (!isEmpty(images)){
+                    java.util.List<File> imgList = new ArrayList<>();
+                    //TODO is there a better way????
+                    for (File img: images){
+                        imgList.add(img);
+                    }
+                    Collections.sort(imgList, new Comparator<File>() {
+                        @Override
+                        public int compare(File t1, File t2) {
+                            //TODO sort by size? name? AlbumArt?
+                            return t1.getName().compareTo(t2.getName());
+                        }
+                    });
+
+
+                    File albumArt = imgList.get(0);
+
+                    System.out.println("FOR " + info.getName() + " found " + albumArt.getAbsolutePath());
+                    String thumbnailId = albumArt.getAbsolutePath();
+                    try {
+                        thumbnailId = URLEncoder.encode(thumbnailId, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    info.setThumbnailId(thumbnailId);
+                }//exit if imglist
+            }
+
+
+
         }
 
 
@@ -100,9 +144,13 @@ public class PCDecoder extends ContentInfoDecoder {
         String id = info.getExt() + "thumb.jpg";
 
 
-        File out = null;
+
+        File out = new File(getStateDirectory(), id);
+        if (out.exists()){
+            return;
+        }
         try {
-            out = new File(getStateDirectory(), id);
+
             os = new FileOutputStream(out);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -190,7 +238,20 @@ public class PCDecoder extends ContentInfoDecoder {
             return bytesCache.get(id);
         }
 
-        File f = new File(getStateDirectory(), id);
+        try {
+            id = URLDecoder.decode(id, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+
+        File f = new File(id);
+
+        if (!f.exists()){
+            f = new File(getStateDirectory(), id);
+        }
+
         if (f.exists()){
             byte[] res;
             try {

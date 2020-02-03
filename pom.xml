@@ -41,6 +41,25 @@
             <systemPath>${basedir}/libs/vlcj-3.0.1.jar</systemPath>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.19</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/commons-compress-1.19.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.8</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/xz-1.8.jar</systemPath>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.vlcj</groupId>
@@ -80,12 +99,12 @@
 <!--            <version>2.1.0</version>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>log4j</groupId>-->
+            <!--<artifactId>log4j</artifactId>-->
+            <!--<version>1.2.17</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -117,12 +136,12 @@
 
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>5.2.1.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-web</artifactId>-->
+            <!--<version>5.2.1.RELEASE</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
@@ -174,19 +193,19 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.mockito</groupId>-->
+            <!--<artifactId>mockito-all</artifactId>-->
+            <!--<version>1.9.5</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0.2</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>javax.persistence</groupId>-->
+            <!--<artifactId>persistence-api</artifactId>-->
+            <!--<version>1.0.2</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -208,19 +227,19 @@
                     </resource>
                 </resources>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <excludes>
-                                <exclude>**/rapdroid/</exclude>
-                                <exclude>**/android/</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
+                    <!--<plugin>-->
+                        <!--<groupId>org.apache.maven.plugins</groupId>-->
+                        <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                        <!--<version>3.6.1</version>-->
+                        <!--<configuration>-->
+                            <!--<source>1.8</source>-->
+                            <!--<target>1.8</target>-->
+                            <!--<excludes>-->
+                                <!--<exclude>**/rapdroid/</exclude>-->
+                                <!--<exclude>**/android/</exclude>-->
+                            <!--</excludes>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
 
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
@@ -237,22 +256,22 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <excludes>
-                                <exclude>**/rapdroid/</exclude>
-                                <exclude>**/android/</exclude>
-                                <exclude>**/astox</exclude>
-                                <exclude>**/cargo</exclude>
-                                <exclude>**/geeks</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
+                    <!--<plugin>-->
+                        <!--<groupId>org.apache.maven.plugins</groupId>-->
+                        <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                        <!--<version>3.6.1</version>-->
+                        <!--<configuration>-->
+                            <!--<source>1.8</source>-->
+                            <!--<target>1.8</target>-->
+                            <!--<excludes>-->
+                                <!--<exclude>**/rapdroid/</exclude>-->
+                                <!--<exclude>**/android/</exclude>-->
+                                <!--<exclude>**/astox</exclude>-->
+                                <!--<exclude>**/cargo</exclude>-->
+                                <!--<exclude>**/geeks</exclude>-->
+                            <!--</excludes>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
 
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>

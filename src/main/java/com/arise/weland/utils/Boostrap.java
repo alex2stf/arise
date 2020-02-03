@@ -13,7 +13,6 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.OpenFileHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
 
 public class Boostrap {
     private static final Mole log = Mole.getInstance(Boostrap.class);
-
+    public static final Registry registry = new Registry();
     public static WelandServerHandler buildHandler(String[] args, ContentInfoProvider contentInfoProvider){
         try {
             ContentType.loadDefinitions();
@@ -33,7 +32,7 @@ public class Boostrap {
             log.error("Failed to load content-type definitions", e);
         }
 
-        Registry registry = new Registry();
+
         registry.addCommand(PROCESS_EXEC)
                 .addCommand(PROCESS_EXEC_WHEN_FOUND);
 
@@ -55,8 +54,7 @@ public class Boostrap {
         WelandServerHandler welandServerHandler = new WelandServerHandler()
                                                     .setContentProvider(contentInfoProvider);
 
-        OpenFileHandler openFileHandler = new OpenFileHandler(contentInfoProvider, registry);
-        welandServerHandler.onFileOpenRequest(openFileHandler);
+
 
         welandServerHandler.onCommandExecRequest(new WelandServerHandler.Handler<HttpRequest>() {
             @Override

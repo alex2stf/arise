@@ -3,11 +3,9 @@ package com.arise.weland;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ServerRequestBuilder;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.*;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.DesktopFileHandler;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.utils.Boostrap;
@@ -65,19 +63,26 @@ public class Main {
         VLCPlayer.getInstance();
         File roots[] = File.listRoots();
 
+
         ContentInfoProvider contentInfoProvider =
                 new ContentInfoProvider(new PCDecoder())
                         .importJson("weland/config/commons/content-infos.json");
 
         for (File f: roots){
-            contentInfoProvider.addRoot(f);
+            if (!f.getAbsolutePath().startsWith("C:")) {
+                contentInfoProvider.addRoot(f);
+            }
         }
+        contentInfoProvider.addRoot(new File(System.getProperty("user.home")));
 //        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"));
 //        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Videos"));
         contentInfoProvider.get();
-        start(
-                Boostrap.buildHandler(args, contentInfoProvider)
-        );
+
+        WelandServerHandler welandServerHandler = Boostrap.buildHandler(args, contentInfoProvider);
+        DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider, Boostrap.registry);
+        welandServerHandler.setContentHandler(desktopFileHandler);
+
+        start(welandServerHandler);
     }
 
     public AbstractServer run(){

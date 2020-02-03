@@ -16,6 +16,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.*;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.model.ContentHandler;
 
 
 import java.util.Map;
@@ -65,6 +66,9 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   public WelandServerHandler setContentProvider(ContentInfoProvider contentProvider){
     this.contentInfoProvider = contentProvider;
+    if (contentHandler != null){
+      contentHandler.setContentInfoProvider(contentInfoProvider);
+    }
     return this;
   }
 
@@ -79,21 +83,24 @@ public class WelandServerHandler extends HTTPServerHandler {
   Handler<HttpRequest> liveMjpegHandler;
   Handler<HttpRequest> liveJpegHandler;
   Handler<HttpRequest> deviceControlsUpdate;
-  Handler<HttpRequest> fileOpenHandler;
   Handler<HttpRequest> commandExecHandler;
   Handler<Message> messageHandler;
+  ContentHandler contentHandler;
 
-
+  public WelandServerHandler setContentHandler(ContentHandler contentHandler) {
+    this.contentHandler = contentHandler;
+    if (contentInfoProvider != null) {
+      contentHandler.setContentInfoProvider(contentInfoProvider);
+    }
+    return this;
+  }
 
   public WelandServerHandler onCommandExecRequest(Handler<HttpRequest> commandExecHandler) {
     this.commandExecHandler = commandExecHandler;
     return this;
   }
 
-  public WelandServerHandler onFileOpenRequest(Handler<HttpRequest> fileOpenHanlder) {
-    this.fileOpenHandler = fileOpenHanlder;
-    return this;
-  }
+
 
   public WelandServerHandler onMessageReceived(Handler<Message> messageHandler) {
     this.messageHandler = messageHandler;
@@ -230,7 +237,23 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if (request.pathsStartsWith("files", "open")){
-      HttpResponse response = dispatch(fileOpenHandler, request);
+      HttpResponse response = contentHandler.play(request);
+      if (response != null){
+        return response;
+      }
+      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
+    }
+
+    if (request.pathsStartsWith("files", "close")){
+      HttpResponse response =  contentHandler.stop(request);
+      if (response != null){
+        return response;
+      }
+      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
+    }
+
+    if (request.pathsStartsWith("files", "pause")){
+      HttpResponse response =  contentHandler.pause(request);
       if (response != null){
         return response;
       }
@@ -253,6 +276,8 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     return super.getHTTPResponse(request, server);
   }
+
+
 
 
 

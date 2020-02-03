@@ -1,6 +1,8 @@
 package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.models.Condition;
+import com.arise.core.tools.models.FilterCriteria;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DependencyManager {
 
@@ -22,12 +28,14 @@ public class DependencyManager {
         if (out.exists()){
             return out;
         }
-//        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
 
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
+        connection.setConnectTimeout(60 * 1000);
+        connection.setReadTimeout(60 * 1000);
         int contentLength = connection.getContentLength();
         int responseCode = connection.getResponseCode();
         if (responseCode != 200){
@@ -102,10 +110,36 @@ public class DependencyManager {
         return null;
     }
 
+    public static final List<Condition<File, Unarchiver>> unarchivers = new ArrayList<>();
+
+    static {
+        unarchivers.add(new Condition<File, Unarchiver>() {
+            @Override
+            public Unarchiver getPayload() {
+                return new ZipUnarchiver();
+            }
+            @Override
+            public boolean isAcceptable(File data) {
+                return "zip".equals(getExt(data));
+            }
+        });
+    }
+
+    static String getExt(File f){
+        String p[] = f.getName().split("\\.");
+        return p[p.length -1];
+    }
+
     public static File uncompress( Dependency dependency, Rule rule, File rootDir){
         File unarchived = new File(rootDir, dependency.getName() + "_" + rule.getName());
         if (!unarchived.exists()){
-            new ZipUnarchiver().extract(rule.getZipped(), unarchived);
+            File zipped = rule.getZipped();
+            for (Condition<File, Unarchiver> condition: unarchivers){
+               if (condition.isAcceptable(zipped)){
+                   condition.getPayload().extract(zipped, unarchived);
+                   break;
+               }
+            }
         }
         File list[] = unarchived.listFiles();
         while (list != null && list.length == 1 && list[0].isDirectory()){
@@ -129,13 +163,5 @@ public class DependencyManager {
         return currentPath;
     }
 
-    public static void main(String[] args) throws IOException {
 
-
-
-       solve(Dependencies.VLC_2_1_0);
-       solve(Dependencies.NWJS_0_12_0);
-
-
-    }
 }

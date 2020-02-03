@@ -275,6 +275,8 @@ public abstract class RAPDroidActivity extends AppCompatActivity {
         return getPreferences(Context.MODE_PRIVATE).getInt(key, defaultValue);
     }
 
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
@@ -305,7 +307,7 @@ public abstract class RAPDroidActivity extends AppCompatActivity {
      * makes the bluetooth device discoverable if it's not discovered and then calls calls {@link RAPDroidActivity#withBluetoothEnabled(BluetoothEnabled)}
      * @param bluetoothDiscovered
      */
-    protected void withBluetoothDiscoverable(final BluetoothDiscovered bluetoothDiscovered) {
+    public void withBluetoothDiscoverable(final BluetoothDiscovered bluetoothDiscovered) {
         this.bluetoothDiscovered = bluetoothDiscovered;
         withBluetoothEnabled(new BluetoothEnabled() {
             @SuppressLint("MissingPermission")

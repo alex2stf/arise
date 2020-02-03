@@ -8,32 +8,34 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.model.ContentHandler;
 import com.arise.weland.utils.URLBeautifier;
 import com.arise.weland.utils.WelandServerHandler;
 
 import java.io.File;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class OpenFileHandler implements WelandServerHandler.Handler<HttpRequest> {
+public class DesktopFileHandler extends ContentHandler {
 
     private final ContentInfoProvider contentInfoProvider;
     private final Registry registry;
 
 
-    public OpenFileHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
+    public DesktopFileHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
 
         this.contentInfoProvider = contentInfoProvider;
         this.registry = registry;
     }
 
-    @Override
-    public HttpResponse handle(HttpRequest request) {
+
+    public HttpResponse play(String path) {
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                String path = request.getQueryParam("path");
+
                 System.out.println("OPEN " + path);
 
                 if (isHttpPath(path)){
@@ -49,7 +51,7 @@ public class OpenFileHandler implements WelandServerHandler.Handler<HttpRequest>
                     openMedia(path);
                     return;
                 }
-                SYSUtils.open(request.getQueryParam("path"));
+                SYSUtils.open(path);
                 return;
             }
         });
@@ -87,6 +89,8 @@ public class OpenFileHandler implements WelandServerHandler.Handler<HttpRequest>
 
     public void openPicture(String path){
         if (SYSUtils.isWindows()){
+
+            //TODO use jframe
             SYSUtils.Result result = SYSUtils.exec("C:\\Windows\\System32\\rundll32.exe", "C:\\Program Files\\Windows Photo Viewer\\PhotoViewer.dll", path);
         }
         else {
@@ -99,5 +103,18 @@ public class OpenFileHandler implements WelandServerHandler.Handler<HttpRequest>
         //TODO default bahaviour when no command registry
         String args[] = new String[]{URLBeautifier.beautify(urlPath)};
         registry.getCommand("browserOpen").execute(args);
+    }
+
+
+
+    @Override
+    public HttpResponse stop(String string) {
+        VLCPlayer.getInstance().stop();
+        return null;
+    }
+
+    @Override
+    public HttpResponse pause(String string) {
+        return null;
     }
 }

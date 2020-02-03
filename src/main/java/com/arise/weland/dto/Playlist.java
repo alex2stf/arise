@@ -30,6 +30,14 @@ public enum Playlist {
         return null;
     }
 
+    public static String[] displayableNames() {
+        String r[] = new String[values().length];
+        for (int i = 0; i < values().length; i++){
+            r[i] = values()[i].displayName;
+        }
+        return r;
+    }
+
     @Override
     public String toString() {
         return "Playlist{" +

@@ -3,36 +3,31 @@ package com.arise.weland.impl;
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.Message;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.binding.LibVlcFactory;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.logger.Logger;
 import uk.co.caprica.vlcj.player.MediaMeta;
 import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.TrackInfo;
 import uk.co.caprica.vlcj.player.TrackType;
 import uk.co.caprica.vlcj.player.VideoTrackInfo;
-import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.LinkedTransferQueue;
+
 
 /**
  * Created by Alexandru on 1/24/2020.
@@ -104,13 +99,20 @@ public class VLCPlayer {
         Logger.setLevel(Logger.Level.ERROR);
 
         mainFrame = new JFrame("VLC Player");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.setLocation(100, 100);
         mainFrame.setSize(1200, 800);
 
         mediaPlayerComponent = new MyStandardEmbeddedMediaPlayerComponent();
         mainFrame.setContentPane(mediaPlayerComponent);
         mainFrame.setVisible(false);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                stop();
+            }
+        });
 
         mainFrame.addKeyListener(new KeyAdapter() {
             @Override
@@ -125,17 +127,35 @@ public class VLCPlayer {
     }
 
 
+    public void stop(){
+
+        mediaPlayerComponent.stop();
+        mainFrame.setVisible(false);
+    }
 
 
     volatile ContentInfo currentInfo = null;
 
+    private synchronized void showFrame(){
+        if (!mainFrame.isVisible()){
+            mainFrame.setVisible(true);
+            mainFrame.show();
+            mainFrame.setAlwaysOnTop(true);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public synchronized void play(ContentInfo info){
         currentInfo = info;
+        showFrame();
         mediaPlayerComponent.play(info);
     }
 
     public synchronized void play(String path){
-        mainFrame.setVisible(true);
+        showFrame();
         mediaPlayerComponent.play(path);
     }
 
@@ -145,10 +165,12 @@ public class VLCPlayer {
         snapshotMediaComponent.takeSnapshot(contentInfo, outputDirectory);
     }
 
-
-
-
-
+    public MediaMeta fetchData(ContentInfo info, File outputDirectory) {
+        if (snapshotMediaComponent.outputDirectory == null){
+            snapshotMediaComponent.outputDirectory = outputDirectory;
+        }
+        return mediaPlayerComponent.fetchPrepareInfo(info);
+    }
 
 
     private static class MyStandardEmbeddedMediaPlayerComponent extends EmbeddedMediaPlayerComponent {
@@ -182,21 +204,24 @@ public class VLCPlayer {
             mediaPlayer.play();
         }
 
-        void fetchPrepareInfo(ContentInfo info){
+        MediaMeta fetchPrepareInfo(ContentInfo info){
             currentInfo = info;
             preparePath(info.getPath());
-            MediaMeta mediaMeta = mediaPlayer.getMediaMeta();
-            int duration = (int) mediaMeta.getLength();
-            info.setDuration(duration)
-                    .setArtist(mediaMeta.getArtist())
-                    .setTitle(mediaMeta.getTitle());
+            try {
+                MediaMeta mediaMeta = mediaPlayer.getMediaMeta();
+                int duration = (int) mediaMeta.getLength();
+                info.setDuration(duration)
+                        .setAlbumName(mediaMeta.getAlbum())
+                        .setArtist(mediaMeta.getArtist())
+                        .setTitle(mediaMeta.getTitle());
 
 
+            return mediaMeta;
 
-            BufferedImage artwork = mediaMeta.getArtwork();
-            if (artwork != null){
-                System.out.println(artwork);
+            } catch (Throwable t){
+                System.out.println("Could not fetch medata for " + info.getPath());
             }
+            return null;
         }
 
         void preparePath(String path){
@@ -204,8 +229,18 @@ public class VLCPlayer {
             if (!file.exists()){
                 throw new RuntimeException("File " + file.getAbsolutePath() + " does not exist");
             }
-            mediaPlayer.prepareMedia(file.toURI().toASCIIString().replace("file:/", "file:///"));
-            mediaPlayer.parseMedia();
+            String actual = file.toURI().toASCIIString().replace("file:/", "file:///");
+           try {
+               mediaPlayer.prepareMedia(actual);
+               mediaPlayer.parseMedia();
+           } catch (Throwable t){
+               System.out.println(actual);
+               t.printStackTrace();
+           }
+        }
+
+        public void stop() {
+            mediaPlayer.stop();
         }
     }
 
@@ -213,19 +248,30 @@ public class VLCPlayer {
     static class SnapshotMediaComponent extends MyStandardEmbeddedMediaPlayerComponent {
 
         private File outputDirectory;
+        File propsFile = new File(FileUtil.getAppDirChild("vlccnfg"), "snapshot_ignore");
+        HashSet<String> ignorables = FileUtil.serializableRead(propsFile);
+        ThreadUtil.TimerResult timerResult;
         JFrame frame;
         public SnapshotMediaComponent(){
             super();
+            if (ignorables == null){
+                ignorables = new HashSet<>();
+            }
             frame = new JFrame("Snapshot");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setUndecorated(true);
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             frame.setLocation(0, 0);
-            frame.setSize(400, 400);
+            frame.setSize(200, 200);
             frame.setContentPane(this);
             frame.setVisible(true);
+            frame.setAlwaysOnTop(false);
+
         }
 
         int frameCount = 0;
         volatile boolean checking = false;
+
+
 
         @Override
         public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
@@ -254,7 +300,7 @@ public class VLCPlayer {
         @Override
         public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
             mediaPlayer.setVolume(0);
-            log.info(frameCount + ") positionChanged " + currentInfo.getPath());
+
             frameCount++;
             if (frameCount > 10){
                 File out = getSnapshotFile(currentInfo);
@@ -262,15 +308,33 @@ public class VLCPlayer {
                 int height = currentInfo.getHeight();
 
                 if (width > 0 && height > 0){
-                    int newWidth = (width * 220) / height;
-                    mediaPlayer.saveSnapshot(out, newWidth, 220);
+                    int newWidth = (width * 30) / height;
+                    mediaPlayer.saveSnapshot(out, newWidth, 30);
                 } else {
                     mediaPlayer.saveSnapshot(out);
                 }
+
+                if (out.exists()){
+                    ThreadUtil.closeTimer(timerResult);
+                    log.info( "snapshot verified at " + out.getAbsolutePath());
+                    mediaPlayer.stop();
+                    currentInfo.setThumbnailId(thumbnailId(currentInfo));
+                    checking = false;
+                }
+                else {
+                    log.info(frameCount + ") positionChanged expect " + out.getAbsolutePath());;
+                }
+            }
+            else {
+                log.info(frameCount + ") positionChanged " + currentInfo.getPath());;
             }
         }
 
         static String thumbnailId(ContentInfo info){
+
+            if (StringUtil.hasText(info.getArtist()) && StringUtil.hasText(info.getName())){
+                return Message.sanitize(info.getArtist() + info.getName());
+            }
             String id = URLEncoder.encode(info.getName())
                     .replaceAll("\\+", "p")
                     .replaceAll("%", "9")
@@ -287,14 +351,9 @@ public class VLCPlayer {
 
         @Override
         public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
-            log.info("snapshot taken event");
+//            log.info("snapshot taken event");
             mediaPlayer.setVolume(0);
-            File f = new File(filename);
-            if (f.exists()){
-                log.info( "snapshot verified at " + filename);
-                mediaPlayer.pause();
-                currentInfo.setThumbnailId(thumbnailId(currentInfo));
-                checking = false;
+            if (!checking){
                 check();
             }
         }
@@ -308,9 +367,9 @@ public class VLCPlayer {
         }
 
         @Override
-        void fetchPrepareInfo(ContentInfo info) {
-            super.fetchPrepareInfo(info);
+        MediaMeta fetchPrepareInfo(ContentInfo info) {
             frameCount = 0;
+            return super.fetchPrepareInfo(info);
         }
 
 
@@ -321,68 +380,83 @@ public class VLCPlayer {
                 return;
             }
 
-
+            ThreadUtil.closeTimer(timerResult);
             if (!snapshotQueue.isEmpty()){
-                if (mediaPlayer.isPlaying()){
-                    mediaPlayer.stop();
-                }
-                currentInfo = snapshotQueue.remove();
-                fetchPrepareInfo(currentInfo);
-                mediaPlayer.setVolume(0);
-                File outputFile = getSnapshotFile(currentInfo);
-                if (outputFile.exists()){
-                    log.info("Assign  " + outputFile.getAbsolutePath() + " to " + currentInfo.getPath());
-                    currentInfo.setThumbnailId(thumbnailId(currentInfo));
-                    checking = false;
-                    check();
-                } else {
-                    List<TrackInfo> trackInfos = mediaPlayer.getTrackInfo(TrackType.VIDEO);
-                    if(!CollectionUtil.isEmpty(trackInfos)) {
-                        for (TrackInfo trackInfo : trackInfos) {
-                            if (trackInfo instanceof VideoTrackInfo) {
-                                VideoTrackInfo videoTrackInfo = (VideoTrackInfo) trackInfo;
-                                currentInfo.setWidth(videoTrackInfo.width());
-                                currentInfo.setHeight(videoTrackInfo.height());
-                            }
-                        }
+                    if (mediaPlayer.isPlaying()){
+                        mediaPlayer.stop();
                     }
+                    currentInfo = snapshotQueue.remove();
 
-                    boolean shouldCheck = !CollectionUtil.isEmpty(trackInfos) &&
-                            currentInfo.getHeight() > 0 && currentInfo.getWidth() > 0 && currentInfo.getDuration() > 10;
-                    if (shouldCheck){
-                        checking = true;
-
-
-                        mediaPlayer.play();
-                        ThreadUtil.timerTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                String level = "is";
-                                if (fucked > 100){
-                                    level = "is absolutely completely";
-                                }
-                                else if (fucked > 50){
-                                    level = "is really";
-                                }
-                                else if (fucked > 10){
-                                    level = "seems pretty";
-                                }
-
-
-                                log.info("Dude this " + level + " fucked ! No event dispatch for " + currentInfo.getPath() );
-                                mediaPlayer.stop();
-                                checking = false;
-                                check();
-                                fucked ++;
-                            }
-                        }, 25 * 1000);
-                    }
-                    else {
-                        log.info("Skip " + currentInfo.getPath());
+                    fetchPrepareInfo(currentInfo);
+                    mediaPlayer.setVolume(0);
+                    File outputFile = getSnapshotFile(currentInfo);
+                    if (outputFile.exists()){
+                        log.info("Assign  " + outputFile.getAbsolutePath() + " to " + currentInfo.getPath());
+                        currentInfo.setThumbnailId(thumbnailId(currentInfo));
                         checking = false;
                         check();
                     }
-                }
+                    else if (ignorables.contains(currentInfo.getPath())){
+                        checking = false;
+                        check();
+                    }
+                    else {
+                        log.info("check " + currentInfo.getPath());
+                        List<TrackInfo> trackInfos = mediaPlayer.getTrackInfo(TrackType.VIDEO);
+                        if(!CollectionUtil.isEmpty(trackInfos)) {
+                            for (TrackInfo trackInfo : trackInfos) {
+                                if (trackInfo instanceof VideoTrackInfo) {
+                                    VideoTrackInfo videoTrackInfo = (VideoTrackInfo) trackInfo;
+                                    currentInfo.setWidth(videoTrackInfo.width());
+                                    currentInfo.setHeight(videoTrackInfo.height());
+                                }
+                            }
+                        }
+
+
+                        boolean shouldCheck = !CollectionUtil.isEmpty(trackInfos) &&
+                                currentInfo.getHeight() > 0 && currentInfo.getWidth() > 0 && currentInfo.getDuration() > 0;
+
+                        if (shouldCheck){
+                            checking = true;
+
+
+                            mediaPlayer.play();
+                            timerResult = ThreadUtil.delayedTask(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String level = "is";
+                                    if (fucked > 100){
+                                        level = "is absolutely completely";
+                                    }
+                                    else if (fucked > 50){
+                                        level = "is really";
+                                    }
+                                    else if (fucked > 10){
+                                        level = "seems pretty";
+                                    }
+
+
+                                    log.info("Dude this " + level + " fucked ! No event dispatch for " + currentInfo.getPath() );
+                                    mediaPlayer.stop();
+                                    ignorables.add(currentInfo.getPath());
+                                    FileUtil.serializableSave(ignorables, propsFile);
+                                    checking = false;
+                                    check();
+                                    fucked ++;
+
+                                }
+                            }, 20 * 1000);
+                        }
+                        else {
+                            log.info("Skip " + currentInfo.getPath());
+                            checking = false;
+                            check();
+                            ignorables.add(currentInfo.getPath());
+                            FileUtil.serializableSave(ignorables, propsFile);
+                            ThreadUtil.closeTimer(timerResult);
+                        }
+                    }
             }
             else if(shouldClose){
                 close();

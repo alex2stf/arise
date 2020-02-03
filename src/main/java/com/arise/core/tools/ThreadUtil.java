@@ -19,10 +19,17 @@ public class ThreadUtil {
         return fireAndForget(action, "FireAndForget" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
     }
 
-    public static TimerResult timerTask(Runnable action, long period){
+    public static TimerResult repeatedTask(Runnable action, long rate){
         Timer timer = new Timer(true);
         TimerResult timerResult = new TimerResult(timer, action);
-        timer.scheduleAtFixedRate(timerResult.getTimerTask(), 0, period);
+        timer.scheduleAtFixedRate(timerResult.getTimerTask(), 0, rate);
+        return timerResult;
+    }
+
+    public static TimerResult delayedTask(Runnable action, long delay){
+        Timer timer = new Timer(true);
+        TimerResult timerResult = new TimerResult(timer, action);
+        timer.schedule(timerResult.getTimerTask(), delay);
         return timerResult;
     }
 

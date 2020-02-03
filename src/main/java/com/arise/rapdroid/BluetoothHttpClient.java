@@ -153,7 +153,8 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
         }
 
         if (currentMessage != null){
-            throw new RuntimeException("WTF???");
+            new RuntimeException("WTF This should not happen").printStackTrace();
+            return;
         }
         checkingQueue = true;
 

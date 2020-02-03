@@ -2,20 +2,22 @@ package com.arise.rapdroid.components.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Layout;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NavView extends LinearLayout {
 
-    LinearLayout leftMenu;
+    LinearLayout menuBar;
     ScrollView scrollView;
     FrameLayout pageContainer;
     private final Context context;
@@ -44,23 +46,41 @@ public class NavView extends LinearLayout {
         ImageButton imageButton = new ImageButton(context);
         imageButton.setOnClickListener(onClickListener);
         imageButton.setImageResource(resource);
-        leftMenu.addView(imageButton, Layouts.wrapContentWrapContent());
+        menuBar.addView(imageButton, Layouts.wrapContentWrapContent());
+        index++;
         return this;
     }
 
 
+
+    int rows = 6;
+    int index = 0;
+
+
     public NavView compose(){
-        if (scrollView == null && leftMenu == null) {
-            scrollView = new ScrollView(context);
-            leftMenu = new LinearLayout(context);
-            scrollView.addView(leftMenu, Layouts.matchParentMatchParent());
-            leftMenu.setOrientation(VERTICAL);
-            leftMenu.setPadding(0, 0, 0, 0);
+        if (scrollView == null && menuBar == null) {
+
             pageContainer = new FrameLayout(context);
-            scrollView.setBackgroundColor(menuReleasedColor);
-            this.addView(scrollView, Layouts.wrapContentMatchParent());
-            this.addView(pageContainer);
+
+
+            scrollView = new ScrollView(context);
+            menuBar = new LinearLayout(context);
+            scrollView.addView(menuBar, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            menuBar.setOrientation(VERTICAL);
+            menuBar.setPadding(0, 0, 0, 0);
+
+            addView(scrollView);
+            addView(pageContainer);
+
         }
+        scrollView.setBackgroundColor(menuReleasedColor);
+        //TODO add to cache
+
+        scrollView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (rows - 1) * (10 / rows)) );
+        pageContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, (10 / rows) ) );
+
+
+        requestLayout();
         return this;
     }
 
@@ -91,7 +111,10 @@ public class NavView extends LinearLayout {
         ImageButton button = new ImageButton(context);
         button.setImageResource(selectedRes);
         rightPage.setPadding(10, 10, 10, 10);
-        leftMenu.addView(button);
+        button.setLayoutParams(Layouts.matchParentWrapContent());
+
+        menuBar.addView(button, menuBar.getChildCount() - index);
+
         pageContainer.addView(rightPage);
         pages.add(new Container(button, rightPage, selectedRes, releasedRes));
         button.setOnClickListener(onClickListener);

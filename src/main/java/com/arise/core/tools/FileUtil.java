@@ -14,12 +14,16 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -146,6 +150,14 @@ public class FileUtil {
 
         return result;
     }
+
+     public static File getAppDirChild(String name){
+            File f = new File(findAppDir(), name);
+            if (!f.exists()){
+                f.mkdirs();
+            }
+            return f;
+     }
 
     public static InputStream findStream(String path) {
         InputStream stream = null;
@@ -403,6 +415,47 @@ public class FileUtil {
     }
 
 
+    public static Properties loadPropsIfExists(File file){
+        if (file.exists()){
+            try {
+                return loadProps(file);
+            } catch (IOException e) {
+                return new Properties();
+            }
+        }
+        return new Properties();
+    }
+
+    public static <T extends Serializable> T serializableRead(File input){
+        FileInputStream fileIn = null;
+        ObjectInputStream objectIn = null;
+        T r = null;
+        try {
+            fileIn = new FileInputStream(input);
+            objectIn = new ObjectInputStream(fileIn);
+            r = (T) objectIn.readObject();
+        } catch (Exception ex) {
+           ;;
+        }
+        Util.close(objectIn);
+        Util.close(fileIn);
+        return r;
+    }
+
+    public static  void serializableSave(Serializable serializable, File out){
+        FileOutputStream fileOut = null;
+        ObjectOutputStream objectOut = null;
+        try {
+            fileOut = new FileOutputStream(out);
+            objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(serializable);
+            objectOut.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Util.close(fileOut);
+        Util.close(objectOut);
+    }
 
 
     public static File getOrCreateDirs(String bin) {

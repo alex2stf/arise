@@ -2,24 +2,13 @@ package com.arise.rapdroid;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
-import android.os.Environment;
 import android.provider.MediaStore;
 
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-
 import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
@@ -28,15 +17,12 @@ import com.arise.weland.IDGen;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.SuggestionService;
-import com.arise.rapdroid.media.server.AppUtil;
-import com.arise.rapdroid.media.server.WelandClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -198,11 +184,11 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
     public File getAppDir(){
-        File root = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Laynee");
-        if (!root.exists()){
-            root.mkdirs();
-        }
-        return root;
+//        File root = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Laynee");
+//        if (!root.exists()){
+//            root.mkdirs();
+//        }
+        return FileUtil.findAppDir();
     }
 
     public File getImgDir(){

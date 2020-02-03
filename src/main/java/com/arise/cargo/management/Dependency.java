@@ -2,6 +2,8 @@ package com.arise.cargo.management;
 
 import com.arise.core.tools.SYSUtils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class Dependency {
         });
     }
 
-    Dependency setName(String name) {
+   public Dependency setName(String name) {
         this.name = name;
         return this;
     }
