@@ -211,7 +211,7 @@ public class FileUtil {
     }
 
     private static InputStream readFromAndroidAssets(Object context, String classPathRoot){
-        Object assetManager = ReflectUtil.getMethod(context, "getAssets").call(null);
+        Object assetManager = ReflectUtil.getMethod(context, "getAssets").call();
         if (assetManager == null){
             return null;
         }

@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
@@ -157,7 +156,7 @@ public class ReflectUtil {
     }
 
     public static Object createInterface(String[] interfacesNames, IMethod... methods){
-        Set<Class> classList = new HashSet<>();
+        Set<Class> classList = new HashSet<Class>();
         for (String s: interfacesNames){
             Class c = getClassByName(s);
             if (c != null) {
@@ -266,13 +265,24 @@ public class ReflectUtil {
         return null;
     }
 
-    public static Object getAnnotation(Parameter parameter, String name){
-        Class annotation = getClassByName(name);
-        if (annotation != null){
-            return parameter.getAnnotation(annotation);
+    public static int countParameters(Method method){
+        InvokeHelper invoke = getMethod(method, "getParameterCount");
+        if(invoke.getMethod() != null){
+            Integer x = invoke.callForInteger();
+            if (x != null){
+                return x;
+            }
         }
-        return null;
+        return method.getParameterTypes().length;
     }
+
+//    public static Object getAnnotation(Parameter parameter, String name){
+//        Class annotation = getClassByName(name);
+//        if (annotation != null){
+//            return parameter.getAnnotation(annotation);
+//        }
+//        return null;
+//    }
 
     public static Object getAnnotation(Class clazz, String name) {
         Class annotation = getClassByName(name);
@@ -294,7 +304,7 @@ public class ReflectUtil {
     }
 
     private static boolean classMatchName(Class t, String n){
-        return !isNull(n) && !isNull(t) && (n.equals(t.getName()) || n.equals(t.getTypeName()) || n.equals(t.getCanonicalName()) || n.equals(t.getSimpleName()));
+        return !isNull(n) && !isNull(t) && (n.equals(t.getName()) || n.equals(t.getCanonicalName()) || n.equals(t.getSimpleName()));
     }
 
 

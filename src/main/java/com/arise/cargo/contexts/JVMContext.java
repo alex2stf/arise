@@ -18,11 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.arise.core.tools.StringUtil.capFirst;
 
@@ -265,7 +261,7 @@ public class JVMContext extends StrongTypedContext {
                 res.add(cgVar);
             }
         }
-        res.sort(BY_NAME);
+        Collections.sort(res, BY_NAME);
         return res;
     }
 }

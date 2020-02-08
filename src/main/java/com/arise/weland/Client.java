@@ -4,22 +4,14 @@ package com.arise.weland;
 import com.arise.astox.net.models.AbstractClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.http.HttpResponseBuilder;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.models.CompleteHandler;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
-import com.arise.weland.dto.AutoplayMode;
-import com.arise.weland.dto.ContentInfo;
-import com.arise.weland.dto.ContentPage;
-import com.arise.weland.dto.DeviceStat;
-import com.arise.weland.dto.Message;
-import com.arise.weland.dto.Playlist;
+import com.arise.core.tools.models.CompleteHandler;
+import com.arise.weland.dto.*;
 
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client  {
 

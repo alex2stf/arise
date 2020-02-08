@@ -15,12 +15,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 
@@ -87,7 +82,7 @@ public class FormBuilder {
                 return false;
             }
         });
-        buffer.sort(new Comparator<CGVar>() {
+        Collections.sort(buffer, new Comparator<CGVar>() {
             @Override
             public int compare(CGVar o1, CGVar o2) {
                 return o1.getId().compareTo(o2.getId());

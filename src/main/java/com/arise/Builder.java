@@ -24,7 +24,8 @@ public class Builder {
 
     public static File getJavac(){
         String name = "javac";
-        String javaHome = System.getProperty("java.home");
+        String javaHome = new File("Jv7Win32SDK\\Java\\jdk1_7_0_79").getAbsolutePath();
+                //System.getProperty("java.home");
         File f = new File(javaHome);
         f = new File(f, "bin");
         if (isWindows()){
@@ -45,19 +46,28 @@ public class Builder {
             return;
         }
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+        boolean shouldExit = false;
         try {
             String line;
             while ((line = in.readLine()) != null) {
                 System.out.println("        " + line);
+                if (!shouldExit && line.toLowerCase().indexOf("error") > -1){
+                    shouldExit = true;
+                }
             }
         } catch (Exception e){
                 e.printStackTrace();
         }
+        if (shouldExit){
+            System.exit(-1);
+        }
+//        System.exit(-1);
     }
 
     static String join(String [] sss){
         String r = "";
         for (String s: sss){
+            s = s.replaceAll("\\\\", "\\\\");
             if (s.indexOf("\\") > -1){
                 String p[] = s.split("\\\\");
                 s = p[p.length -1];
@@ -68,19 +78,40 @@ public class Builder {
     }
 
     private synchronized static void compile(String[] xxx) throws IOException, InterruptedException {
-        System.out.println("    " + join(xxx));
-        Runtime.getRuntime().exec(xxx);
-//        ProcessBuilder processBuilder = new ProcessBuilder(xxx);
-//        processBuilder.redirectErrorStream(false);
-//        final Process proc = processBuilder.start();
+        System.out.println("exec cmd\n    " + join(xxx));
+
+
+//        Process child = Runtime.getRuntime().exec(xxx);
+//        BufferedReader input = new BufferedReader(new InputStreamReader(
+//                child.getErrorStream()), 13107200);
+//
+//        String line = null;
+//
+//        if (input.ready()) {
+//            while ((line = input.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+//            try {
+//                child.waitFor();
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(xxx);
+        processBuilder.redirectErrorStream(false);
+        final Process proc = processBuilder.start();
+//        showProcess(proc.getInputStream());
+        showProcess(proc.getErrorStream());
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                showProcess(proc.getInputStream());
-//                showProcess(proc.getErrorStream());
+//
 //            }
 //        }).start();
-//        proc.waitFor();
+        proc.waitFor();
     }
 
     static final String ROOT = "src/main/java/com/arise/";
@@ -105,7 +136,7 @@ public class Builder {
             /**
              * CORONA	COntROl aNy mAchine
             */
-            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland")
+            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland", ROOT + "cargo/management")
                     .jarLib("libs/bluecove-2.1.0.jar", "libs/jaudiotagger-2.2.3.jar")
                     .jarLib("libs/jna-3.5.2.jar")
                     .jarLib("libs/platform-3.5.2.jar")
@@ -123,11 +154,11 @@ public class Builder {
             /**
             * steiner base lib
             */
-            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "cargo",
-                           ROOT + "astox/net/models", ROOT + "astox/net/clients")
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
-                    .named("jumper")
-                    .version("1.0")
+//            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "cargo",
+//                           ROOT + "astox/net/models", ROOT + "astox/net/clients")
+//                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
+//                    .named("jumper")
+//                    .version("1.0")
 
 
 

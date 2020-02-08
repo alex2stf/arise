@@ -10,22 +10,14 @@ import com.arise.core.tools.StringUtil;
 import java.io.File;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.*;
-import static com.arise.core.tools.StringUtil.hasText;
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfo implements Serializable {
     //    private transient byte[] emb;

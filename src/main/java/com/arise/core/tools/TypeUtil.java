@@ -558,7 +558,7 @@ public class TypeUtil {
                 boolean isGetter1 = ("get" + capFirst(name)).equals(m.getName());
                 boolean isGetter2 = ("is" + capFirst(name)).equals(m.getName());
                 boolean isInlineMethod = name.equals(m.getName());
-                boolean hasNoArgs = m.getParameterCount() == 0;
+                boolean hasNoArgs = ReflectUtil.countParameters(m) == 0;
                 return methodFilterCriteria.isAcceptable(m) && hasNoArgs && (isGetter1 || isGetter2 || isInlineMethod);
             }
         });

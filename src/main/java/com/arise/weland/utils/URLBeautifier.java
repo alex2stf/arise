@@ -26,7 +26,7 @@ public class URLBeautifier {
 //
 //                }
                 URI uri = new URI(url);
-                Map<String, List<String>> params = new HashMap<>();
+                Map<String, List<String>> params = new HashMap<String, List<String>>();
                 StringUtil.decodeQuery(uri.getQuery(), params);
                 if (params.containsKey("v") && params.get("v").size() > 0){
                     return uri.getScheme() + prefix + params.get("v").get(0) + "?autoplay=1&feature=emb_rel_err";
