@@ -10,12 +10,17 @@ import com.arise.core.tools.StringUtil;
 import java.io.File;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.*;
@@ -271,7 +276,7 @@ public class ContentInfo implements Serializable {
 
 
     public static String getMediaPath(Map m){
-        String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/").replaceAll("//", "/");
+        String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/");
         return decodePath(src);
     }
 
@@ -331,7 +336,7 @@ public class ContentInfo implements Serializable {
         }
     }
 
-    public static  String encodePath(String s){
+    public static String encodePath(String s){
 
         String val;
         try {
@@ -354,4 +359,19 @@ public class ContentInfo implements Serializable {
         playlistId = music.shortId();
         return this;
     }
+
+    public boolean isMusic() {
+        return ContentType.isMusic(path);
+    }
+
+    public boolean isVideo() {
+        return ContentType.isVideo(path);
+    }
+
+    public boolean isWebPage(){
+        return path.startsWith("http:") || path.startsWith("https:");
+    }
+
+
+
 }

@@ -24,6 +24,6 @@ public class RemoteConnection  {
     }
 
     public String getName(){
-        return deviceStat.getDisplayName();
+        return deviceStat != null ? deviceStat.getDisplayName() : "Remote" ;
     }
 }

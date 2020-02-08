@@ -14,7 +14,10 @@ public class IDGen {
         return parsePath(file.getName());
     }
 
-    private static String parsePath(String s) {
-        return s.replaceAll("/", "_").replaceAll("\\s+","");
+    public static String parsePath(String s) {
+        return s.replaceAll("/", "_")
+                .replaceAll("\\s+","")
+                .replaceAll("\\:", "_")
+                ;
     }
 }

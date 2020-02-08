@@ -24,7 +24,7 @@ public class WavRecorderResponse extends WavResponse {
 
     private volatile AudioRecord recorder = null;
     private int bufferSize = 200;
-    private volatile boolean isRecording = false;
+    private volatile boolean recording = false;
     private Mole log = Mole.getInstance(WavRecorderResponse.class);
 
     private Thread worker;
@@ -102,7 +102,7 @@ public class WavRecorderResponse extends WavResponse {
                     }
                 }
 
-                isRecording = true;
+                recording = true;
                 byte data[] = new byte[bufferSize];
 //                while (recordr.read(data, 0, bufferSize) > -1) {
                 while (recorder.read(data, 0, bufferSize) != AudioRecord.ERROR_INVALID_OPERATION) {
@@ -111,11 +111,14 @@ public class WavRecorderResponse extends WavResponse {
                     }catch (Exception e){
                         log.e("FAILED TO SEND SOUND");
                     }
+
                 }
             }
         });
         worker.start();
     }
+
+
 
 
 
@@ -136,6 +139,7 @@ public class WavRecorderResponse extends WavResponse {
 
             }
         }
+        recording = false;
     }
 
 
@@ -205,6 +209,7 @@ public class WavRecorderResponse extends WavResponse {
         out.write(header);
     }
 
-
-
+    public boolean isRecording() {
+        return recording;
+    }
 }

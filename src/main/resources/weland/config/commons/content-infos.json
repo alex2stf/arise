@@ -1,6 +1,39 @@
 [
   {
     "P": "https://www.digi24.ro/",
-    "F": "S"
+    "F": "S",
+    "T": "Digi 24 Web",
+    "Q": "https://media.obiectiv.info/image/201403/w620/digi-24_68314800.png"
+  },
+  {
+    "P": "http://localhost:8221/webcam",
+    "F": "S",
+    "T": "Local webcam"
+  },
+  {
+    "P": "https://live.rockfm.ro:8443/rockfm.aacp",
+    "F": "S",
+    "T": "Rock FM",
+    "Q": "https://cdn-radiotime-logos.tunein.com/s87949g.png"
+  },
+
+  {
+    "P": "http://edge76.rdsnet.ro:84/digifm/digifm.mp3",
+    "F": "S",
+    "T": "Digi FM"
+  },
+
+  {
+    "P": "https://youtu.be/xkEju-deJsE?autoplay=1",
+    "F": "V",
+    "T": "LINDEMANN - Ach so gern (One Shot Video)",
+    "Q": "https://hot-music.org/_ld/1/73047340.png"
+  },
+
+  {
+    "P": "https://youtu.be/My2FRPA3Gf8?autoplay=1",
+    "F": "V",
+    "T": "Miley Cyrus - Wrecking Ball (Official Video)",
+    "Q": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRLlsnRXENBHiAx_9ijkinV4vzkbLxmNbHNE1HgreHBU-beTDnH"
   }
 ]

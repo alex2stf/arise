@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
+import java.util.Date;
 
 import static com.arise.core.tools.Util.close;
 
@@ -69,6 +70,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                     });
                 }
             }
+
         }
         close(provider);
     }

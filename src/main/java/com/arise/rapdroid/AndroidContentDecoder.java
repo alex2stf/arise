@@ -11,6 +11,7 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.IDGen;
@@ -23,9 +24,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AndroidContentDecoder extends ContentInfoDecoder
 
@@ -35,8 +40,8 @@ public class AndroidContentDecoder extends ContentInfoDecoder
             .load("weland/config/commons/suggestions.json");
 
 
-    Map<String, Bitmap> bitmapCache = new HashMap<>();
-    Map<String, byte[]> bytesCache = new HashMap<>();
+    Map<String, Bitmap> bitmapCache = new ConcurrentHashMap<>();
+    Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
 
     public AndroidContentDecoder(){
@@ -115,14 +120,20 @@ public class AndroidContentDecoder extends ContentInfoDecoder
             Bitmap thumbnail = null;
             String binaryId = IDGen.fromFile(file);
             Bitmap bmp = null;
-            try {
-                thumbnail = mmr.getFrameAtTime();
-            }catch (Exception e){
-                thumbnail = null;
-            }
-            if (thumbnail == null) {
-                thumbnail = ThumbnailUtils.createVideoThumbnail(file.getPath(),
-                        MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+            if (ContentType.isVideo(file)) {
+                try {
+                    thumbnail = mmr.getFrameAtTime();
+                } catch (Exception e) {
+                    thumbnail = null;
+                }
+                if (thumbnail == null) {
+                    try {
+                        thumbnail = ThumbnailUtils.createVideoThumbnail(file.getPath(),
+                                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+                    }catch (Exception e){
+                        thumbnail = null;
+                    }
+                }
             }
 
 
@@ -145,7 +156,6 @@ public class AndroidContentDecoder extends ContentInfoDecoder
                 searchInSuggestions(mediaInfo);
             }
             else {
-
                 bytesCache.put(binaryId, imageBytes);
                 if (bmp != null){
                     bitmapCache.put(binaryId, bmp);
@@ -184,10 +194,6 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
     public File getAppDir(){
-//        File root = new File( Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Laynee");
-//        if (!root.exists()){
-//            root.mkdirs();
-//        }
         return FileUtil.findAppDir();
     }
 
@@ -204,21 +210,21 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         suggestionService.searchIcons(mediaInfo.getPath(), new SuggestionService.Manager() {
             @Override
             public boolean manage(String id, String path, URL url) {
-                byte[] bytes = get(id, url, getImgDir());
-                mediaInfo.setThumbnailId(id);
-                bytesCache.put(id, bytes);
-                return false;
+                try {
+                    byte[] bytes = get(id, url, getImgDir());
+                    mediaInfo.setThumbnailId(id);
+                    bytesCache.put(id, bytes);
+                    return true;
+                }catch (Exception e){
+                    return false;
+                }
+
             }
         });
     }
 
 
-
-
-    public byte[] get(String id, URL url, File cacheDir){
-        if (bytesCache.containsKey(id)){
-            return bytesCache.get(id);
-        }
+    public byte[] readLocalIfExists( File cacheDir, String id){
         byte[] bytes = null;
         File f = new File(cacheDir + File.separator + id);
         if (f.exists()){
@@ -228,17 +234,28 @@ public class AndroidContentDecoder extends ContentInfoDecoder
                 bytes = null;
             }
         }
+        return bytes;
+    }
+
+
+
+    public byte[] get(String id, URL url, File cacheDir){
+        if (bytesCache.containsKey(id)){
+            return bytesCache.get(id);
+        }
+        byte[] bytes = readLocalIfExists(cacheDir, id);
         if (bytes != null){
             bytesCache.put(id, bytes);
             return bytes;
         }
+
 
         InputStream inputStream = null;
         try {
             inputStream = url.openStream();
             bytes = StreamUtil.toBytes(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Failed to fetch " + url);
         }
         finally {
             Util.close(inputStream);
@@ -246,7 +263,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
         if (bytes != null){
             Bitmap minified = getMinifiedBitmap(id, bytes);
-
+            File f = new File(cacheDir + File.separator + id);
             FileOutputStream fileOutputStream = null;
             try {
                 fileOutputStream = new FileOutputStream(f);
@@ -270,12 +287,6 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
 
-//    public Drawable getDrawable(String binaryId){
-//        if (drawableCache.containsKey(binaryId)){
-//            return drawableCache.get(binaryId);
-//        }
-//        return null;
-//    }
 
     public void getPreview(ContentInfo contentInfo, CompleteHandler<Bitmap> completeHandler){
         String binaryId = contentInfo.getThumbnailId();
@@ -296,33 +307,49 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
 
 
-        final Drawable[] bitmapDrawable = {null};
+
         if (bytes != null && bytes.length > 1){
             completeHandler.onComplete(getMinifiedBitmap(binaryId, bytes));
             return;
         }
 
-        completeHandler.onComplete(null);
+        if (binaryId.startsWith("http")) {
+            URL uri;
+            try {
+                uri = new URL(binaryId);
+            } catch (MalformedURLException e) {
+                uri = null;
+                return;
+            }
+            if (uri == null){
+                completeHandler.onComplete(null);
+                return;
+            }
+
+            String actualBinaryId = IDGen.parsePath(binaryId);
+            URL finalUri = uri;
+            ThreadUtil.fireAndForget(new Runnable() {
+                @Override
+                public void run() {
+                    byte localBytes[] = get(actualBinaryId, finalUri, getStateDirectory());
+                    if (localBytes != null){
+                        completeHandler.onComplete(getMinifiedBitmap(actualBinaryId, localBytes));
+                    }
+                    else {
+                        completeHandler.onComplete(null);
+                    }
+                }
+            });
+
+
+        }
+        else {
+            completeHandler.onComplete(null);
+        }
+
+
     }
 
-//    public BitmapDrawable getBitmapDrawable(String binaryId, byte[] bytes){
-
-//        BitmapDrawable bitmapDrawable = new BitmapDrawable(getMinifiedBitmap(binaryId, bytes));
-//        drawableCache.put(binaryId, bitmapDrawable);
-//        return bitmapDrawable;
-//    }
-
-
-//    public Drawable getBitmapDrawable(String binaryId, byte[] bytes){
-//        if (drawableCache.containsKey(binaryId) && drawableCache.get(binaryId) != null ){
-//            return drawableCache.get(binaryId);
-//        }
-//        Bitmap bitmap = getMinifiedBitmap(binaryId, bytes);
-//        RoundedBitmapDrawable roundedBitmapDrawable =
-//                RoundedBitmapDrawableFactory.create(null, bitmap);
-//        roundedBitmapDrawable.setCornerRadius(30f);
-//        return roundedBitmapDrawable;
-//    }
 
 
     public Bitmap getMinifiedBitmap(String binaryId, byte bytes[]){
@@ -342,10 +369,25 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
         int height = bitmap.getHeight();
         int width = bitmap.getWidth();
-        int newWidth = (width * 320) / height;
-        Bitmap min = Bitmap.createScaledBitmap(bitmap, newWidth, 320, false);
+        int newWidth = (width * 350) / height;
+        Bitmap min = Bitmap.createScaledBitmap(bitmap, newWidth, 350, false);
         bitmapCache.put(binaryId, min);
         return min;
+    }
+
+
+    public Bitmap getBitmapById(String thumbnailId){
+        if (bitmapCache.containsKey(thumbnailId)) {
+            return bitmapCache.get(thumbnailId);
+        }
+        byte [] bytes = readLocalIfExists(getImgDir(), thumbnailId);
+        if (bytes != null){
+            bytesCache.put(thumbnailId, bytes);
+
+            return getMinifiedBitmap(thumbnailId, bytes);
+
+        }
+        return null;
     }
 
 

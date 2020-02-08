@@ -85,6 +85,11 @@ public class SuggestionService {
         }
 
         List<String> combs =  getLinearCombinations(vals);
+        String ext[] = filename.split("\\.");
+        if (ext.length > 1){
+            String last = ext[ext.length -1];
+            combs.add("_" + last);
+        }
         //search for icons:
         for (String s: combs){
             Map x = getSuggestion(s);
@@ -99,6 +104,7 @@ public class SuggestionService {
                 }
             }
         }
+
 
 
         return this;

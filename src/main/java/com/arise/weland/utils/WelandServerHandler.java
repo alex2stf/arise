@@ -9,9 +9,12 @@ import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.*;
@@ -19,13 +22,14 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.model.ContentHandler;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-  private static final DeviceStat deviceStat = new DeviceStat();
+  public static final DeviceStat deviceStat = new DeviceStat();
   static {
       deviceStat.scanIPV4();
   }
@@ -82,6 +86,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   Handler<HttpRequest> liveMjpegHandler;
   Handler<HttpRequest> liveJpegHandler;
+  Handler<HttpRequest> liveWavHandler;
   Handler<HttpRequest> deviceControlsUpdate;
   Handler<HttpRequest> commandExecHandler;
   Handler<Message> messageHandler;
@@ -107,6 +112,11 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
+  public WelandServerHandler beforeLiveWAV(Handler<HttpRequest> liveWavHandler) {
+    this.liveWavHandler = liveWavHandler;
+    return this;
+  }
+
   public WelandServerHandler beforeLiveMJPEG(Handler<HttpRequest> liveMjpegRequest) {
     this.liveMjpegHandler = liveMjpegRequest;
     return this;
@@ -123,10 +133,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
 
-  public WelandServerHandler onPlayAdvice(CompleteHandler<ContentInfo> contentInfoCompleteHandler){
-      this.contentInfoProvider.onPlayAdvice(contentInfoCompleteHandler);
-      return this;
-  }
+
 
   public <I> HttpResponse dispatch(Handler<I> handler, I data){
     if (handler != null){
@@ -136,7 +143,8 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
 
-
+  Whisker whisker = new Whisker();
+  String playerContent = StreamUtil.toString(FileUtil.findStream("weland/player.html"));
 
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
@@ -164,6 +172,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
+      dispatch(liveWavHandler, request);
       return liveWav;
     }
 
@@ -175,6 +184,23 @@ public class WelandServerHandler extends HTTPServerHandler {
     if ("/device/live/jpeg".equalsIgnoreCase(request.path())){
       dispatch(liveJpegHandler, request);
       return liveJpeg;
+    }
+
+    //used by android app for audio streaming services
+    if ("/player".equalsIgnoreCase(request.path())){
+      Map<String, String> args = new HashMap<>();
+      args.put("imgSrc", request.getQueryParam("imgSrc"));
+      args.put("audioSrc", request.getQueryParam("audioSrc"));
+      return HttpResponse.html(whisker.compile(playerContent, args));
+    }
+
+
+
+    if ("/webcam".equalsIgnoreCase(request.path())){
+      Map<String, String> args = new HashMap<>();
+      args.put("imgSrc", "/device/live/mjpeg");
+      args.put("audioSrc", "/device/live/audio.wav");
+      return HttpResponse.html(whisker.compile(playerContent, args));
     }
 
     if ("/health".equalsIgnoreCase(request.path())){

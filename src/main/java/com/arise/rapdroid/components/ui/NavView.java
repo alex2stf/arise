@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import com.arise.rapdroid.media.server.appviews.ContentInfoDisplayer;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +49,9 @@ public class NavView extends LinearLayout {
         ImageButton imageButton = new ImageButton(context);
         imageButton.setOnClickListener(onClickListener);
         imageButton.setImageResource(resource);
-        menuBar.addView(imageButton, Layouts.wrapContentWrapContent());
+        imageButton.setBackgroundColor(menuReleasedColor);
+
+        menuBar.addView(imageButton, Layouts.matchParentWrapContent());
         index++;
         return this;
     }
@@ -137,6 +142,28 @@ public class NavView extends LinearLayout {
         }
     }
 
+    public void removeTab(View tab) {
+        int viewIndex = -1;
+        for (int i = 0; i < pages.size(); i++){
+            Container c = pages.get(i);
+            if (c.page == tab){
+
+
+                viewIndex = i;
+                break;
+            }
+        }
+        if (viewIndex < 0){
+            return;
+        }
+        pageContainer.removeView(pages.get(viewIndex).page);
+        menuBar.removeView(pages.get(viewIndex).menu);
+        pages.remove(viewIndex);
+        System.out.println(index);
+
+
+
+    }
 
 
     private class Container {

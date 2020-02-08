@@ -15,6 +15,10 @@ import com.arise.weland.dto.Playlist;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -123,7 +127,6 @@ public class ContentInfoProvider {
                 for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
                     if (AutoplayMode.on.equals(entry.getValue()) || AutoplayMode.on_shuffle.equals(entry.getValue())){
                         ContentInfo info = next(entry.getKey());
-                        playAdviceHandler.onComplete(info);
                         log.trace("Scan complete play advice " + info.getPath());
                         break;
                     }
@@ -223,21 +226,11 @@ public class ContentInfoProvider {
 
 
     public HttpResponse getMediaPreview(String id) {
-        System.out.println("RECEIVED A REQUEST TO DISPLAY THUMBNAIL " + id);
         HttpResponse response = new HttpResponse();
-//        InputStream inputStream = FileUtil.findStream("src/main/resources#weland/icons/download.jpg");
-//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//        StreamUtil.transfer(inputStream, buffer);
-//
         byte[] bytes = decoder.getThumbnail(id);
         ContentType contentType = decoder.getThumbnailContentType(id);
         response.setBytes(bytes)
                 .setContentType(contentType);
-
-
-//        Util.close(inputStream);
-//        Util.close(buffer);
-
         return response;
     }
 
@@ -254,6 +247,10 @@ public class ContentInfoProvider {
 
     public final void saveState(ContentInfo currentInfo) {
         decoder.saveState(currentInfo);
+    }
+
+    public void clearState() {
+        decoder.clearState();
     }
 
     private boolean shuffleMusic = false;
@@ -306,49 +303,41 @@ public class ContentInfoProvider {
     }
 
 
-    public void onPlayComplete(ContentInfo currentInfo) {
-        currentInfo.incrementVisit();
-
-
-        if (!scanned){
-            return;
-        }
-
-        Playlist playlist = currentInfo.getPlaylist();
-
-        if (playlist == null){
-            return;
-        }
-
-        //increment visit
-        for (ContentInfo info: getPlaylist(playlist)){
-            if (info.getPath().equalsIgnoreCase(currentInfo.getPath())){
-                info.incrementVisit();
-            }
-        }
-
-        //play next if autoplay
-        for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
-            if (entry.getKey().equals(playlist) && !AutoplayMode.off.equals(entry.getValue())){
-                ContentInfo next = next(playlist);
-                if (next != null && playAdviceHandler != null){
-                   playAdviceHandler.onComplete(next);
-                }
-            }
-        }
-    }
-
-//    private Playlist getPlaylist(ContentInfo currentInfo) {
-//        String id = currentInfo.getPlaylistId();
-//        return Playlist.find(id);
+//    public void onPlayComplete(ContentInfo currentInfo) {
+//        currentInfo.incrementVisit();
+//
+//
+//        if (!scanned){
+//            return;
+//        }
+//
+//        Playlist playlist = currentInfo.getPlaylist();
+//
+//        if (playlist == null){
+//            return;
+//        }
+//
+//        //increment visit
+//        for (ContentInfo info: getPlaylist(playlist)){
+//            if (info.getPath().equalsIgnoreCase(currentInfo.getPath())){
+//                info.incrementVisit();
+//            }
+//        }
+//
+//        //play next if autoplay
+//        for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
+//            if (entry.getKey().equals(playlist) && !AutoplayMode.off.equals(entry.getValue())){
+//                ContentInfo next = next(playlist);
+//                if (next != null && playAdviceHandler != null){
+//                   playAdviceHandler.onComplete(next);
+//                }
+//            }
+//        }
 //    }
 
-    private CompleteHandler<ContentInfo> playAdviceHandler;
 
-    public ContentInfoProvider onPlayAdvice(CompleteHandler<ContentInfo> playAdviceHandler) {
-        this.playAdviceHandler = playAdviceHandler;
-        return this;
-    }
+
+
 
     public ContentInfo next(Playlist playlist){
         List<ContentInfo> data = getPlaylist(playlist);
@@ -387,6 +376,8 @@ public class ContentInfoProvider {
     }
 
 
+    List<ContentInfo> imported = new ArrayList<>();
+
     public ContentInfoProvider importJson(String path) {
         InputStream inputStream = FileUtil.findStream(path);
         if (inputStream == null){
@@ -400,7 +391,8 @@ public class ContentInfoProvider {
         List<ContentInfo> infos = ContentInfo.deserializeCollection(cnt);
 
         for (ContentInfo info: infos){
-            System.out.println(info);
+            //TODO check path not null
+            imported.add(info); //add to imported no matter what
             Playlist playlist = info.getPlaylist();
             if (playlist == null){
                 log.warn("Content Info" + info.getPath() + " has no playlist defined");
@@ -417,20 +409,23 @@ public class ContentInfoProvider {
             case STREAMS:
                 streams.add(info);
                 break;
+            case VIDEOS:
+                videos.add(info);
+                break;
         }
     }
 
     public ContentInfo findByPath(String path) {
         if (!scanned){
             log.warn("Scan not completed");
-            return null;
+            return findByPathInList(imported, path);
         }
-        ContentInfo info = findByPathInList(music, path);
+        ContentInfo info = findByPathInList(streams, path);
         if (info == null){
             info = findByPathInList(videos, path);
         }
         if (info == null){
-            info = findByPathInList(streams, path);
+            info = findByPathInList(music, path);
         }
         if (info == null){
             info = findByPathInList(games, path);
@@ -449,4 +444,7 @@ public class ContentInfoProvider {
         }
         return null;
     }
+
+
+
 }

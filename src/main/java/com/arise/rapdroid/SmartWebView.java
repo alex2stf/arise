@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.InputType;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -49,6 +50,7 @@ public class SmartWebView extends LinearLayout {
     private final WebView webView;
     WebView soundThread;
     private final Context ctx;
+    private Resources resources;
 
     private AutoCompleteTextView searchBar;
     private SmartLayout top;
@@ -58,10 +60,11 @@ public class SmartWebView extends LinearLayout {
     private static URLAutocomplete urls;
 
 
-    public SmartWebView(Context context) {
+    public SmartWebView(Context context, Resources resources) {
         super(context);
         webView = new WebView(context);
         this.ctx = context;
+        this.resources = resources;
         decorateWebViewMinimal();
 
 
@@ -81,22 +84,24 @@ public class SmartWebView extends LinearLayout {
         decorateWebViewMinimal();
     }
 
+
+
     private void decorateWebViewMinimal(){
         setOrientation(VERTICAL);
 
         webView.setWebViewClient(new WebViewClient() {
 
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                System.out.println("webview onLoadResource " + url);
-                super.onLoadResource(view, url);
-            }
+//            @Override
+//            public void onLoadResource(WebView view, String url) {
+//                System.out.println("webview onLoadResource " + url);
+//                super.onLoadResource(view, url);
+//            }
 
 
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                System.out.println("webview shouldInterceptRequest " + url);
-                return super.shouldInterceptRequest(view, url);
-            }
+//            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+//                System.out.println("webview shouldInterceptRequest " + url);
+//                return super.shouldInterceptRequest(view, url);
+//            }
 
             //https://www.hidroh.com/2016/05/19/hacking-up-ad-blocker-android/
             @Nullable
@@ -109,32 +114,32 @@ public class SmartWebView extends LinearLayout {
                 return super.shouldInterceptRequest(view, request);
             }
 
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                log.i("Processing webview url click... " + url);
-                uri = url;
-                if (urls != null){
-                    urls.add(url);
-                }
-                if (searchBar != null){
-                    searchBar.setText(uri);
-                }
+//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                log.i("Processing webview url click... " + url);
+//                uri = url;
+//                if (urls != null){
+//                    urls.add(url);
+//                }
+//                if (searchBar != null){
+//                    searchBar.setText(url);
+//                }
+//
+//
+//
+//                return super.shouldOverrideUrlLoading(view, url);
+//            }
 
-                view.loadUrl(url);
-
-                return super.shouldOverrideUrlLoading(view, url);
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                uri = url;
-                super.onPageStarted(view, url, favicon);
-            }
+//            @Override
+//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//                uri = url;
+//                super.onPageStarted(view, url, favicon);
+//            }
 
             public void onPageFinished(WebView view, String url) {
                 log.i("Finished loading URL: " + url);
                 uri = url;
                 if (searchBar != null){
-                    searchBar.setText(uri);
+                    searchBar.setText(webView.getUrl());
                 }
                 super.onPageFinished(view, url);
             }
@@ -152,6 +157,8 @@ public class SmartWebView extends LinearLayout {
                 log.info("WEBVIEW_MSG: " + consoleMessage.messageLevel() + "] (" + consoleMessage.lineNumber() + ") " + consoleMessage.message());
                 return super.onConsoleMessage(consoleMessage);
             }
+
+
         });
 
         webView.setPadding(0, 0, 0, 0);
@@ -191,17 +198,25 @@ public class SmartWebView extends LinearLayout {
         webView.getSettings().setDisplayZoomControls(false);
     }
 
+    public String getCurrentUri(){
+        return webView.getUrl();
+    }
+
     private SmartLayout getTopView(){
         if (top == null){
             top = new SmartLayout(ctx);
         }
+        top.setBackgroundColor(resources.topColor);
         return top;
     }
 
-    public PopupMenu addSearchBar(Resources resources) {
+    public PopupMenu addSearchBar() {
         ImageButton button = new ImageButton(ctx);
         if (resources.menuButtonImage != null) {
             button.setImageResource(resources.menuButtonImage);
+        }
+        if (resources.menuBackgroundColor != null){
+            button.setBackgroundColor(resources.menuBackgroundColor);
         }
         return addSearchBar(button);
     }
@@ -213,12 +228,8 @@ public class SmartWebView extends LinearLayout {
         searchBar.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchBar.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,200));
         searchBar.setThreshold(1); ////will start working from first character
-        searchBar.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-        searchBar.setPadding(14, 14, 14, 14);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            searchBar.setBackground(null);
-        }
-        searchBar.setBackgroundResource(android.R.color.background_light);
+        searchBar.setBackgroundColor(resources.searchBarColor);
+        searchBar.setTextColor(resources.searchTextColor);
 
 
         urls = new URLAutocomplete(ctx, android.R.layout.simple_list_item_1);
@@ -243,7 +254,7 @@ public class SmartWebView extends LinearLayout {
         });
 
         PopupMenu popupMenu = new PopupMenu(ctx, getTopView());
-        getTopView().addView(searchBar, Layouts.matchParentMatchParent02f());
+
         menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,7 +263,10 @@ public class SmartWebView extends LinearLayout {
                 popupMenu.show();
             }
         });
-        getTopView().addView(menuBtn, Layouts.matchParentMatchParent08f());
+
+//        menuBtn.setPadding(2, 2, 2, 2);
+        getTopView().addView(searchBar, Layouts.matchParentMatchParent02f());
+        getTopView().addView(menuBtn, Layouts.matchParentMatchParent09f());
         return popupMenu;
     }
 
@@ -298,6 +312,30 @@ public class SmartWebView extends LinearLayout {
         return this;
     }
 
+    public void goToPrevious() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        }
+    }
+
+//    public void hideWebview() {
+//        webView.setVisibility(INVISIBLE);
+//    }
+//
+//    public void showWebview() {
+//        webView.setVisibility(VISIBLE);
+//    }
+
+//    public void pause() {
+//        webView.onPause();
+//    }
+//
+//    public void resume(){
+//        webView.onResume();
+//    }
+
+
+
     public interface OnClickListener {
         void onClick(SmartWebView webView, View view);
     }
@@ -305,6 +343,10 @@ public class SmartWebView extends LinearLayout {
 
     public static class Resources {
         public Integer menuButtonImage;
+        public Integer menuBackgroundColor = Color.BLUE;
+        public int topColor = Color.BLUE;
+        public int searchBarColor = Color.BLUE;
+        public int searchTextColor = Color.WHITE;
     }
 
 }

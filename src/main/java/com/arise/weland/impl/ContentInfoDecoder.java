@@ -1,6 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
@@ -25,8 +26,10 @@ public abstract class ContentInfoDecoder {
             try {
                 byte bytes[] = StreamUtil.fullyReadFileToBytes(getCache());
                 Map m = (Map) Groot.decodeBytes(bytes);
-                ContentInfo info = find(m);
-                currentInfo = info;
+                if (!m.isEmpty()) {
+                    ContentInfo info = find(m);
+                    currentInfo = info;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -78,5 +81,9 @@ public abstract class ContentInfoDecoder {
     public void onScanComplete() {
 
 
+    }
+
+    public void clearState() {
+        FileUtil.writeStringToFile(getCache(), "{}");
     }
 }
