@@ -99,7 +99,7 @@ public class Groot {
     return gRiter.close().toString();
   }
 
-  public static void toJson(Object obj, GRiter gRiter) {
+  public static void toJson(Object obj, final GRiter gRiter) {
 
     if (isNull(obj)){
       gRiter.writeNull();
@@ -117,7 +117,7 @@ public class Groot {
     }
 
     else {
-      boolean isArray = TypeUtil.isSingleKeyIterable(obj);
+      final boolean isArray = TypeUtil.isSingleKeyIterable(obj);
 
 
       if (isArray){

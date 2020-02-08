@@ -40,10 +40,10 @@ public class HttpClient extends AbstractStreamedSocketClient<HttpRequest, HttpRe
 
 
     @Override
-    protected void read(Socket socket, CompleteHandler<HttpResponse> responseHandler) {
+    protected void read(final Socket socket, final CompleteHandler<HttpResponse> responseHandler) {
 
         try {
-            InputStream stream = socket.getInputStream();
+            final InputStream stream = socket.getInputStream();
             httpResponseBuilder.readInputStream(stream, new CompleteHandler<HttpResponse>() {
                 @Override
                 public void onComplete(HttpResponse data) {

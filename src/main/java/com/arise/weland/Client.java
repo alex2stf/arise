@@ -45,7 +45,7 @@ public class Client  {
 
 
 
-    public void ping(CompleteHandler<DeviceStat> onSuccess, CompleteHandler onError) {
+    public void ping(final CompleteHandler<DeviceStat> onSuccess, final CompleteHandler onError) {
         HttpRequest request = new HttpRequest().setMethod("GET").setUri("/health");
 
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
@@ -77,7 +77,7 @@ public class Client  {
         }
     }
 
-    public void listFiles(String s, CompleteHandler<ContentInfo> onSuccess, CompleteHandler onError) {
+    public void listFiles(String s, final CompleteHandler<ContentInfo> onSuccess, final CompleteHandler onError) {
         if (currentClient == null){
             log.warn("No client defined");
             onError.onComplete(null);
@@ -144,7 +144,7 @@ public class Client  {
     }
 
 
-    public void getDeviceStat(CompleteHandler<DeviceStat> deviceStatCompleteHandler, CompleteHandler onError){
+    public void getDeviceStat(final CompleteHandler<DeviceStat> deviceStatCompleteHandler, CompleteHandler onError){
         if (currentClient == null){
             log.info("currentClient not defined");
             return;
@@ -164,7 +164,7 @@ public class Client  {
     }
 
 
-    public void sendMessage(Message message, CompleteHandler<DeviceStat> onSuccess, CompleteHandler onError) {
+    public void sendMessage(Message message, final CompleteHandler<DeviceStat> onSuccess, final CompleteHandler onError) {
         HttpRequest request = new HttpRequest()
                 .setMethod("POST").setUri("/message")
                 .setBytes(message.toJson().getBytes());
@@ -175,7 +175,7 @@ public class Client  {
             }
         });
     }
-    public void mediaList(String playlistId, Integer index, CompleteHandler<ContentPage> completeHandler, CompleteHandler onError) {
+    public void mediaList(String playlistId, Integer index, final CompleteHandler<ContentPage> completeHandler, final CompleteHandler onError) {
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/media/list/" + playlistId + "?index=" + index);
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
@@ -201,7 +201,7 @@ public class Client  {
     }
 
 
-    public void findThumbnail(String id, CompleteHandler<byte[]> success, CompleteHandler onError){
+    public void findThumbnail(String id, final CompleteHandler<byte[]> success, CompleteHandler onError){
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/thumbnail/" + id);
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {

@@ -304,7 +304,7 @@ public class FileUtil {
 
 
 
-    public static void linearScan(File directory, FileFoundHandler fileFoundHandler){
+    public static void linearScan(File directory, final FileFoundHandler fileFoundHandler){
         if (!fileExists(directory)){
             return;
         }

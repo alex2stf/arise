@@ -48,7 +48,7 @@ public class ThreadUtil {
         final TimerTask timerTask;
         volatile boolean canRun = true;
 
-        public TimerResult(Timer timer, Runnable runnable) {
+        public TimerResult(Timer timer, final Runnable runnable) {
             this.timer = timer;
             this.timerTask = new TimerTask() {
                 @Override

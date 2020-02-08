@@ -92,7 +92,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
-    public void connect(HttpRequest request, CompleteHandler<HttpURLConnection> completionHandler) {
+    public void connect(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler) {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {

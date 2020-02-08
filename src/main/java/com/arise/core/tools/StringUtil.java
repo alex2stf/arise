@@ -123,7 +123,7 @@ public class StringUtil {
             return;
         }
         String key = in.substring(0, eIndex);
-        buffer.put(key, new ArrayList<>());
+        buffer.put(key, new ArrayList<String>());
 
         String rest = in.substring(eIndex + 1);
         int sIndex = rest.indexOf("&");

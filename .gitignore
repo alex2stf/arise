@@ -8,3 +8,4 @@ nohup.out
 lib/
 *_old.sh
 application_directory
+/out

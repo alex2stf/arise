@@ -83,13 +83,13 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
 
 
     @Override
-    protected void handle(StreamConnection connection) {
+    protected void handle(final StreamConnection connection) {
 
-       AbstractServer self = this;
+       final AbstractServer self = this;
         final boolean[] allow = {true};
 
-        OutputStream outputStream;
-        InputStream inputStream;
+        final OutputStream outputStream;
+        final InputStream inputStream;
         try {
             outputStream = connection.openOutputStream();
         } catch (IOException e) {

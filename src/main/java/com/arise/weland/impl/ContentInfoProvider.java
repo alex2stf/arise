@@ -186,10 +186,10 @@ public class ContentInfoProvider {
 
         if (sourceSize == 0){
             if (!scanned){
-                return new ContentPage().setData(Collections.emptyList()).setIndex(rIndex).setAutoplayMode(autoplayMode);
+                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(rIndex).setAutoplayMode(autoplayMode);
             }
             else {
-                return new ContentPage().setData(Collections.emptyList()).setIndex(null).setAutoplayMode(autoplayMode);
+                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null).setAutoplayMode(autoplayMode);
             }
         }
 
@@ -204,7 +204,7 @@ public class ContentInfoProvider {
 
         log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scanned){
-            return new ContentPage().setData(Collections.emptyList()).setIndex(null).setAutoplayMode(autoplayMode);
+            return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null).setAutoplayMode(autoplayMode);
         }
         for (int i = rIndex; i < limit; i++){
             info.add(source.get(i));
@@ -345,7 +345,7 @@ public class ContentInfoProvider {
         if (data.isEmpty()){
             return null;
         }
-        ContentInfo[] res = new ContentInfo[1];
+        final ContentInfo[] res = new ContentInfo[1];
         CollectionUtil.smartIterate(data, new CollectionUtil.SmartHandler<ContentInfo>() {
             @Override
             public void handle(ContentInfo t1, ContentInfo t2) {

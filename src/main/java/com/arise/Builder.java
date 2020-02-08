@@ -51,7 +51,7 @@ public class Builder {
                 System.out.println("        " + line);
             }
         } catch (Exception e){
-
+                e.printStackTrace();
         }
     }
 
@@ -69,17 +69,18 @@ public class Builder {
 
     private synchronized static void compile(String[] xxx) throws IOException, InterruptedException {
         System.out.println("    " + join(xxx));
-        ProcessBuilder processBuilder = new ProcessBuilder(xxx);
-        processBuilder.redirectErrorStream(false);
-        final Process proc = processBuilder.start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                showProcess(proc.getInputStream());
-                showProcess(proc.getErrorStream());
-            }
-        }).start();
-        proc.waitFor();
+        Runtime.getRuntime().exec(xxx);
+//        ProcessBuilder processBuilder = new ProcessBuilder(xxx);
+//        processBuilder.redirectErrorStream(false);
+//        final Process proc = processBuilder.start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                showProcess(proc.getInputStream());
+//                showProcess(proc.getErrorStream());
+//            }
+//        }).start();
+//        proc.waitFor();
     }
 
     static final String ROOT = "src/main/java/com/arise/";
@@ -106,9 +107,11 @@ public class Builder {
             */
             ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland")
                     .jarLib("libs/bluecove-2.1.0.jar", "libs/jaudiotagger-2.2.3.jar")
-                    .jarLib("libs/jna-3.5.2.jar" )
-                    .jarLib("libs/platform-3.5.2.jar" )
+                    .jarLib("libs/jna-3.5.2.jar")
+                    .jarLib("libs/platform-3.5.2.jar")
                     .jarLib("libs/vlcj-3.0.1.jar" )
+                    .jarLib("libs/commons-compress-1.19.jar" )
+                    .jarLib("libs/xz-1.8.jar" )
                     .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
                     .resourceFiles(RES_ROOT + "content-types.json")
                     .mainClass("com.arise.weland.Main")

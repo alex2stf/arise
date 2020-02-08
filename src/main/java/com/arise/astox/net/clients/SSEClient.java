@@ -29,7 +29,7 @@ public class SSEClient extends HttpClient {
     Thread thread;
     volatile boolean closed = false;
     @Override
-    public void connect(HttpRequest request, CompleteHandler<Socket> connectHandler) {
+    public void connect(final HttpRequest request, final CompleteHandler<Socket> connectHandler) {
         closed = false;
         thread = ThreadUtil.fireAndForget(new Runnable() {
             @Override
@@ -54,15 +54,15 @@ public class SSEClient extends HttpClient {
         super.onError(t);
     }
 
-    public void subscribe(HttpRequest request, final Consumer consumer){
+    public void subscribe(final HttpRequest request, final Consumer consumer){
         this.connect(request, new CompleteHandler<Socket>() {
             @Override
-            public void onComplete(Socket socket) {
+            public void onComplete(final Socket socket) {
                 try {
-                    OutputStream outputStream = socket.getOutputStream();
+                    final OutputStream outputStream = socket.getOutputStream();
                     outputStream.write(request.getBytes());
 
-                    InputStream inputStream = socket.getInputStream();
+                    final InputStream inputStream = socket.getInputStream();
                     HttpResponseReader responseReader = new HttpResponseReader() {
                         @Override
                         public void handleRest(HttpReader reader) {

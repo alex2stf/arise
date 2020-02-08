@@ -69,7 +69,7 @@ public abstract class Command<T> extends Task<T> {
                 arguments.setMapArgs(mapargs);
             }
             else if (TypeUtil.isSingleKeyIterable(e.getValue())){
-                List<String> compiledItems = new ArrayList<>();
+                final List<String> compiledItems = new ArrayList<>();
                 TypeUtil.forEach(e.getValue(), new TypeUtil.IteratorHandler() {
                     @Override
                     public void found(Object key, Object value, int index) {

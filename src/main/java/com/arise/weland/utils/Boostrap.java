@@ -85,8 +85,8 @@ public class Boostrap {
     }
 
 
-    public static AbstractServer startHttpServer(WelandServerHandler welandServerHandler){
-        AbstractServer server = new IOServer()
+    public static AbstractServer startHttpServer(final WelandServerHandler welandServerHandler){
+        final AbstractServer server = new IOServer()
                 .setPort(8221)
                 .setName("DR_" + SYSUtils.getDeviceName())
                 .setUuid(UUID.randomUUID().toString());

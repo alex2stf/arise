@@ -11,7 +11,7 @@ public class HttpResponseBuilder extends ServerResponseBuilder<HttpResponse> {
 
 
     @Override
-    public void  readInputStream(final InputStream inputStream, CompleteHandler<HttpResponse> completeHandler) {
+    public void  readInputStream(final InputStream inputStream, final CompleteHandler<HttpResponse> completeHandler) {
 
         HttpResponseReader reader = new HttpResponseReader() {
 

@@ -30,7 +30,7 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-    public HttpResponse play(String path) {
+    public HttpResponse play(final String path) {
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override

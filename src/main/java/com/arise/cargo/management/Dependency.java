@@ -18,7 +18,7 @@ public class Dependency {
     }
 
 
-    public Dependency setWindowsSource(String path){
+    public Dependency setWindowsSource(final String path){
         return addRule(new Rule() {
             @Override
             public boolean acceptConditions() {

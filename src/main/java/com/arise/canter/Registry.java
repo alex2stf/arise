@@ -120,7 +120,7 @@ public class Registry extends GenericTypeWorker {
     private void importJsonObject(MapObj obj) {
         String parentType = (String) obj.get("parent");
 
-        Command parentCmd = getCommand(parentType);
+        final Command parentCmd = getCommand(parentType);
         if (parentCmd == null){
             throw  new LogicalException("Missing schema " + parentType);
         }
