@@ -91,25 +91,24 @@ public class ContentInfoProvider {
         fireAndForget(new Runnable() {
             @Override
             public void run() {
-                for (File root: roots){
+                for (final File root: roots){
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
-
-                            if (!file.getName().startsWith(".")){
-                                if (isMusic(file)){
-                                    music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
-                                }
-                                else if (isVideo(file)){
-                                    videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
-                                }
-                                else if (isGame(file)){
-                                    games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
-                                }
-                                else if (isPresentation(file)){
-                                    presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
-                                }
+                        if (!file.getName().startsWith(".")){
+                            if (isMusic(file)){
+                                music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
                             }
+                            else if (isVideo(file)){
+                                videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
+                            }
+                            else if (isGame(file)){
+                                games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
+                            }
+                            else if (isPresentation(file)){
+                                presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
+                            }
+                        }
                         }
                     });
                 }

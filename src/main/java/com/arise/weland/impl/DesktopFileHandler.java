@@ -1,6 +1,5 @@
 package com.arise.weland.impl;
 
-import com.arise.Builder;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Command;
 import com.arise.canter.Registry;

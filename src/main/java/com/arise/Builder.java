@@ -24,8 +24,9 @@ public class Builder {
 
     public static File getJavac(){
         String name = "javac";
-        String javaHome = new File("Jv7Win32SDK\\Java\\jdk1_7_0_79").getAbsolutePath();
-                //System.getProperty("java.home");
+        String javaHome =
+                //new File("Jv7Win32SDK\\Java\\jdk1_7_0_79").getAbsolutePath();
+                System.getProperty("java.home");
         File f = new File(javaHome);
         f = new File(f, "bin");
         if (isWindows()){
