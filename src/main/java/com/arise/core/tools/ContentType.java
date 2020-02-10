@@ -226,6 +226,16 @@ public enum ContentType  {
         if ("avi".equalsIgnoreCase(s)){
             return VIDEO_AVI;
         }
+
+        try {
+            Integer index = Integer.valueOf(s);
+            ContentType vals[] = ContentType.values();
+            if (index > 0 && index < vals.length){
+                return vals[index];
+            }
+        } catch (NumberFormatException e){
+
+        }
         return ContentType.TEXT_PLAIN;
     }
 

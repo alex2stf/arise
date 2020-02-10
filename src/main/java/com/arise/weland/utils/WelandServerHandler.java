@@ -1,12 +1,11 @@
 package com.arise.weland.utils;
 
 
-
-import com.arise.astox.net.models.http.HttpRequest;
-import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
@@ -16,11 +15,16 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.weland.dto.*;
+import com.arise.weland.dto.AutoplayMode;
+import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.ContentPage;
+import com.arise.weland.dto.DeviceCtrlCmd;
+import com.arise.weland.dto.DeviceStat;
+import com.arise.weland.dto.Message;
+import com.arise.weland.dto.Playlist;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,6 +96,13 @@ public class WelandServerHandler extends HTTPServerHandler {
   Handler<Message> messageHandler;
   ContentHandler contentHandler;
 
+  IDeviceController iDeviceController;
+
+  public WelandServerHandler setiDeviceController(IDeviceController iDeviceController) {
+    this.iDeviceController = iDeviceController;
+    return this;
+  }
+
   public WelandServerHandler setContentHandler(ContentHandler contentHandler) {
     this.contentHandler = contentHandler;
     if (contentInfoProvider != null) {
@@ -146,6 +157,8 @@ public class WelandServerHandler extends HTTPServerHandler {
   Whisker whisker = new Whisker();
   String playerContent = StreamUtil.toString(FileUtil.findStream("weland/player.html"));
 
+  static final DeviceCtrlCmd deviceCtrlCmd = new DeviceCtrlCmd();
+
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
 
@@ -192,6 +205,15 @@ public class WelandServerHandler extends HTTPServerHandler {
       args.put("imgSrc", request.getQueryParam("imgSrc"));
       args.put("audioSrc", request.getQueryParam("audioSrc"));
       return HttpResponse.html(whisker.compile(playerContent, args));
+    }
+
+
+    //used by android app for audio streaming services
+    if ("/frame".equalsIgnoreCase(request.path())){
+      Map<String, String> args = new HashMap<>();
+      args.put("src", request.getQueryParam("src"));
+      String frameContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/frame.html"));
+      return HttpResponse.html(whisker.compile(frameContent, args));
     }
 
 
@@ -299,6 +321,18 @@ public class WelandServerHandler extends HTTPServerHandler {
       serverResponse.setText("PONG").addCorelationId(correlationId);
       return serverResponse;
     }
+
+
+//    if ("/devCtrl".equalsIgnoreCase(request.pathAt(0))){
+//
+//
+//      if (iDeviceController != null){
+//        deviceCtrlCmd.digest(request.getQueryParams());
+//        iDeviceController.update(deviceCtrlCmd);
+//      }
+//      return HttpResponse.json(deviceStat.toJson());
+//    }
+
 
     return super.getHTTPResponse(request, server);
   }

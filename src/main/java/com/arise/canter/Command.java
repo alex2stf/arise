@@ -19,6 +19,9 @@ public abstract class Command<T> extends Task<T> {
     protected final String id;
     protected Map<String, Object> properties;
 
+    public Object getProperty(String name) {
+        return properties.get(name);
+    }
 
     public Command(String id){
         this.id = id;

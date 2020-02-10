@@ -121,7 +121,6 @@ public abstract class HttpReader<TYPE> {
     protected abstract void onHeadersParsed(Map<String, String> headers);
 
     protected void onFirstLineReadComplete(String line){
-        System.out.println("FIRST LINE: " + line);
         digestLineParts(line.split(" "));
     };
 

@@ -88,7 +88,6 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                 @Override
                 public void onReadComplete(ServerRequest serverRequest) {
 
-                    System.out.println("RECEIVED " + serverRequest);
                     if (serverRequest == null){
                         log.warn("NULL server request");
                         return;
@@ -183,8 +182,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
             ex.printStackTrace();
             response = requestHandler.getDefaultResponse(this);
         }
-
-        System.out.println("RESPONSE " + response);
+//        log.trace("Response " + response);
         if (response != null){
             response.setServerName(getName());
             if (response.isSelfManageable()){

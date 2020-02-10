@@ -98,16 +98,16 @@ public class ContentInfoProvider {
 
                             if (!file.getName().startsWith(".")){
                                 if (isMusic(file)){
-                                    music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
+                                    music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
                                 }
                                 else if (isVideo(file)){
-                                    videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
+                                    videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
                                 }
                                 else if (isGame(file)){
-                                    games.add(decoder.decode(file).setPlaylist(Playlist.GAMES));
+                                    games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
                                 }
                                 else if (isPresentation(file)){
-                                    presentations.add(decoder.decode(file).setPlaylist(Playlist.PRESENTATIONS));
+                                    presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
                                 }
                             }
                         }

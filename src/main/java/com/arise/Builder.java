@@ -41,7 +41,7 @@ public class Builder {
         return f;
     }
 
-    private static void showProcess(InputStream inputStream){
+    public static void showProcess(InputStream inputStream){
         if (inputStream == null){
             return;
         }
@@ -77,40 +77,12 @@ public class Builder {
         return r;
     }
 
-    private synchronized static void compile(String[] xxx) throws IOException, InterruptedException {
+    public synchronized static void compile(String[] xxx) throws IOException, InterruptedException {
         System.out.println("exec cmd\n    " + join(xxx));
-
-
-//        Process child = Runtime.getRuntime().exec(xxx);
-//        BufferedReader input = new BufferedReader(new InputStreamReader(
-//                child.getErrorStream()), 13107200);
-//
-//        String line = null;
-//
-//        if (input.ready()) {
-//            while ((line = input.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//
-//            try {
-//                child.waitFor();
-//            } catch (InterruptedException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-
         ProcessBuilder processBuilder = new ProcessBuilder(xxx);
         processBuilder.redirectErrorStream(false);
         final Process proc = processBuilder.start();
-//        showProcess(proc.getInputStream());
         showProcess(proc.getErrorStream());
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }).start();
         proc.waitFor();
     }
 

@@ -29,8 +29,10 @@ public class URLBeautifier {
                 Map<String, List<String>> params = new HashMap<String, List<String>>();
                 StringUtil.decodeQuery(uri.getQuery(), params);
                 if (params.containsKey("v") && params.get("v").size() > 0){
-                    return uri.getScheme() + prefix + params.get("v").get(0) + "?autoplay=1&feature=emb_rel_err";
-//                    return "https://youtu.be/" + params.get("v").get(0) + "?t=0";
+                    String embedded = uri.getScheme() + prefix + params.get("v").get(0) + "?autoplay=1&feature=emb_rel_err";
+//                    return "http://localhost:8221/frame?src=" + embedded;
+                    return embedded;
+                    //                    return "https://youtu.be/" + params.get("v").get(0) + "?t=0";
                 }
             } catch (URISyntaxException e) {
 

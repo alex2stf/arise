@@ -1,6 +1,7 @@
 package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.models.Condition;
 import com.arise.core.tools.models.FilterCriteria;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 public class DependencyManager {
 
 
+    private static final Mole log = Mole.getInstance(DependencyManager.class);
 
     static File download(String uri, File outDir, String name) throws IOException {
         URL url = new URL(uri);
@@ -45,7 +47,7 @@ public class DependencyManager {
         RandomAccessFile file = new RandomAccessFile(out.getAbsolutePath(), "rw");
         InputStream stream = connection.getInputStream();
 
-        System.out.println("wget " + uri);
+        log.trace("wget " + uri);
         int size = contentLength; // size of download in bytes
         int downloaded = 0; // number of bytes downloaded
         int MAX_BUFFER_SIZE = 1024;
@@ -80,13 +82,13 @@ public class DependencyManager {
                 if (dotCount % 10000 == 0) {
 
 
-                    System.out.print( (lX == x ? lX + 1 : x) + "%\n");
+                    log.trace( (lX == x ? lX + 1 : x) + "%\n");
                     dotCount = 0;
                     lX = x;
                 }
             }
         }
-        System.out.print(" OK\n");
+        log.trace(" OK\n");
         return out;
     }
 

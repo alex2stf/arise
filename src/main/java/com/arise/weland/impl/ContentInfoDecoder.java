@@ -5,11 +5,13 @@ import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static com.arise.core.tools.StringUtil.hasContent;
 
@@ -36,14 +38,25 @@ public abstract class ContentInfoDecoder {
         }
     }
 
-    public final ContentInfo decode(File file){
+    public final ContentInfo decode(File file, File root){
         if (contentCache.containsKey(file.getAbsolutePath())){
             ContentInfo info = contentCache.get(file.getAbsolutePath());
             if (info != null){
                 return info;
             }
         }
-        return decodeFile(file);
+        ContentInfo contentInfo = decodeFile(file);
+        String parts[] = file.getAbsolutePath()
+                .replaceAll(Pattern.quote(root.getAbsolutePath()), "")
+                .split(Pattern.quote(File.separator));
+        for (String s: parts){
+            if (StringUtil.hasContent(s)){
+                contentInfo.setGroupId(s);
+                break;
+            }
+        }
+
+        return contentInfo;
     }
 
     protected abstract ContentInfo decodeFile(File file);

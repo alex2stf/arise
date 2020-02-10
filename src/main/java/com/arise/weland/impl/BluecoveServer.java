@@ -108,7 +108,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
             @Override
             public void handleRest(HttpReader reader) {
                 request.setBytes(bodyBytes.toByteArray());
-                System.out.println("RECEIVED " + request);
                 ServerResponse response = requestHandler.getResponse(self, request);
                 try {
                     outputStream.write(response.bytes());

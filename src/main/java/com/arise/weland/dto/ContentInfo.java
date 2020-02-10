@@ -35,8 +35,16 @@ public class ContentInfo implements Serializable {
     private int duration = 0;
     private String thumbnailId;
     private String playlistId;
+    private String groupId;
 
+    public String getGroupId() {
+        return groupId;
+    }
 
+    public ContentInfo setGroupId(String groupId) {
+        this.groupId = groupId;
+        return this;
+    }
 
     public String getThumbnailId() {
         return thumbnailId;
@@ -184,10 +192,6 @@ public class ContentInfo implements Serializable {
         return this;
     }
 
-    public String getAlbum() {
-        return albumName;
-    }
-
     public String getTitle() {
         if (hasText(title)){
             return title;
@@ -275,22 +279,22 @@ public class ContentInfo implements Serializable {
     public static ContentInfo fromMap(Map m) {
         ContentInfo i = new ContentInfo();
         i.setAlbumName(MapUtil.getString(m, "H"));
-        i.setPath(getMediaPath(m));
         i.setArtist(decodeString(m, "B"));
         i.setComposer(decodeString(m, "X"));
-        i.setThumbnailId(decodeString(m, "Q"));
         i.setTitle(decodeString(m, "T"));
         i.setVisited(MapUtil.getInt(m, "V", 0));
+        i.setThumbnailId(decodeString(m, "Q"));
+        i.playlistId = (decodeString(m, "F"));
         i.setWidth(MapUtil.getInt(m, "w", 0));
         i.setHeight(MapUtil.getInt(m, "h", 0));
         i.setPosition(MapUtil.getInt(m, "p", 0));
         i.setDuration(MapUtil.getInt(m, "g", 0));
-        i.playlistId = (decodeString(m, "F"));
-
-
+        i.setGroupId(decodeString(m, "m"));
         String cnt = MapUtil.getString(m, "Z");
         ContentType ct = ContentType.search(cnt);
         i.setContentType(ct);
+
+        i.setPath(getMediaPath(m));
         return i;
     }
 
@@ -312,6 +316,10 @@ public class ContentInfo implements Serializable {
         addVal(sb, "h", height);
         addVal(sb, "p", position);
         addVal(sb, "g", duration);
+        addVal(sb, "m", groupId);
+        if (contentType != null){
+            addVal(sb, "Z", contentType.ordinal());
+        }
         sb.append("\"P\":").append(jsonVal(encodePath(path)));
         sb.append("}");
         return sb.toString();

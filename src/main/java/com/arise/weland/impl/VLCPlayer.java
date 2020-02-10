@@ -54,12 +54,7 @@ public class VLCPlayer {
         String VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
         VLC_BIN = VLC_PATH + File.separator + "vlc.exe";
 
-        try {
-            DependencyManager.solve(Dependencies.NWJS_0_12_0);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+
 
         System.setProperty("VLC_PLUGIN_PATH", VLC_PATH + "\\plugins");
         NativeLibrary.addSearchPath(
@@ -212,12 +207,12 @@ public class VLCPlayer {
             }
             fetchPrepareInfo(info);
 
-            System.out.println("PLAY ContentInfo " + info.getPath());
+            log.trace("cplay " + info.getPath());
             mediaPlayer.play();
         }
 
         public void play(String path){
-            System.out.println("PLAY path " + path);
+            log.trace("play " + path);
             if(mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }

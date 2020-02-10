@@ -7,6 +7,7 @@ import com.arise.core.tools.*;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopFileHandler;
 import com.arise.weland.impl.PCDecoder;
+import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.utils.Boostrap;
 import com.arise.weland.utils.WelandServerHandler;
@@ -81,6 +82,7 @@ public class Main {
         WelandServerHandler welandServerHandler = Boostrap.buildHandler(args, contentInfoProvider);
         DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider, Boostrap.registry);
         welandServerHandler.setContentHandler(desktopFileHandler);
+        welandServerHandler.setiDeviceController(new PCDeviceController());
 
         start(welandServerHandler);
     }

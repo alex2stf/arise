@@ -1,5 +1,7 @@
 package com.arise.weland.impl;
 
+import com.arise.weland.dto.DeviceCtrlCmd;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
@@ -8,14 +10,14 @@ public class PCDeviceController implements IDeviceController {
 
 
 
-    @Override
-    public void update(Map<String, List<String>> queryParams) {
-        Integer mouseX = getInt(queryParams, "mouseX");
-        Integer mouseY = getInt(queryParams, "mouseX");
-
-        update(mouseX, mouseY);
-
-    }
+//    @Override
+//    public void update(Map<String, List<String>> queryParams) {
+//        Integer mouseX = getInt(queryParams, "mouseX");
+//        Integer mouseY = getInt(queryParams, "mouseX");
+//
+//        update(mouseX, mouseY);
+//
+//    }
 
     public Integer getInt(Map<String, List<String>> queryParams, String key){
         try {
@@ -47,5 +49,12 @@ public class PCDeviceController implements IDeviceController {
             }
         }
         return robot;
+    }
+
+    @Override
+    public void update(DeviceCtrlCmd deviceCtrlCmd) {
+        int mouseX = deviceCtrlCmd.mouseX();
+        int mouseY = deviceCtrlCmd.mouseY();
+        update(mouseX, mouseY);
     }
 }
