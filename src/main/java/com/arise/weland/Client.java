@@ -103,6 +103,18 @@ public class Client  {
         });
     }
 
+    public void close(String s) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/files/close?path=" + URLEncoder.encode(s));
+        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+                log.info("close file response: " + data);
+            }
+        });
+    }
+
+
     public void openInBrowser(String s) {
         if (currentClient == null){
             log.info("currentClient not defined");
@@ -217,6 +229,7 @@ public class Client  {
                 .setMethod("GET").setUri("/media/autoplay/" + playlist.name()  + "/" + autoplayMode.name());
         currentClient.sendAndReceive(request, onComplete);
     }
+
 
 
 }

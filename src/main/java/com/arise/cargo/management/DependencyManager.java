@@ -30,8 +30,8 @@ public class DependencyManager {
         }
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
         connection.setConnectTimeout(60 * 1000);

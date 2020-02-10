@@ -60,6 +60,11 @@ public class DesktopFileHandler extends ContentHandler {
 
     private void openMedia(String path) {
 
+//        boolean exec = SYSUtils.open(path);
+//        if (exec){
+//            return;
+//        }
+
         ContentInfo info = contentInfoProvider.findByPath(path);
         if (info != null){
             VLCPlayer.getInstance().play(info);

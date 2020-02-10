@@ -4,7 +4,8 @@
       "video/mp4",
       "audio/wave",
       "audio/wav",
-      "audio/x-wav"
+      "audio/x-wav",
+      "mkv"
     ],
     "processes": [
       "C:\\Program Files\\Windows Media Player\\wmplayer.exe",

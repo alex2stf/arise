@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
@@ -38,88 +40,61 @@ public class PCDecoder extends ContentInfoDecoder {
         }
         ContentInfo info = new ContentInfo(file);
 
-//        System.out.println("decode " + file);
+        new VLCPlayer.MmrData().fetchPrepareInfo(info);
         String s = info.getExt();
-
-
 
         try {
             trySwing(info, file);
         } catch (Throwable t){
 
         }
-
-
-        if (ContentType.isVideo(file)){
-            VLCPlayer.getInstance().solveSnapshot(info, getStateDirectory());
-        }
-        else if (ContentType.isMusic(file)){
-            MediaMeta mediaMeta = VLCPlayer.getInstance().fetchData(info, getStateDirectory());
-
-            if (mediaMeta != null && mediaMeta.getArtworkUrl() != null){
-                System.out.println("\n");
-                System.out.println("FOR " + info.getName() + " found META " + mediaMeta.getArtworkUrl());
-                System.out.println("\n");
-
-            }
-
-
-            else {
-                File currDir = file.getParentFile();
-
-                File images[] = currDir.listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File file, String s) {
-                        return ContentType.isPicture(s);
-                    }
-                });
-
-                if (!isEmpty(images)){
-                    java.util.List<File> imgList = new ArrayList<>();
-                    //TODO is there a better way????
-                    for (File img: images){
-                        imgList.add(img);
-                    }
-                    Collections.sort(imgList, new Comparator<File>() {
-                        @Override
-                        public int compare(File t1, File t2) {
-                            //TODO sort by size? name? AlbumArt?
-                            return t1.getName().compareTo(t2.getName());
-                        }
-                    });
-
-
-                    File albumArt = imgList.get(0);
-
-                    System.out.println("FOR " + info.getName() + " found " + albumArt.getAbsolutePath());
-                    String thumbnailId = albumArt.getAbsolutePath();
-                    try {
-                        thumbnailId = URLEncoder.encode(thumbnailId, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    info.setThumbnailId(thumbnailId);
-                }//exit if imglist
-            }
-
-
-
-        }
-
-
-
         cache.put(file.getAbsolutePath(), info);
 
-        //VLCPlayer.getInstance().checkSnpUeue();
         return info;
+    }
+
+    private void innerFileSearch(ContentInfo info, File file){
+        File currDir = file.getParentFile();
+
+        File images[] = currDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return ContentType.isPicture(s);
+            }
+        });
+
+        if (!isEmpty(images)){
+            java.util.List<File> imgList = new ArrayList<>();
+            //TODO is there a better way????
+            for (File img: images){
+                imgList.add(img);
+            }
+            Collections.sort(imgList, new Comparator<File>() {
+                @Override
+                public int compare(File t1, File t2) {
+                    //TODO sort by size? name? AlbumArt?
+                    return t1.getName().compareTo(t2.getName());
+                }
+            });
+
+
+            File albumArt = imgList.get(0);
+
+            System.out.println("FOR " + info.getName() + " found " + albumArt.getAbsolutePath());
+            String thumbnailId = albumArt.getAbsolutePath();
+            try {
+                thumbnailId = URLEncoder.encode(thumbnailId, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            info.setThumbnailId(thumbnailId);
+        }//exit if imglist
     }
 
 
     @Override
     public void onScanComplete() {
-        if (VLCPlayer.getInstance().snapshotMediaComponent != null){
-            VLCPlayer.getInstance().snapshotMediaComponent.onScanComplete();
-        }
+
     }
 
     private Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
@@ -249,6 +224,14 @@ public class PCDecoder extends ContentInfoDecoder {
         File f = new File(id);
 
         if (!f.exists()){
+            try {
+                f = new File(new URI(id));
+            } catch (URISyntaxException e) {
+                f = null;
+            }
+        }
+
+        if (f == null || !f.exists()){
             f = new File(getStateDirectory(), id);
         }
 

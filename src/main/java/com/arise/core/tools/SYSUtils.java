@@ -243,16 +243,17 @@ public class SYSUtils {
 
 
 
-    public static void open(String path) {
+    public static boolean open(String path) {
         File f = new File(path);
         ContentType contentType = ContentType.search(f);
         for (String s: contentType.processes()){
             File proc = new File(s);
             if (proc.exists() && proc.canExecute()){
                 exec(new String[]{proc.getAbsolutePath(), path}, null, true, true);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
 
