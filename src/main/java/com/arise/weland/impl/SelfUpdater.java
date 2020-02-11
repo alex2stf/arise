@@ -173,14 +173,6 @@ public class SelfUpdater {
 
     public static void main(String[] args) {
 
-        try {
-            DependencyManager.download(
-                    "https://duckduckgo.com/?q=logo&iar=image&ia=images&iax=images",
-                    FileUtil.findAppDir(),
-                    "tmp.html"
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new SelfUpdater().check();
     }
 }
