@@ -33,11 +33,11 @@ public class ContentInfoProvider {
 
     final ContentInfoDecoder decoder;
 
-    List<ContentInfo> music = new ArrayList<>();
-    List<ContentInfo> streams = new ArrayList<>();
-    List<ContentInfo> videos = new ArrayList<>();
-    List<ContentInfo> games = new ArrayList<>();
-    List<ContentInfo> presentations = new ArrayList<>();
+    final List<ContentInfo> music = new ArrayList<>();
+    final List<ContentInfo> streams = new ArrayList<>();
+    final List<ContentInfo> videos = new ArrayList<>();
+    final List<ContentInfo> games = new ArrayList<>();
+    final List<ContentInfo> presentations = new ArrayList<>();
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
@@ -95,20 +95,21 @@ public class ContentInfoProvider {
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
-                        if (!file.getName().startsWith(".")){
-                            if (isMusic(file)){
-                                music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
+
+                            if (!file.getName().startsWith(".")){
+                                if (isMusic(file)){
+                                    music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
+                                }
+                                else if (isVideo(file)){
+                                    videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
+                                }
+                                else if (isGame(file)){
+                                    games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
+                                }
+                                else if (isPresentation(file)){
+                                    presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
+                                }
                             }
-                            else if (isVideo(file)){
-                                videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
-                            }
-                            else if (isGame(file)){
-                                games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
-                            }
-                            else if (isPresentation(file)){
-                                presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
-                            }
-                        }
                         }
                     });
                 }
@@ -445,5 +446,15 @@ public class ContentInfoProvider {
     }
 
 
-
+    public List<ContentInfo> getWebStreams() {
+        List<ContentInfo> res = new ArrayList<>();
+        int size = streams.size();
+        for (int i = 0; i < size; i++){
+            ContentInfo info = streams.get(i);
+            if (info.isWebPage()){
+                res.add(info);
+            }
+        }
+        return res;
+    }
 }

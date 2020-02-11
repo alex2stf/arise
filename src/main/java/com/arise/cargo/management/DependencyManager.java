@@ -2,6 +2,7 @@ package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.Util;
 import com.arise.core.tools.models.Condition;
 import com.arise.core.tools.models.FilterCriteria;
 
@@ -21,19 +22,18 @@ import java.util.Map;
 public class DependencyManager {
 
 
-    private static final Mole log = Mole.getInstance(DependencyManager.class);
+//    private static final Mole log = Mole.getInstance(DependencyManager.class);
 
-    static File download(String uri, File outDir, String name) throws IOException {
+    public static File download(String uri, File outDir, String name) throws IOException {
         URL url = new URL(uri);
 
         File out = new File(outDir, name);
         if (out.exists()){
             return out;
         }
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
-
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
+        //HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
         connection.setConnectTimeout(60 * 1000);
@@ -47,12 +47,12 @@ public class DependencyManager {
         RandomAccessFile file = new RandomAccessFile(out.getAbsolutePath(), "rw");
         InputStream stream = connection.getInputStream();
 
-        log.trace("wget " + uri);
+        System.out.print("wget " + uri);
         int size = contentLength; // size of download in bytes
         int downloaded = 0; // number of bytes downloaded
         int MAX_BUFFER_SIZE = 1024;
         int dotCount = 0;
-
+        boolean nl = false;
         int lX = 0;
         while (true) {
     /* Size buffer according to how much of the
@@ -75,20 +75,28 @@ public class DependencyManager {
             downloaded += read;
 
 
+
+
             int x = (100 / (size  / downloaded)) - 9;
             dotCount++;
             if (dotCount % 100 == 0){
+                if (!nl){
+                    System.out.print("\n");
+                    nl = true;
+                }
                 System.out.print(".");
                 if (dotCount % 10000 == 0) {
 
 
-                    log.trace( (lX == x ? lX + 1 : x) + "%\n");
+                    System.out.print( (lX == x ? lX + 1 : x) + "%\n");
                     dotCount = 0;
                     lX = x;
                 }
             }
         }
-        log.trace(" OK\n");
+        System.out.print(" OK\n");
+        Util.close(stream);
+        Util.close(file);
         return out;
     }
 

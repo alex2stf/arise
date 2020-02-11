@@ -220,6 +220,18 @@ public class AndroidContentDecoder extends ContentInfoDecoder
                 }
 
             }
+
+            @Override
+            public boolean manageBytes(String id, byte[] bytes, ContentType contentType) {
+                if (bytes != null){
+                    mediaInfo.setThumbnailId(id);
+                    bytesCache.put(id, bytes);
+                    return true;
+                }
+                return false;
+            }
+
+
         });
     }
 

@@ -1,4 +1,4 @@
-
+console.log("post script init");
 function playYoutubeVideo(){
 	var playBtn = document.getElementsByClassName('ytp-play-button ytp-button');
 	if(playBtn){
@@ -9,6 +9,12 @@ function playYoutubeVideo(){
 		if(playTxt.indexOf('play') > -1){
 			playBtn.click();
 		}
+		else {
+			console.log("video playing");
+		}
+	}
+	else {
+		console.log("playBtn missing");
 	}
 }
 

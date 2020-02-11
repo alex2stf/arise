@@ -2,10 +2,13 @@ package com.arise.weland.impl;
 
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
+import com.arise.core.tools.B64;
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.IDGen;
 
@@ -111,8 +114,26 @@ public class SuggestionService {
     }
 
     private boolean validUrl(String url, Manager manager, String path){
+        String id = StringEncoder.encodeShiftSHA(url);
+
+        if (url.startsWith("data:")){
+            int sepIndex = url.indexOf(",");
+            String start = url.substring(0, sepIndex);
+            System.out.println(start);
+
+            String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
+            ContentType contentType = ContentType.search(ctype);
+            String content = url.substring(sepIndex + 1);
+
+            try {
+                byte bytes[] = B64.decodeToByteArray(content);
+                return manager.manageBytes(id, bytes, contentType);
+            } catch (Exception e) {
+               return false;
+            }
+        }
+
         URL uri;
-        String id;
         try {
             uri = new URL(url);
             id = IDGen.fromURL(uri);
@@ -126,6 +147,7 @@ public class SuggestionService {
 
     public interface Manager {
         boolean manage(String id, String path, URL url);
+        boolean manageBytes(String id, byte[] bytes, ContentType contentType);
     }
 
 

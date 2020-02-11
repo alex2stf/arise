@@ -4,17 +4,24 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.regex.Pattern;
 
 public class Builder {
 
@@ -24,9 +31,7 @@ public class Builder {
 
     public static File getJavac(){
         String name = "javac";
-        String javaHome =
-                //new File("Jv7Win32SDK\\Java\\jdk1_7_0_79").getAbsolutePath();
-                System.getProperty("java.home");
+        String javaHome = System.getProperty("java.home");
         File f = new File(javaHome);
         f = new File(f, "bin");
         if (isWindows()){
@@ -65,21 +70,19 @@ public class Builder {
 //        System.exit(-1);
     }
 
-    static String join(String [] sss){
-        String r = "";
-        for (String s: sss){
-            s = s.replaceAll("\\\\", "\\\\");
-            if (s.indexOf("\\") > -1){
-                String p[] = s.split("\\\\");
-                s = p[p.length -1];
-            }
-            r+= " " + s;
-        }
-        return r;
-    }
+
 
     public synchronized static void compile(String[] xxx) throws IOException, InterruptedException {
-        System.out.println("exec cmd\n    " + join(xxx));
+
+        for (String s: xxx){
+            if(s.indexOf(" ") > -1){
+                s = "\"" + s + "\"";
+            }
+            System.out.print(s + " ");
+        }
+
+        System.out.println("");
+
         ProcessBuilder processBuilder = new ProcessBuilder(xxx);
         processBuilder.redirectErrorStream(false);
         final Process proc = processBuilder.start();
@@ -92,24 +95,24 @@ public class Builder {
 
     static Lib[] libs = new Lib[]{
 
-            new Lib(ROOT + "core")
-                    .named("core")
-                    .version("1.0")
-
-            ,new Lib(ROOT + "canter", ROOT + "core")
-                    .resourcesDirs(RES_ROOT + "templates")
-                    .named("canter")
-                    .version("1.0")
-
-            ,new Lib(ROOT + "cargo", ROOT + "core")
-                    .resourcesDirs(RES_ROOT + "templates")
-                    .named("cargo")
-                    .version("1.0")
+//            new Lib(ROOT + "core")
+//                    .named("core")
+//                    .version("1.0")
+//
+//            ,new Lib(ROOT + "canter", ROOT + "core")
+//                    .resourcesDirs(RES_ROOT + "templates")
+//                    .named("canter")
+//                    .version("1.0")
+//
+//            ,new Lib(ROOT + "cargo", ROOT + "core")
+//                    .resourcesDirs(RES_ROOT + "templates")
+//                    .named("cargo")
+//                    .version("1.0")
 
             /**
-             * CORONA	COntROl aNy mAchine
+             * 	Weland
             */
-            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland", ROOT + "cargo/management")
+            new Lib(ROOT + "core", ROOT + "canter", ROOT + "astox/net", ROOT + "weland", ROOT + "cargo/management")
                     .jarLib("libs/bluecove-2.1.0.jar", "libs/jaudiotagger-2.2.3.jar")
                     .jarLib("libs/jna-3.5.2.jar")
                     .jarLib("libs/platform-3.5.2.jar")
@@ -139,15 +142,44 @@ public class Builder {
     };
 
 
-
+    static String BUILD_ID = "1";
+    static File ROOT_DIRECTORY = new File("");
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        boolean release = args.length > 0 && "release".equals(args[0]);
+
+       if (args.length > 1){
+           ROOT_DIRECTORY = new File(args[1]);
+       }
+
+        File buildInfoFile = new File("build-info.properties");
+        Properties properties;
+        try {
+            properties = loadProps(buildInfoFile);
+        } catch (Exception e){
+            properties = new Properties();
+        }
+        Integer buildId  = 1;
+        try {
+            buildId = Integer.valueOf(properties.getProperty("BUILD_ID"));
+        }catch (Exception e){
+            buildId = 1;
+        }
+        buildId += 1;
+        buildInfoFile.delete();
+        properties.clear();
+
+
+
+        BUILD_ID = String.valueOf(buildId);
+        properties.put("BUILD_ID", BUILD_ID);
+        properties.put("/src/main/java/com/arise/Builder.java", BUILD_ID );
 
         File javac = getJavac();
 
 
-        File outJars = new File("out");
+        File outJars = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator + "out");
         if (!outJars.exists()){
             outJars.mkdirs();
         }
@@ -155,44 +187,104 @@ public class Builder {
 
 
 
+
+        List<File> classesDirs = new ArrayList<>();
+
         for (Lib lib: libs){
             System.out.println(lib.name);
-            File buildDir = new File("build");
+            File buildDir = new File(ROOT_DIRECTORY, "build");
 
             File outClasses = new File(buildDir, "classes");
             if (!outClasses.exists()){
                 outClasses.mkdirs();
             }
 
-            String[] params = lib.buildArgs(javac, outClasses);
+            String[] params = lib.buildArgs(javac, outClasses, properties);
             compile(params);
+
+
 
             File inputClasses = new File(outClasses, "com");
             if (!inputClasses.exists()){
                 inputClasses.mkdirs();
             }
+            classesDirs.add(inputClasses);
 
-            lib.buildJar("build/classes/com", outJars.getAbsolutePath(), "build/classes/");
+            lib.buildJar(new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator + "build/classes/com"), outJars,
+                    "build/classes/", release, properties);
             inputClasses.delete();
             outClasses.delete();
             buildDir.delete();
 
-            if (lib.shouldPack){
-                File batFile = new File(lib.name + ".bat");
-                String batContent =  "java -cp \"out/"+lib.name + "-" + lib.vrs +".jar;libs\\*\" " + lib.mainClazz;
 
-                try (PrintStream out = new PrintStream(new FileOutputStream(batFile))) {
-                    out.print(batContent);
-                }
 
-            }
 
+
+        }
+        saveProps(properties, buildInfoFile, null);
+
+
+        for (File f: classesDirs){
+            rmdir(f);
         }
 
 
+    }
 
 
+    static void rmdir(File root){
+        if (root.isDirectory()){
+            File inners[] = root.listFiles();
+            if (inners != null && inners.length > 0){
+                for (File x: inners){
+                    rmdir(x);
+                }
+            }
+         }
+        root.delete();
+    }
 
+
+    public static Properties loadProps(File file) throws IOException {
+        Properties prop = new Properties();
+        InputStream in = new FileInputStream(file);
+        prop.load(in);
+        in.close();
+        return prop;
+    }
+
+    public static void saveProps(Properties props, File f, String comment) {
+
+        try {
+            OutputStream out = new FileOutputStream( f );
+            if (comment != null){
+                props.store(out, comment);
+            } else {
+                props.store(out, "generated at "+new Date());
+            }
+
+        }
+        catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String read(java.io.File file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader((file)));
+        int r = reader.read();
+        StringBuilder sb = new StringBuilder();
+        while (r > -1){
+            sb.append((char)r);
+            r = reader.read();
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    static void writeStringToFile(File f, String c) throws FileNotFoundException {
+        try (PrintStream o = new PrintStream(new FileOutputStream(f))) {
+            o.print(c);
+        }
     }
 
     static void recursiveScan(String dir, List<File> files, boolean checkJava){
@@ -215,6 +307,16 @@ public class Builder {
                 }
             }
         }
+    }
+
+    static String snapshotId(){
+        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+    }
+
+    static String getPath(File f){
+        return f.getAbsolutePath()
+                .replaceAll(Pattern.quote(ROOT_DIRECTORY.getAbsolutePath()), "")
+                .replaceAll("\\\\", "/");
     }
 
     static class Lib {
@@ -245,20 +347,29 @@ public class Builder {
             return this;
         }
 
-        String[] buildArgs(File javac, File output){
+        String[] buildArgs(File javac, File output, Properties properties){
 
             for (String s: srcDirs){
                 recursiveScan(s, files, true);
             }
             if (srcFiles != null){
                 for (String f: srcFiles){
-                    files.add(new File(f));
+                    files.add(new File(ROOT_DIRECTORY, f));
                 }
+            }
+
+            for (File f: files){
+                String rel = getPath(f);
+                properties.put(rel, BUILD_ID);
             }
 
             int extra = 3;
             if (jarlibs != null && !jarlibs.isEmpty()){
                 extra = 5;
+
+                for (String s: jarlibs){
+                    properties.put(s, BUILD_ID);
+                }
             }
 
             String[] r = new String[files.size() + extra];
@@ -270,7 +381,7 @@ public class Builder {
             } else {
                 r[0] = javac.getAbsolutePath();
                 r[1] = "-cp";
-                r[2] = concat(jarlibs, ";");
+                r[2] = concatJars(jarlibs, ";");
                 r[3] = "-d";
                 r[4] = output.getAbsolutePath();
             }
@@ -281,45 +392,49 @@ public class Builder {
             return r;
         }
 
-        String concat(List<String> values, String delimiter){
+        String concatJars(List<String> values, String delimiter){
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < values.size(); i++){
                 if (i > 0){
                     sb.append(delimiter);
                 }
-                sb.append(values.get(i));
+                File f = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator +  values.get(i));
+                sb.append(f.getAbsolutePath());
             }
             return sb.toString();
         }
 
-        void buildJar(String inputDir, String output, String root) throws IOException {
+        void buildJar(File inputDir, File outputDirectory, String exclude, boolean release, Properties properties) throws IOException {
             Manifest manifest = new Manifest();
             manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, vrs);
             if (mainClazz != null){
                 manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, mainClazz);
             }
-            if (!output.endsWith(File.separator)){
-                output += File.separator;
-            }
-            String outJar = output + name + "-" + vrs + ".jar";
-            JarOutputStream target = new JarOutputStream(new FileOutputStream(outJar), manifest);
-            File[] files = new File(inputDir).listFiles();
+
+            String outJar = outputDirectory.getAbsolutePath() + File.separator + name + "-" + vrs + (!release ? "." + snapshotId() + "-SNAPSHOT"  : "") + ".jar";
+            FileOutputStream jarFileOutputStream = new FileOutputStream(outJar);
+            JarOutputStream target = new JarOutputStream(jarFileOutputStream, manifest);
+            File[] files = inputDir.listFiles();
             for (File f: files){
-                add(f, target, root);
+                add(f, target, exclude);
             }
 
             if (resDirs != null){
                 for (String resDir: resDirs){
-                    recursiveScan(resDir, resources, false);
+                    File rd = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator + resDir);
+                    recursiveScan(rd.getAbsolutePath(), resources, false);
                 }
 
                 for (File source: resources){
                     add(source, target, "src/main/resources/");
+                    properties.put(getPath(source), BUILD_ID);
                 }
             }
             if (resourceFiles != null){
                 for (String s: resourceFiles){
-                    add(new File(s), target, "src/main/resources/");
+                    File rs = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator + s);
+                    add(rs, target, "src/main/resources/");
+                    properties.put(getPath(rs), BUILD_ID);
                 }
             }
 
@@ -328,34 +443,44 @@ public class Builder {
 
 
             target.close();
+            if (jarFileOutputStream != null){
+                jarFileOutputStream.close();
+            }
         }
 
-        private void add(File source, JarOutputStream target, String except) throws IOException{
+        private void add(File source, JarOutputStream target, String except) throws IOException {
 
-            String name = source.getPath().replaceAll("\\\\", "/");
-            except = except.replaceAll("\\\\", "/");
-            if (except != null){
+
+
+
+            String name = source.getPath()
+                    .replaceAll(Pattern.quote(ROOT_DIRECTORY.getAbsolutePath()), " ")
+                    .replaceAll("\\\\", "/");
+
+            if (except != null) {
+                except = except.replaceAll("\\\\", "/");
                 except = except.trim();
-                if ( !"".equals(except.trim()) ){
+                if (!"".equals(except.trim())) {
                     String parts[] = name.split(except);
                     name = parts[1];
                 }
             }
 
-            System.out.println("    jar entry " + name);
+            System.out.println("\tjar entry: " +  name);
             BufferedInputStream in = null;
-            try
-            {
+            FileInputStream fileInputStream = null;
+            try {
                 if (source.isDirectory()) {
                     if (!name.isEmpty()) {
-                        if (!name.endsWith("/"))
+                        if (!name.endsWith("/")) {
                             name += "/";
+                        }
                         JarEntry entry = new JarEntry(name);
                         entry.setTime(source.lastModified());
                         target.putNextEntry(entry);
                         target.closeEntry();
                     }
-                    for (File nestedFile: source.listFiles()) {
+                    for (File nestedFile : source.listFiles()) {
                         add(nestedFile, target, except);
                     }
                     return;
@@ -364,7 +489,9 @@ public class Builder {
                 JarEntry entry = new JarEntry(name);
                 entry.setTime(source.lastModified());
                 target.putNextEntry(entry);
-                in = new BufferedInputStream(new FileInputStream(source));
+
+                fileInputStream = new FileInputStream(source);
+                in = new BufferedInputStream(fileInputStream);
 
                 byte[] buffer = new byte[1024];
                 while (true) {
@@ -375,11 +502,18 @@ public class Builder {
                     target.write(buffer, 0, count);
                 }
                 target.closeEntry();
-            }
-            finally {
-                if (in != null)
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
                     in.close();
                 }
+                if (fileInputStream != null){
+                    fileInputStream.close();
+                }
+            }
+
+
 
         }
 

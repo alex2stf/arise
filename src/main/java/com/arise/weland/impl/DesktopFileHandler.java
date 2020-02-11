@@ -150,9 +150,9 @@ public class DesktopFileHandler extends ContentHandler {
                 "  \"main\": \""+url+"\",\n" +
                 "  \"inject-js-end\": \"main.js\",\n" +
                 "  \"window\": {\n" +
-                "    \"title\": \"Nws player\",\n" +
-                "    \"toolbar\": false,\n" +
-                "    \"frame\": true,\n" +
+//                "    \"title\": \"Nws player\",\n" +
+//                "    \"toolbar\": false,\n" +
+//                "    \"frame\": true,\n" +
                 "    \"fullscreen\": false\n" +
                 "  }\n" +
                 "}";

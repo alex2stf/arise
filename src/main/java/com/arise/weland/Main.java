@@ -8,6 +8,7 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopFileHandler;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
+import com.arise.weland.impl.SelfUpdater;
 import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.utils.Boostrap;
 import com.arise.weland.utils.WelandServerHandler;
@@ -62,6 +63,7 @@ public class Main {
 
     public static void main(String[] args) {
         VLCPlayer.getInstance();
+        new SelfUpdater().check();
         File roots[] = File.listRoots();
 
 

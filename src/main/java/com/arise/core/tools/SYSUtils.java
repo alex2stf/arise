@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.StreamUtil.readLineByLine;
+import static com.arise.core.tools.StringUtil.isMailFormat;
 import static com.arise.core.tools.StringUtil.jsonEscape;
 import static com.arise.core.tools.StringUtil.jsonVal;
 
@@ -155,7 +156,15 @@ public class SYSUtils {
 
 
     public static void exec(String[] args, final ProcessOutputHandler outputHandler, boolean useBuilder, boolean async){
-        log.info("exec: " + StringUtil.join(args, "  "));
+        log.info("exec: " + StringUtil.join(args, "  ", new StringUtil.JoinIterator<String>() {
+            @Override
+            public String toString(String value) {
+                if (value.indexOf(" ") > -1){
+                    return "\"" + value + "\"";
+                }
+                return value;
+            }
+        }));
         Process proc = null;
         if (!useBuilder){
             Runtime rt = Runtime.getRuntime();
@@ -176,15 +185,10 @@ public class SYSUtils {
             try {
                 proc = processBuilder.start();
                 final Process finalProc = proc;
-                ThreadUtil.fireAndForget(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (outputHandler != null){
-                            outputHandler.handle(finalProc.getInputStream());
-                            outputHandler.handleErr(finalProc.getErrorStream());
-                        }
-                    }
-                });
+                if (outputHandler != null){
+                    outputHandler.handle(finalProc.getInputStream());
+                    outputHandler.handleErr(finalProc.getErrorStream());
+                }
 
                 if (!async) {
                     proc.waitFor();

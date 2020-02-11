@@ -7,7 +7,7 @@ public class IDGen {
 
 
     public static String fromURL(URL uri) {
-        return parsePath(uri.getPath());
+        return parsePath(uri.getPath() + uri.getPath());
     }
 
     public static String fromFile(File file) {

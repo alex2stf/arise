@@ -1,6 +1,0 @@
-GET     /account/foruser/:username/:create
-        controllers.user.UserController.foruser(username: String, create: Integer )
-
-
-GET /v2/object/all/data/:from/:until/:all
-controllers.ObjectController.getAllData(from: String, until: String , all: Boolean, username: String ?= null, password: String ?=null
