@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -314,9 +315,23 @@ public class Builder {
     }
 
     static String getPath(File f){
-        return f.getAbsolutePath()
-                .replaceAll(Pattern.quote(ROOT_DIRECTORY.getAbsolutePath()), "")
-                .replaceAll("\\\\", "/");
+        String rootParts[] = ROOT_DIRECTORY.getAbsolutePath().split(Pattern.quote(File.separator));
+        String fileParts[] = f.getAbsolutePath().split(Pattern.quote(File.separator));
+        String res = "";
+
+
+        for (int i = rootParts.length - 1; i < fileParts.length; i++){
+
+                res+="/" + fileParts[i];
+        }
+
+       if (res.startsWith("/.")){
+           res = res.substring(2);
+       }
+
+
+
+        return  res;
     }
 
     static class Lib {
@@ -432,7 +447,13 @@ public class Builder {
             }
             if (resourceFiles != null){
                 for (String s: resourceFiles){
-                    File rs = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator + s);
+                    String rw = ROOT_DIRECTORY.getAbsolutePath();
+                    if (rw.endsWith(".")){
+                        rw = rw.substring(0, rw.length() - 1);
+                    }
+
+
+                    File rs = new File(rw + s);
                     add(rs, target, "src/main/resources/");
                     properties.put(getPath(rs), BUILD_ID);
                 }

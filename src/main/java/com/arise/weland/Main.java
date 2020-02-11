@@ -62,7 +62,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        VLCPlayer.getInstance();
         new SelfUpdater().check();
         File roots[] = File.listRoots();
 

@@ -37,14 +37,7 @@ public class SelfUpdater {
     }
 
     public void check() {
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-
-                    checkUpdate();
-
-            }
-        });
+        checkUpdate();
     }
 
     private void checkUpdate()  {
