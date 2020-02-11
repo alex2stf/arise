@@ -102,6 +102,11 @@ public class SelfUpdater {
             name = name + ".exe";
         }
         f = new File(f, name);
+
+        if (!f.exists()){
+            f = new File("C:\\Program Files\\Java\\jre7\\bin\\java.exe");
+        }
+
         return f;
     }
 
@@ -120,6 +125,10 @@ public class SelfUpdater {
             f = f.getParentFile();
             f = new File(f, "bin");
             f = new File(f, name);
+        }
+
+        if (!f.exists()){
+            f = new File("C:\\Program Files\\Java\\jdk1.7.0_67\\bin\\javac.exe");
         }
         return f;
     }

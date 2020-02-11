@@ -63,6 +63,8 @@ public class Main {
 
     public static void main(String[] args) {
         new SelfUpdater().check();
+        //VIP!!! load vlc native libs and dependencies
+        VLCPlayer.getInstance();
         File roots[] = File.listRoots();
 
 
