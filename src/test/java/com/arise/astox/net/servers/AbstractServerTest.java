@@ -52,7 +52,7 @@ public abstract class AbstractServerTest {
           ServerTestHandler serverTestHandler = new ServerTestHandler(context);
 
 
-          DeviceStat stat = new DeviceStat();
+          DeviceStat stat = DeviceStat.getInstance();
           stat
               .setBatteryLevel(45)
               .setBatteryScale(90)

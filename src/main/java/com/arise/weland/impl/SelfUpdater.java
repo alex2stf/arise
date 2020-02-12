@@ -8,13 +8,100 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class SelfUpdater {
 
     String root = "https://raw.githubusercontent.com/alex2stf/arise/master";
     String buildIdFile = root + "/build-info.properties";
+
+    File jdkHome;
+    File jdkExe;
+    File jvmExe;
+
+    String getExe(String name){
+        if (SYSUtils.isWindows()){
+            return name + ".exe";
+        }
+        return name;
+    }
+
+    public SelfUpdater(){
+
+        String [] propertiesNames = new String[]{
+                "jdk.home",
+                "java.home",
+                "java.library.path",
+                "java.class.path",
+                "java.ext.dirs",
+                "sun.boot.class.path"
+        };
+
+        for (String s: propertiesNames){
+            if (!isValid()){
+                searchIsSystemProperty(s);
+            }
+        }
+
+
+    }
+
+
+    private void searchIsSystemProperty(String name){
+        String libPath = System.getProperty(name);
+        if (!StringUtil.hasText(libPath)){
+            log.info("system property " + name + " not found");
+            return;
+        }
+        log.info("check system property " + name);
+        String paths[] = libPath.split(Pattern.quote(File.pathSeparator));
+
+        for (String s: paths){
+            if (s.indexOf("jdk") > -1 && !isValid()){
+                searchInPath(s);
+            }
+        }
+    }
+
+    private void searchInPath(String s){
+        log.info("search using base " + s);
+        File tmp = new File(s);
+        if (!tmp.isDirectory()){
+            tmp = tmp.getParentFile();
+        }
+
+        while (tmp != null && tmp.exists() && !isValid()){
+
+
+            jdkExe = new File(tmp, getExe("javac"));
+            jvmExe = new File(tmp, getExe("java"));
+            jdkHome = tmp;
+
+            if (!isValid()){
+                File binDir = new File(tmp, "bin");
+                if (binDir.exists()){
+                    jdkExe = new File(binDir, getExe("javac"));
+                    jvmExe = new File(binDir, getExe("java"));
+                    jdkHome = tmp;
+                }
+            }
+            if (isValid()){
+                break;
+            }
+            tmp = tmp.getParentFile();
+        }
+
+    }
+
+
+    private boolean isValid(){
+        return jdkExe != null && jdkExe.exists() &&
+                jvmExe != null && jvmExe.exists() &&
+                jdkHome != null && jdkHome.exists();
+    }
 
 
     private static final Mole log = Mole.getInstance(SelfUpdater.class);
@@ -34,6 +121,11 @@ public class SelfUpdater {
     }
 
     public void check() {
+        if (!isValid()){
+            closeUpdate("JDK not found");
+            return;
+        }
+        log.info( "JDK_HOME=" + jdkHome);
         checkUpdate();
     }
 
@@ -92,76 +184,17 @@ public class SelfUpdater {
 
     }
 
-    public static File getJava(){
-        String name = "java";
-        String javaHome = System.getProperty("java.home");
-        File f = new File(javaHome);
-        f = new File(f, "bin");
-        if (SYSUtils.isWindows()){
-            name = name + ".exe";
-        }
-        f = new File(f, name);
 
-        if (!f.exists()){
-            f = new File("C:\\Program Files\\Java\\jre7\\bin\\java.exe");
-        }
 
-        return f;
-    }
 
-    public static File getJavac(){
-        File f = getJavac(System.getProperty("java.home"));
 
-        if (f == null){
-            f = getJavac(System.getProperty("jdk.home"));
-        }
 
-        if (f == null){
-            String sunLib = System.getProperty("sun.boot.library.path");
-            if (StringUtil.hasText(sunLib)){
-
-                File slb = new File(sunLib);
-//C:\Program Files\Java\jre8\bin
-                if (slb.isDirectory() && "bin".equalsIgnoreCase(slb.getName())){
-                    slb = slb.getParentFile();
-                }
-
-                if (slb.isDirectory() && slb.getName().toLowerCase().startsWith("jre")){
-                    slb = slb.getParentFile();
-                }
-
-            }
-        }
-        return f;
-    }
-
-    public static File getJavac(String javaHome){
-        String name = "javac";
-        File f = new File(javaHome);
-        f = new File(f, "bin");
-        if (SYSUtils.isWindows()){
-            name = name + ".exe";
-        }
-        f = new File(f, name);
-        if (!f.exists()){
-            f = new File(javaHome);
-            f = f.getParentFile();
-            f = new File(f, "bin");
-            f = new File(f, name);
-        }
-
-        if (!f.exists()){
-            return null;
-        }
-        log.info("using javac " + f.getAbsolutePath());
-        return f;
-    }
 
 
     private void compile(List<File> downloads) {
 
-        File javac = getJavac();
-        File java = getJava();
+
+
 
         File builder = new File(workDir(), "src/main/java/com/arise/Builder.java");
         if (!builder.exists()){
@@ -175,16 +208,16 @@ public class SelfUpdater {
             return;
         }
 
-        SYSUtils.exec(javac.getAbsolutePath(), "-d", buildClz.getAbsolutePath(), builder.getAbsolutePath());
 
-        String jdkHome = System.getProperty("jdk.home");
+        SYSUtils.exec(jdkExe.getAbsolutePath(), "-d", buildClz.getAbsolutePath(), builder.getAbsolutePath());
+
         SYSUtils.exec(new String[]{
-                getJava().getAbsolutePath(), "-cp",
+                jvmExe.getAbsolutePath(), "-cp",
                 buildClz.getAbsolutePath(),
                 "com.arise.Builder",
                 "release",
                 workDir().getAbsolutePath(),
-                new File(jdkHome).getAbsolutePath() //TODO improve
+                jdkHome.getAbsolutePath() //TODO improve
         }, new SYSUtils.ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {

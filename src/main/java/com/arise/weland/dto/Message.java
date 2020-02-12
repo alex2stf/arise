@@ -1,10 +1,11 @@
 package com.arise.weland.dto;
 
-import com.arise.core.tools.MapUtil;
-
 import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.weland.dto.ContentInfo.decodeString;
+import static com.arise.weland.dto.ContentInfo.encodePath;
+import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class Message {
     private String id;
@@ -12,19 +13,14 @@ public class Message {
     private String senderId;
     private String receiverId;
     private String conversationId;
-    private Type type = Type.TEXT;
 
 
-    public static Message fromMap(Map<String, Object> obj) {
-        Message message = new Message();
-        message.setType(Type.search(MapUtil.getString(obj, "type")));
-        message.setId(MapUtil.getString(obj, "id"));
-        message.setText(MapUtil.getString(obj, "text"));
-        message.setSenderId(MapUtil.getString(obj, "senderId"));
-        message.setReceiverId(MapUtil.getString(obj, "receiverId"));
-        message.setConversationId(MapUtil.getString(obj, "conversationId"));
-        return message;
+    public Message wallMessage(){
+        this.conversationId = DTOUtil.WALL_RESERVED_ID;
+        this.receiverId = DTOUtil.WALL_RESERVED_ID;
+        return this;
     }
+
 
     public String getConversationId() {
         return conversationId;
@@ -44,10 +40,6 @@ public class Message {
         return this;
     }
 
-    public Message setType(Type type) {
-        this.type = type;
-        return this;
-    }
 
     public Message setSenderId(String sender) {
         this.senderId = sanitize(sender);
@@ -56,10 +48,6 @@ public class Message {
 
     public String getSenderId() {
         return senderId;
-    }
-
-    public Type getType() {
-        return type;
     }
 
     public String getId() {
@@ -80,56 +68,30 @@ public class Message {
         return this;
     }
 
-    public static String sanitize(String s){
-        System.out.println(s);
-       return  ("" + s).replaceAll("\\s+","")
-               .replaceAll("http:", "L")
-               .replaceAll("https:", "U")
-               .replaceAll(":", "Q")
-               .replaceAll("=", "v")
-               .replaceAll("\\?", "z")
-               .replaceAll("\\.", "d")
-               .replaceAll("\\+", "5")
-               .replaceAll("/", "")
-               .replaceAll("-", "9")
-               .replaceAll("inux", "Xx")
-               .replaceAll("samsung", "sG")
-               .replaceAll("aarch", "yH")
-               .replaceAll("\\\\", "")
-               .replaceAll("//", "g")
-               .replaceAll("storage", "y")
-               .replaceAll("ovies", "W")
-               .replaceAll("usic", "R")
-               .replaceAll("/", "7")
-               .replaceAll("mate", "M3")
-               .replaceAll("generic", "89")
-               .replaceAll("alex", "SAP")
-               ;
+
+
+    public static Message fromMap(Map<String, Object> obj) {
+        Message message = new Message();
+        message.setId(decodeString(obj, "I"));
+        message.setText(decodeString(obj, "T"));
+        message.setSenderId(decodeString(obj, "S"));
+        message.setReceiverId(decodeString(obj, "R"));
+        message.setConversationId(decodeString(obj, "C"));
+        return message;
     }
-
-
 
     public String toJson() {
         return "{" +
-                "\"id\":" + jsonVal(id) +
-                ",\"text\":" + jsonVal(text)  +
-                ",\"senderId\":" + jsonVal(senderId)  +
-                ",\"receiverId\":" + jsonVal(receiverId)  +
-                ",\"conversationId\":" + jsonVal(conversationId)  +
-                ",\"type\":" + jsonVal(type.name())  +
+                "\"I\":" + jsonVal(encodePath(id)) +
+                ",\"T\":" + jsonVal(encodePath(text))  +
+                ",\"S\":" + jsonVal(encodePath(senderId))  +
+                ",\"R\":" + jsonVal(encodePath(receiverId))  +
+                ",\"C\":" + jsonVal(encodePath(conversationId))  +
                 "}";
     }
 
-    public enum Type {
-        TEXT, WALL_TEXT;
 
-        public static Type search(String text){
-            for (Type t: values()){
-                if (t.name().equalsIgnoreCase(text)){
-                    return t;
-                }
-            }
-            return TEXT;
-        }
-    }
+
+
+
 }

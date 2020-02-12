@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.*;
+import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class ContentInfo implements Serializable {
     //    private transient byte[] emb;
@@ -226,7 +227,7 @@ public class ContentInfo implements Serializable {
 
 
     public String getId(){
-        return Message.sanitize(getPath());
+        return sanitize(getPath());
     }
 
 
@@ -337,7 +338,6 @@ public class ContentInfo implements Serializable {
     }
 
     public static String encodePath(String s){
-
         String val;
         try {
             val = URLEncoder.encode(s, "UTF-8");

@@ -3,6 +3,7 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
 
 public abstract  class ContentHandler {
@@ -37,4 +38,6 @@ public abstract  class ContentHandler {
     public HttpResponse pause(ContentInfo info){
         return pause(info.getPath());
     }
+
+    public abstract void onMessageReceived(Message message);
 }

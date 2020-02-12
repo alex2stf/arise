@@ -2,6 +2,7 @@ package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.Condition;
 import com.arise.core.tools.models.FilterCriteria;
@@ -31,9 +32,31 @@ public class DependencyManager {
         if (out.exists()){
             return out;
         }
-        //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("sibelius.orange.intra", 8080));
-        //HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
-       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Proxy proxy = null;
+
+        if (StringUtil.hasContent(System.getProperty("proxy.host"))){
+            Proxy.Type proxyType = Proxy.Type.HTTP;
+
+            Integer port = 8080;
+            if (StringUtil.hasContent(System.getProperty("proxy.port"))){
+                try {
+                    port = Integer.valueOf(System.getProperty("proxy.port"));
+                }catch (Exception e){
+                    port = 8080;
+                }
+            }
+
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(System.getProperty("proxy.host"), port);
+            proxy  = new Proxy(proxyType, inetSocketAddress);
+        }
+
+       HttpURLConnection connection;
+       if (proxy != null){
+           connection = (HttpURLConnection) url.openConnection(proxy);
+       } else {
+           connection = (HttpURLConnection) url.openConnection();
+       }
+
         connection.setRequestMethod("GET");
 
         connection.setConnectTimeout(60 * 1000);

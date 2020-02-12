@@ -13,6 +13,7 @@ import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.utils.URLBeautifier;
 
@@ -227,7 +228,10 @@ public class DesktopFileHandler extends ContentHandler {
         return null;
     }
 
-
+    @Override
+    public void onMessageReceived(Message message) {
+        System.out.println("RECEIVED MESSAGE " + message);
+    }
 
 
     Set<String> exes = new HashSet<>();

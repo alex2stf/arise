@@ -124,7 +124,7 @@ public abstract class RAPDroidActivity extends AppCompatActivity {
 
 
     public void chooseFile(FileChooseHandler fileChooseHandler) {
-        fileChooseHandler = fileChooseHandler;
+        this.fileChooseHandler = fileChooseHandler;
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");

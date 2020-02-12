@@ -33,12 +33,9 @@ public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-  public static final DeviceStat deviceStat = new DeviceStat();
-  static {
-      deviceStat.scanIPV4();
-  }
+  public static final DeviceStat deviceStat = DeviceStat.getInstance();
 
-//  final Registry registry;
+
   MJPEGResponse liveMjpegStream;
   JPEGOfferResponse liveJpeg;
   WavResponse liveWav;
@@ -93,7 +90,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   Handler<HttpRequest> liveWavHandler;
   Handler<HttpRequest> deviceControlsUpdate;
   Handler<HttpRequest> commandExecHandler;
-  Handler<Message> messageHandler;
   ContentHandler contentHandler;
 
   IDeviceController iDeviceController;
@@ -118,10 +114,6 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-  public WelandServerHandler onMessageReceived(Handler<Message> messageHandler) {
-    this.messageHandler = messageHandler;
-    return this;
-  }
 
   public WelandServerHandler beforeLiveWAV(Handler<HttpRequest> liveWavHandler) {
     this.liveWavHandler = liveWavHandler;
@@ -175,8 +167,8 @@ public class WelandServerHandler extends HTTPServerHandler {
       deviceStat.setServerStatus(MSG_RECEIVE_OK);
       MapObj mapObj = (MapObj) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
-      dispatch(messageHandler, message);
-      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
+      contentHandler.onMessageReceived(message);
+      return HttpResponse.json(deviceStat.toJson());
     }
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){

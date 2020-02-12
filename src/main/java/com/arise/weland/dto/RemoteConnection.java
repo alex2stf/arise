@@ -1,7 +1,5 @@
 package com.arise.weland.dto;
 
-import java.io.Serializable;
-
 public class RemoteConnection  {
     private final Object payload;
     private DeviceStat deviceStat;
@@ -24,6 +22,8 @@ public class RemoteConnection  {
     }
 
     public String getName(){
-        return deviceStat != null ? deviceStat.getDisplayName() : "Remote" ;
+        return deviceStat != null ? deviceStat.getDisplayName() : String.valueOf(payload) ;
     }
+
+
 }

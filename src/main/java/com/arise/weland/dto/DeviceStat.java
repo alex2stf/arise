@@ -18,6 +18,7 @@ import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.StringUtil.jsonVal;
 import static com.arise.weland.dto.ContentInfo.addVal;
 import static com.arise.weland.dto.ContentInfo.decodeString;
+import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class DeviceStat {
 
@@ -33,29 +34,42 @@ public class DeviceStat {
     private String conversationId;
 
 
+    public static final DeviceStat INSTANCE = new DeviceStat(true).scanIPV4();
 
-    public String toJson() {
-        StringBuilder sb = new StringBuilder().append("{");
-        addVal(sb, "B1", batteryScale);
-        addVal(sb, "B2", batteryLevel);
-        addVal(sb, "P", serverStatus);
-        addVal(sb, "D", displayName);
-        addVal(sb, "U", serverUUID);
-        addVal(sb, "C", conversationId);
-        if (!isEmpty(screens)){
-            sb.append("\"S\":").append(jsonVal(screens)).append(",");
+    public static DeviceStat getInstance() {
+        return INSTANCE;
+    }
+
+
+    private DeviceStat(boolean scan){
+        conversationId = sanitize(SYSUtils.getDeviceId());
+        if (!scan){
+            return;
         }
+        this.os = SYSUtils.getOS();
+        deviceName = SYSUtils.getDeviceName();
 
-        if (!isEmpty(ipv4Addrs)){
-            sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
+
+        Object graphicsEnvironment =
+                ReflectUtil.getStaticMethod("java.awt.GraphicsEnvironment", "getLocalGraphicsEnvironment").call();
+
+        if (graphicsEnvironment != null){
+            try {
+                Object [] devices = (Object[]) ReflectUtil.getMethod(graphicsEnvironment, "getScreenDevices").call();
+                for (Object device: devices){
+                    Object displayMode = ReflectUtil.getMethod(device, "getDisplayMode").call();
+                    if (displayMode != null){
+                        Integer width = ReflectUtil.getMethod(displayMode, "getWidth").callForInteger();
+                        Integer height = ReflectUtil.getMethod(displayMode, "getHeight").callForInteger();
+                        screens.add(new Screen(width, height));
+                    }
+                }
+            } catch (Exception e){
+
+            }
+
+
         }
-        addVal(sb, "x", os.getName());
-        addVal(sb, "v", os.getVersion());
-        addVal(sb, "a", os.getArch());
-
-        sb.append("\"N\":").append(jsonVal(ContentInfo.encodePath(deviceName)));
-        sb.append("}");
-        return sb.toString();
     }
 
     public static DeviceStat fromMap(Map obj) {
@@ -99,13 +113,36 @@ public class DeviceStat {
         return deviceStat;
     }
 
+    public String toJson() {
+        StringBuilder sb = new StringBuilder().append("{");
+        addVal(sb, "B1", batteryScale);
+        addVal(sb, "B2", batteryLevel);
+        addVal(sb, "P", serverStatus);
+        addVal(sb, "D", displayName);
+        addVal(sb, "U", serverUUID);
+        addVal(sb, "C", conversationId);
+        if (!isEmpty(screens)){
+            sb.append("\"S\":").append(jsonVal(screens)).append(",");
+        }
 
+        if (!isEmpty(ipv4Addrs)){
+            sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
+        }
+        addVal(sb, "x", os.getName());
+        addVal(sb, "v", os.getVersion());
+        addVal(sb, "a", os.getArch());
 
-
-
+        sb.append("\"N\":").append(jsonVal(ContentInfo.encodePath(deviceName)));
+        sb.append("}");
+        return sb.toString();
+    }
 
     public String getConversationId() {
         return conversationId;
+    }
+
+    public String getServerUUID() {
+        return serverUUID;
     }
 
     public DeviceStat setServerUUID(String serverUUID) {
@@ -113,13 +150,12 @@ public class DeviceStat {
         return this;
     }
 
-    public String getServerUUID() {
-        return serverUUID;
-    }
-
-
     public String getServerStatus() {
         return serverStatus;
+    }
+
+    public void setServerStatus(String status) {
+        this.serverStatus = status;
     }
 
     public String getDisplayName() {
@@ -134,43 +170,6 @@ public class DeviceStat {
     public List<Screen> getScreens() {
         return screens;
     }
-
-    public DeviceStat(){
-        this(true);
-    }
-
-    private DeviceStat(boolean scan){
-        conversationId = Message.sanitize(SYSUtils.getDeviceId());
-        if (!scan){
-            return;
-        }
-        this.os = SYSUtils.getOS();
-        deviceName = SYSUtils.getDeviceName();
-
-
-        Object graphicsEnvironment =
-                ReflectUtil.getStaticMethod("java.awt.GraphicsEnvironment", "getLocalGraphicsEnvironment").call();
-
-        if (graphicsEnvironment != null){
-            try {
-                Object [] devices = (Object[]) ReflectUtil.getMethod(graphicsEnvironment, "getScreenDevices").call();
-                for (Object device: devices){
-                    Object displayMode = ReflectUtil.getMethod(device, "getDisplayMode").call();
-                    if (displayMode != null){
-                        Integer width = ReflectUtil.getMethod(displayMode, "getWidth").callForInteger();
-                        Integer height = ReflectUtil.getMethod(displayMode, "getHeight").callForInteger();
-                        screens.add(new Screen(width, height));
-                    }
-                }
-            } catch (Exception e){
-
-            }
-
-
-        }
-    }
-
-
 
     public SYSUtils.OS getOs() {
         return os;
@@ -193,13 +192,9 @@ public class DeviceStat {
 
     }
 
-
-
-
     public String getDeviceName() {
         return deviceName != null ? deviceName : "UNSET";
     }
-
 
     public int getBatteryScale() {
         return batteryScale;
@@ -226,11 +221,6 @@ public class DeviceStat {
     public Set<String> getIpv4Addrs() {
         return ipv4Addrs;
     }
-
-    public void setServerStatus(String status) {
-        this.serverStatus = status;
-    }
-
 
     public static class Screen {
         private final Integer width;

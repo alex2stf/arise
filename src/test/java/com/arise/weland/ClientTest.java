@@ -11,20 +11,16 @@ import org.junit.Test;
 
 public class ClientTest {
 
-    @Test
-    public void testDeviceStat(){
-        new DeviceStat();
-    }
 
 
     public static void main(String[] args) {
 
 
-        Message message = new Message().setType(Message.Type.TEXT);
+        Message message = new Message();
         message.setId("--http://128.3.445:-8083/A/x\\x\\---");
 //        System.out.println(message.toJson());
 
-        DeviceStat deviceStat = new DeviceStat().scanIPV4();
+        DeviceStat deviceStat = DeviceStat.getInstance().scanIPV4();
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
