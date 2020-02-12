@@ -1,1 +1,1 @@
-java -cp "weland-1.0.jar;libs\*" com.arise.weland.Main
+java -cp "weland-1.0.jar;libs\*" -Djdk.home="C:\Program Files\Java\jdk1.7.0_67" com.arise.weland.Main

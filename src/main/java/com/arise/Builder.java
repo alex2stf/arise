@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,16 +30,16 @@ public class Builder {
     }
 
     public static File getJavac(){
+        System.out.println("JDK_HOME = " +JDK_HOME);
         String name = "javac";
-        String javaHome = System.getProperty("java.home");
-        File f = new File(javaHome);
+        File f = new File(JDK_HOME);
         f = new File(f, "bin");
         if (isWindows()){
             name = name + ".exe";
         }
         f = new File(f, name);
         if (!f.exists()){
-            f = new File(javaHome);
+            f = new File(JDK_HOME);
             f = f.getParentFile();
             f = new File(f, "bin");
             f = new File(f, name);
@@ -145,14 +144,22 @@ public class Builder {
 
     static String BUILD_ID = "1";
     static File ROOT_DIRECTORY = new File("");
+    static String JDK_HOME = System.getProperty("java.home");
 
     public static void main(String[] args) throws IOException, InterruptedException {
+
+
+
 
         boolean release = args.length > 0 && "release".equals(args[0]);
 
        if (args.length > 1){
            ROOT_DIRECTORY = new File(args[1]);
        }
+
+        if (args.length > 2){
+            JDK_HOME = args[2];
+        }
 
         File buildInfoFile = new File("build-info.properties");
         Properties properties;
@@ -450,6 +457,9 @@ public class Builder {
                     String rw = ROOT_DIRECTORY.getAbsolutePath();
                     if (rw.endsWith(".")){
                         rw = rw.substring(0, rw.length() - 1);
+                    }
+                    if (!rw.endsWith(File.separator)){
+                        rw += File.separator;
                     }
 
 

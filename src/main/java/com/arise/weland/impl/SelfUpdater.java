@@ -1,10 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +38,8 @@ public class SelfUpdater {
     }
 
     private void checkUpdate()  {
+
+
         File buildInfoFile = null;
         try {
             buildInfoFile = DependencyManager.download(buildIdFile, tmpDir(), "build-info" + UUID.randomUUID().toString());
@@ -110,10 +109,34 @@ public class SelfUpdater {
         return f;
     }
 
-
     public static File getJavac(){
+        File f = getJavac(System.getProperty("java.home"));
+
+        if (f == null){
+            f = getJavac(System.getProperty("jdk.home"));
+        }
+
+        if (f == null){
+            String sunLib = System.getProperty("sun.boot.library.path");
+            if (StringUtil.hasText(sunLib)){
+
+                File slb = new File(sunLib);
+//C:\Program Files\Java\jre8\bin
+                if (slb.isDirectory() && "bin".equalsIgnoreCase(slb.getName())){
+                    slb = slb.getParentFile();
+                }
+
+                if (slb.isDirectory() && slb.getName().toLowerCase().startsWith("jre")){
+                    slb = slb.getParentFile();
+                }
+
+            }
+        }
+        return f;
+    }
+
+    public static File getJavac(String javaHome){
         String name = "javac";
-        String javaHome = System.getProperty("java.home");
         File f = new File(javaHome);
         f = new File(f, "bin");
         if (SYSUtils.isWindows()){
@@ -128,8 +151,9 @@ public class SelfUpdater {
         }
 
         if (!f.exists()){
-            f = new File("C:\\Program Files\\Java\\jdk1.7.0_67\\bin\\javac.exe");
+            return null;
         }
+        log.info("using javac " + f.getAbsolutePath());
         return f;
     }
 
@@ -137,6 +161,8 @@ public class SelfUpdater {
     private void compile(List<File> downloads) {
 
         File javac = getJavac();
+        File java = getJava();
+
         File builder = new File(workDir(), "src/main/java/com/arise/Builder.java");
         if (!builder.exists()){
             closeUpdate("Builder class not found");
@@ -151,16 +177,18 @@ public class SelfUpdater {
 
         SYSUtils.exec(javac.getAbsolutePath(), "-d", buildClz.getAbsolutePath(), builder.getAbsolutePath());
 
+        String jdkHome = System.getProperty("jdk.home");
         SYSUtils.exec(new String[]{
                 getJava().getAbsolutePath(), "-cp",
                 buildClz.getAbsolutePath(),
                 "com.arise.Builder",
                 "release",
-                workDir().getAbsolutePath()
+                workDir().getAbsolutePath(),
+                new File(jdkHome).getAbsolutePath() //TODO improve
         }, new SYSUtils.ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
-
+                System.out.println(content);
             }
 
             @Override
