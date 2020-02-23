@@ -120,6 +120,7 @@ public class DependencyManager {
         System.out.print(" OK\n");
         Util.close(stream);
         Util.close(file);
+
         return out;
     }
 

@@ -172,7 +172,7 @@ public class SelfUpdater {
             try {
                 File file = DependencyManager.download(root + key, parentDir, out.getName());
                 downloads.add(file);
-//                file.deleteOnExit();
+                file.deleteOnExit();
             } catch (Exception e) {
                 log.error("Failed to fetch " + uri);
             }

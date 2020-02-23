@@ -1,10 +1,6 @@
 package com.arise.core.tools;
 
-import java.io.Closeable;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.Selector;
@@ -78,6 +74,14 @@ public final class Util {
             } catch (Exception e){
 
             }
+        }
+
+        if (stream instanceof Closeable){
+            ((Closeable) stream).close();
+        }
+
+        if (stream instanceof AutoCloseable){
+            ((AutoCloseable) stream).close();
         }
 
         if (stream instanceof Reader) {

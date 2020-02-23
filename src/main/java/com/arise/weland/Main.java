@@ -57,10 +57,16 @@ public class Main {
     static AbstractServer ioServer;
 
     public static void main(String[] args) {
-        new SelfUpdater().check();
         //VIP!!! load vlc native libs and dependencies
         VLCPlayer.getInstance();
-        File roots[] = File.listRoots();
+        ThreadUtil.fireAndForget(new Runnable() {
+            @Override
+            public void run() {
+                new SelfUpdater().check();
+            }
+        });
+
+
 
         try {
             ContentType.loadDefinitions();
@@ -90,12 +96,21 @@ public class Main {
         final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
                         .importJson("weland/config/commons/content-infos.json");
 
-        for (File f: roots){
-            if (!f.getAbsolutePath().startsWith("C:")) {
-                contentInfoProvider.addRoot(f);
+
+
+        if (StringUtil.hasText(System.getProperty("scan.root.file"))){
+            File rootFile = new File(System.getProperty("scan.root.file"));
+            contentInfoProvider.addRoot(rootFile);
+        }
+        else {
+            for (File f: File.listRoots()){
+                if (!f.getAbsolutePath().startsWith("C:")) {
+                    contentInfoProvider.addRoot(f);
+                }
             }
         }
-        contentInfoProvider.addRoot(new File(System.getProperty("user.home")));
+
+
         contentInfoProvider.get();
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
