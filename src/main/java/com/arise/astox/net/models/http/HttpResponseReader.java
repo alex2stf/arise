@@ -17,7 +17,6 @@ public abstract class HttpResponseReader extends HttpReader<HttpResponse> {
     @Override
     protected void onHeadersParsed(Map<String, String> headers) {
         response.setHeaders(headers);
-//        handleRest(this);
     }
 
     @Override

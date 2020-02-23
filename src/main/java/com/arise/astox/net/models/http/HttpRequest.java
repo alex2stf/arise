@@ -243,6 +243,15 @@ public class HttpRequest extends ServerRequest {
 
     public HttpRequest setBytes(byte[] bytes) {
         this.bytes = bytes;
+        setHeader("Content-Length", "" + bytes.length);
+        return this;
+    }
+
+    public HttpRequest setHeader(String key, String value){
+        if (headers == null){
+            headers = new HashMap<>();
+        }
+        headers.put(key, value);
         return this;
     }
 

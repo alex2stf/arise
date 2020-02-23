@@ -1,8 +1,8 @@
 package com.arise.astox.net.models.http;
 
-import com.arise.astox.net.models.ReadCompleteHandler;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerRequestBuilder;
+import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,29 +15,29 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 
 
     @Override
-    public void readInputStream(final InputStream inputStream, final ReadCompleteHandler<HttpRequest> handler) {
+    public void readInputStream(final InputStream inputStream,
+                                final CompleteHandler<HttpRequest> onSuccess,
+                                final CompleteHandler<Throwable> onError) {
         HttpRequestReader reader = new HttpRequestReader() {
             @Override
             public void handleRest(HttpReader x) {
-//                    if (this.getRequest().hasContent()) {
-//                        byte buf[] = new byte[getRequest().contentLength()];
-//                        try {
-//                            inputStream.read(buf);
-//                            this.getRequest().setBytes(buf);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
                     getRequest().setBytes(bodyBytes.toByteArray());
-                    handler.onReadComplete(this.getRequest());
+                    onSuccess.onComplete(this.getRequest());
                     flush();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onError.onComplete(e);
             }
         };
         reader.readInputStream(inputStream);
     }
 
     @Override
-    public void readSocketChannel(final SocketChannel channel, final ReadCompleteHandler<ServerRequest> handler) {
+    public void readSocketChannel(final SocketChannel channel,
+                                  final CompleteHandler<HttpRequest> onSuccess,
+                                  final CompleteHandler<Throwable> onError) {
         HttpRequestReader reader = new HttpRequestReader() {
             @Override
             public void handleRest(HttpReader reader) {
@@ -50,8 +50,13 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                     }
                     getRequest().setBytes(buff.array());
                 }
-                handler.onReadComplete(getRequest());
+                onSuccess.onComplete(getRequest());
                 flush();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onError.onComplete(e);
             }
         };
 
@@ -62,7 +67,7 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                 buff = ByteBuffer.allocate(1);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            onError.onComplete(e);
         }
 
 
@@ -71,10 +76,12 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
     }
 
     @Override
-    public void readByteBuffer(final ByteBuffer byteBuffer, final ReadCompleteHandler<ServerRequest> handler) {
+    public void readByteBuffer(final ByteBuffer byteBuffer,
+                               final CompleteHandler<HttpRequest> onSuccess,
+                               final CompleteHandler<Throwable> onError) {
 
         if (byteBuffer.limit() == 0){
-            handler.onReadComplete(new HttpRequest());
+            onSuccess.onComplete(new HttpRequest());
             return;
         }
 
@@ -88,8 +95,13 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                     byteBuffer.get(rest);
                     getRequest().setBytes(rest);
                 }
-                handler.onReadComplete(getRequest());
+                onSuccess.onComplete(getRequest());
                 flush();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onError.onComplete(e);
             }
         };
 
@@ -100,15 +112,6 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
             reader.readChar(byteBuffer.get());
         }
     }
-
-
-
-
-
-
-
-
-
 
 
 

@@ -27,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpResponse, BluetoothSocket> {
     private final Mole log;
     private final BluetoothDevice mmDevice;
-    private String deviceName;
+    private final String deviceName;
 
 
     public BluetoothHttpClient(BluetoothDevice device){
@@ -51,7 +51,7 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
     BluetoothSocket mmSocket = null;
     boolean firstInstance = false;
     @Override
-    protected synchronized BluetoothSocket getConnection(HttpRequest request) throws Exception {
+    public synchronized BluetoothSocket getConnection(HttpRequest request) throws Exception {
         request.addHeader("Correlation-Id", UUID.randomUUID().toString());
         if (mmSocket == null){
             log.info("createRfcommSocketToServiceRecord");
@@ -66,6 +66,7 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
             } catch (Exception e) {
                 log.e("Socket connect method failed for device " + mmDevice.getName());
                 mmSocket = null;
+                onError(e);
             }
         }
 
@@ -82,10 +83,15 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
             public void run() {
                 try {
                     BluetoothSocket socket = getConnection(request);
-                    log.info(mmDevice.getName(), "CONNECT complete");
+                    if (socket != null){
+                        log.info("CONNECT complete for " + deviceName + " socket = " + socket);
+                    }
+                    else {
+                        log.error("NULL SOCKET FOR " + deviceName);
+                    }
                     connectHandler.onComplete(socket);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("CONNECTION FAILED TO " + deviceName);
                 }
             }
         });
@@ -179,8 +185,12 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
                         try {
                             log.info("writing request" + currentMessage.request.path());
                             data.getOutputStream().write(currentMessage.request.getBytes());
+//                            outputStream.flush();
                         } catch (IOException e) {
                             log.error("Failed to write to device " + mmDevice.getName());
+                            onError(e);
+//                            Util.close(mmSocket);
+//                            mmSocket = null;
                             restartQueueCheck();
                             return;
                         }
@@ -264,7 +274,7 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
             if (!handled) {
                 super.readChar(b);
             }
-//            System.out.println("readChar [" + (char)b + "] body size" + bodyBytes.size() + " contentLength= " + contentLength + " headersReaded=" + headersReaded + " handled=" + handled);
+//            log.info("readChar [" + (char)b + "] body size" + bodyBytes.size() + " contentLength= " + contentLength + " headersReaded=" + headersReaded + " handled=" + handled);
         }
 
 
@@ -274,6 +284,7 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
 
     @Override
     protected void read(BluetoothSocket socket, CompleteHandler<HttpResponse> responseHandler) {
+        log.info("read init");
         readLoop(socket);
     }
 
@@ -289,6 +300,7 @@ public class BluetoothHttpClient extends AbstractClient<HttpRequest, HttpRespons
             while (readInProgress) {
                 try {
                     readed = socket.getInputStream().read(buffer);            //read bytes from input buffer
+                    log.info("READED " + readed);
                     for (int i = start; i < readed ; i++){
                         httpResponseReader.readChar(buffer[i]);
                     };

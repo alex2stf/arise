@@ -3,7 +3,6 @@ package com.arise.astox.net.servers.nio;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ConnectionSolver;
 import com.arise.astox.net.models.DuplexDraft;
-import com.arise.astox.net.models.ReadCompleteHandler;
 import com.arise.astox.net.models.ServerMessage;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerRequestBuilder;
@@ -13,6 +12,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
+import com.arise.core.tools.models.CompleteHandler;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
@@ -190,10 +190,10 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         }
     }
 
-    @Override
-    protected void solveInterceptor(ServerRequestBuilder builder, SocketChannel socketChannel, ReadCompleteHandler<ServerRequest> handler) {
-            builder.readSocketChannel(socketChannel, handler);
-    }
+//    @Override
+//    protected void solveInterceptor(ServerRequestBuilder builder, SocketChannel socketChannel, ReadCompleteHandler<ServerRequest> handler) {
+//            builder.readSocketChannel(socketChannel, handler);
+//    }
 
 
 
@@ -215,24 +215,19 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             engine.setUseClientMode(false);
             engine.beginHandshake();
 
-            doHandshake(socketChannel, engine, key, this, new ReadCompleteHandler<ServerRequest>() {
+            doHandshake(socketChannel, engine, key, this, new CompleteHandler<ServerRequest>() {
                 @Override
-                public void onReadComplete(ServerRequest data) {
+                public void onComplete(ServerRequest data) {
+                    if (data == null){
+                        Util.close(socketChannel);
+                        return;
+                    }
                     try {
-
-
-//                        socketChannel.configureBlocking(false);
-                       SelectionKey result = socketChannel.register(key.selector(), SelectionKey.OP_READ, key.attachment());
+                        SelectionKey result = socketChannel.register(key.selector(), SelectionKey.OP_READ, key.attachment());
                         read(result);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-
-                @Override
-                public void onError() {
-                    Util.close(socketChannel);
-                    log.debug("Connection closed due to handshake failure.");
                 }
             });
         }
@@ -334,10 +329,11 @@ public class NIOServer extends AbstractServer<SocketChannel> {
 
     private void readStandard(final NIOChannelData channelData, final SocketChannel socketChannel, final SelectionKey key) throws Exception {
         if (channelData.isCloseable()){
-            readPayload(socketChannel, new ReadCompleteHandler<ServerRequest>() {
+
+            this.serverRequestBuilder.readSocketChannel(socketChannel, new CompleteHandler<ServerRequest>() {
                 @Override
-                public void onReadComplete(ServerRequest serverRequest) {
-                    if (serverRequest == null || !requestHandler.validate(serverRequest)){
+                public void onComplete(ServerRequest serverRequest) {
+                    if (serverRequest == null || !requestHandler.validate(serverRequest)) {
                         Util.close(socketChannel);
                         key.cancel();
                         return;
@@ -351,6 +347,12 @@ public class NIOServer extends AbstractServer<SocketChannel> {
                     } catch (WebSocketException e) {
                         e.printStackTrace();
                     }
+                }
+            }, new CompleteHandler<Throwable>() {
+                @Override
+                public void onComplete(Throwable data) {
+                    data.printStackTrace();
+                    Util.close(socketChannel);
                 }
             });
 
@@ -433,9 +435,9 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         if (channelData.isCloseable()){
             ByteBuffer buffer = ByteBuffer.allocate(finallyBytes.length);
             buffer.put(finallyBytes);
-            parseByteBuffer(buffer, new ReadCompleteHandler<ServerRequest>() {
+            parseByteBuffer(buffer, new CompleteHandler<ServerRequest>() {
                 @Override
-                public void onReadComplete(ServerRequest request) {
+                public void onComplete(ServerRequest request) {
                     System.out.println("SSL READ COMPLETE");
                     if (request == null){
                         closeHttpConnection(key, socketChannel, engine);
@@ -459,14 +461,13 @@ public class NIOServer extends AbstractServer<SocketChannel> {
     }
 
 
-    public ServerRequest parseByteBuffer(Object input, ReadCompleteHandler<ServerRequest> handler) {
-        for (ServerRequestBuilder b: getBuilders()){
-            try {
-                b.readByteBuffer((ByteBuffer) input, handler);
-            } catch (Exception e) {
-                fireError(e);
+    public ServerRequest parseByteBuffer(Object input, CompleteHandler<ServerRequest> onSuccess) {
+        this.serverRequestBuilder.readByteBuffer((ByteBuffer) input, onSuccess, new CompleteHandler<Throwable>() {
+            @Override
+            public void onComplete(Throwable data) {
+                data.printStackTrace();
             }
-        }
+        });
         return null;
     }
 

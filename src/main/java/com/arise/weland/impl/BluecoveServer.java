@@ -2,30 +2,28 @@ package com.arise.weland.impl;
 
 
 import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.models.ReadCompleteHandler;
 import com.arise.astox.net.models.ServerMessage;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.StreamedServer;
 import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequestReader;
-import com.arise.astox.net.models.http.HttpResponseReader;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.tools.Util;
+import com.arise.core.tools.models.CompleteHandler;
 
 import javax.bluetooth.LocalDevice;
 import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, StreamConnection> {
 
-//    private StreamConnection streamConnection;
 
     public BluecoveServer() {
         super(StreamConnection.class);
@@ -72,7 +70,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
         return null;
     }
 
-//    StreamConnection currentStreamConnection;
     @Override
     protected StreamConnection acceptConnection(StreamConnectionNotifier streamConnectionNotifier) throws Exception {
         if (streamConnectionNotifier == null){
@@ -82,10 +79,18 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
     }
 
 
+    private IDeviceController deviceController;
+
+
+    public BluecoveServer setDeviceController(IDeviceController deviceController) {
+        this.deviceController = deviceController;
+        return this;
+    }
+
     @Override
     protected void handle(final StreamConnection connection) {
 
-       final AbstractServer self = this;
+        final AbstractServer self = this;
         final boolean[] allow = {true};
 
         final OutputStream outputStream;
@@ -104,26 +109,38 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
             return;
         }
 
+
+
         HttpRequestReader httpRequestReader = new HttpRequestReader() {
             @Override
             public void handleRest(HttpReader reader) {
-                request.setBytes(bodyBytes.toByteArray());
-                ServerResponse response = requestHandler.getResponse(self, request);
-                try {
-                    outputStream.write(response.bytes());
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Util.close(outputStream);
-                    Util.close(inputStream);
-                    Util.close(connection);
-                    allow[0] = false;
+                byte bytes[] = bodyBytes.toByteArray();
+                if (bytes.length > 0 && bytes[0] == '>'){
+                    deviceController.digestBytes(bytes);
+                    resetBodyBytes();
+                    this.readInputStream(inputStream);
                 }
-                flush();
+                else {
+                    getRequest().setBytes(bytes);
+                    ServerResponse response = requestHandler.getResponse(self, request);
+                    try {
+                        outputStream.write(response.bytes());
+                        outputStream.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Util.close(outputStream);
+                        Util.close(inputStream);
+                        Util.close(connection);
+                        allow[0] = false;
+                    }
+                    flush();
+                }
+
+
             }
 
             @Override
-            public void onError(IOException e) {
+            public void onError(Throwable e) {
                 allow[0] = false;
                 e.printStackTrace();
                 Util.close(outputStream);

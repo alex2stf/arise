@@ -23,7 +23,8 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
     protected BlockingQueue<ServerMessage> messagesToWrite = new ArrayBlockingQueue<ServerMessage>(200);
 
     private Set<DuplexDraft> duplexDrafts = new HashSet<>();
-    private Set<ServerRequestBuilder> requestBuilderSet = new HashSet<>();
+//    private Set<ServerRequestBuilder> requestBuilderSet = new HashSet<>();
+    protected ServerRequestBuilder serverRequestBuilder;
 
     public AbstractServer(){
 
@@ -41,17 +42,17 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
         return (AbstractServer) super.setName(name);
     }
 
-    public Set<ServerRequestBuilder> getBuilders() {
-        return Collections.unmodifiableSet(requestBuilderSet);
-    }
+//    public Set<ServerRequestBuilder> getBuilders() {
+//        return Collections.unmodifiableSet(requestBuilderSet);
+//    }
 
     public AbstractServer addDuplexDraft(DuplexDraft draft){
         duplexDrafts.add(draft);
         return this;
     }
 
-    public AbstractServer addRequestBuilder(ServerRequestBuilder serverRequestBuilder){
-        requestBuilderSet.add(serverRequestBuilder);
+    public AbstractServer setRequestBuilder(ServerRequestBuilder serverRequestBuilder){
+        this.serverRequestBuilder = serverRequestBuilder;
         return this;
     }
 
@@ -135,26 +136,16 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
 
 
 
-    @Deprecated
-    protected void readPayload(READABLE stream, ReadCompleteHandler<ServerRequest> completeHandler){
-        for (ServerRequestBuilder interceptor: getBuilders()){
-            solveInterceptor(interceptor, stream, completeHandler);
-        }
-    };
+//    @Deprecated
+//    protected void readPayload(READABLE stream, ReadCompleteHandler<ServerRequest> completeHandler){
+//        solveInterceptor(serverRequestBuilder, stream, completeHandler);
+//    };
 
 
-//    public void solveRequestAfterValidation(ServerRequest serverRequest, READABLE input) {
-//        for (ServerRequestBuilder b: getBuilders()){
-//            try {
-//                solveSingleRequestAfterValidation(serverRequest, b,  input);
-//            } catch (Exception e) {
-//                fireError(e);
-//            }
-//        }
-//    }
 
 
-    protected abstract void solveInterceptor(ServerRequestBuilder builder, READABLE data, ReadCompleteHandler<ServerRequest> completeHandler);
+
+//    protected abstract void solveInterceptor(ServerRequestBuilder builder, READABLE data, ReadCompleteHandler<ServerRequest> completeHandler);
 //    protected abstract void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, READABLE data) throws Exception;
 
 

@@ -286,7 +286,9 @@ public class AndroidContentDecoder extends ContentInfoDecoder
             Util.close(fileOutputStream);
         }
 
-        bytesCache.put(id, bytes);
+        if (id != null && bytes != null){
+            bytesCache.put(id, bytes);
+        }
         return bytes;
     }
 

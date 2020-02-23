@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.core.app.NotificationCompat;
 
+import com.arise.core.tools.ContentType;
 import com.arise.rapdroid.media.server.R;
 
 import java.util.Map;
@@ -27,9 +28,12 @@ public class RAPDUtils {
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
+    public static NotificationManager getNotificationManager(Context context){
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
 
     public static void createNotificationChannel(Context context, NotificationOps ops){
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = getNotificationManager(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(ops.channelId, "channel_name", NotificationManager.IMPORTANCE_HIGH);

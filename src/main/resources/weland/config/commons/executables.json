@@ -1,0 +1,12 @@
+{
+  "browser": [
+    ["C:\\Program Files\\Mozilla Firefox\\firefox.exe", "{arg}"],
+    ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "{arg}"]
+  ],
+  "media": [
+    ["C:\\Program Files\\Windows Media Player\\wmplayer.exe", "{arg}"],
+    ["C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe", "{arg}"]
+  ],
+  "pictures": []
+
+}

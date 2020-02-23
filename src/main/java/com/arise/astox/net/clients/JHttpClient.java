@@ -5,6 +5,8 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.http.HttpResponseBuilder;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -123,7 +126,15 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
                     try {
                         con.connect();
                     } catch (Throwable e) {
-                        onError(e);
+                        Mole.getInstance(JHttpClient.class).log("JHttpClient", e);
+
+                        //SERVER IS DOWN AFTER LOADING DATA
+//                        e.printStackTrace();
+//
+//                        Socket socket =  new Socket("localhost", 8221);
+//                        socket.getOutputStream().write("hey".getBytes());
+//                        socket.close();
+
                     }
 
                     completionHandler.onComplete(con);
@@ -134,7 +145,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
         });
     }
 
-    protected HttpURLConnection getConnection(HttpRequest request) throws Exception {
+    public HttpURLConnection getConnection(HttpRequest request) throws Exception {
         URL connectionURL = new URL("http://" + getHost() + ":" + getPort() + request.getUri());
 
         HttpURLConnection res = null;

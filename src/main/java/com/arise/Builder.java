@@ -497,6 +497,7 @@ public class Builder {
                 }
             }
 
+            System.out.println("\tsrc: " +  source.getAbsolutePath());
             System.out.println("\tjar entry: " +  name);
             BufferedInputStream in = null;
             FileInputStream fileInputStream = null;

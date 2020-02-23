@@ -7,20 +7,16 @@ import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.weland.dto.AutoplayMode;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.Playlist;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
@@ -65,32 +61,16 @@ public class ContentInfoProvider {
     }
 
 
-    Map<Playlist, AutoplayMode> autoplayLists = new ConcurrentHashMap<>();
+
 
 
     private void asyncScan(){
-        File cache = autoplayCache();
-        String cnt = null;
-
-            if (cache.exists()){
-                try {
-                    cnt = FileUtil.read(cache);
-                    String parts[] = cnt.split("\n");
-                    if (parts.length > 1){
-                        String playlistId = parts[0].trim();
-                        String mode = parts[1];
-                        AutoplayMode autoplayMode = AutoplayMode.valueOf(mode.trim());
-                        setAutoplay(Playlist.find(playlistId), autoplayMode);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
 
 
         fireAndForget(new Runnable() {
             @Override
             public void run() {
+                log.info("start recursive read");
                 for (final File root: roots){
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
@@ -124,13 +104,7 @@ public class ContentInfoProvider {
                     log.trace("Scan complete shuffle videos");
                 }
 
-                for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
-                    if (AutoplayMode.on.equals(entry.getValue()) || AutoplayMode.on_shuffle.equals(entry.getValue())){
-                        ContentInfo info = next(entry.getKey());
-                        log.trace("Scan complete play advice " + info.getPath());
-                        break;
-                    }
-                }
+
                 log.trace("RECURSIVE SCAN COMPLETE");
                 decoder.onScanComplete();
             }
@@ -179,17 +153,16 @@ public class ContentInfoProvider {
             rIndex = index;
         }
 
-        AutoplayMode autoplayMode = autoplayLists.containsKey(playlist) ? autoplayLists.get(playlist): AutoplayMode.off;
 
         List<ContentInfo> source = getPlaylist(playlist);
         int sourceSize = source.size();
 
         if (sourceSize == 0){
             if (!scanned){
-                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(rIndex).setAutoplayMode(autoplayMode);
+                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(rIndex);
             }
             else {
-                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null).setAutoplayMode(autoplayMode);
+                return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
             }
         }
 
@@ -204,7 +177,7 @@ public class ContentInfoProvider {
 
         log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scanned){
-            return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null).setAutoplayMode(autoplayMode);
+            return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
         }
         for (int i = rIndex; i < limit; i++){
             info.add(source.get(i));
@@ -212,8 +185,7 @@ public class ContentInfoProvider {
 
         return new ContentPage()
                 .setData(Collections.unmodifiableList(info))
-                .setIndex(limit)
-                .setAutoplayMode(autoplayMode);
+                .setIndex(limit);
     }
 
 
@@ -284,95 +256,53 @@ public class ContentInfoProvider {
 
 
 
-    public void setAutoplay(Playlist playlist, AutoplayMode autoplayMode) {
-        for (Playlist s: autoplayLists.keySet()){
-            autoplayLists.put(s, AutoplayMode.off);
+
+
+
+
+
+
+
+
+
+
+    public ContentInfo nextFile(Playlist playlist){
+
+        List<ContentInfo> data = getPlaylist(playlist);
+        List<ContentInfo> r = new ArrayList<>();
+        int size = data.size();
+        for(int i = 0; i < size; i++){
+            ContentInfo c = data.get(i);
+            if (!c.isWebPage()){
+                r.add(c);
+            }
         }
-        log.trace(playlist + " auto " + autoplayMode);
-        autoplayLists.put(playlist, autoplayMode);
-        File cache = autoplayCache();
-        String cnt = playlist.name() + "\n" + autoplayMode.name();
-        FileUtil.writeStringToFile(cache, cnt);
+        return next(r);
     }
-
-
-
-    File autoplayCache(){
-        File cacheDir = decoder.getStateDirectory();
-        return new File(cacheDir, "auto.play");
-    }
-
-
-//    public void onPlayComplete(ContentInfo currentInfo) {
-//        currentInfo.incrementVisit();
-//
-//
-//        if (!scanned){
-//            return;
-//        }
-//
-//        Playlist playlist = currentInfo.getPlaylist();
-//
-//        if (playlist == null){
-//            return;
-//        }
-//
-//        //increment visit
-//        for (ContentInfo info: getPlaylist(playlist)){
-//            if (info.getPath().equalsIgnoreCase(currentInfo.getPath())){
-//                info.incrementVisit();
-//            }
-//        }
-//
-//        //play next if autoplay
-//        for (Map.Entry<Playlist, AutoplayMode> entry: autoplayLists.entrySet()){
-//            if (entry.getKey().equals(playlist) && !AutoplayMode.off.equals(entry.getValue())){
-//                ContentInfo next = next(playlist);
-//                if (next != null && playAdviceHandler != null){
-//                   playAdviceHandler.onComplete(next);
-//                }
-//            }
-//        }
-//    }
-
-
-
-
 
     public ContentInfo next(Playlist playlist){
-        List<ContentInfo> data = getPlaylist(playlist);
+        return next(getPlaylist(playlist));
+    }
 
-        if (data.isEmpty()){
+    public ContentInfo next(List<ContentInfo> data){
+
+
+        if (CollectionUtil.isEmpty(data)){
             return null;
         }
-        final ContentInfo[] res = new ContentInfo[1];
-        CollectionUtil.smartIterate(data, new CollectionUtil.SmartHandler<ContentInfo>() {
-            @Override
-            public void handle(ContentInfo t1, ContentInfo t2) {
-                ContentInfo tmp;
-                if (t2 != null){
-                    if (t1.getVisited() < t2.getVisited()){
-                        tmp = t1;
-                    } else {
-                        tmp = t2;
-                    }
-                }
-                else {
-                    tmp = t1;
-                }
-
-                if (res[0] == null){
-                    res[0] = tmp;
-                } else {
-                    if (tmp.getVisited() < res[0].getVisited()){
-                        res[0] = tmp;
-                    }
-                }
+        if (data.size() == 1){
+            return data.get(0);
+        }
+        int size = data.size();
+        ContentInfo info = data.get(0);
+        for (int i = 1; i < size; i++){
+            ContentInfo tmp = data.get(i);
+            if (tmp.getVisited() < info.getVisited()){
+                info = tmp;
             }
-        });
-        res[0].incrementVisit();
-        log.trace("next " + playlist + " = " + res[0].getPath());
-        return res[0];
+        }
+        return info.incrementVisit();
+
     }
 
 
@@ -456,5 +386,13 @@ public class ContentInfoProvider {
             }
         }
         return res;
+    }
+
+    public ContentInfo decode(String currentPath) {
+        return decoder.decodeFile(new File(currentPath));
+    }
+
+    public ContentInfo previous(Playlist playlist) {
+        return null;
     }
 }

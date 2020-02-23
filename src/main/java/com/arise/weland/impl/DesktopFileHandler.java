@@ -5,8 +5,11 @@ import com.arise.canter.Command;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
@@ -16,12 +19,17 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.utils.URLBeautifier;
+import uk.co.caprica.vlcj.player.MediaMeta;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +37,8 @@ public class DesktopFileHandler extends ContentHandler {
 
     private final ContentInfoProvider contentInfoProvider;
     private final Registry registry;
-
+    static boolean nwjsEnabled = !"false".equalsIgnoreCase(System.getProperty("nwjs.enabled"));
+    static boolean vlcEmbedded = !"false".equalsIgnoreCase(System.getProperty("vlc.enabled"));
     private static final Mole log = Mole.getInstance(DesktopFileHandler.class);
     private static File nwjsExe;
     static {
@@ -38,15 +47,30 @@ public class DesktopFileHandler extends ContentHandler {
             nwjsExe = new File(nwjsDir, "nw.exe");
             if (!nwjsExe.exists()){
                 log.error("Unable to solve NWJS");
+                nwjsEnabled = false;
             }
         } catch (IOException e) {
-            System.exit(-1);
+            e.printStackTrace();
+            nwjsEnabled = false;
         }
     }
+
+    boolean fullScreenNwjs = "true".equalsIgnoreCase(System.getProperty("nwjs.fullscreen"));
+
 
     public DesktopFileHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
         this.contentInfoProvider = contentInfoProvider;
         this.registry = registry;
+        setupArgs();
+    }
+    MapObj commands;
+
+    private void setupArgs() {
+        String s = StreamUtil.toString(
+                FileUtil.findStream("weland/config/commons/executables.json")
+        ).replaceAll("\\s+", " ");
+
+        commands = (MapObj) Groot.decodeBytes(s);
     }
 
 
@@ -81,7 +105,7 @@ public class DesktopFileHandler extends ContentHandler {
     private void openMedia(String path) {
         closeSpawnedProcesses();
         File local = new File(path);
-        if (local.exists()){
+        if (local.exists() && vlcEmbedded){
             ContentInfo info = contentInfoProvider.findByPath(local.getAbsolutePath().replaceAll("\\\\", "/"));
             if (info != null){
                 VLCPlayer.getInstance().play(info);
@@ -89,6 +113,9 @@ public class DesktopFileHandler extends ContentHandler {
             else {
                 VLCPlayer.getInstance().play(path);
             }
+        }
+        else {
+            execute(getCommands("media", path));
         }
     }
 
@@ -124,8 +151,9 @@ public class DesktopFileHandler extends ContentHandler {
 
 
     public void openUrl(String urlPath){
+        String url = URLBeautifier.beautify(urlPath);
+
         if (shouldUseNwjs(urlPath)){
-            String url = URLBeautifier.beautify(urlPath);
             File outputDir = new File(contentInfoProvider.getDecoder().getStateDirectory(), "nw-current-app");
             if (!outputDir.exists() && !outputDir.mkdirs()){
                 log.warn("Failed to create app dir " + outputDir.getAbsolutePath());
@@ -135,14 +163,15 @@ public class DesktopFileHandler extends ContentHandler {
             openInNwjs(url, outputDir);
         }
         else {
-           openInStandardBrowser(urlPath);
+           openInStandardBrowser(url);
         }
 
 
     }
 
     private boolean shouldUseNwjs(String path){
-        return path.toLowerCase().indexOf("youtube") > -1 && nwjsExe.exists();
+        return nwjsEnabled &&  nwjsExe.exists() &&
+                path.toLowerCase().indexOf("youtube") > -1;
     }
 
     private void openInNwjs(String url, File outputDir){
@@ -151,10 +180,10 @@ public class DesktopFileHandler extends ContentHandler {
                 "  \"main\": \""+url+"\",\n" +
                 "  \"inject-js-end\": \"main.js\",\n" +
                 "  \"window\": {\n" +
-//                "    \"title\": \"Nws player\",\n" +
-//                "    \"toolbar\": false,\n" +
-//                "    \"frame\": true,\n" +
-                "    \"fullscreen\": false\n" +
+                "    \"title\": \"Nws player\",\n" +
+                "    \"toolbar\": " + (fullScreenNwjs ? "false" : "true") + ",\n" +
+                "    \"frame\": true,\n" +
+                "    \"fullscreen\": " + (fullScreenNwjs ? "true" : "false") +
                 "  }\n" +
                 "}";
 
@@ -166,25 +195,35 @@ public class DesktopFileHandler extends ContentHandler {
         });
     }
 
-    private void openInStandardBrowser(String path){
-        Command command = registry.getCommand("browserOpen");
-        Object binaries = command.getProperty("binaries");
-        if (binaries != null && binaries instanceof Map){
-            try {
-                Map<String, String> bins = (Map<String, String>) binaries;
-                for (Map.Entry<String, String> e: bins.entrySet()){
-                    File f = new File(e.getValue());
-                    if (f.exists()){
-                        execute(new String[]{f.getAbsolutePath(), path});
-                        return;
+    private String[] getCommands(String rname, String arg){
+        Arr arr = commands.getArray(rname);
+
+        for (int i = 0; i < arr.size(); i++){
+            List<String> act = (List<String>) arr.get(i);
+            File f = new File(act.get(0));
+            if (f.exists()){
+                String r[] = new String[act.size()];
+                r[0] = f.getAbsolutePath();
+                for (int j = 1; j < act.size(); j++){
+                    if ("{arg}".equals(act.get(j))){
+                        r[j] = arg;
+                    }
+                    else {
+                        r[j] = act.get(j);
                     }
                 }
-            } catch (Exception e){
-                log.error("openInBrowser failed because ", e);
+
+                return r;
             }
         }
+        return null;
+    }
 
-        log.error("NO browser exe detected");
+
+    private void openInStandardBrowser(String path){
+
+        execute(getCommands("browser", path));
+
     }
 
 
@@ -210,7 +249,7 @@ public class DesktopFileHandler extends ContentHandler {
             for (String s: exes){
                 try {
                     if (SYSUtils.isWindows()){
-                        String args[] = new String[]{"taskkill", "/IM", s};
+                        String args[] = getCloseCommand(s);
                         log.info(StringUtil.join(args, " "));
                         Runtime.getRuntime().exec(args);
                     }
@@ -223,14 +262,48 @@ public class DesktopFileHandler extends ContentHandler {
         }
     }
 
+    String[] getCloseCommand(String s){
+        return new String[]{"taskkill", "/IM", s, "/T", "/F"};
+    }
+
     @Override
     public HttpResponse pause(String string) {
         return null;
     }
 
+
+    JFrame nf = null;
+    JLabel label = null;
+    ThreadUtil.TimerResult result;
+
     @Override
     public void onMessageReceived(Message message) {
-        System.out.println("RECEIVED MESSAGE " + message);
+        ThreadUtil.closeTimer(result);
+        if (nf == null){
+            nf = new JFrame();
+            nf.setAlwaysOnTop(true);
+            label = new JLabel();
+            label.setText(message.getText());
+            Font labelFont = label.getFont();
+            label.setFont(new Font(labelFont.getName(), Font.PLAIN, 24));
+            label.setBorder(new EmptyBorder(10,10,10,10));
+            nf.add(label);
+            nf.setUndecorated(true);
+            nf.pack();
+            nf.setVisible(true);
+        }
+        else {
+            label.setText(message.getText());
+            nf.pack();
+            nf.setVisible(true);
+        }
+
+        result = ThreadUtil.delayedTask(new Runnable() {
+            @Override
+            public void run() {
+                nf.setVisible(false);
+            }
+        }, 1000);
     }
 
 
@@ -246,6 +319,15 @@ public class DesktopFileHandler extends ContentHandler {
         }
     }
 
+
+    public static void main(String[] args) {
+        Message message = new Message();
+        message.setText("some text");
+        DesktopFileHandler f = new DesktopFileHandler(null, null);
+                f.onMessageReceived(message);
+        message.setText("some text2");
+                f.onMessageReceived(message);
+    }
 
 
 

@@ -21,7 +21,7 @@ public abstract class HttpRequestReader extends HttpReader<HttpRequest> {
     @Override
     protected void digestLineParts(String[] parts) {
         String last = parts[ parts.length -1 ];
-        boolean hasHeaders = true;
+//        boolean hasHeaders = true;
 //        if (StringUtil.endsWithNewline(last)){
 //            last = last.trim();
 //            hasHeaders = false;

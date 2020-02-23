@@ -39,7 +39,7 @@ public class Client  {
 
     public void ping(final CompleteHandler<DeviceStat> onSuccess, final CompleteHandler onError) {
         HttpRequest request = new HttpRequest().setMethod("GET").setUri("/health");
-
+        currentClient.setErrorHandler(onError);
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse response) {
@@ -185,20 +185,17 @@ public class Client  {
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse data) {
-               if (data.bodyBytes() == null){
-                   onError.onComplete("RETRY");
-                   return;
-               }
+              if (data.bodyBytes() == null){
+                onError.onComplete("RETRY");
+                return;
+              }
               try {
-                  Map obj = (Map) Groot.decodeBytes(data.bodyBytes());
-                  ContentPage contentPage = ContentPage.fromMap(obj);
-                  completeHandler.onComplete(contentPage);
-
-
+                Map obj = (Map) Groot.decodeBytes(data.bodyBytes());
+                ContentPage contentPage = ContentPage.fromMap(obj);
+                completeHandler.onComplete(contentPage);
               } catch (Exception ex){
-
-                  log.error("DECODE FAILED FOR " + data);
-                  onError.onComplete(ex);
+                log.error("DECODE FAILED FOR " + data);
+                onError.onComplete(ex);
               }
             }
         });
@@ -224,11 +221,19 @@ public class Client  {
         currentClient.sendAndReceive(request, onComplete);
     }
 
-    public void autoplay(Playlist playlist, AutoplayMode autoplayMode, CompleteHandler onComplete) {
-        HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/media/autoplay/" + playlist.name()  + "/" + autoplayMode.name());
-        currentClient.sendAndReceive(request, onComplete);
-    }
+
+
+//    public void moveMouse(int x, int y) {
+//        System.out.println("mouse move " + x + " " + y);
+//        HttpRequest request = new HttpRequest()
+//                .setMethod("GET").setUri("/ctrl?mx=" + x + "&my=" + y);
+//        currentClient.sendAndReceive(request, new CompleteHandler() {
+//            @Override
+//            public void onComplete(Object data) {
+//                System.out.println(data);
+//            }
+//        });
+//    }
 
 
 

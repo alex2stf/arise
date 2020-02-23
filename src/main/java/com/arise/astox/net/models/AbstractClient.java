@@ -8,7 +8,7 @@ import com.arise.core.tools.models.CompleteHandler;
 public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
 
 
-    protected abstract CONNECTION getConnection(final I request) throws Exception;
+    public abstract CONNECTION getConnection(final I request) throws Exception;
 
     public void connect(final I request, final CompleteHandler<CONNECTION> connectHandler){
         ThreadUtil.fireAndForget(new Runnable() {

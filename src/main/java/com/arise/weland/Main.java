@@ -1,26 +1,33 @@
 package com.arise.weland;
 
 import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.models.ServerRequestBuilder;
-import com.arise.astox.net.models.http.HttpRequestBuilder;
+import com.arise.astox.net.servers.draft_6455.WSDraft6455;
+import com.arise.astox.net.servers.io.IOServer;
+import com.arise.canter.Registry;
 import com.arise.core.tools.*;
+import com.arise.weland.impl.BluecoveServer;
+import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopFileHandler;
+import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.SelfUpdater;
 import com.arise.weland.impl.VLCPlayer;
-import com.arise.weland.utils.Boostrap;
+import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
+import java.util.UUID;
+
+import static com.arise.canter.Defaults.PROCESS_EXEC;
+import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
 
 public class Main {
 
     private static final SSLContext context;
     private static final Mole log = Mole.getInstance(Main.class);
-    static Main corona;
 
     static {
 //        String protocol = "TLSv1.2";
@@ -38,28 +45,16 @@ public class Main {
         context = null;
     }
 
-    AbstractServer server;
-    private final WelandServerHandler welandServerHandler;
-    Object bluetoothServer;;
-
-
-    public Main(WelandServerHandler welandServerHandler) {
-        this.welandServerHandler = welandServerHandler;
-    }
 
 
 
-    public static AbstractServer start(WelandServerHandler handler){
 
-        corona = new Main(handler);
-        return corona.run();
-    }
 
-    public static void stop(){
-        if (corona != null){
-            corona.stopAll();
-        }
-    }
+
+
+
+    static BluecoveServer bluecoveServer;
+    static AbstractServer ioServer;
 
     public static void main(String[] args) {
         new SelfUpdater().check();
@@ -67,9 +62,32 @@ public class Main {
         VLCPlayer.getInstance();
         File roots[] = File.listRoots();
 
+        try {
+            ContentType.loadDefinitions();
+            log.info("Successfully loaded content-type definitions");
+        } catch (Exception e){
+            log.error("Failed to load content-type definitions", e);
+        }
 
-        ContentInfoProvider contentInfoProvider =
-                new ContentInfoProvider(new PCDecoder())
+        final Registry registry = new Registry();
+        registry.addCommand(PROCESS_EXEC)
+                .addCommand(PROCESS_EXEC_WHEN_FOUND);
+
+        try {
+            registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
+            if (SYSUtils.isWindows()){
+                registry.loadJsonResource("src/main/resources#/weland/config/win/commands.json");
+            } else {
+                registry.loadJsonResource("src/main/resources#/weland/config/unix/commands.json");
+            }
+            log.info("Successfully loaded commands definitions");
+        } catch (Exception e){
+            log.error("Failed to load commands definitions", e);
+        }
+
+        final IDeviceController deviceController = new PCDeviceController();
+        final ContentInfoDecoder decoder = new PCDecoder();
+        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
                         .importJson("weland/config/commons/content-infos.json");
 
         for (File f: roots){
@@ -78,55 +96,60 @@ public class Main {
             }
         }
         contentInfoProvider.addRoot(new File(System.getProperty("user.home")));
-//        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Music"));
-//        contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\Videos"));
         contentInfoProvider.get();
 
-        WelandServerHandler welandServerHandler = Boostrap.buildHandler(args, contentInfoProvider);
-        DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider, Boostrap.registry);
+        final WelandServerHandler welandServerHandler = new WelandServerHandler()
+                .setContentProvider(contentInfoProvider);;
+
+        DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider,  registry);
         welandServerHandler.setContentHandler(desktopFileHandler);
-        welandServerHandler.setiDeviceController(new PCDeviceController());
+        welandServerHandler.setDeviceController(deviceController);
 
-        start(welandServerHandler);
-    }
-
-    public AbstractServer run(){
-        server = Boostrap.startHttpServer(welandServerHandler);
+        final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                bluetoothServer = ReflectUtil.newInstance("com.arise.weland.impl.BluecoveServer");
-                if (bluetoothServer != null){
-                    ReflectUtil.getMethod(bluetoothServer, "setStateObserver", AbstractServer.StateObserver.class)
-                            .call(welandServerHandler);
-
-                    ReflectUtil.getMethod(bluetoothServer, "setRequestHandler", AbstractServer.RequestHandler.class)
-                            .call(welandServerHandler);
-
-                    ReflectUtil.getMethod(bluetoothServer, "addRequestBuilder", ServerRequestBuilder.class)
-                            .call(new HttpRequestBuilder());
-
-                    ReflectUtil.getMethod(bluetoothServer, "setName", String.class)
-                            .call("CB_" + SYSUtils.getDeviceName() );
-
-                    ReflectUtil.InvokeHelper invokeHelper = ReflectUtil.getMethod(bluetoothServer, "start");
-                    try {
-                        invokeHelper.getMethod().invoke(bluetoothServer);
-                    } catch (Exception e) {
-                        log.warn("Failed to start bluetooth server");
-                    }
+                ioServer = new IOServer()
+                        .setPort(8221)
+                        .setName("DR_" + SYSUtils.getDeviceName())
+                        .setUuid(UUID.randomUUID().toString())
+                        .setRequestBuilder(requestBuilder)
+                        .addDuplexDraft(new WSDraft6455())
+                        .setHost("localhost")
+                        .setStateObserver(welandServerHandler)
+                        .setRequestHandler(welandServerHandler);
+                try {
+                    ioServer.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        return server;
+        ThreadUtil.fireAndForget(new Runnable() {
+            @Override
+            public void run() {
+                bluecoveServer = new BluecoveServer();
+                bluecoveServer.setDeviceController(deviceController);
+                bluecoveServer.setStateObserver(welandServerHandler)
+                        .setRequestBuilder(requestBuilder)
+                        .setRequestHandler(welandServerHandler)
+                        .setName("CB_" + SYSUtils.getDeviceName());
+
+                try {
+                    bluecoveServer.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void stopAll() {
-        server.stop();
-        if ( bluetoothServer != null){
-            ReflectUtil.getMethod(bluetoothServer, "stop").call();
+        ioServer.stop();
+        if ( bluecoveServer != null){
+            bluecoveServer.stop();
         }
     }
 

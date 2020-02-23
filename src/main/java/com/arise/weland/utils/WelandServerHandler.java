@@ -15,10 +15,8 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.dto.AutoplayMode;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
-import com.arise.weland.dto.DeviceCtrlCmd;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
@@ -94,7 +92,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   IDeviceController iDeviceController;
 
-  public WelandServerHandler setiDeviceController(IDeviceController iDeviceController) {
+  public WelandServerHandler setDeviceController(IDeviceController iDeviceController) {
     this.iDeviceController = iDeviceController;
     return this;
   }
@@ -149,7 +147,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   Whisker whisker = new Whisker();
   String playerContent = StreamUtil.toString(FileUtil.findStream("weland/player.html"));
 
-  static final DeviceCtrlCmd deviceCtrlCmd = new DeviceCtrlCmd();
 
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
@@ -256,14 +253,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     if (request.pathsStartsWith("media", "autoplay")){
       String playlistId = request.getPathAt(2);
       String mode = request.getPathAt(3);
-      AutoplayMode autoplayMode = null;
-      try {
-        autoplayMode = AutoplayMode.valueOf(mode);
-      }catch (Throwable t){
-        return HttpResponse.plainText(t.getMessage()).addCorelationId(correlationId);
-      }
-      Playlist playlist = Playlist.find(playlistId);
-      contentInfoProvider.setAutoplay(playlist, autoplayMode);
+
       return HttpResponse.oK().addCorelationId(correlationId);
     }
 
@@ -315,14 +305,13 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-//    if ("/devCtrl".equalsIgnoreCase(request.pathAt(0))){
-//
-//
-//      if (iDeviceController != null){
-//        deviceCtrlCmd.digest(request.getQueryParams());
-//        iDeviceController.update(deviceCtrlCmd);
-//      }
-//      return HttpResponse.json(deviceStat.toJson());
+//    if ("/ctrl".equalsIgnoreCase(request.path())){
+////      if (iDeviceController != null){
+////        deviceCtrlCmd.digest(request.getQueryParams());
+////        iDeviceController.update(deviceCtrlCmd);
+////      }
+////      return HttpResponse.json(deviceStat.toJson());
+//      return devctrlResponse;
 //    }
 
 

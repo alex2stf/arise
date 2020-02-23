@@ -18,7 +18,7 @@ public abstract class AbstractStreamedSocketClient<I extends ServerRequest, O ex
     protected static final HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder();
 
     @Override
-    protected Socket getConnection(I request) throws Exception {
+    public Socket getConnection(I request) throws Exception {
         Socket socket;
         if (sslContext != null){
             socket = sslContext.getSocketFactory().createSocket(getHost(), getPort());

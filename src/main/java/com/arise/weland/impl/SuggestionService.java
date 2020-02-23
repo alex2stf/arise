@@ -169,7 +169,13 @@ public class SuggestionService {
 
 
     private List<String> getLinearCombinations(List<String> vals) {
+
         List<String> r = new ArrayList<>();
+        if (vals.size() == 1){
+            r.add(vals.get(0));
+            r.add(vals.get(0).toLowerCase());
+            return r;
+        }
         for (int j = 0; j < vals.size(); j++){
             String c = vals.get(j);
             for (int i = j + 1; i < vals.size(); i++){

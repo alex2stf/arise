@@ -66,44 +66,44 @@ public class SSEClient extends HttpClient {
                     HttpResponseReader responseReader = new HttpResponseReader() {
                         @Override
                         public void handleRest(HttpReader reader) {
-                            reset();
-                            byte [] bytes = bodyBytes.toByteArray();
-                            for (int i = 0; i < bytes.length; i++){
-                                builder.append((char)bytes[i]);
-                            }
-                            try {
-                                bodyBytes.flush();
-                                bodyBytes.close();
-                                bodyBytes = null;
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            if (builder.toString().endsWith("\n\n")){
-                                parseBlock(reset(), consumer);
-                            }
-
-                            try {
-                                byte [] buff = new byte[1];
-                                while (inputStream.read(buff) > 0){
-                                    char c = (char) buff[0];
-                                    builder.append(c);
-                                    if (builder.toString().endsWith("\n\n")){
-                                        parseBlock(reset(), consumer);
-                                    }
-                                    if (closed){
-                                        flush();
-                                        Util.close(inputStream);
-                                        Util.close(outputStream);
-                                        break;
-                                    }
-                                }
-                            } catch (IOException e) {
-                                builder.setLength(0);
-                                builder = null;
-                                Util.close(inputStream);
-                                Util.close(outputStream);
-                                Util.close(socket);
-                            }
+//                            reset();
+//                            byte [] bytes = bodyBytes.toByteArray();
+//                            for (int i = 0; i < bytes.length; i++){
+//                                builder.append((char)bytes[i]);
+//                            }
+//                            try {
+//                                bodyBytes.flush();
+//                                bodyBytes.close();
+//                                bodyBytes = null;
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                            if (builder.toString().endsWith("\n\n")){
+//                                parseBlock(reset(), consumer);
+//                            }
+//
+//                            try {
+//                                byte [] buff = new byte[1];
+//                                while (inputStream.read(buff) > 0){
+//                                    char c = (char) buff[0];
+//                                    builder.append(c);
+//                                    if (builder.toString().endsWith("\n\n")){
+//                                        parseBlock(reset(), consumer);
+//                                    }
+//                                    if (closed){
+//                                        flush();
+//                                        Util.close(inputStream);
+//                                        Util.close(outputStream);
+//                                        break;
+//                                    }
+//                                }
+//                            } catch (IOException e) {
+//                                builder.setLength(0);
+//                                builder = null;
+//                                Util.close(inputStream);
+//                                Util.close(outputStream);
+//                                Util.close(socket);
+//                            }
                         }
                     };
                     responseReader.readInputStream(inputStream);

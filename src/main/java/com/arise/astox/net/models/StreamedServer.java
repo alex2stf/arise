@@ -3,12 +3,12 @@ package com.arise.astox.net.models;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
-import java.util.Date;
 
 import static com.arise.core.tools.Util.close;
 
@@ -17,13 +17,13 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     private static final Mole log = new Mole(StreamedServer.class);
     private final Class<CONNECTION> connectionClass;
 
-    protected abstract CONNECTION_PROVIDER buildConnectionProvider();
-    protected abstract CONNECTION acceptConnection(CONNECTION_PROVIDER provider) throws Exception;
-
-
-    public StreamedServer(Class<CONNECTION> connectionClass){
+    public StreamedServer(Class<CONNECTION> connectionClass) {
         this.connectionClass = connectionClass;
     }
+
+    protected abstract CONNECTION_PROVIDER buildConnectionProvider();
+
+    protected abstract CONNECTION acceptConnection(CONNECTION_PROVIDER provider) throws Exception;
 
     @Override
     public void registerMessage(ServerMessage message) {
@@ -36,7 +36,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
-    public void write(byte[] bytes, ConnectionSolver connectionSolver, WriteCompleteEvent event){
+    public void write(byte[] bytes, ConnectionSolver connectionSolver, WriteCompleteEvent event) {
         CONNECTION connection = connectionSolver.getArg(connectionClass);
         try {
             getOutputStream(connection).write(bytes);
@@ -48,19 +48,18 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
-
     public void start() throws Exception {
         super.start();
         CONNECTION_PROVIDER provider = buildConnectionProvider();
         firePostInit();
-        while (running){
+        while (running) {
             CONNECTION connection = null;
             try {
                 connection = acceptConnection(provider);
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 fireError(ex);
             } finally {
-                if (connection != null){
+                if (connection != null) {
                     final CONNECTION finalConnection = connection;
                     ThreadUtil.fireAndForget(new Runnable() {
                         @Override
@@ -76,63 +75,58 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
+    protected void handle(final CONNECTION connection) {
 
-    protected void handle(final CONNECTION connection){
-        try {
+        InputStream inputStream = getInputStream(connection);
+        this.serverRequestBuilder.readInputStream(inputStream, new CompleteHandler<ServerRequest>() {
+            @Override
+            public void onComplete(ServerRequest serverRequest) {
 
-
-            InputStream inputStream = getInputStream(connection);
-
-
-            readPayload(inputStream, new ReadCompleteHandler<ServerRequest>() {
-                @Override
-                public void onReadComplete(ServerRequest serverRequest) {
-
-                    if (serverRequest == null){
-                        log.warn("NULL server request");
-                        return;
-                    }
-                    if (!requestHandler.validate(serverRequest)){
-                        close(connection);
-                        return;
-                    }
-
-                    DuplexDraft draft = requestToDuplex(serverRequest);
-
-                    OutputStream outputStream = getOutputStream(connection);
-
-                    try {
-                        if (draft != null){
-                            handleDuplex(connection, draft, serverRequest, outputStream);
-                        }
-                        else {
-                            if (outputStream == null){
-                                log.error("Nothing to write into a null outputstream");
-                                close(connection);
-                                return;
-                            }
-                            handleNonDuplex(serverRequest, connection, outputStream);
-                        }
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-
+                if (serverRequest == null) {
+                    log.warn("NULL server request");
+                    return;
                 }
-            });
+                if (!requestHandler.validate(serverRequest)) {
+                    close(connection);
+                    return;
+                }
+
+                DuplexDraft draft = requestToDuplex(serverRequest);
+
+                OutputStream outputStream = getOutputStream(connection);
+
+                try {
+                    if (draft != null) {
+                        handleDuplex(connection, draft, serverRequest, outputStream);
+                    } else {
+                        if (outputStream == null) {
+                            log.error("Nothing to write into a null outputstream");
+                            close(connection);
+                            return;
+                        }
+                        handleNonDuplex(serverRequest, connection, outputStream);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new CompleteHandler<Throwable>() {
+            @Override
+            public void onComplete(Throwable data) {
+                data.printStackTrace();
+                close(connection);
+            }
+        });
 
 
 
-        } catch (Exception ex){
-            fireError(ex);
-        }
     }
-
-
 
 
     private void handleDuplex(CONNECTION connection, DuplexDraft draft, ServerRequest serverRequest, OutputStream outputStream) throws IOException {
         ServerResponse serverResponse = getDuplexHandshakeResponse(draft, serverRequest);
-        if (serverResponse == null){
+        if (serverResponse == null) {
             close(connection);
             return;
         }
@@ -151,19 +145,19 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
 
         boolean allowWsRead = true;
 
-        while (allowWsRead){
+        while (allowWsRead) {
             // Receive a frame from the server.
             DuplexDraft.Frame frame = null;
             try {
                 frame = duplexStream.readFrame();
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 allowWsRead = false;
                 fireError(ex);
             } finally {
                 if (frame != null) {
                     requestHandler.onFrame(frame, duplexConnection);
                 }
-                if (!allowWsRead || frame.isCloseFrame()){
+                if (!allowWsRead || frame.isCloseFrame()) {
                     onDuplexClose(duplexConnection);
                     close(duplexStream);
                     close(connection);
@@ -178,39 +172,35 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
         ServerResponse response;
         try {
             response = requestHandler.getResponse(this, serverRequest);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             response = requestHandler.getDefaultResponse(this);
         }
 //        log.trace("Response " + response);
-        if (response != null){
+        if (response != null) {
             response.setServerName(getName());
-            if (response.isSelfManageable()){
+            if (response.isSelfManageable()) {
                 response.onTransporterAccepted(serverRequest, this, connection);
             } else {
-               try {
-                   outputStream.write(response.bytes());
-               } catch (SocketException e){
-                   if (e.getMessage().contains("closed by remote host")){
-                       log.warn(e.getMessage());
-                       close(connection);
-                   }
-
-                   else {
-                       throw e;
-                   }
-               } catch (Exception e){
-                   if ( (StringUtil.hasContent(e.getMessage())) && e.getMessage().contains("connection was aborted by the software in your host machine"))
-                   {
-                       log.warn(e.getMessage());
-                       close(connection);
-                   }
-                    else
-                   {
-                       throw e;
-                   }
-               }
-               close(connection);
+                try {
+                    outputStream.write(response.bytes());
+                    outputStream.flush();
+                } catch (SocketException e) {
+                    if (e.getMessage().contains("closed by remote host")) {
+                        log.warn(e.getMessage());
+                        close(connection);
+                    } else {
+                        throw e;
+                    }
+                } catch (Exception e) {
+                    if ((StringUtil.hasContent(e.getMessage())) && e.getMessage().contains("connection was aborted by the software in your host machine")) {
+                        log.warn(e.getMessage());
+                        close(connection);
+                    } else {
+                        throw e;
+                    }
+                }
+                close(connection);
             }
         } else {
             outputStream.write(requestHandler.getDefaultResponse(this).bytes());
@@ -218,23 +208,13 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
         }
     }
 
-    @Override
-    protected void solveInterceptor(ServerRequestBuilder builder, InputStream data, ReadCompleteHandler<ServerRequest> completeHandler) {
-        builder.readInputStream(data, completeHandler);
-    }
-
-
-    //    @Override
-//    protected ServerRequest extractSingleRequestBeforeValidation(ServerRequestBuilder builder, InputStream data) throws Exception {
-//        return builder.readHeader(data);
-//    }
-//
 //    @Override
-//    protected void solveSingleRequestAfterValidation(ServerRequest request, ServerRequestBuilder builder, InputStream data) throws Exception {
-//        builder.solveRequestAfterValidation(request, data);
+//    protected void solveInterceptor(ServerRequestBuilder builder, InputStream data, ReadCompleteHandler<ServerRequest> completeHandler) {
+//        builder.readInputStream(data, completeHandler);
 //    }
 
 
     protected abstract InputStream getInputStream(CONNECTION connection);
+
     protected abstract OutputStream getOutputStream(CONNECTION connection);
 }

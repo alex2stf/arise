@@ -27,7 +27,10 @@ public class HttpResponseBuilder extends ServerResponseBuilder<HttpResponse> {
                 flush();
             }
 
-
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
         };
         reader.readInputStream(inputStream);
 

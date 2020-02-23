@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class HttpReader<TYPE> {
-    protected StringBuffer builder = new StringBuffer();
+//    protected StringBuffer builder = new StringBuffer();
     protected ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
 
     protected volatile boolean headersReaded = false;
@@ -44,54 +44,19 @@ public abstract class HttpReader<TYPE> {
                 if (data.endsWith("\n\n") || data.endsWith("\r\n\r\n")){
                     onHeaderReadComplete(data);
                     headersReaded = true;
-                    try {
-                        bodyBytes.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    bodyBytes = new ByteArrayOutputStream();
+                    resetBodyBytes();
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
 
-
-//        if(headersReaded) {
-//            bodyBytes.write(b);
-//            return;
-//        }
-//        else {
-//            builder.append((char) b);
-//
-//            if (builder.toString().endsWith("\n\n") || builder.toString().endsWith("\r\n\r\n")){
-//                onHeaderReadComplete(reset());
-//                headersReaded = true;
-//            }
-//
-//        }
-
     }
 
 
 
-
-    public boolean endsWith(String c){
-        return builder.toString().endsWith(c);
-    }
-
-    public boolean endsWithNewLine(){
-        return builder.toString().endsWith("\n");
-    }
 
     public abstract void handleRest(HttpReader reader);
-
-    public String reset(){
-        String value = builder.toString();
-        builder.setLength(0);
-        builder = new StringBuffer();
-        return value;
-    }
 
 
     protected void onHeaderReadComplete(String text){
@@ -147,45 +112,45 @@ public abstract class HttpReader<TYPE> {
     protected abstract int headerLength();
 
     public void readInputStream(InputStream inputStream){
-        int initChunk = 99999;
-        int actualRead = 0;
-        int sumRead;
-        actualRead = readStream(inputStream, initChunk);
-        sumRead = actualRead;
 
-        //works in ndk
-        if (getContentLength() > 0) {
-            while (sumRead < getContentLength() + headerLength() ){
-                actualRead = readStream(inputStream, initChunk);
-                sumRead += actualRead;
+
+        try {
+            int initChunk = 99999;
+            int actualRead = 0;
+            int sumRead;
+            actualRead = readStream(inputStream, initChunk);
+            sumRead = actualRead;
+
+            //works in ndk
+            if (getContentLength() > 0) {
+                while (sumRead < getContentLength() + headerLength() ){
+                    actualRead = readStream(inputStream, initChunk);
+                    sumRead += actualRead;
+                }
             }
-        }
 
-        handleRest(this);
+            handleRest(this);
+        } catch (Throwable t){
+            onError(t);
+        }
 
     }
 
-    private int readStream(InputStream inputStream, int chunkSize){
+    private int readStream(InputStream inputStream, int chunkSize) throws IOException {
         DataInputStream mmInStream = new DataInputStream(inputStream);
         byte[] buffer = new byte[chunkSize];
         int readed = 0;
-        try {
-            readed = mmInStream.read(buffer);
-            for (int i = 0; i < readed; i++){
-                readChar(buffer[i]);
-            }
-            return readed;
-        } catch (IOException e) {
-            onError(e);
+        readed = mmInStream.read(buffer);
+        for (int i = 0; i < readed; i++){
+            readChar(buffer[i]);
         }
-        return 0;
+        return readed;
     }
 
-    public void onError(IOException e) {
+    public void onError(Throwable e) {
     }
 
-    public void flush(){
-        reset();
+    public void resetBodyBytes(){
         try {
             bodyBytes.close();
             bodyBytes.reset();
@@ -194,8 +159,12 @@ public abstract class HttpReader<TYPE> {
 
         }
         bodyBytes = new ByteArrayOutputStream();
-        headersReaded = false;
         readedBytes = 0;
+    }
+
+    public void flush(){
+        resetBodyBytes();
+        headersReaded = false;
     }
 
 }

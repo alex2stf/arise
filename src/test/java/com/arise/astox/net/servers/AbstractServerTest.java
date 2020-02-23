@@ -1,12 +1,12 @@
 package com.arise.astox.net.servers;
 
-import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.nio.NioSslPeer;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.DeviceStat;
+import com.arise.weland.impl.WelandRequestBuilder;
 
 import javax.net.ssl.SSLContext;
 import java.security.SecureRandom;
@@ -61,7 +61,7 @@ public abstract class AbstractServerTest {
 
 
           server
-              .addRequestBuilder(new HttpRequestBuilder())
+              .setRequestBuilder(new WelandRequestBuilder(null))
               .addDuplexDraft(new WSDraft6455())
               .setHost("localhost")
               .setStateObserver(serverTestHandler)

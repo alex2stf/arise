@@ -121,6 +121,7 @@ public class CollectionUtil {
 
 
 
+
     public interface SmartHandler<T> {
         void  handle(T t1, T t2);
     }
