@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -321,24 +322,34 @@ public class Builder {
         return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
+
+
     static String getPath(File f){
-        String rootParts[] = ROOT_DIRECTORY.getAbsolutePath().split(Pattern.quote(File.separator));
-        String fileParts[] = f.getAbsolutePath().split(Pattern.quote(File.separator));
-        String res = "";
+//        String rootParts[] = ROOT_DIRECTORY.getAbsolutePath().split(Pattern.quote(File.separator));
+//        String fileParts[] = f.getAbsolutePath().split(Pattern.quote(File.separator));
+//        String res = "";
+//
+//
+//        for (int i = rootParts.length - 1; i < fileParts.length; i++){
+//                res+="/" + fileParts[i];
+//        }
+//
+//       if (res.startsWith("/.")){
+//           res = res.substring(2);
+//       }
 
 
-        for (int i = rootParts.length - 1; i < fileParts.length; i++){
 
-                res+="/" + fileParts[i];
+//        return  res;
+        String fp = f.getAbsolutePath().replaceAll(Pattern.quote(File.separator), "/");
+        String rp = ROOT_DIRECTORY.getAbsolutePath().replaceAll(Pattern.quote(File.separator), "/");
+
+        int index = fp.indexOf(rp);
+        if (index > -1){
+            return fp.replace(rp, "");
         }
-
-       if (res.startsWith("/.")){
-           res = res.substring(2);
-       }
-
-
-
-        return  res;
+        return f.getAbsolutePath().replaceAll(Pattern.quote(ROOT_DIRECTORY.getAbsolutePath()), "")
+                .replaceAll("\\\\", "/");
     }
 
     static class Lib {
@@ -497,7 +508,6 @@ public class Builder {
                 }
             }
 
-            System.out.println("\tsrc: " +  source.getAbsolutePath());
             System.out.println("\tjar entry: " +  name);
             BufferedInputStream in = null;
             FileInputStream fileInputStream = null;
