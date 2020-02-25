@@ -13,18 +13,18 @@ import com.arise.weland.dto.*;
 import java.net.URLEncoder;
 import java.util.Map;
 
-public class Client  {
+public class WelandAPI {
 
-    private static final Mole log = Mole.getInstance(Client.class);
+    private static final Mole log = Mole.getInstance(WelandAPI.class);
 
 
     protected static AbstractClient currentClient;
 
-    public Client(){
+    public WelandAPI(){
 
     }
 
-    public Client setClient(AbstractClient c){
+    public WelandAPI setClient(AbstractClient c){
         currentClient = c;
         return this;
     }

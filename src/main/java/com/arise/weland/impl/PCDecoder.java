@@ -155,6 +155,7 @@ public class PCDecoder extends ContentInfoDecoder {
         try {
             f = AudioFileIO.read(file);
         } catch (Throwable e) {
+
             f = null;
         }
         if (f == null){
@@ -226,7 +227,8 @@ public class PCDecoder extends ContentInfoDecoder {
         if (!f.exists()){
             try {
                 f = new File(new URI(id));
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
+                System.out.println("-----FAILED to read uri " + id);
                 f = null;
             }
         }

@@ -99,50 +99,55 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                try {
-                    System.out.println("TODO CONNECT");
-                    HttpURLConnection con = getConnection(request);
+               connectSync(request, completionHandler);
+            }
+        });
+    }
 
-                    if (request.hasPayload()){
-                        con.setDoOutput(true);
-                        con.setRequestProperty("Content-Length", String.valueOf(request.payload().length));
-                    }
 
-                    try {
-                        con.setRequestMethod(request.method());
-                    } catch (ProtocolException e) {
-                        onError(e);
-                    }
+    protected void connectSync(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler){
+        try {
 
-                    if (!CollectionUtil.isEmpty(request.getHeaders())){
-                        for (Map.Entry<String, String> entry: request.getHeaders().entrySet()){
-                            con.setRequestProperty(entry.getKey(), entry.getValue());
-                        }
-                    }
+            HttpURLConnection con = getConnection(request);
 
-                    con.setConnectTimeout(5000);
-                    con.setReadTimeout(5000);
+            if (request.hasPayload()){
+                con.setDoOutput(true);
+                con.setRequestProperty("Content-Length", String.valueOf(request.payload().length));
+            }
 
-                    try {
-                        con.connect();
-                    } catch (Throwable e) {
-                        Mole.getInstance(JHttpClient.class).log("JHttpClient", e);
+            try {
+                con.setRequestMethod(request.method());
+            } catch (ProtocolException e) {
+                onError(e);
+            }
 
-                        //SERVER IS DOWN AFTER LOADING DATA
+            if (!CollectionUtil.isEmpty(request.getHeaders())){
+                for (Map.Entry<String, String> entry: request.getHeaders().entrySet()){
+                    con.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
+
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+
+            try {
+                con.connect();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                System.exit(-1);
+                //SERVER IS DOWN AFTER LOADING DATA
 //                        e.printStackTrace();
 //
 //                        Socket socket =  new Socket("localhost", 8221);
 //                        socket.getOutputStream().write("hey".getBytes());
 //                        socket.close();
 
-                    }
-
-                    completionHandler.onComplete(con);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
-        });
+
+            completionHandler.onComplete(con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public HttpURLConnection getConnection(HttpRequest request) throws Exception {

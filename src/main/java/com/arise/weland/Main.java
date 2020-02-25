@@ -15,6 +15,7 @@ import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.SelfUpdater;
 import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
+import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -62,7 +63,7 @@ public class Main {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                new SelfUpdater().check();
+//                new SelfUpdater().check();
             }
         });
 
@@ -139,6 +140,8 @@ public class Main {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //start main UI
+
             }
         });
 
@@ -159,6 +162,10 @@ public class Main {
                 }
             }
         });
+        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
+        welandFrame.setVisible(true);
+        welandFrame.initComponents();
+        welandFrame.pack();
     }
 
     private void stopAll() {

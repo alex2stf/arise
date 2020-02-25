@@ -344,6 +344,23 @@ public class ReflectUtil {
         return null;
     }
 
+    public static boolean isInstanceOf(Object worker, String className) {
+        if (isNull(worker)){
+            return false;
+        }
+
+        if (className.equals(worker.getClass().getName())){
+            return true;
+        }
+
+        if (className.equals(worker.getClass().getCanonicalName())){
+            return true;
+        }
+
+
+        return objectIsAssignableFrom(worker, className);
+    }
+
 
     public abstract static class IMethod<T>{
 

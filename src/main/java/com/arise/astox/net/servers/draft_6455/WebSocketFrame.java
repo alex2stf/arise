@@ -1077,7 +1077,7 @@ public class WebSocketFrame extends DuplexDraft.Frame {
      * <p>
      * The logic of masking/unmasking is described in "<a href=
      * "http://tools.ietf.org/html/rfc6455#section-5.3">5.3.
-     * Client-to-Server Masking</a>" in RFC 6455.
+     * WelandAPI-to-Server Masking</a>" in RFC 6455.
      * </p>
      *
      * @param maskingKey
@@ -1090,7 +1090,7 @@ public class WebSocketFrame extends DuplexDraft.Frame {
      * @return
      *         {@code payload}.
      *
-     * @see <a href="http://tools.ietf.org/html/rfc6455#section-5.3">5.3. Client-to-Server Masking</a>
+     * @see <a href="http://tools.ietf.org/html/rfc6455#section-5.3">5.3. WelandAPI-to-Server Masking</a>
      */
     public static byte[] mask(byte[] maskingKey, byte[] payload)
     {

@@ -7,6 +7,7 @@ import java.util.UUID;
 public class ThreadUtil {
 
     public static Thread fireAndForget(Runnable action, String name){
+
         Thread t = new Thread(action);
         if (name != null){
             t.setName(name);

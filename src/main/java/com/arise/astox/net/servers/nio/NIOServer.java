@@ -411,7 +411,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
                         peerNetData = handleBufferUnderflow(engine, peerNetData);
                         break;
                     case CLOSED:
-                        log.debug("Client wants to close connection...");
+                        log.debug("WelandAPI wants to close connection...");
                         closeConnection(socketChannel, engine, key, sslServer);
                         log.debug("Goodbye client!");
                         return;
