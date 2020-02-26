@@ -12,7 +12,13 @@ public class ThreadUtil {
         if (name != null){
             t.setName(name);
         }
-        t.start();
+        try {
+            t.start();
+        }catch (OutOfMemoryError error){
+            error.printStackTrace();
+            t.run();
+        }
+
         return t;
     }
 

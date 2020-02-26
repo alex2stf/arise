@@ -70,13 +70,16 @@ public class ContentInfoProvider {
         fireAndForget(new Runnable() {
             @Override
             public void run() {
-                log.info("start recursive read");
+
                 for (final File root: roots){
+                    log.info("start recursive read root " + root.getAbsolutePath());
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
 
                             if (!file.getName().startsWith(".")){
+
+                                System.out.println("scn " + file.getAbsolutePath());
                                 if (isMusic(file)){
                                     music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
                                 }
@@ -105,7 +108,8 @@ public class ContentInfoProvider {
                 }
 
 
-                log.trace("RECURSIVE SCAN COMPLETE");
+                log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
+
                 decoder.onScanComplete();
             }
         });
@@ -124,6 +128,9 @@ public class ContentInfoProvider {
 
 
     public ContentInfoProvider addRoot(File root) {
+        if (root == null || !root.exists() || !root.isDirectory()){
+            return this;
+        }
         roots.add(root);
         return this;
     }

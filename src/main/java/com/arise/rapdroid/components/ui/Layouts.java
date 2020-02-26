@@ -55,11 +55,17 @@ public class Layouts {
     private static final LinearLayout.LayoutParams WRAP_CONTENT_MATCH_PARENT =
             new LinearLayout.LayoutParams(WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+    public static final LinearLayout.LayoutParams MATCH_PARENT_MATCH_PARENT_03F =
+            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.3f);
 
 
     public static final class Linear {
         public static final LinearLayout.LayoutParams matchParentMatchParent(){
             return MATCH_PARENT_MATCH_PARENT;
+        }
+
+        public static final LinearLayout.LayoutParams matchParentMatchParent03f(){
+            return MATCH_PARENT_MATCH_PARENT_03F;
         }
 
         public static final LinearLayout.LayoutParams wrapContentWrapContent(){

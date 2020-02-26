@@ -10,6 +10,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -203,8 +204,13 @@ public class WelandAPI {
 
 
     public void findThumbnail(String id, final CompleteHandler<byte[]> success, CompleteHandler onError){
+        try {
+            id = URLEncoder.encode(id, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+
+        }
         HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/thumbnail/" + id);
+                .setMethod("GET").setUri("/thumbnail?id=" + id);
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse data) {

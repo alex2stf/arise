@@ -1,6 +1,9 @@
 package com.arise.weland.impl;
 
+import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.*;
+import com.arise.quixot.Quixot;
+import com.arise.weland.IDGen;
 import com.arise.weland.dto.ContentInfo;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -14,8 +17,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
@@ -25,33 +31,111 @@ import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 
 public class PCDecoder extends ContentInfoDecoder {
-    Map<String, ContentInfo> cache = new HashMap<>();
 
     private static final Mole log = Mole.getInstance(PCDecoder.class);
 
 
+    private static final SuggestionService suggestionService = new SuggestionService()
+            .load("weland/config/commons/suggestions.json");
 
 
 
     @Override
     protected ContentInfo decodeFile(File file) {
-        if (cache.containsKey(file.getAbsolutePath())){
-            return cache.get(file.getAbsolutePath());
+        if (contentCache.containsKey(file.getAbsolutePath())){
+            return contentCache.get(file.getAbsolutePath());
         }
-        ContentInfo info = new ContentInfo(file);
+        final ContentInfo info = new ContentInfo(file);
+
 
         new VLCPlayer.MmrData().fetchPrepareInfo(info);
-        String s = info.getExt();
 
-        try {
-            trySwing(info, file);
-        } catch (Throwable t){
+        if (!StringUtil.hasText(info.getThumbnailId())){
+            suggestionService.searchIcons(file.getName(), new SuggestionService.Manager() {
+                @Override
+                public boolean manage(String id, String path, URL url) {
+                    byte bytes[] = get(id, url, getStateDirectory());
+                    if (bytes != null && bytes.length > 2){
+                        info.setThumbnailId(id);
+                        return true;
+                    }
+                    return false;
+                }
 
+                @Override
+                public boolean manageBytes(String x, byte[] bytes, ContentType contentType) {
+                    if (bytes != null){
+                        info.setThumbnailId(x);
+                        bytesCache.put(x, bytes);
+                    }
+                    return true;
+                }
+            });
         }
-        cache.put(file.getAbsolutePath(), info);
+
+
+
+        if (!StringUtil.hasText(info.getThumbnailId())){
+            try {
+                trySwing(info, file);
+            } catch (Throwable t){
+
+            }
+        }
+        contentCache.put(file.getAbsolutePath(), info);
 
         return info;
     }
+
+
+    public byte[] get(String id, URL url, File cacheDir){
+
+        if (bytesCache.containsKey(id)){
+            return bytesCache.get(id);
+        }
+        byte[] bytes = readLocalIfExists(cacheDir, id);
+        if (bytes != null){
+            bytesCache.put(id, bytes);
+            return bytes;
+        }
+
+
+        HttpURLConnection connection;
+        try {
+            connection = DependencyManager.getConnection(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = connection.getInputStream();
+            bytes = StreamUtil.toBytes(inputStream);
+        } catch (IOException e) {
+            System.out.println("Failed to fetch " + url);
+        }
+        finally {
+            Util.close(inputStream);
+        }
+
+        if (bytes != null){
+            File f = new File(cacheDir + File.separator + id);
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(f);
+                fileOutputStream.write(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Util.close(fileOutputStream);
+        }
+
+        if (id != null && bytes != null){
+            bytesCache.put(id, bytes);
+        }
+        return bytes;
+    }
+
 
     private void innerFileSearch(ContentInfo info, File file){
         File currDir = file.getParentFile();
@@ -97,7 +181,6 @@ public class PCDecoder extends ContentInfoDecoder {
 
     }
 
-    private Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
     private void trySwing(ContentInfo info, File file) {
 
@@ -210,15 +293,34 @@ public class PCDecoder extends ContentInfoDecoder {
 
     @Override
     public byte[] getThumbnail(String id) {
-        if (bytesCache.containsKey(id)){
-            return bytesCache.get(id);
+        System.out.println("GET THUMBNAIL " + id);
+        if (!StringUtil.hasText(id)){
+            return null;
         }
+
 
         try {
             id = URLDecoder.decode(id, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+        if (bytesCache.containsKey(id)){
+            return bytesCache.get(id);
+        }
+
+        try {
+            URL url = new URL(id);
+            String actualId = IDGen.parsePath(id);
+            byte bytes[] = get(actualId, url, getStateDirectory());
+            if (bytes != null){
+                bytesCache.put(id, bytes);
+                return bytes;
+            }
+        } catch (Exception e) {
+
+        }
+
 
 
 

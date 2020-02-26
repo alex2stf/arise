@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.TypeUtil.isNull;
@@ -113,20 +114,29 @@ public class SuggestionService {
         return this;
     }
 
+    private Map<String, byte[]> b64encods= new ConcurrentHashMap<>();
+    private Map<String, ContentType> b64Ctypes= new ConcurrentHashMap<>();
+
     private boolean validUrl(String url, Manager manager, String path){
         String id = StringEncoder.encodeShiftSHA(url);
 
         if (url.startsWith("data:")){
+            if (b64encods.containsKey(id)){
+                return manager.manageBytes(id, b64encods.get(id), b64Ctypes.get(id));
+            }
             int sepIndex = url.indexOf(",");
             String start = url.substring(0, sepIndex);
-            System.out.println(start);
-
             String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
             ContentType contentType = ContentType.search(ctype);
             String content = url.substring(sepIndex + 1);
 
+            System.out.println("B64decode " + url);
             try {
                 byte bytes[] = B64.decodeToByteArray(content);
+                if (bytes != null){
+                    b64encods.put(id, bytes);
+                    b64Ctypes.put(id, contentType);
+                }
                 return manager.manageBytes(id, bytes, contentType);
             } catch (Exception e) {
                return false;

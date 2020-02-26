@@ -41,7 +41,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 
     Map<String, Bitmap> bitmapCache = new ConcurrentHashMap<>();
-    Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
+
 
 
     public AndroidContentDecoder(){
@@ -236,18 +236,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
     }
 
 
-    public byte[] readLocalIfExists( File cacheDir, String id){
-        byte[] bytes = null;
-        File f = new File(cacheDir + File.separator + id);
-        if (f.exists()){
-            try {
-                bytes = StreamUtil.fullyReadFileToBytes(f);
-            } catch (IOException e) {
-                bytes = null;
-            }
-        }
-        return bytes;
-    }
+
 
 
 

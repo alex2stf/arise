@@ -9,8 +9,10 @@ import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import static com.arise.core.tools.StringUtil.hasContent;
@@ -18,6 +20,7 @@ import static com.arise.core.tools.StringUtil.hasContent;
 public abstract class ContentInfoDecoder {
 
     protected Map<String, ContentInfo> contentCache = new HashMap<>();
+    protected Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
     ContentInfo currentInfo;
     protected ContentInfoProvider provider;
@@ -94,6 +97,19 @@ public abstract class ContentInfoDecoder {
     public void onScanComplete() {
 
 
+    }
+
+    protected byte[] readLocalIfExists( File cacheDir, String id){
+        byte[] bytes = null;
+        File f = new File(cacheDir + File.separator + id);
+        if (f.exists()){
+            try {
+                bytes = StreamUtil.fullyReadFileToBytes(f);
+            } catch (IOException e) {
+                bytes = null;
+            }
+        }
+        return bytes;
     }
 
     public void clearState() {

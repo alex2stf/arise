@@ -24,6 +24,9 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -223,7 +226,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if (request.pathsStartsWith("thumbnail")){
-      String id = request.getPathAt(1);
+      String id = request.getQueryParam("id");
       return contentInfoProvider.getMediaPreview(id).addCorelationId(correlationId);
     }
 
@@ -305,14 +308,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-//    if ("/ctrl".equalsIgnoreCase(request.path())){
-////      if (iDeviceController != null){
-////        deviceCtrlCmd.digest(request.getQueryParams());
-////        iDeviceController.update(deviceCtrlCmd);
-////      }
-////      return HttpResponse.json(deviceStat.toJson());
-//      return devctrlResponse;
-//    }
+
 
 
     return super.getHTTPResponse(request, server);

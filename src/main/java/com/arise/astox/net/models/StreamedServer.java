@@ -201,11 +201,14 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                     }
                 }
                 close(connection);
+                Thread.currentThread().interrupt();
             }
         } else {
             outputStream.write(requestHandler.getDefaultResponse(this).bytes());
             close(connection);
+            Thread.currentThread().interrupt();
         }
+
     }
 
 //    @Override

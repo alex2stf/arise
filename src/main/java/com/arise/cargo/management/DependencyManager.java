@@ -23,15 +23,7 @@ import java.util.Map;
 public class DependencyManager {
 
 
-//    private static final Mole log = Mole.getInstance(DependencyManager.class);
-
-    public static File download(String uri, File outDir, String name) throws IOException {
-        URL url = new URL(uri);
-
-        File out = new File(outDir, name);
-        if (out.exists()){
-            return out;
-        }
+    public static HttpURLConnection getConnection(URL url) throws IOException {
         Proxy proxy = null;
 
         if (StringUtil.hasContent(System.getProperty("proxy.host"))){
@@ -50,12 +42,28 @@ public class DependencyManager {
             proxy  = new Proxy(proxyType, inetSocketAddress);
         }
 
-       HttpURLConnection connection;
-       if (proxy != null){
-           connection = (HttpURLConnection) url.openConnection(proxy);
-       } else {
-           connection = (HttpURLConnection) url.openConnection();
-       }
+        HttpURLConnection connection;
+        if (proxy != null){
+            return  (HttpURLConnection) url.openConnection(proxy);
+        } else {
+            return  (HttpURLConnection) url.openConnection();
+        }
+    }
+
+
+    public static File download(String uri, File outDir, String name) throws IOException {
+        return download(new URL(uri), outDir, name);
+    }
+
+
+    public static File download(URL url, File outDir, String name) throws IOException {
+
+
+        File out = new File(outDir, name);
+        if (out.exists()){
+            return out;
+        }
+        HttpURLConnection connection = getConnection(url);
 
         connection.setRequestMethod("GET");
 
@@ -64,13 +72,13 @@ public class DependencyManager {
         int contentLength = connection.getContentLength();
         int responseCode = connection.getResponseCode();
         if (responseCode != 200){
-            throw new RuntimeException("wget " + responseCode + " " + uri);
+            throw new RuntimeException("wget " + responseCode + " " + url);
         }
 
         RandomAccessFile file = new RandomAccessFile(out.getAbsolutePath(), "rw");
         InputStream stream = connection.getInputStream();
 
-        System.out.print("wget " + uri);
+        System.out.print("wget " + url);
         int size = contentLength; // size of download in bytes
         int downloaded = 0; // number of bytes downloaded
         int MAX_BUFFER_SIZE = 1024;

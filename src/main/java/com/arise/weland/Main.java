@@ -104,6 +104,11 @@ public class Main {
             contentInfoProvider.addRoot(rootFile);
         }
         else {
+            File musicDir = FileUtil.findMusicDir();
+            File videosDir = FileUtil.findMoviesDir();
+
+            contentInfoProvider.addRoot(musicDir);
+            contentInfoProvider.addRoot(videosDir);
             for (File f: File.listRoots()){
                 if (!f.getAbsolutePath().startsWith("C:")) {
                     contentInfoProvider.addRoot(f);
@@ -162,10 +167,23 @@ public class Main {
                 }
             }
         });
-        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
-        welandFrame.setVisible(true);
-        welandFrame.initComponents();
-        welandFrame.pack();
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                System.out.println(info);
+                if ("Metal".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            ;;
+        }
+//        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
+//        welandFrame.setVisible(true);
+//        welandFrame.initComponents();
+//        welandFrame.pack();
+//        welandFrame.fullscreen();
     }
 
     private void stopAll() {

@@ -11,7 +11,6 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.PCDecoder;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -26,6 +25,8 @@ public class WelandFrame extends javax.swing.JFrame {
 
         this.contentInfoProvider = contentInfoProvider;
     }
+
+
 
     /**
      * Creates new form WelandFrame
@@ -54,7 +55,6 @@ public class WelandFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new javax.swing.OverlayLayout(getContentPane()));
 
-        tabContainer.setBackground(new java.awt.Color(255, 153, 153));
         tabContainer.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabContainer.addTab("music", musicDisplayer);
         tabContainer.addTab("videos", videoDisplayer);
@@ -62,45 +62,39 @@ public class WelandFrame extends javax.swing.JFrame {
         getContentPane().add(tabContainer);
 
 
-    }// </editor-fold>//GEN-END:initComponents
+
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WelandFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WelandFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WelandFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(WelandFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-
-
-
         WelandFrame welandFrame= new WelandFrame(new ContentInfoProvider(new PCDecoder()));
         welandFrame.setVisible(true);
         welandFrame.initComponents();
         welandFrame.pack();
+
+    }
+
+    public void fullscreen(){
+        fullScreen(this, 1200, 800);
     }
 
     private ContentDisplayer musicDisplayer;
     private javax.swing.JTabbedPane tabContainer;
     private ContentDisplayer videoDisplayer;
+
+
+    public static final void fullScreen(JFrame jFrame, int width, int height){
+        try {
+            java.awt.GraphicsEnvironment graphicsEnvironment = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+            java.awt.GraphicsDevice device = graphicsEnvironment.getDefaultScreenDevice();
+            java.awt.DisplayMode displayMode = device.getDisplayMode();
+            width = displayMode.getWidth();
+            height = displayMode.getHeight();
+            jFrame.setSize(width, height);
+        }catch (Throwable t){
+
+        }
+    }
 }

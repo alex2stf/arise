@@ -161,13 +161,13 @@ public class MediaControls extends LinearLayout {
             mBasePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mBasePaint.setStyle(Paint.Style.STROKE);
             mBasePaint.setStrokeWidth(STROKE_WIDTH);
-            mBasePaint.setColor(Color.parseColor("#363165"));
+            mBasePaint.setColor(Color.parseColor("#2b2273"));
 
             if (withScroll) {
                 mDegreesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 mDegreesPaint.setStyle(Paint.Style.STROKE);
                 mDegreesPaint.setStrokeWidth(STROKE_WIDTH);
-                mDegreesPaint.setColor(Color.parseColor("#A8A3D1"));
+                mDegreesPaint.setColor(Color.parseColor("#5d53b0"));
             }
         }
 
@@ -205,9 +205,10 @@ public class MediaControls extends LinearLayout {
                 mRect = new RectF(startTop, startLeft, endRight, endBottom);
             }
 
-            mCenterPaint.setShader(new LinearGradient(startTop, startLeft, endRight, endBottom,
-                    Color.parseColor("#BE0B0252"), Color.parseColor("#AE2004FF"),
-                    Shader.TileMode.CLAMP));
+//            mCenterPaint.setShader(new LinearGradient(startTop, startLeft, endRight, endBottom,
+//                    Color.parseColor("#BE0B0252"), Color.parseColor("#AE2004FF"),
+//                    Shader.TileMode.CLAMP));
+            mCenterPaint.setColor(Color.parseColor("#6e6b6e"));
             canvas.drawCircle(centerX, centerY, radius - STROKE_WIDTH / 2, mBasePaint);
 
             if (withScroll){

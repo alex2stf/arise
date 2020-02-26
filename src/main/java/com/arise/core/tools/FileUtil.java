@@ -21,13 +21,8 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.arise.core.tools.CollectionUtil.*;
 
@@ -90,6 +85,9 @@ public class FileUtil {
         File musicDir = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
                 "getExternalStoragePublicDirectory", String.class)
                 .callFor(File.class, "Music");
+        if (musicDir == null || !musicDir.exists()){
+            musicDir = getUserDirectory("Music");
+        }
         return musicDir;
     }
 
@@ -104,6 +102,12 @@ public class FileUtil {
         File moviesDir = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
                 "getExternalStoragePublicDirectory", String.class)
                 .callFor(File.class, "Movies");
+        if (moviesDir == null || !moviesDir.exists()){
+            moviesDir = getUserDirectory("Videos");
+        }
+        if (moviesDir == null || !moviesDir.exists()){
+            moviesDir = getUserDirectory("Movies");
+        }
         return moviesDir;
     }
 
@@ -112,6 +116,17 @@ public class FileUtil {
                 "getExternalStoragePublicDirectory", String.class)
                 .callFor(File.class, "Documents");
         return documentsDir;
+    }
+
+    public static File getUserDirectory(String name){
+        String usrHome = System.getProperty("user.home");
+        if (!StringUtil.hasText(usrHome)){
+            usrHome = "usr_dir";
+        }
+        if (!usrHome.endsWith(File.separator)){
+            usrHome += File.separator;
+        }
+        return new File(usrHome, name);
     }
 
     public static File findOrCreateUserDirectory(String name){
@@ -364,26 +379,63 @@ public class FileUtil {
     public static void recursiveScan(File directory, FileFoundHandler fileFoundHandler){
         recursiveScan(null, directory, fileFoundHandler);
     }
+
+    static class FScan {
+        private File directory;
+        private FileFoundHandler fileFoundHandler;
+
+        private Queue<File> dirs = new LinkedBlockingQueue<>();
+        FScan(File directory, FileFoundHandler fileFoundHandler){
+
+            this.directory = directory;
+            this.fileFoundHandler = fileFoundHandler;
+
+            scanDir(this.directory);
+        }
+
+        void scanDir(File directory){
+            File[] files = listFiles(directory, null);
+
+            if (files.length > 0){
+                for (File f: files){
+                    if (f.isDirectory()){
+                        dirs.add(f);
+                    }
+                    else {
+                        fileFoundHandler.foundFile(f);
+                    }
+                }
+            }
+            if (!dirs.isEmpty()){
+                scanDir(dirs.remove());
+            }
+        }
+    }
     public static void recursiveScan(FilenameFilter filenameFilter, File directory, FileFoundHandler fileFoundHandler){
         if (!fileExists(directory)){
             return;
         }
 
 
-        File[] files = listFiles(directory, filenameFilter);
 
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()
-                 && fileFoundHandler != null
-                 && fileFoundHandler.acceptDir(files[i])
-            ){
-                    recursiveScan(files[i], fileFoundHandler);
-            } else {
-                if (fileFoundHandler != null){
-                    fileFoundHandler.foundFile(files[i]);
-                }
-            }
-        }
+        new FScan(directory, fileFoundHandler);
+//        File[] files = listFiles(directory, filenameFilter);
+//
+//        if (files.length == 0){
+//            return;
+//        }
+//        for (int i = 0; i < files.length; i++) {
+//            if (files[i].isDirectory()
+//                 && fileFoundHandler != null
+//                 && fileFoundHandler.acceptDir(files[i])
+//            ){
+//                    recursiveScan(files[i], fileFoundHandler);
+//            } else {
+//                if (fileFoundHandler != null){
+//                    fileFoundHandler.foundFile(files[i]);
+//                }
+//            }
+//        }
     }
 
 

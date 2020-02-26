@@ -4,8 +4,10 @@ import com.arise.astox.net.clients.JHttpClient;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.*;
+import com.arise.weland.WelandClient;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Message;
+import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import uk.co.caprica.vlcj.binding.LibVlc;
@@ -97,23 +99,11 @@ public class VLCPlayer {
     private VLCPlayer(){
         Logger.setLevel(Logger.Level.ERROR);
 
-        int width = 1200;
-        int height = 800;
-
-        try {
-            java.awt.GraphicsEnvironment graphicsEnvironment = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
-            java.awt.GraphicsDevice device = graphicsEnvironment.getDefaultScreenDevice();
-            java.awt.DisplayMode displayMode = device.getDisplayMode();
-            width = displayMode.getWidth();
-            height = displayMode.getHeight();
-        }catch (Throwable t){
-
-        }
 
         mainFrame = new JFrame("VLC Player");
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.setLocation(0, 0);
-        mainFrame.setSize(width, height);
+       WelandFrame.fullScreen(mainFrame, 1200, 800);
 
         mediaPlayerComponent = new MyStandardEmbeddedMediaPlayerComponent();
         mainFrame.setContentPane(mediaPlayerComponent);
@@ -276,8 +266,6 @@ public class VLCPlayer {
                     info.setThumbnailId(f.getAbsolutePath());
                     log.info("Found thumbnail " + f.getAbsolutePath() + "\n  for " + info.getPath());
                 }
-
-
             }
             mediaPlayer.release();
             return mediaMeta;
