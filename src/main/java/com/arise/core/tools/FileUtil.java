@@ -394,6 +394,7 @@ public class FileUtil {
         }
 
         void scanDir(File directory){
+            System.out.println("scn " + directory.getAbsolutePath());
             File[] files = listFiles(directory, null);
 
             if (files.length > 0){
@@ -402,10 +403,16 @@ public class FileUtil {
                         dirs.add(f);
                     }
                     else {
-                        fileFoundHandler.foundFile(f);
+                        System.out.println("found " + f.getAbsolutePath());
+                        try {
+                            fileFoundHandler.foundFile(f);
+                        }catch (Throwable t){
+                            t.printStackTrace();
+                        }
                     }
                 }
             }
+            System.out.println("DIRS size : " + dirs.size());
             if (!dirs.isEmpty()){
                 scanDir(dirs.remove());
             }

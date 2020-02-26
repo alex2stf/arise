@@ -79,7 +79,7 @@ public class ContentInfoProvider {
 
                             if (!file.getName().startsWith(".")){
 
-                                System.out.println("scn " + file.getAbsolutePath());
+
                                 if (isMusic(file)){
                                     music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
                                 }
