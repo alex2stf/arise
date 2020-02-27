@@ -12,6 +12,7 @@ import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.Playlist;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,6 +62,14 @@ public class ContentInfoProvider {
     }
 
 
+    static boolean acceptFilename(String name){
+        if (name.indexOf(".") > -1){
+            return ContentType.isMusic(name) || ContentType.isVideo(name);
+
+        }
+        return true;
+    }
+
 
 
 
@@ -77,22 +86,23 @@ public class ContentInfoProvider {
                         @Override
                         public void foundFile(File file) {
 
-                            if (!file.getName().startsWith(".")){
-
-
-                                if (isMusic(file)){
+                            System.out.println("-> " + file);
+                            if (!file.getName().startsWith(".")) {
+                                if (isMusic(file)) {
                                     music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
-                                }
-                                else if (isVideo(file)){
+                                } else if (isVideo(file)) {
                                     videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
-                                }
-                                else if (isGame(file)){
+                                } else if (isGame(file)) {
                                     games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
-                                }
-                                else if (isPresentation(file)){
+                                } else if (isPresentation(file)) {
                                     presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
                                 }
                             }
+                        }
+                    }, new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            return acceptFilename(name);
                         }
                     });
                 }

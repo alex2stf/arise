@@ -19,6 +19,7 @@ import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
+import javax.swing.*;
 import java.io.File;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class Main {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-//                new SelfUpdater().check();
+                new SelfUpdater().check();
             }
         });
 
@@ -114,6 +115,9 @@ public class Main {
                     contentInfoProvider.addRoot(f);
                 }
             }
+
+            //TODO remove this:
+            contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\OneDrive"));
         }
 
 
@@ -145,8 +149,6 @@ public class Main {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //start main UI
-
             }
         });
 
@@ -168,22 +170,12 @@ public class Main {
             }
         });
 
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                System.out.println(info);
-                if ("Metal".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            ;;
-        }
-//        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
-//        welandFrame.setVisible(true);
-//        welandFrame.initComponents();
-//        welandFrame.pack();
-//        welandFrame.fullscreen();
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
+        welandFrame.setVisible(true);
+        welandFrame.initComponents();
+        welandFrame.pack();
+        welandFrame.fullscreen();
     }
 
     private void stopAll() {

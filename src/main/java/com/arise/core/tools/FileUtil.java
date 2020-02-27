@@ -20,6 +20,13 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -338,24 +345,12 @@ public class FileUtil {
     }
 
 
-    private static boolean fileExists(File file){
-        if (file == null){
-            log.debug("null directory");
-            return false;
-        }
-
-        if (!file.exists()){
-            log.debug("directory " + file.getAbsolutePath() + " does not exist");
-            return false;
-        }
-        return true;
+    private static boolean fileExists(File f){
+        return (f != null && f.exists());
     }
 
 
    
-    static File [] listFiles(File directory){
-        return listFiles(directory, null);
-    }
 
     static File [] listFiles(File directory, FilenameFilter filenameFilter){
         if(!fileExists(directory)){
@@ -376,73 +371,65 @@ public class FileUtil {
         return files;
     }
 
+
+
+
+
     public static void recursiveScan(File directory, FileFoundHandler fileFoundHandler){
-        recursiveScan(null, directory, fileFoundHandler);
+        recursiveScan(directory, fileFoundHandler, null);
     }
-
-    static class FScan {
-        private File directory;
-        private FileFoundHandler fileFoundHandler;
-
-        private Queue<File> dirs = new LinkedBlockingQueue<>();
-        FScan(File directory, FileFoundHandler fileFoundHandler){
-
-            this.directory = directory;
-            this.fileFoundHandler = fileFoundHandler;
-
-            scanDir(this.directory);
-        }
-
-        void scanDir(File directory){
-            System.out.println("scn " + directory.getAbsolutePath());
-            File[] files = listFiles(directory, null);
-
-            if (files.length > 0){
-                for (File f: files){
-                    if (f.isDirectory()){
-                        dirs.add(f);
-                    }
-                    else {
-                        System.out.println("found " + f.getAbsolutePath());
-                        try {
-                            fileFoundHandler.foundFile(f);
-                        }catch (Throwable t){
-                            t.printStackTrace();
-                        }
-                    }
-                }
-            }
-            System.out.println("DIRS size : " + dirs.size());
-            if (!dirs.isEmpty()){
-                scanDir(dirs.remove());
-            }
-        }
-    }
-    public static void recursiveScan(FilenameFilter filenameFilter, File directory, FileFoundHandler fileFoundHandler){
+    public static void recursiveScan(File directory, FileFoundHandler fileFoundHandler, FilenameFilter filenameFilter){
         if (!fileExists(directory)){
             return;
         }
 
 
 
-        new FScan(directory, fileFoundHandler);
-//        File[] files = listFiles(directory, filenameFilter);
-//
-//        if (files.length == 0){
-//            return;
-//        }
-//        for (int i = 0; i < files.length; i++) {
-//            if (files[i].isDirectory()
-//                 && fileFoundHandler != null
-//                 && fileFoundHandler.acceptDir(files[i])
-//            ){
-//                    recursiveScan(files[i], fileFoundHandler);
-//            } else {
-//                if (fileFoundHandler != null){
-//                    fileFoundHandler.foundFile(files[i]);
+        File[] files = listFiles(directory, filenameFilter);
+
+        if (files == null || files.length == 0){
+            return;
+        }
+
+        for (int i = 0; i < files.length; i++) {
+            File c = files[i];
+            if (c.isDirectory()
+                 && c.canRead()
+                 && fileFoundHandler != null
+                 && fileFoundHandler.acceptDir(c)
+            ){
+
+//                try {
+//                    try {
+//                        System.out.println("\n\n\n\n\nsleep " + files.length + "\n\n\n\n\n");
+//                        Thread.sleep(files.length);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    walkTree(c, fileFoundHandler);
+//                } catch (IOException e) {
+//                    log.warn("walkTree failed for " + c.getAbsolutePath());
+//                    recursiveScan(c, fileFoundHandler);
 //                }
-//            }
-//        }
+                recursiveScan(c, fileFoundHandler, filenameFilter);
+            } else if (c.isFile() && fileFoundHandler != null){
+                fileFoundHandler.foundFile(c);
+            }
+        }
+    }
+
+    public static void walkTree( File directory,  final FileFoundHandler fileFoundHandler) throws IOException {
+            Files.walkFileTree(Paths.get(directory.getAbsolutePath()), new SimpleFileVisitor<Path>(){
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (attrs.isDirectory() && !attrs.isSymbolicLink()){
+                        recursiveScan(file.toFile(), fileFoundHandler);
+                    } else {
+                        fileFoundHandler.foundFile(file.toFile());
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
     }
 
 

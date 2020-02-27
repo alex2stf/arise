@@ -2,7 +2,6 @@ package com.arise.weland.impl;
 
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.*;
-import com.arise.quixot.Quixot;
 import com.arise.weland.IDGen;
 import com.arise.weland.dto.ContentInfo;
 import org.jaudiotagger.audio.AudioFile;
@@ -10,22 +9,16 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
-import uk.co.caprica.vlcj.player.MediaMeta;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 

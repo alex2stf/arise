@@ -9,12 +9,14 @@ import com.arise.weland.impl.ContentInfoProvider;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static com.arise.weland.impl.ui.desktop.WelandFrame.DARK_BLUE;
+import static com.arise.weland.impl.ui.desktop.WelandFrame.LIGHT_BLUE;
+import static com.arise.weland.impl.ui.desktop.WelandFrame.SMALL_FONT;
 
 /**
  * @author alexandru2.stefan
@@ -31,6 +33,7 @@ public class ContentDisplayer extends javax.swing.JPanel {
     List<ContentIcon> icons = new ArrayList<>();
     ContentInfoProvider contentInfoProvider;
     private GridLayout gridLayout = new java.awt.GridLayout();
+
     // Variables declaration - do not modify
     private javax.swing.JPanel container;
     private javax.swing.JLabel jLabel1;
@@ -48,6 +51,8 @@ public class ContentDisplayer extends javax.swing.JPanel {
     private void initComponents() {
         gridLayout.setColumns(MAX_COLUMNS);
         gridLayout.setRows(MAX_COLUMNS);
+        gridLayout.setHgap(20);
+        gridLayout.setVgap(20);
         java.awt.GridBagConstraints gridBagConstraints;
 
         toolBar = new javax.swing.JToolBar();
@@ -62,10 +67,17 @@ public class ContentDisplayer extends javax.swing.JPanel {
         toolBar.setRollover(true);
 
         jLabel1.setText("Search:");
+        jLabel1.setFont(SMALL_FONT);
+        jLabel1.setForeground(Color.WHITE);
         toolBar.add(jLabel1);
 
         searchTextArea.setText("text to search");
+        searchTextArea.setBackground(LIGHT_BLUE);
+        searchTextArea.setFont(SMALL_FONT);
         toolBar.add(searchTextArea);
+        toolBar.setBackground(DARK_BLUE);
+        toolBar.setBorderPainted(false);
+        toolBar.setForeground(Color.WHITE);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 0;
@@ -92,15 +104,30 @@ public class ContentDisplayer extends javax.swing.JPanel {
 
 
 
+        setBackground(DARK_BLUE);
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 fetchData();
             }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                fetchData();
+            }
+
+
+        });
+
+        searchTextArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                System.out.println(e.getKeyChar());
+                super.keyReleased(e);
+            }
         });
     }
 
-    int delay = 1000;
     private void fetchData() {
 
         if (isFetching) {
@@ -108,7 +135,6 @@ public class ContentDisplayer extends javax.swing.JPanel {
         }
 
         isFetching = true;
-        System.out.println("FETCH " + nextIndex);
         if (nextIndex == null) {
             return;
         }
@@ -116,33 +142,9 @@ public class ContentDisplayer extends javax.swing.JPanel {
         WelandClient.mediaList(worker, playlist.name(), nextIndex, new CompleteHandler<ContentPage>() {
             @Override
             public void onComplete(ContentPage data) {
-
-
-//                if(Objects.equals(nextIndex, data.getIndex())){
-//                    delay += 1000;
-//                    System.out.println("RECEIVED SAME INDEX, NO CHANGE, delay in " + delay);
-//                    try {
-//                        Thread.sleep(delay);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    delay = 1000;
-//                }
-
                 nextIndex = data.getIndex();
                 addMediaIcons(data.getData());
-
-
                 isFetching = false;
-
-
-//                if (nextIndex != null && delay < 13000) {
-//                    fetchData();
-//                } else {
-//                    System.out.println("null next index for " + playlist.name());
-//                }
-
             }
         }, new CompleteHandler() {
             @Override
@@ -184,6 +186,12 @@ public class ContentDisplayer extends javax.swing.JPanel {
             gridLayout.setRows(numRows);
         }
 //        gridLayout.setColumns(MAX_COLUMNS);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                fetchData();
+            }
+        });
         container.revalidate();
         container.repaint();
     }
