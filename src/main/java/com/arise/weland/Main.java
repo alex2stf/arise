@@ -116,8 +116,6 @@ public class Main {
                 }
             }
 
-            //TODO remove this:
-            contentInfoProvider.addRoot(new File("C:\\Users\\alexandru2.stefan\\OneDrive"));
         }
 
 
