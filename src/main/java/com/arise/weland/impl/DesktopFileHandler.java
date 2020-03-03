@@ -281,6 +281,7 @@ public class DesktopFileHandler extends ContentHandler {
                 return;
             }
             clearing = true;
+            boolean shouldWait = exes.size() > 0;
             for (String s: exes){
                 try {
                     if (SYSUtils.isWindows()){
@@ -293,6 +294,13 @@ public class DesktopFileHandler extends ContentHandler {
                 }
             }
             exes.clear();
+            if (shouldWait){
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    ;;
+                }
+            }
             clearing = false;
         }
     }
