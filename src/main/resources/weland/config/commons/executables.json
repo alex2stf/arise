@@ -1,8 +1,8 @@
 {
   "browser": [
-    ["C:\\Program Files\\internet explorer\\iexplore.exe", "{arg}"],
     ["C:\\Program Files\\Mozilla Firefox\\firefox.exe", "{arg}"],
-    ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "{arg}"]
+    ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "{arg}"],
+    ["C:\\Program Files\\internet explorer\\iexplore.exe", "{arg}"]
   ],
   "media": [
     ["C:\\Program Files\\Windows Media Player\\wmplayer.exe", "{arg}", "/fullscreen"],
