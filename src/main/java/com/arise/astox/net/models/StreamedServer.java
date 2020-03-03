@@ -220,4 +220,8 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     protected abstract InputStream getInputStream(CONNECTION connection);
 
     protected abstract OutputStream getOutputStream(CONNECTION connection);
+
+
+
+
 }

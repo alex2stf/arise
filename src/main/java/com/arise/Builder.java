@@ -144,7 +144,7 @@ public class Builder {
 
 
     static String BUILD_ID = "1";
-    static File ROOT_DIRECTORY = new File("");
+    static File ROOT_DIRECTORY = new File(".");
     static String JDK_HOME = System.getProperty("java.home");
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -448,9 +448,13 @@ public class Builder {
             FileOutputStream jarFileOutputStream = new FileOutputStream(outJar);
             JarOutputStream target = new JarOutputStream(jarFileOutputStream, manifest);
             File[] files = inputDir.listFiles();
-            for (File f: files){
-                add(f, target, exclude);
+
+            if (files != null){
+                for (File f: files){
+                    add(f, target, exclude);
+                }
             }
+
 
             if (resDirs != null){
                 for (String resDir: resDirs){
@@ -475,8 +479,10 @@ public class Builder {
 
 
                     File rs = new File(rw + s);
-                    add(rs, target, "src/main/resources/");
-                    properties.put(getPath(rs), BUILD_ID);
+                    if (rs.exists()) {
+                        add(rs, target, "src/main/resources/");
+                        properties.put(getPath(rs), BUILD_ID);
+                    }
                 }
             }
 

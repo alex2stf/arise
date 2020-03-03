@@ -86,7 +86,7 @@ public class ContentInfoProvider {
                         @Override
                         public void foundFile(File file) {
 
-                            System.out.println("-> " + file);
+//                            System.out.println("-> " + file);
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
                                     music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));

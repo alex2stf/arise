@@ -43,7 +43,7 @@ public class DesktopFileHandler extends ContentHandler {
     private static File nwjsExe;
     static {
         try {
-            File nwjsDir = DependencyManager.solve(Dependencies.NWJS_0_12_0);
+            File nwjsDir = DependencyManager.solve(Dependencies.NWJS_0_12_0).uncompressed();
             nwjsExe = new File(nwjsDir, "nw.exe");
             if (!nwjsExe.exists()){
                 log.error("Unable to solve NWJS");

@@ -622,6 +622,13 @@ public class FileUtil {
         return new File(path + File.separator + location.alias() + "_"+ timeStamp + "." + contentType.mainExtension());
     }
 
+    public static boolean hasFiles(File d) {
+        if (d == null){
+            return false;
+        }
+        File c[] = d.listFiles();
+        return c != null && c.length > 0;
+    }
 
 
     public abstract static class FileFoundHandler {

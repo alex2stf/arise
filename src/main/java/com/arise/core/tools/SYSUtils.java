@@ -3,9 +3,14 @@ package com.arise.core.tools;
 import com.arise.core.tools.StreamUtil.LineIterator;
 import com.arise.core.tools.models.CompleteHandler;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -92,18 +97,18 @@ public class SYSUtils {
 
 //x-terminal-emulator e link la default
 
-            if (linuxBinExists("/usr/bin/mate-terminal")) {
-                exec(new String[]{"mate-terminal",
-                    "--working-directory=.",
-//                    "--command=/bin/bash -c ls;bash",
-                    "--command=/bin/bash -c "+executable.getAbsolutePath()+";bash",
-                    "--window"}
-                , new ProcessLineReader() {
-                        @Override
-                        public void onStdoutLine(int line, String content) {
-
-                        }
-                    }, true, false);
+//            if (linuxBinExists("/usr/bin/mate-terminal")) {
+//                exec(new String[]{"mate-terminal",
+//                    "--working-directory=.",
+////                    "--command=/bin/bash -c ls;bash",
+//                    "--command=/bin/bash -c "+executable.getAbsolutePath()+";bash",
+//                    "--window"}
+//                , new ProcessLineReader() {
+//                        @Override
+//                        public void onStdoutLine(int line, String content) {
+//
+//                        }
+//                    }, true, false);
 
 //                try {
 //                    Process proc = new ProcessBuilder("x-terminal-emulator", "/home/alex/Dropbox/arise/bin/socket").start();
@@ -121,7 +126,7 @@ public class SYSUtils {
 
 //                exec("/bin/bash", "-c", "ls"
 //                );
-            }
+//            }
 
         }
         System.out.println(os);
@@ -140,14 +145,16 @@ public class SYSUtils {
         exec(args, new ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
+                System.out.println(content);
                 sb.append(content);
             }
 
             @Override
             public void onErrLine(int line, String content) {
+                System.out.println(content);
                 eb.append(content);
             }
-        }, false, false);
+        }, true, false);
         return new Result(args, sb.toString(), eb.toString());
     }
 
@@ -155,7 +162,9 @@ public class SYSUtils {
 
 
 
-    public static void exec(String[] args, final ProcessOutputHandler outputHandler, boolean useBuilder, boolean async){
+    public static void exec(String[] args, final ProcessOutputHandler outputHandler,
+                            boolean useBuilder,
+                            boolean async){
         log.info("exec: " + StringUtil.join(args, "  ", new StringUtil.JoinIterator<String>() {
             @Override
             public String toString(String value) {
@@ -182,12 +191,17 @@ public class SYSUtils {
         } else {
             ProcessBuilder processBuilder = new ProcessBuilder(args);
             processBuilder.redirectErrorStream(false);
+            String path = processBuilder.environment().get("PATH");
+            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\bin";
+            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\msys\\1.0\\bin";
+            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\dll";
+            processBuilder.environment().put("PATH", path);
+            processBuilder.environment().put("Path", path);
             try {
                 proc = processBuilder.start();
-                final Process finalProc = proc;
                 if (outputHandler != null){
-                    outputHandler.handle(finalProc.getInputStream());
-                    outputHandler.handleErr(finalProc.getErrorStream());
+                    outputHandler.handleErr(proc.getErrorStream());
+                    outputHandler.handle(proc.getInputStream());
                 }
 
                 if (!async) {
@@ -206,6 +220,9 @@ public class SYSUtils {
         }
 
     }
+
+
+
 
 
     public static boolean isAndroid(){
@@ -363,42 +380,48 @@ public class SYSUtils {
     public abstract static class ProcessLineReader extends ProcessOutputHandler {
 
 
-        private LineIterator stdoutIterator;
-        private LineIterator errIterator;
 
         public ProcessLineReader(){
-            final ProcessLineReader self = this;
-            stdoutIterator = new LineIterator() {
-                @Override
-                public void onLine(int lineNo, String content) {
-                    self.onStdoutLine(lineNo, content);
-                }
-            };
-
-            errIterator = new LineIterator() {
-                @Override
-                public void onLine(int lineNo, String content) {
-                    self.onErrLine(lineNo, content);
-                }
-            };
         }
 
         @Override
         public final void handle(InputStream inputStream) {
-            readLineByLine(inputStream, stdoutIterator);
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            try {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    onStdoutLine(0, line);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+
+        public void onStdoutLine(int line, String content) {
+            System.out.println(content);
+        }
+
+
+        public void onErrLine(int line, String content) {
+            System.out.println(content);
         }
 
         @Override
         public final void handleErr(InputStream errorStream) {
-            readLineByLine(errorStream, errIterator);
-        }
-
-
-        public abstract void onStdoutLine(int line, String content);
-        public void onErrLine(int line, String content){
-            if (content != null && content.length() > 1) {
-                System.err.println(line + " " + content);
+            BufferedReader in = new BufferedReader(new InputStreamReader(errorStream));
+            try {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    onErrLine(0, line);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
             }
         }
+
+
+
     }
 }

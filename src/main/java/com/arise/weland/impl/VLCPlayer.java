@@ -47,7 +47,7 @@ public class VLCPlayer {
         JHttpClient.disableSSL();
         String VLC_PATH = null;
         try {
-            VLC_PATH = DependencyManager.solve(Dependencies.VLC_2_1_0).getAbsolutePath();
+            VLC_PATH = DependencyManager.solve(Dependencies.VLC_2_1_0).uncompressed().getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);

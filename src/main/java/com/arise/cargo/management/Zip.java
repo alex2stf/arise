@@ -1,5 +1,7 @@
 package com.arise.cargo.management;
 
+import com.arise.core.tools.FileUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,7 +9,9 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipUnarchiver implements Unarchiver {
+public class Zip implements Unarchiver {
+
+
     @Override
     public boolean extract(File source, File destination) {
 
@@ -51,6 +55,8 @@ public class ZipUnarchiver implements Unarchiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
+        return FileUtil.hasFiles(destination);
     }
+
+
 }

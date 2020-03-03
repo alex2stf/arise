@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1582905530 source:c:\users\alexandru2.stefan\desktop\arise-master\src\main\clang\main.c
+	<stdio.h>
+	<stdlib.h>
+	<dirent.h>
+	<sys/stat.h>
+	"include/arise_file_util.h"
+	<string.h>
+
+1582905224 c:\users\alexandru2.stefan\desktop\arise-master\src\main\clang\include\arise_file_util.h
+

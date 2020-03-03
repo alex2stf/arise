@@ -3,7 +3,6 @@ package com.arise.astox.clib;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.FileUtil.FileFoundHandler;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.SYSUtils.ProcessLineReader;
 import com.arise.core.tools.StringUtil;
 
 import java.io.File;
@@ -27,9 +26,10 @@ public class CCompiler {
     private Set<String> includes = new HashSet<>();
     private Set<String> testIncludes = new HashSet<>();
     private Set<String> linkerFlags = new HashSet<>();
-    private Set<File> executables;
-    private String[] extensions;
-    private String[] excludes;
+    private Set<File> libsPaths = new HashSet<>();
+    private Set<File> executables = new HashSet<>();
+    private Set<String> extensions = new HashSet<>();
+    private String[] excludes = new String[]{};
 
     public CCompiler compiler(String s){
         compilerBin = s;
@@ -88,11 +88,9 @@ public class CCompiler {
                         File loutFile = new File(locOut);
 
 
-                        if (FileUtil.changesDetected(file, loutFile)){
-
-                            Set<String> compilerFlags = new HashSet<>();
-                            compilerFlags.add("-c");
-                            compileCPP(
+                        Set<String> compilerFlags = new HashSet<>();
+                        compilerFlags.add("-c");
+                        compileCPP(
                                 "",
                                 file.getAbsolutePath(),
                                 new HashSet<File>(),
@@ -101,12 +99,9 @@ public class CCompiler {
                                 fname,
                                 compilerFlags,
                                 compilerBin,
+                                libsPaths,
                                 new HashSet<String>()
-                            );
-                        } else {
-//                            System.out.println("No changes detected for ");
-                        }
-
+                        );
 
 
 
@@ -125,37 +120,51 @@ public class CCompiler {
 
     public CCompiler compile() {
 
-        executables = new TreeSet<>();
-        Set<File> srcouts = compile(sources, includes);
-//
-        for (String s: includes){
-            testIncludes.add(s);
-        }
-//
-        Set<File> testouts = compile(testSources, testIncludes);
+        ccompile(mainSources);
 
-        Set<File> outs = new HashSet<>();
-        outs.addAll(srcouts);
-        for (File f: testouts){
-            outs.add(f);
-        }
-
-        for (String ts: testSources){
-            for (String mainTest: mainTestSources){
-                String outfile = mainTest.split("\\.")[0];
-                File f = compileCPP(ts, mainTest, outs, testIncludes, binDir, outfile, new HashSet<String>(), compilerBin, linkerFlags);
-                executables.add(f);
-            }
-        }
+//        executables = new TreeSet<>();
+//        Set<File> srcouts = compile(sources, includes);
+////
+//        for (String s: includes){
+//            testIncludes.add(s);
+//        }
+////
+//        Set<File> testouts = compile(testSources, testIncludes);
+//
+//        Set<File> outs = new HashSet<>();
+//        outs.addAll(srcouts);
+//        for (File f: testouts){
+//            outs.add(f);
+//        }
+//
+//        for (String ts: testSources){
+//            for (String mainTest: mainTestSources){
+//                String outfile = mainTest.split("\\.")[0];
+//                File f = compileCPP(ts, mainTest, outs, testIncludes, binDir, outfile, new HashSet<String>(), compilerBin,
+//                        libsPaths,
+//                        linkerFlags);
+//                executables.add(f);
+//            }
+//        }
 
         return this;
     }
 
+    private void ccompile(Set<String> mainSources) {
 
-    private static File compileCPP(String inputRoot, String fileName,
-        Set<File> objects, Set<String> includes, File outputRoot, String outFileName,
-        Set<String> compilerFlags,
-        String compilerBin, Set<String> linkerFlags){
+    }
+
+
+    private static File compileCPP(String inputRoot,
+                                   String fileName,
+                                   Set<File> objects,
+                                   Set<String> includes,
+                                   File outputRoot,
+                                   String outFileName,
+                                   Set<String> compilerFlags,
+                                   String compilerBin,
+                                   Set<File> libraryPaths,
+                                   Set<String> linkerFlags){
 
 
             File outfile = new File(outputRoot.getAbsolutePath() + File.separator + outFileName);
@@ -163,6 +172,10 @@ public class CCompiler {
             if (main.exists()){
                 List<String> argsList = new ArrayList<>();
                 argsList.add(compilerBin);
+//                argsList.add("-U__STRICT_ANSI__");
+                argsList.add("-std=c++0x");
+
+
                 for(File o: objects){
                     argsList.add(o.getAbsolutePath());
                 }
@@ -171,6 +184,10 @@ public class CCompiler {
 
                 for (String x: includes){
                     argsList.add("-I" + new File(x).getAbsolutePath());
+                }
+
+                for (File x: libraryPaths){
+                    argsList.add("-L" + x.getAbsolutePath());
                 }
 
                 for (String s: compilerFlags){
@@ -192,12 +209,9 @@ public class CCompiler {
 
                 System.out.println(StringUtil.join(args, " "));
 
-//                SYSUtils.exec(args, new ProcessLineReader() {
-//                    @Override
-//                    public void onStdoutLine(int line, String content) {
-//                        System.out.println(content);
-//                    }
-//                }, true);
+
+
+                SYSUtils.exec(args);
             } else {
                 System.out.println(main.getAbsolutePath() + " not found");
             }
@@ -257,8 +271,10 @@ public class CCompiler {
         return this;
     }
 
-    public CCompiler acceptExt(String ... extensions) {
-        this.extensions = extensions;
+    public CCompiler acceptExt(String ... ext) {
+       for (String s: ext){
+           extensions.add(s);
+       }
         return this;
     }
 
@@ -284,5 +300,10 @@ public class CCompiler {
         }
         return this;
 
+    }
+
+    public CCompiler extraLibPath(File path) {
+        libsPaths.add(path);
+        return this;
     }
 }

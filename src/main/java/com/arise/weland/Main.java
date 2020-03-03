@@ -64,7 +64,7 @@ public class Main {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                new SelfUpdater().check();
+//                new SelfUpdater().check();
             }
         });
 

@@ -5,6 +5,7 @@
  */
 package com.arise.weland.impl.ui.desktop;
 
+import com.arise.core.tools.NetworkUtil;
 import com.arise.weland.WelandClient;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -62,6 +63,24 @@ public class WelandFrame extends javax.swing.JFrame {
         tabContainer.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabContainer.addTab("music", musicDisplayer);
         tabContainer.addTab("videos", videoDisplayer);
+
+        JPanel settings = new JPanel();
+        GridLayout settingsLayout = new GridLayout(3, 0);
+        settings.setLayout(settingsLayout);
+
+
+        tabContainer.addTab("settings", settings);
+
+        NetworkUtil.scanIPV4(new NetworkUtil.IPIterator() {
+            @Override
+            public void onFound(String ip) {
+                JLabel label = new JLabel();
+                label.setFont(BIG_FONT_BOLD);
+                label.setText("http://" + ip + ":8221");
+                settings.add(label);
+                settingsLayout.setRows(settingsLayout.getRows() + 1);
+            }
+        });
 
         getContentPane().add(tabContainer);
 

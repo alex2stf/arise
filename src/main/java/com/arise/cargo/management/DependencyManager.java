@@ -1,11 +1,8 @@
 package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.Condition;
-import com.arise.core.tools.models.FilterCriteria;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +13,15 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DependencyManager {
+
+    private DependencyManager(){
+
+    }
+
+
 
 
     public static HttpURLConnection getConnection(URL url) throws IOException {
@@ -78,8 +79,12 @@ public class DependencyManager {
         RandomAccessFile file = new RandomAccessFile(out.getAbsolutePath(), "rw");
         InputStream stream = connection.getInputStream();
 
-        System.out.print("wget " + url);
+
         int size = contentLength; // size of download in bytes
+        if (size < 1){
+            size = Integer.MAX_VALUE;
+        }
+        System.out.print("wget " + url + " ~" + size );
         int downloaded = 0; // number of bytes downloaded
         int MAX_BUFFER_SIZE = 1024;
         int dotCount = 0;
@@ -95,6 +100,10 @@ public class DependencyManager {
             } else {
                 bufferSize = size - downloaded;
             }
+
+
+
+
             buffer = new byte[bufferSize];
             // Read from server into buffer.
             int read = stream.read(buffer);
@@ -152,19 +161,10 @@ public class DependencyManager {
         return null;
     }
 
-    public static final List<Condition<File, Unarchiver>> unarchivers = new ArrayList<>();
+    public static final List<Unarchiver> unarchivers = new ArrayList<>();
 
     static {
-        unarchivers.add(new Condition<File, Unarchiver>() {
-            @Override
-            public Unarchiver getPayload() {
-                return new ZipUnarchiver();
-            }
-            @Override
-            public boolean isAcceptable(File data) {
-                return "zip".equals(getExt(data));
-            }
-        });
+        unarchivers.add(new Zip());
     }
 
     static String getExt(File f){
@@ -172,13 +172,12 @@ public class DependencyManager {
         return p[p.length -1];
     }
 
-    public static File uncompress( Dependency dependency, Rule rule, File rootDir){
+    public static File uncompress(Dependency dependency, Rule rule, File rootDir){
         File unarchived = new File(rootDir, dependency.getName() + "_" + rule.getName());
-        if (!unarchived.exists()){
+        if (!FileUtil.hasFiles(unarchived)){
             File zipped = rule.getZipped();
-            for (Condition<File, Unarchiver> condition: unarchivers){
-               if (condition.isAcceptable(zipped)){
-                   condition.getPayload().extract(zipped, unarchived);
+            for (Unarchiver unarchiver: unarchivers){
+               if (unarchiver.extract(zipped, unarchived)){
                    break;
                }
             }
@@ -198,12 +197,40 @@ public class DependencyManager {
         return new File(out, "dpmngmt");
     }
 
-    public static File solve(Dependency dependency) throws IOException {
+    public static Resolution solve(Dependency dependency) throws IOException {
         File out = getRoot();
         Rule systemRule = download(dependency, new File(out, "src"));
         File currentPath = uncompress(dependency, systemRule, new File(out, "out") );
-        return currentPath;
+        return new Resolution(systemRule, currentPath, dependency);
+    }
+
+    public static class Resolution{
+        private final Rule  _r;
+        private final File  _u;
+        private final Dependency _s;
+
+        public Resolution(Rule _r, File _u, Dependency _s) {
+            this._r = _r;
+            this._u = _u;
+            this._s = _s;
+        }
+
+        public Rule rule() {
+            return _r;
+        }
+
+        public File uncompressed() {
+            return _u;
+        }
+
+        public Dependency source() {
+            return _s;
+        }
     }
 
 
+    public static final void addUnarchiver(Unarchiver unarchiver) {
+
+        unarchivers.add(unarchiver);
+    }
 }

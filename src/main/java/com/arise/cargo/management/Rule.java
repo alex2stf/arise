@@ -1,7 +1,5 @@
 package com.arise.cargo.management;
 
-import com.arise.core.tools.models.Condition;
-
 import java.io.File;
 
 public abstract class Rule  {
