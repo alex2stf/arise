@@ -104,6 +104,31 @@ public class WelandAPI {
         });
     }
 
+    public void playNative(ContentInfo info) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/files/play/native?path=" + URLEncoder.encode(info.getPath()));
+        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+                log.info("open file response: " + data);
+            }
+        });
+    }
+
+
+    public void playEmbedded(ContentInfo info) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("GET").setUri("/files/play/embedded?path=" + URLEncoder.encode(info.getPath()));
+        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+                log.info("open file response: " + data);
+            }
+        });
+    }
+
+
+
     public void close(String s) {
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/files/close?path=" + URLEncoder.encode(s));

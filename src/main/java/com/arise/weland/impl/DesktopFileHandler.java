@@ -74,13 +74,13 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-    public HttpResponse play(final String path) {
+    public HttpResponse open(final String path) {
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
 
-                log.info("PLAY " + path);
+                log.info("OPEN " + path);
 
                 if (isHttpPath(path)){
                     openUrl(path);
@@ -101,6 +101,35 @@ public class DesktopFileHandler extends ContentHandler {
         });
         return null;
     }
+
+
+    @Override
+    protected HttpResponse play(String path, Mode mode) {
+        log.info("PLAY " + mode + " " + path);
+        if (isHttpPath(path)){
+            if (mode.equals(Mode.NATIVE)) {
+                openInStandardBrowser(path);
+            }
+            else {
+                openInNwjs(path);
+            }
+        }
+
+        else if (isMedia(path)){
+            if (mode.equals(Mode.NATIVE)) {
+                openMedia(path);
+            }
+            else {
+                VLCPlayer.getInstance().play(path);
+            }
+        }
+        else {
+            open(path);
+        }
+
+        return null;
+    }
+
 
     private void openMedia(String path) {
         closeSpawnedProcesses();
@@ -154,19 +183,23 @@ public class DesktopFileHandler extends ContentHandler {
         String url = URLBeautifier.beautify(urlPath);
 
         if (shouldUseNwjs(urlPath)){
-            File outputDir = new File(contentInfoProvider.getDecoder().getStateDirectory(), "nw-current-app");
-            if (!outputDir.exists() && !outputDir.mkdirs()){
-                log.warn("Failed to create app dir " + outputDir.getAbsolutePath());
-                openInStandardBrowser(url);
-                return;
-            }
-            openInNwjs(url, outputDir);
+            openInNwjs(urlPath);
         }
         else {
            openInStandardBrowser(url);
         }
 
 
+    }
+
+    private void openInNwjs(String url){
+        File outputDir = new File(contentInfoProvider.getDecoder().getStateDirectory(), "nw-current-app");
+        if (!outputDir.exists() && !outputDir.mkdirs()){
+            log.warn("Failed to create app dir " + outputDir.getAbsolutePath());
+            openInStandardBrowser(url);
+            return;
+        }
+        openInNwjs(url, outputDir);
     }
 
     private boolean shouldUseNwjs(String path){
@@ -305,6 +338,7 @@ public class DesktopFileHandler extends ContentHandler {
             }
         }, 1000);
     }
+
 
 
     Set<String> exes = new HashSet<>();

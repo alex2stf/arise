@@ -277,6 +277,16 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
     }
 
+    if (request.pathsStartsWith("files", "play")){
+      String mode = request.pathAt(2);
+
+      HttpResponse response = contentHandler.play(request, mode);
+      if (response != null){
+        return response;
+      }
+      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
+    }
+
     if (request.pathsStartsWith("files", "close")){
       HttpResponse response =  contentHandler.stop(request);
       if (response != null){
