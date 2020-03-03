@@ -168,12 +168,15 @@ public class Main {
             }
         });
 
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
-        welandFrame.setVisible(true);
-        welandFrame.initComponents();
-        welandFrame.pack();
-        welandFrame.fullscreen();
+        if ("true".equalsIgnoreCase(System.getProperty("weland.ui.enabled"))){
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
+            welandFrame.setVisible(true);
+            welandFrame.initComponents();
+            welandFrame.pack();
+            welandFrame.fullscreen();
+        }
+
     }
 
     private void stopAll() {
