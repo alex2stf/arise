@@ -65,7 +65,7 @@ public class WelandFrame extends javax.swing.JFrame {
         tabContainer.addTab("videos", videoDisplayer);
 
         final JPanel settings = new JPanel();
-        GridLayout settingsLayout = new GridLayout(3, 0);
+        final GridLayout settingsLayout = new GridLayout(3, 0);
         settings.setLayout(settingsLayout);
 
 
