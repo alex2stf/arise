@@ -104,9 +104,9 @@ public class WelandAPI {
         });
     }
 
-    public void playNative(ContentInfo info) {
+    public void playNative(String s) {
         HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/files/play/native?path=" + URLEncoder.encode(info.getPath()));
+                .setMethod("GET").setUri("/files/play/native?path=" + URLEncoder.encode(s));
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse data) {
@@ -116,9 +116,9 @@ public class WelandAPI {
     }
 
 
-    public void playEmbedded(ContentInfo info) {
+    public void playEmbedded(String s) {
         HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/files/play/embedded?path=" + URLEncoder.encode(info.getPath()));
+                .setMethod("GET").setUri("/files/play/embedded?path=" + URLEncoder.encode(s));
         currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
             @Override
             public void onComplete(HttpResponse data) {

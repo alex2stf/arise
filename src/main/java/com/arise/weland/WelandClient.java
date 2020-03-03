@@ -193,12 +193,12 @@ public class WelandClient {
         getClient(worker).close(info.getPath());
     }
 
-    public static void playNative(ContentInfo info, Object worker) {
-        getClient(worker).playNative(info);
+    public static void playNative(String s, Object worker) {
+        getClient(worker).playNative(s);
     }
 
-    public static void playEmbedded(ContentInfo info, Object worker) {
-        getClient(worker).playEmbedded(info);
+    public static void playEmbedded(String s, Object worker) {
+        getClient(worker).playEmbedded(s);
     }
 
     public static class MessageResponse {
