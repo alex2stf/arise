@@ -117,16 +117,15 @@ public class VLCPlayer {
             }
         });
 
-        mainFrame.setUndecorated(false);
+        mainFrame.setUndecorated(true);
         mainFrame.setAlwaysOnTop(true);
 
         mainFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-
                 System.out.println(keyEvent.getKeyCode());
                 if (27 == keyEvent.getKeyCode()){
-//                    mainFrame.setUndecorated(false);
+                    mainFrame.setState(JFrame.ICONIFIED);
                 }
             }
         });
