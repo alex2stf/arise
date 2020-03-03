@@ -76,6 +76,7 @@ public class DesktopFileHandler extends ContentHandler {
 
     public HttpResponse open(final String path) {
 
+        stop("-");
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
@@ -105,8 +106,10 @@ public class DesktopFileHandler extends ContentHandler {
 
     @Override
     protected HttpResponse play(String path, Mode mode) {
+        stop("-");
         log.info("PLAY " + mode + " " + path);
         if (isHttpPath(path)){
+            path = URLBeautifier.beautify(path);
             if (mode.equals(Mode.NATIVE)) {
                 openInStandardBrowser(path);
             }
@@ -117,7 +120,7 @@ public class DesktopFileHandler extends ContentHandler {
 
         else if (isMedia(path)){
             if (mode.equals(Mode.NATIVE)) {
-                openMedia(path);
+                execute(getCommands("media", path));
             }
             else {
                 VLCPlayer.getInstance().play(path);
@@ -132,7 +135,6 @@ public class DesktopFileHandler extends ContentHandler {
 
 
     private void openMedia(String path) {
-        closeSpawnedProcesses();
         File local = new File(path);
         if (local.exists() && vlcEmbedded){
             ContentInfo info = contentInfoProvider.findByPath(local.getAbsolutePath().replaceAll("\\\\", "/"));
@@ -180,13 +182,13 @@ public class DesktopFileHandler extends ContentHandler {
 
 
     public void openUrl(String urlPath){
-        String url = URLBeautifier.beautify(urlPath);
+
 
         if (shouldUseNwjs(urlPath)){
             openInNwjs(urlPath);
         }
         else {
-           openInStandardBrowser(url);
+           openInStandardBrowser(urlPath);
         }
 
 

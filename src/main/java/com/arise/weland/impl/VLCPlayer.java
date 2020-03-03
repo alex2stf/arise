@@ -135,6 +135,7 @@ public class VLCPlayer {
 
     public void stop(){
 
+
         mediaPlayerComponent.stop();
         mainFrame.setVisible(false);
     }
@@ -246,7 +247,9 @@ public class VLCPlayer {
         }
 
         public void stop() {
-            mediaPlayer.stop();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
         }
     }
 

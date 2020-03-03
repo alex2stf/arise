@@ -134,7 +134,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
                 con.connect();
             } catch (Throwable e) {
                 e.printStackTrace();
-                System.exit(-1);
+
                 //SERVER IS DOWN AFTER LOADING DATA
 //                        e.printStackTrace();
 //
