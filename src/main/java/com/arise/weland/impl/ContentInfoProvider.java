@@ -83,10 +83,10 @@ public class ContentInfoProvider {
                 for (final File root: roots){
                     log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
 
-                    if (root.length() > 2456){
-                        log.info("Ignore directory " + root.getAbsolutePath());
-                        continue;
-                    }
+//                    if (root.length() > 2456){
+//                        log.info("Ignore directory " + root.getAbsolutePath());
+//                        continue;
+//                    }
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
