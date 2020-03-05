@@ -24,10 +24,9 @@ import static com.arise.core.tools.ThreadUtil.fireAndForget;
 public class ContentInfoProvider {
 
     List<File> roots = new ArrayList<>();
-    private Mole log = Mole.getInstance(ContentInfoDecoder.class);
+    private Mole log = Mole.getInstance(ContentInfoProvider.class);
 
     private volatile boolean scanned = false;
-    private volatile boolean scanning = false;
 
     final ContentInfoDecoder decoder;
 
@@ -77,14 +76,17 @@ public class ContentInfoProvider {
 
     private void asyncScan(){
 
-        scanning = true;
         fireAndForget(new Runnable() {
             @Override
             public void run() {
 
                 for (final File root: roots){
-                    log.info("start recursive read root " + root.getAbsolutePath());
+                    log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
 
+                    if (root.length() > 2456){
+                        log.info("Ignore directory " + root.getAbsolutePath());
+                        continue;
+                    }
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
@@ -124,7 +126,6 @@ public class ContentInfoProvider {
                 log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
 
                 decoder.onScanComplete();
-                scanning = false;
             }
         });
     }

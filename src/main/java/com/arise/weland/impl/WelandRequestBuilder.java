@@ -27,6 +27,7 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
             public void handleRest(HttpReader reader) {
                 byte[] bytes = this.bodyBytes.toByteArray();
                 if (bytes.length > 0 && bytes[0] == '>'){
+                    System.out.println("RECEIVED " + new String(bytes));
                     deviceController.digestBytes(bytes);
                     resetBodyBytes();
                     this.readInputStream(inputStream);

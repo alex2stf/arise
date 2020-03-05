@@ -163,7 +163,7 @@ public class Main {
                 try {
                     bluecoveServer.start();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("Failed to start bluetooth server because", e);
                 }
             }
         });
