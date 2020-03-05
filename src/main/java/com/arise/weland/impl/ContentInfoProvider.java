@@ -27,6 +27,7 @@ public class ContentInfoProvider {
     private Mole log = Mole.getInstance(ContentInfoDecoder.class);
 
     private volatile boolean scanned = false;
+    private volatile boolean scanning = false;
 
     final ContentInfoDecoder decoder;
 
@@ -72,25 +73,27 @@ public class ContentInfoProvider {
 
 
 
+    private int fcnt = 0;
 
     private void asyncScan(){
 
-
+        scanning = true;
         fireAndForget(new Runnable() {
             @Override
             public void run() {
 
                 for (final File root: roots){
                     log.info("start recursive read root " + root.getAbsolutePath());
+
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
-
-//                            System.out.println("-> " + file);
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
+                                    fcnt++;
                                     music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
                                 } else if (isVideo(file)) {
+                                    fcnt++;
                                     videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
                                 } else if (isGame(file)) {
                                     games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
@@ -121,8 +124,13 @@ public class ContentInfoProvider {
                 log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
 
                 decoder.onScanComplete();
+                scanning = false;
             }
         });
+    }
+
+    public boolean noFilesScanned(){
+        return fcnt == 0;
     }
 
     public ContentInfoProvider get(){
@@ -412,4 +420,6 @@ public class ContentInfoProvider {
     public ContentInfo previous(Playlist playlist) {
         return null;
     }
+
+
 }

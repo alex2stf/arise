@@ -252,6 +252,12 @@ public class WelandAPI {
         currentClient.sendAndReceive(request, onComplete);
     }
 
+    public WelandAPI setErrorHandler(CompleteHandler onError) {
+        if (currentClient != null){
+            currentClient.setErrorHandler(onError);
+        }
+        return this;
+    }
 
 
 //    public void moveMouse(int x, int y) {

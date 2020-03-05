@@ -11,8 +11,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.arise.core.tools.StreamUtil.readLineByLine;
 import static com.arise.core.tools.StringUtil.isMailFormat;
@@ -70,11 +72,19 @@ public class SYSUtils {
             sb.append(env.get("USER"));
         }
 
+
         if (ReflectUtil.classExists("android.os.Build")){
+
+            Set<String> strings = new HashSet<>();
+
             Object model = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MODEL");
             Object manuf = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "MANUFACTURER");
-            sb.append(model != null ? String.valueOf(model) : "");
-            sb.append(manuf != null ? String.valueOf(manuf) : "");
+            Object brand = ReflectUtil.readStaticMember(ReflectUtil.getClassByName("android.os.Build"), "BRAND");
+
+            strings.add((model != null ? String.valueOf(model) : ""));
+            strings.add((manuf != null ? String.valueOf(manuf) : ""));
+            strings.add((brand != null ? String.valueOf(brand) : ""));
+            sb.append(StringUtil.join(strings, ""));
         }
 
         return sb.toString();

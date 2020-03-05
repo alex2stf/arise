@@ -1,5 +1,6 @@
 package com.arise.rapdroid.components.ui.adapters;
 
+import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -63,4 +64,10 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
     public interface Consumer {
         void consume(View view);
     }
+
+    @Override
+    public void registerDataSetObserver(DataSetObserver observer) {
+        super.registerDataSetObserver(observer);
+    }
+
 }

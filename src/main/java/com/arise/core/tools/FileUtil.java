@@ -489,6 +489,9 @@ public class FileUtil {
     }
 
     public static  void serializableSave(Serializable serializable, File out){
+        if (null == serializable){
+            return;
+        }
         FileOutputStream fileOut = null;
         ObjectOutputStream objectOut = null;
         try {

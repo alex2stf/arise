@@ -277,26 +277,20 @@ public abstract class RAPDroidActivity extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        this.savedInstanceState = savedInstanceState;
-        super.onCreate(savedInstanceState);
-        Util.registerContext(this);
-
-        if (areCameraPermissionGranted()){
-            this.afterPermissionsGranted(savedInstanceState);
-        } else {
-            ActivityCompat.requestPermissions(this, permissions(), REQUEST_ID_MULTIPLE_PERMISSIONS);
-        }
-    }
+//    @Override
+//    protected void onCreate(@Nullable Bundle savedInstanceState) {
+//        this.savedInstanceState = savedInstanceState;
+//        super.onCreate(savedInstanceState);
+//
+//    }
 
     /**
      * check if all permissions defined inside {@link RAPDroidActivity#permissions()} are enabled
      * @return
      */
-    boolean areCameraPermissionGranted() {
+    protected boolean arePermissionsGranted() {
         for (String permission : permissions()){
-            if (!(ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)){
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED){
                 return false;
             }
         }

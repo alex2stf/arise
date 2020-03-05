@@ -47,7 +47,7 @@ public class DeviceStat {
             return;
         }
         this.os = SYSUtils.getOS();
-        deviceName = SYSUtils.getDeviceName();
+        deviceName = SYSUtils.getDeviceName().toUpperCase();
 
 
         Object graphicsEnvironment =

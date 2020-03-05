@@ -54,6 +54,10 @@ public enum ContentType  {
 
 
     VIDEO_MP4("video/mp4", MOVIES, "mp4"),
+    AUDIO_MPEG_3("audio/mpeg3", MUSIC, "mp3"),
+    AUDIO_X_MPEG_3("audio/x-mpeg-3", MUSIC, "mp3"),
+    VIDEO_MPEG("video/mpeg", MOVIES, "mp3"),
+    VIDEO_X_MPEG("video/x-mpeg", MOVIES, "mp3"),
 
     AUDIO_WAVE("audio/wave", MOVIES, "wav"),
 
@@ -222,6 +226,10 @@ public enum ContentType  {
         }
         if ("mp4".equalsIgnoreCase(s)){
             return VIDEO_MP4;
+        }
+        //TODO return based on location (videos/music)
+        if ("mp3".equalsIgnoreCase(s)){
+            return AUDIO_MPEG_3;
         }
         if ("avi".equalsIgnoreCase(s)){
             return VIDEO_AVI;

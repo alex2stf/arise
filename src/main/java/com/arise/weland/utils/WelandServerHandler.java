@@ -160,7 +160,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     deviceStat.setServerUUID(server.getUuid());
-    deviceStat.setDisplayName(SYSUtils.getDeviceName());
+    deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
 
 
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){

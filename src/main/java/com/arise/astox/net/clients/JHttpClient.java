@@ -132,19 +132,13 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
             try {
                 con.connect();
+                completionHandler.onComplete(con);
             } catch (Throwable e) {
                 e.printStackTrace();
-
-                //SERVER IS DOWN AFTER LOADING DATA
-//                        e.printStackTrace();
-//
-//                        Socket socket =  new Socket("localhost", 8221);
-//                        socket.getOutputStream().write("hey".getBytes());
-//                        socket.close();
-
+                onError(e);
             }
 
-            completionHandler.onComplete(con);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

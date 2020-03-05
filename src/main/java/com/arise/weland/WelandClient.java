@@ -128,7 +128,7 @@ public class WelandClient {
 
 
     public static void mediaList(Object worker, String playlistId, Integer index, CompleteHandler<ContentPage> completeHandler, CompleteHandler onError){
-        getClient(worker).mediaList(playlistId, index, completeHandler, onError);
+        getClient(worker).setErrorHandler(onError).mediaList(playlistId, index, completeHandler, onError);
     }
 
 
