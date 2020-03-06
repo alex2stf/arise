@@ -291,6 +291,13 @@ public class PCDecoder extends ContentInfoDecoder {
             return null;
         }
 
+        if (id.startsWith("data:image")){
+            try {
+                return SuggestionService.decodeBase64Image(id).first();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         try {
             id = URLDecoder.decode(id, "UTF-8");

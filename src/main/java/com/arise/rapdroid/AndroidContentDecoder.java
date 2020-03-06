@@ -64,7 +64,18 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
     @Override
     public byte[] getThumbnail(String id) {
-        return bytesCache.containsKey(id) ? bytesCache.get(id) : new byte[]{0,0};
+        if (bytesCache.containsKey(id)){
+            return bytesCache.get(id);
+        }
+        if (id.startsWith("data:")){
+            try {
+                return SuggestionService.decodeBase64Image(id).first();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new byte[]{0,0};
+            }
+        }
+        return new byte[]{0,0};
     }
 
     @Override

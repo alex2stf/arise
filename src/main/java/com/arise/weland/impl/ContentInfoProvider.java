@@ -138,26 +138,44 @@ public class ContentInfoProvider {
     }
 
     private void readStaticContent() {
-        File gamedirs[] = getGamesDirectory().listFiles();
-        if (gamedirs == null || gamedirs.length == 0){
+        File importDirectory = getImportDirectory();
+        if (importDirectory == null || !getImportDirectory().exists()){
             return;
         }
-        for (File gdir: gamedirs){
-            File json = new File(gdir, "package-info.json");
-            if (json.exists()){
-                try {
-                    MapObj obj = (MapObj) Groot.decodeFile(json);
-                    ContentInfo info = new ContentInfo()
-                            .setTitle(obj.getString("title"))
-                            .setThumbnailId(obj.getString("thumbnail"))
-                            .setPath("{host}/games/" + gdir.getName());
-                    games.add(info);
-                    System.out.println("import game " + info);
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+        File gamedirs[] = getGamesDirectory().listFiles();
+        if (gamedirs != null || gamedirs.length > 0){
+            for (File gdir: gamedirs){
+                File json = new File(gdir, "package-info.json");
+                if (json.exists()){
+                    try {
+                        MapObj obj = (MapObj) Groot.decodeFile(json);
+                        ContentInfo info = new ContentInfo()
+                                .setTitle(obj.getString("title"))
+                                .setThumbnailId(obj.getString("thumbnail"))
+                                .setPath("{host}/games/" + gdir.getName());
+                        games.add(info);
+                        System.out.println("import game " + info);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+
+
+        if (StringUtil.hasText(System.getProperty("profiles"))){
+            String parts[] = System.getProperty("profiles").split(",");
+            for (String s: parts){
+                File jsonLocal = new File(importDirectory, s + ".json");
+                if (jsonLocal.exists()){
+                    importJson(jsonLocal.getAbsolutePath());
+                }
+            }
+
+        }
+
+
     }
 
 
@@ -350,6 +368,7 @@ public class ContentInfoProvider {
     List<ContentInfo> imported = new ArrayList<>();
 
     public ContentInfoProvider importJson(String path) {
+        log.info("import json " + path);
         InputStream inputStream = FileUtil.findStream(path);
         if (inputStream == null){
             return this;

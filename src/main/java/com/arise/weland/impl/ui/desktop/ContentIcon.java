@@ -1,5 +1,6 @@
 package com.arise.weland.impl.ui.desktop;
 
+import com.arise.core.tools.B64;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.WelandClient;
@@ -90,6 +91,28 @@ public class ContentIcon extends JButton {
             if (iconsCache.containsKey(info.getThumbnailId())) {
                 setIcon(iconsCache.get(info.getThumbnailId()));
             }
+//            if (info.getThumbnailId().startsWith("data:")){
+//
+//                int sepIndex = info.getThumbnailId().indexOf(",");
+//                String start = info.getThumbnailId().substring(0, sepIndex);
+//                String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
+//                ContentType contentType = ContentType.search(ctype);
+//                String content = info.getThumbnailId().substring(sepIndex + 1);
+//
+//                System.out.println("B64decode " + info.getThumbnailId());
+//                try {
+//                    byte bytes[] = B64.decodeToByteArray(content);
+//                    if (bytes != null){
+//                        b64encods.put(id, bytes);
+//                        b64Ctypes.put(id, contentType);
+//                    }
+//                    return manager.manageBytes(id, bytes, contentType);
+//                } catch (Exception e) {
+//                    return false;
+//                }
+//            }
+
+
             else {
                 byte data[] = decoder.getThumbnail(info.getThumbnailId());
                 if (data == null){

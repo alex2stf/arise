@@ -1,5 +1,6 @@
 package com.arise.weland.impl;
 
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.B64;
@@ -117,30 +118,29 @@ public class SuggestionService {
     private Map<String, byte[]> b64encods= new ConcurrentHashMap<>();
     private Map<String, ContentType> b64Ctypes= new ConcurrentHashMap<>();
 
+
+
     private boolean validUrl(String url, Manager manager, String path){
         String id = StringEncoder.encodeShiftSHA(url);
 
         if (url.startsWith("data:")){
+
             if (b64encods.containsKey(id)){
                 return manager.manageBytes(id, b64encods.get(id), b64Ctypes.get(id));
             }
-            int sepIndex = url.indexOf(",");
-            String start = url.substring(0, sepIndex);
-            String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
-            ContentType contentType = ContentType.search(ctype);
-            String content = url.substring(sepIndex + 1);
 
-            System.out.println("B64decode " + url);
             try {
-                byte bytes[] = B64.decodeToByteArray(content);
-                if (bytes != null){
-                    b64encods.put(id, bytes);
-                    b64Ctypes.put(id, contentType);
+                Tuple2<byte[], ContentType> res = decodeBase64Image(url);
+                if (res.first() != null){
+                    b64encods.put(id, res.first());
+                    b64Ctypes.put(id, res.second());
                 }
-                return manager.manageBytes(id, bytes, contentType);
+                return manager.manageBytes(id, res.first(), res.second());
             } catch (Exception e) {
-               return false;
+                return false;
             }
+
+
         }
 
         URL uri;
@@ -154,6 +154,16 @@ public class SuggestionService {
         return manager.manage(id, path, uri);
     }
 
+
+    public static Tuple2<byte[], ContentType> decodeBase64Image(String input) throws Exception {
+        int sepIndex = input.indexOf(",");
+        String start = input.substring(0, sepIndex);
+        String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
+        ContentType contentType = ContentType.search(ctype);
+        String content = input.substring(sepIndex + 1);
+        byte bytes[] = B64.decodeToByteArray(content);
+        return new Tuple2<>(bytes, contentType);
+    }
 
     public interface Manager {
         boolean manage(String id, String path, URL url);
