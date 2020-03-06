@@ -73,7 +73,7 @@ public class ContentIcon extends JButton {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                WelandClient.openFile(info.getPath(), parent.worker);
+                WelandClient.openFile(info.getPath(), parent.worker, null);
             }
         });
 

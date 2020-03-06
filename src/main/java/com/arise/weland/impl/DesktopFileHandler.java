@@ -113,7 +113,7 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
     private String fix(String data){
-        return  "http://localhost:8221/" + data.substring("{host}".length());
+        return  "http://localhost:8221" + data.substring("{host}".length());
     }
 
 
