@@ -349,7 +349,7 @@ public class ContentInfoProvider {
 
     List<ContentInfo> imported = new ArrayList<>();
 
-    private ContentInfoProvider importJson(String path) {
+    public ContentInfoProvider importJson(String path) {
         InputStream inputStream = FileUtil.findStream(path);
         if (inputStream == null){
             return this;
