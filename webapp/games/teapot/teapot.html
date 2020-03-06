@@ -72,10 +72,12 @@
         switch (key) {
             case 1:
                 document.body.style.backgroundColor = randColor();
+                new Audio("http://rpg.hamsterrepublic.com/wiki-images/2/21/Collision8-Bit.ogg").play();
                 break;
             case 3:
                 width+=10;
                 height +=10;
+                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/missile.ogg").play();
                 break;
             case 2:
                 bottom+=2;
@@ -88,24 +90,29 @@
                 break;
 
             case 16:
+                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/week7-bounce.m4a").play();
                 bottom-=2;
                 break;
 
             case 15:
                 width-=10;
                 height -=10;
+                new Audio("http://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/player_shoot.wav").play();
                 break;
 
             case 20:
                 bottom-=2;
+                new Audio("http://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/alien_shoot.wav").play();
                 break;
             case 8:
             case 12:
                 left-=2;
+                new Audio("http://codeskulptor-demos.commondatastorage.googleapis.com/pang/arrow.mp3").play();
                 break;
             case 10:
             case 14:
                 left+=2;
+                new Audio("http://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3").play();
                 break;
             case 11:
             case 9:
