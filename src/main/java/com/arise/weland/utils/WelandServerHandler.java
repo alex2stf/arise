@@ -2,6 +2,7 @@ package com.arise.weland.utils;
 
 
 import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
@@ -25,10 +26,10 @@ import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
@@ -210,12 +211,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if ("/webcam".equalsIgnoreCase(request.path())){
-      Map<String, String> args = new HashMap<>();
-      args.put("imgSrc", "/device/live/mjpeg");
-      args.put("audioSrc", "/device/live/audio.wav");
-      return HttpResponse.html(whisker.compile(playerContent, args));
-    }
+
 
     if ("/health".equalsIgnoreCase(request.path())){
       return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
@@ -259,14 +255,6 @@ public class WelandServerHandler extends HTTPServerHandler {
 
       return HttpResponse.oK().addCorelationId(correlationId);
     }
-
-
-
-
-
-
-
-
 
 
     if (request.pathsStartsWith("files", "open")){
@@ -318,17 +306,77 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
+    //static content:
 
+//    if ("/kontrol".equalsIgnoreCase(request.path())){
+//
+//    }
+
+
+    if ("/webcam".equalsIgnoreCase(request.path())){
+      Map<String, String> args = new HashMap<>();
+      args.put("imgSrc", "/device/live/mjpeg");
+      args.put("audioSrc", "/device/live/audio.wav");
+      return HttpResponse.html(whisker.compile(playerContent, args));
+    }
+
+    if ("/kontrols".equalsIgnoreCase(request.path())){
+      Map<String, Object> args = new HashMap<>();
+      return HttpResponse.html(whisker.compile(StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/kontrols.html")), args));
+    }
+
+
+
+
+    if ("/WSKontrol".equalsIgnoreCase(request.path())){
+      Map<String, Object> args = new HashMap<>();
+      String id = request.getQueryParam("id");
+      if (!StringUtil.hasText(id)){
+        id = UUID.randomUUID().toString();
+      }
+      args.put("ipv4Addrs", StringUtil.join(DeviceStat.getInstance().getIpv4Addrs(), ",", new StringUtil.JoinIterator<String>() {
+        @Override
+        public String toString(String value) {
+          return StringUtil.jsonVal(value);
+        }
+      }));
+      args.put("port", server.getPort());
+      args.put("id", id);
+      args.put("protocol", server.isSecure() ? "wss" : "ws");
+      return HttpResponse.javascript(whisker.compile(StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/WSKontrol.js")), args));
+    }
+
+
+    if (request.pathsStartsWith("games")){
+      String id = request.getPathAt(1);
+      File main = contentInfoProvider.getGame(id);
+
+      try {
+        return HttpResponse.html(FileUtil.read(main));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
 
     return super.getHTTPResponse(request, server);
   }
 
 
+  @Override
+  public void onDuplexConnect(AbstractServer ioHttp, ServerRequest request, DuplexDraft.Connection connection) {
+      duplexConnections.add(connection);
+  }
 
+  @Override
+  public void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection) {
+    broadcast(frame.getPayloadText());
+  }
 
-
-
+  @Override
+  public void onDuplexClose(DuplexDraft.Connection c) {
+    duplexConnections.remove(c);
+  }
 
   public interface Handler<T> {
     HttpResponse handle(T data);

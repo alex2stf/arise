@@ -47,10 +47,11 @@ import java.util.List;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 public class SmartWebView extends LinearLayout {
+    public static final Resources DEFAULT = new Resources();
     private final WebView webView;
     WebView soundThread;
     private final Context ctx;
-    private Resources resources;
+    private Resources resources = DEFAULT;
 
     private AutoCompleteTextView searchBar;
     private SmartLayout top;
@@ -60,11 +61,14 @@ public class SmartWebView extends LinearLayout {
     private static URLAutocomplete urls;
 
 
+
     public SmartWebView(Context context, Resources resources) {
         super(context);
         webView = new WebView(context);
         this.ctx = context;
-        this.resources = resources;
+        if (resources != null){
+            this.resources = resources;
+        }
         decorateWebViewMinimal();
 
 

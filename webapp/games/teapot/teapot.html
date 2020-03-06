@@ -1,0 +1,125 @@
+<html>
+<head>
+    <script src="/WSKontrol"></script>
+</head>
+<body>
+
+<script>
+
+    var images = [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQwPiNyDxPF1Y_n0KsHarW7HNWxau-FaEx9DQXzXbrPar8M3Z8ncx-4n3WtNXxOAAKtzUBqbbyn&usqp=CAc",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfwLnJpvfzrQQWMjtbpRSDAAicHcvzJjPnaI072M0hh7-qdv0YZA&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQvzsZpBRbXPfz3i2F7VjypNvTFrBUl0IzoDAscmdHylYxw6rO6HZq28-Ryddfv717HDlB5knND&usqp=CAc"
+    ];
+
+    function randImg() {
+        var index = Math.round(Math.random() * (images.length - 1));
+        console.log(index);
+        return images[index];
+    }
+    var item = document.createElement("img");
+    item.src = randImg();
+    item.style.width =200;
+    item.style.height =200;
+    item.style.position = 'absolute';
+    item.style.backgroundColor = 'red';
+    document.body.appendChild(item);
+
+    var left = 0, bottom = 0, width = 200, height = 200;
+    item.style.bottom = bottom;
+    item.style.left = left;
+
+    document.onkeydown = function (ev) {
+        console.log(ev.keyCode);
+        switch(ev.keyCode){
+            case 37:
+                left--;
+                break;
+            case 39:
+                left++;
+                break
+            case 38:
+                bottom++;
+                break;
+            case 40:
+                bottom--;
+                break;
+        }
+
+        item.style.top = top;
+        item.style.bottom = bottom;
+        item.style.left = left;
+        // item.style.right = right;
+
+
+    }
+
+    var colors = [
+        "#5654d1",
+        "#e63030",
+        "#30e679",
+        "#296240",
+        "#a5e3be",
+        "#c754c3"
+    ]
+    function randColor(){
+     return colors[Math.round(Math.random() * (colors.length - 1))];
+    }
+
+
+    WSKontrol.onReceive(function(id, key){
+        console.log(key);
+        switch (key) {
+            case 1:
+                document.body.style.backgroundColor = randColor();
+                break;
+            case 3:
+                width+=10;
+                height +=10;
+                break;
+            case 2:
+                bottom+=2;
+                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg").play()
+                break
+            case 6:
+                // new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/jump.ogg").play();
+                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a").play();
+                bottom+=2;
+                break;
+
+            case 16:
+                bottom-=2;
+                break;
+
+            case 15:
+                width-=10;
+                height -=10;
+                break;
+
+            case 20:
+                bottom-=2;
+                break;
+            case 8:
+            case 12:
+                left-=2;
+                break;
+            case 10:
+            case 14:
+                left+=2;
+                break;
+            case 11:
+            case 9:
+                item.src = randImg();
+                break;
+        }
+
+        item.style.bottom = bottom;
+        item.style.left = left;
+        item.style.width = width;
+        item.style.height = height;
+    });
+    WSKontrol.connect();
+</script>
+</body>
+
+</html>

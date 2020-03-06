@@ -1,9 +1,11 @@
 package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
@@ -13,6 +15,7 @@ import com.arise.weland.dto.Playlist;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +30,7 @@ public class ContentInfoProvider {
     private Mole log = Mole.getInstance(ContentInfoProvider.class);
 
     private volatile boolean scanned = false;
+    private volatile boolean scanning = false;
 
     final ContentInfoDecoder decoder;
 
@@ -53,13 +57,6 @@ public class ContentInfoProvider {
 
 
 
-    private boolean isGame(File f){
-        return false;
-    }
-
-    private boolean isPresentation(File f){
-        return false;
-    }
 
 
     static boolean acceptFilename(String name){
@@ -76,6 +73,10 @@ public class ContentInfoProvider {
 
     private void asyncScan(){
 
+        if (scanning){
+            return;
+        }
+        scanning = true;
         fireAndForget(new Runnable() {
             @Override
             public void run() {
@@ -83,10 +84,7 @@ public class ContentInfoProvider {
                 for (final File root: roots){
                     log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
 
-//                    if (root.length() > 2456){
-//                        log.info("Ignore directory " + root.getAbsolutePath());
-//                        continue;
-//                    }
+                    scanning = true;
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
@@ -97,10 +95,6 @@ public class ContentInfoProvider {
                                 } else if (isVideo(file)) {
                                     fcnt++;
                                     videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
-                                } else if (isGame(file)) {
-                                    games.add(decoder.decode(file, root).setPlaylist(Playlist.GAMES));
-                                } else if (isPresentation(file)) {
-                                    presentations.add(decoder.decode(file, root).setPlaylist(Playlist.PRESENTATIONS));
                                 }
                             }
                         }
@@ -111,6 +105,8 @@ public class ContentInfoProvider {
                         }
                     });
                 }
+
+
                 scanned = true;
                 if (shuffleMusic) {
                     Collections.shuffle(music);
@@ -126,6 +122,7 @@ public class ContentInfoProvider {
                 log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
 
                 decoder.onScanComplete();
+                scanning = false;
             }
         });
     }
@@ -135,15 +132,32 @@ public class ContentInfoProvider {
     }
 
     public ContentInfoProvider get(){
+        readStaticContent();
         asyncScan();
         return this;
     }
 
-
-
-
-
-
+    private void readStaticContent() {
+        File gamedirs[] = getGamesDirectory().listFiles();
+        if (gamedirs == null || gamedirs.length == 0){
+            return;
+        }
+        for (File gdir: gamedirs){
+            File json = new File(gdir, "package-info.json");
+            if (json.exists()){
+                try {
+                    MapObj obj = (MapObj) Groot.decodeFile(json);
+                    ContentInfo info = new ContentInfo()
+                            .setTitle(obj.getString("title"))
+                            .setPath("/games/" + gdir.getName());
+                    games.add(info);
+                    System.out.println("import game " + info);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 
     public ContentInfoProvider addRoot(File root) {
@@ -334,7 +348,7 @@ public class ContentInfoProvider {
 
     List<ContentInfo> imported = new ArrayList<>();
 
-    public ContentInfoProvider importJson(String path) {
+    private ContentInfoProvider importJson(String path) {
         InputStream inputStream = FileUtil.findStream(path);
         if (inputStream == null){
             return this;
@@ -423,4 +437,28 @@ public class ContentInfoProvider {
     }
 
 
+    public File getGame(String id) {
+        File root = getGamesDirectory();
+        File gameDir = new File(root, id);
+        File json = new File(gameDir, "package-info.json");
+
+        MapObj mapObj = null;
+        try {
+            mapObj = (MapObj) Groot.decodeFile(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new File(gameDir, mapObj.getString("main"));
+    }
+
+
+    //TODO support android
+    private File getImportDirectory(){
+        return new File("webapp");
+    }
+
+    private File getGamesDirectory(){
+        return new File(getImportDirectory(), "games");
+    }
 }

@@ -49,6 +49,8 @@ public class WSDraft6455 extends DuplexDraft<ServerRequest, ServerResponse> {
                     .addHeader("Date", new Date().toString())
                     .addHeader("Upgrade", "websocket")
                     .addHeader("Sec-WebSocket-Accept", Base64.encodeBytes(sha1));
+            //use this line to connect using specific protocols, like  ws = new WebSocket(url, ["kontrol"])
+            //response.addHeader("Sec-WebSocket-Protocol", ((HttpRequest) req).getHeaderParam("Sec-WebSocket-Protocol"));
             return response;
         }catch (Exception e){
             e.printStackTrace();

@@ -65,6 +65,9 @@ public class WSConnection extends DuplexDraft.Connection {
 
     public ByteBuffer createByteBufferFromFramedata( WebSocketFrame framedata ) {
         byte[] payload = framedata.getPayload();
+        if (payload == null){
+            payload = new byte[]{};
+        }
         ByteBuffer mes = ByteBuffer.wrap(payload);
 
         boolean mask = false; //role == Role.CLIENT;

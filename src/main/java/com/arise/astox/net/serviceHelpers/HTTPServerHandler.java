@@ -19,7 +19,7 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
     protected String rootInfo;
     private Map<String, ResponseBuilder> responseMap = new HashMap<>();
     private Map<String, ServerResponse> staticResponses = new HashMap<>();
-    private List<DuplexDraft.Connection> duplexConnections = new ArrayList<>();
+    protected List<DuplexDraft.Connection> duplexConnections = new ArrayList<>();
 
 
     @Override

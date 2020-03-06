@@ -176,18 +176,13 @@ public class DeviceStat {
     }
 
     public DeviceStat scanIPV4(){
-        if (ipv4Addrs != null){
-            return this;
-        }
-        else {
-            ipv4Addrs = new HashSet<>();
-            NetworkUtil.scanIPV4(new NetworkUtil.IPIterator() {
-                @Override
-                public void onFound(String ip) {
-                    ipv4Addrs.add(ip);
-                }
-            });
-        }
+        ipv4Addrs = new HashSet<>();
+        NetworkUtil.scanIPV4(new NetworkUtil.IPIterator() {
+            @Override
+            public void onFound(String ip) {
+                ipv4Addrs.add(ip);
+            }
+        });
         return this;
 
     }

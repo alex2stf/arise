@@ -95,8 +95,7 @@ public class Main {
 
         final IDeviceController deviceController = new PCDeviceController();
         final ContentInfoDecoder decoder = new PCDecoder();
-        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
-                        .importJson("weland/config/commons/content-infos.json");
+        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder);
 
 
 

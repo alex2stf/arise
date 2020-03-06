@@ -8,6 +8,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -402,6 +403,12 @@ public class Groot {
 
   public static Object decodeBytes(String in){
    return decodeBytes(in.getBytes(), 0, in.getBytes().length, Syntax.STANDARD);
+  }
+
+  public static Object decodeFile(File in) throws IOException {
+    String content = FileUtil.read(in);
+    content = content.replaceAll("\\s+", " ");
+    return Groot.decodeBytes(content);
   }
 
   public static Object decodeBytes(byte in[]){
