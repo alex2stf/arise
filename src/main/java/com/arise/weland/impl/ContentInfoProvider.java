@@ -149,6 +149,7 @@ public class ContentInfoProvider {
                     MapObj obj = (MapObj) Groot.decodeFile(json);
                     ContentInfo info = new ContentInfo()
                             .setTitle(obj.getString("title"))
+                            .setThumbnailId(obj.getString("thumbnail"))
                             .setPath("/games/" + gdir.getName());
                     games.add(info);
                     System.out.println("import game " + info);
