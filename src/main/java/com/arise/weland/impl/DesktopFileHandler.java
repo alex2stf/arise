@@ -83,6 +83,11 @@ public class DesktopFileHandler extends ContentHandler {
 
                 log.info("OPEN " + path);
 
+                if (isInternal(path)){
+                    openUrl(fix(path));
+                    return;
+                }
+
                 if (isHttpPath(path)){
                     openUrl(path);
                     return;
@@ -103,11 +108,23 @@ public class DesktopFileHandler extends ContentHandler {
         return null;
     }
 
+    private boolean isInternal(String path) {
+        return path.startsWith("{host}");
+    }
+
+    private String fix(String data){
+        return  "http://localhost:8221/" + data.substring("{host}".length());
+    }
+
 
     @Override
     protected HttpResponse play(String path, Mode mode) {
         stop("-");
         log.info("PLAY " + mode + " " + path);
+        if (isInternal(path)){
+            return play(fix(path), mode);
+        }
+
         if (isHttpPath(path)){
             path = URLBeautifier.beautify(path);
             if (mode.equals(Mode.NATIVE)) {

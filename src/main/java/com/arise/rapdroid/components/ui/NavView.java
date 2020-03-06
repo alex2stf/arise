@@ -108,9 +108,9 @@ public class NavView extends LinearLayout {
 
     private List<Container> pages = new ArrayList<>();
 
-    public NavView addMenu(int selectedRes, int releasedRes, String id, View rightPage){
+    public int addMenu(int selectedRes, int releasedRes, String id, View rightPage){
         if (rightPage == null){
-            return this;
+            return pages.size();
         }
         compose();
         ImageButton button = new ImageButton(context);
@@ -125,7 +125,7 @@ public class NavView extends LinearLayout {
         button.setOnClickListener(onClickListener);
         show(0);
         requestLayout();
-        return this;
+        return pages.size() - 1;
     }
 
 

@@ -172,12 +172,12 @@ public class WelandClient {
         sendMessage(remoteConnection, message, onSucces, onError);
     }
 
-    public static void openFile(ContentInfo info, Object worker) {
-        getClient(worker).openFile(info.getPath());
-    }
+//    public static void openFile(ContentInfo info, Object worker, CompleteHandler onSuccess) {
+//        getClient(worker).openFile(info.getPath(), onSuccess);
+//    }
 
-    public static void openFile(String path, Object worker) {
-        getClient(worker).openFile(path);
+    public static void openFile(String path, Object worker, CompleteHandler onSuccess) {
+        getClient(worker).openFile(path, onSuccess);
     }
 
     public static void findThumbnail( Object worker, String thumbnailId, CompleteHandler<byte[]> completeHandler) {
@@ -193,12 +193,12 @@ public class WelandClient {
         getClient(worker).close(info.getPath());
     }
 
-    public static void playNative(String s, Object worker) {
-        getClient(worker).playNative(s);
+    public static void playNative(String s, Object worker, CompleteHandler onSuccess) {
+        getClient(worker).playNative(s, onSuccess);
     }
 
-    public static void playEmbedded(String s, Object worker) {
-        getClient(worker).playEmbedded(s);
+    public static void playEmbedded(String s, Object worker, CompleteHandler onSuccess) {
+        getClient(worker).playEmbedded(s, onSuccess);
     }
 
     public static class MessageResponse {

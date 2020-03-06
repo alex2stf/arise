@@ -150,7 +150,7 @@ public class ContentInfoProvider {
                     ContentInfo info = new ContentInfo()
                             .setTitle(obj.getString("title"))
                             .setThumbnailId(obj.getString("thumbnail"))
-                            .setPath("/games/" + gdir.getName());
+                            .setPath("{host}/games/" + gdir.getName());
                     games.add(info);
                     System.out.println("import game " + info);
                 } catch (IOException e) {

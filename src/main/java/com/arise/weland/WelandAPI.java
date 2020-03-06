@@ -93,38 +93,24 @@ public class WelandAPI {
         });
     }
 
-    public void openFile(String s) {
+
+    public void openFile(String s, CompleteHandler onSuccess) {
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/files/open?path=" + URLEncoder.encode(s));
-        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
-            @Override
-            public void onComplete(HttpResponse data) {
-                log.info("open file response: " + data);
-            }
-        });
+        currentClient.sendAndReceive(request, onSuccess);
     }
 
-    public void playNative(String s) {
+    public void playNative(String s, CompleteHandler onSuccess) {
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/files/play/native?path=" + URLEncoder.encode(s));
-        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
-            @Override
-            public void onComplete(HttpResponse data) {
-                log.info("open file response: " + data);
-            }
-        });
+        currentClient.sendAndReceive(request, onSuccess);
     }
 
 
-    public void playEmbedded(String s) {
+    public void playEmbedded(String s, CompleteHandler onSuccess) {
         HttpRequest request = new HttpRequest()
                 .setMethod("GET").setUri("/files/play/embedded?path=" + URLEncoder.encode(s));
-        currentClient.sendAndReceive(request, new CompleteHandler<HttpResponse>() {
-            @Override
-            public void onComplete(HttpResponse data) {
-                log.info("open file response: " + data);
-            }
-        });
+        currentClient.sendAndReceive(request, onSuccess);
     }
 
 

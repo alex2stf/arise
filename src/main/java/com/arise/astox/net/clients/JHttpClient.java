@@ -203,7 +203,9 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
             ex.printStackTrace();
         }
 
-        responseHandler.onComplete(httpResponse);
+        if (responseHandler != null){
+            responseHandler.onComplete(httpResponse);
+        }
         con.disconnect();
     }
 
