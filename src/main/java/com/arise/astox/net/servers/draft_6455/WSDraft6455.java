@@ -44,7 +44,7 @@ public class WSDraft6455 extends DuplexDraft<ServerRequest, ServerResponse> {
             response.setProtocol(HttpProtocol.V1_0)
                     .setStatusCode(101)
                     .setStatusText("Switching Protocols")
-                    .addHeader("Connection", "Upgrade")
+                    .addHeader("Connection", "Upgrade, Keep-Alive")
                     .addHeader("Server", "Astox")
                     .addHeader("Date", new Date().toString())
                     .addHeader("Upgrade", "websocket")

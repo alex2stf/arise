@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset="utf-8"/>
     <script src="/WSKontrol"></script>
 </head>
 <body>
@@ -74,15 +75,16 @@
                 document.body.style.backgroundColor = randColor();
                 new Audio("http://rpg.hamsterrepublic.com/wiki-images/2/21/Collision8-Bit.ogg").play();
                 break;
+             case 2:
+                bottom+=2;
+                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg").play()
+                break;
             case 3:
                 width+=10;
                 height +=10;
                 new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/missile.ogg").play();
                 break;
-            case 2:
-                bottom+=2;
-                new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg").play()
-                break
+
             case 6:
                 // new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/jump.ogg").play();
                 new Audio("http://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a").play();

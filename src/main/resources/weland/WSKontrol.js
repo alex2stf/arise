@@ -29,7 +29,7 @@ var WSKontrol = (function(){
 
                 ws.onmessage = function (evt) {
                     var msg = evt.data;
-                    console.log("RECEIVED " + msg, "call= " + call)
+                    console.log("RECEIVED " + msg)
                     if (call != null){
                         var pts = msg.split("|");
                         call(pts[0], +pts[1])
