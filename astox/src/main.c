@@ -1,26 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include "include/arise_file_util.h"
+
+
+#include <stx_file.h>
 #include <string.h>
 
-int is_directory(const char *path) {
-   struct stat statbuf;
-   if (stat(path, &statbuf) != 0)
-       return 0;
-   return S_ISDIR(statbuf.st_mode);
-}
 
 
-int is_regular_file(const char *path)
-{
-    struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
-}
 
 
+/*
 void arise_read_dir(const char * dirname, void (*callback)(file_attr) ) {
     struct dirent *de;
 
@@ -60,25 +49,38 @@ void arise_read_dir(const char * dirname, void (*callback)(file_attr) ) {
 
 }
 
+*/
+
+void on_file_readed(stx_file_attr attr){
+      printf(">> %s %d %s\n", attr.absolute_path, strlen(attr.name), (attr.is_dir ? "<DIR>\n" : "<file>\n") );
+
+      if (attr.is_dir && attr.name[0] != '.' && (strlen(attr.name) > 1) ) {
+         // size_t len = strlen(attr.absolute_path) + 3;
+        //  char* ndir = stx_path_listable_format(attr.absolute_path);
+
+          //strcpy
 
 
-void on_file_readed(file_attr attr){
-     // printf("%s\n", attr.name);
+
+          //printf("NEXT %s\n", ndir);
 
 
-      if(is_directory(attr.absolute_path) && attr.name[0] != '.'){
-       //  arise_read_dir(attr.absolute_path, &on_file_readed);
+          stx_list_files(attr.absolute_path, &on_file_readed);
       }
-      else {
-        printf("%s\n", attr.absolute_path);
-      }
+
+
+
+
 }
 int main(int argc, char *argv[])
 {
 
 
 
-    arise_read_dir("C:", &on_file_readed);
-    printf("Hello world .... !\n");
+
+  //  stx_list_files("C:\\Applications\\ideaIU-2017.1.6.win", &on_file_readed);
+    stx_list_files("C:\\Applications\\ideaIU-2017.1.6.win", &on_file_readed);
+    printf("Hello world2 .... !\n");
+    while (1);
     return 0;
 }

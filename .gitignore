@@ -1,3 +1,4 @@
+
 /build
 *.iml
 .idea
@@ -10,3 +11,19 @@ lib/
 application_directory
 /out
 /weland-v1.0
+*/.vs
+*/Debug/*
+*.suo
+*.VC.db
+/astox/projects/Win10VC2019/.vs/
+/astox/projects/Win10VC2019/Debug/
+/astox/projects/Win10VC2019/STXWin10VC2019/Debug/
+/astox/projects/Win10VC2019/STXWin10VC2019/x64/
+/astox/projects/Win10VC2019/x64/
+/astox/projects/WinCB17Mingw/STXWin/STXWin.layout
+/astox/out
+/astox/projects/Win10VC2019/x64/
+/astox/projects/WinCodeBlocks/STXWin/build/
+/astox/projects/WinCodeBlocks/STXWin/STXWin.depend
+/astox/projects/WinCodeBlocks/STXWin/STXWin.layout
+/astox/projects/Win10VC2019/x64/

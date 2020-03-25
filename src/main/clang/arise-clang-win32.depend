@@ -9,3 +9,13 @@
 
 1582905224 c:\users\alexandru2.stefan\desktop\arise-master\src\main\clang\include\arise_file_util.h
 
+1583965660 source:c:\users\alexandru2.stefan\desktop\arise-git\arise\src\main\clang\main.c
+	<stdio.h>
+	<stdlib.h>
+	<dirent.h>
+	<sys/stat.h>
+	"include/arise_file_util.h"
+	<string.h>
+
+1582905224 c:\users\alexandru2.stefan\desktop\arise-git\arise\src\main\clang\include\arise_file_util.h
+

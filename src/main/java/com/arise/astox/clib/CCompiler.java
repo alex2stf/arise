@@ -1,29 +1,30 @@
 package com.arise.astox.clib;
 
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.FileUtil.FileFoundHandler;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class CCompiler {
 
-    private String compilerBin;
+    private File compilerBin;
     private File binDir;
-    private File buildDir;
+    private File outDir;
 
 
-    private Set<String> sources = new HashSet<>();
-    private Set<String> mainSources = new HashSet<>();
+    private Set<File> sources = new HashSet<>();
+    private Set<File> mainSources = new HashSet<>();
     private Set<String> testSources = new HashSet<>();
     private Set<String> mainTestSources = new HashSet<>();
-    private Set<String> includes = new HashSet<>();
+    private Set<File> includedDirectories = new HashSet<>();
     private Set<String> testIncludes = new HashSet<>();
     private Set<String> linkerFlags = new HashSet<>();
     private Set<File> libsPaths = new HashSet<>();
@@ -31,127 +32,170 @@ public class CCompiler {
     private Set<String> extensions = new HashSet<>();
     private String[] excludes = new String[]{};
 
-    public CCompiler compiler(String s){
-        compilerBin = s;
+    public CCompiler compiler(File compiler){
+        compilerBin = compiler;
         return this;
     }
 
 
-    public CCompiler src(String s){
-        sources.add(s);
-        return this;
-    }
-
-    private boolean fileIsCommon(File f){
-        for (String s: mainSources){
-            if (f.getName().equals(s)){
-                return false;
-            }
-        }
-
-
-        for (String s: mainTestSources){
-            if (f.getName().equals(s)){
-                return false;
-            }
-        }
-
-        for (String s: excludes){
-            if (f.getName().equals(s)){
-                return false;
-            }
-        }
-
-        for (String s: extensions){
-            if (f.getName().endsWith(s)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-
-    private Set<File> compile(Set<String> input, final Set<String> includes){
-        final Set<File> compiled = new HashSet<>();
-
-
-        for (String src: input){
-            FileUtil.linearScan(new File(src), new FileFoundHandler() {
+    public CCompiler sourceDirectory(File file){
+        if (file.isDirectory()){
+            FileUtil.recursiveScan(file, new FileFoundHandler() {
                 @Override
-                public void foundFile(File file) {
-                    if (fileIsCommon(file)){
-                        String fname = file.getName().split("\\.")[0]+ ".o";
-                        String locOut = buildDir.getAbsolutePath() + File.separator + fname;
-
-                        File loutFile = new File(locOut);
-
-
-                        Set<String> compilerFlags = new HashSet<>();
-                        compilerFlags.add("-c");
-                        compileCPP(
-                                "",
-                                file.getAbsolutePath(),
-                                new HashSet<File>(),
-                                includes,
-                                buildDir,
-                                fname,
-                                compilerFlags,
-                                compilerBin,
-                                libsPaths,
-                                new HashSet<String>()
-                        );
-
-
-
-
-
-                        if (loutFile.exists()){
-                            compiled.add(loutFile);
+                public void foundFile(File f) {
+                    for (String s: extensions){
+                        if (f.getName().endsWith(s)){
+                            sources.add(f);
+                            break;
                         }
                     }
                 }
             });
         }
 
-        return compiled;
-    }
-
-    public CCompiler compile() {
-
-        ccompile(mainSources);
-
-//        executables = new TreeSet<>();
-//        Set<File> srcouts = compile(sources, includes);
-////
-//        for (String s: includes){
-//            testIncludes.add(s);
-//        }
-////
-//        Set<File> testouts = compile(testSources, testIncludes);
-//
-//        Set<File> outs = new HashSet<>();
-//        outs.addAll(srcouts);
-//        for (File f: testouts){
-//            outs.add(f);
-//        }
-//
-//        for (String ts: testSources){
-//            for (String mainTest: mainTestSources){
-//                String outfile = mainTest.split("\\.")[0];
-//                File f = compileCPP(ts, mainTest, outs, testIncludes, binDir, outfile, new HashSet<String>(), compilerBin,
-//                        libsPaths,
-//                        linkerFlags);
-//                executables.add(f);
-//            }
-//        }
-
+        else if (file.isFile()){
+            sources.add(file);
+            return this;
+        }
+        else {
+            //TODO logical codes
+            throw new LogicalException("WTF");
+        }
         return this;
     }
 
-    private void ccompile(Set<String> mainSources) {
+//    private boolean fileIsCommon(File f){
+//        for (String s: mainSources){
+//            if (f.getName().equals(s)){
+//                return false;
+//            }
+//        }
+//
+//
+//        for (String s: mainTestSources){
+//            if (f.getName().equals(s)){
+//                return false;
+//            }
+//        }
+//
+//        for (String s: excludes){
+//            if (f.getName().equals(s)){
+//                return false;
+//            }
+//        }
+//
+//        for (String s: extensions){
+//            if (f.getName().endsWith(s)){
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
+
+
+//    private File compileOutput(File file, final Set<String> includes){
+//        final Set<File> compiled = new HashSet<>();
+//
+//
+//        for (String src: input){
+//            FileUtil.linearScan(new File(src), new FileFoundHandler() {
+//                @Override
+//                public void foundFile(File file) {
+//                    if (fileIsCommon(file)){
+//                        String fname = file.getName().split("\\.")[0]+ ".o";
+//                        String locOut = outDir.getAbsolutePath() + File.separator + fname;
+//
+//                        File loutFile = new File(locOut);
+//
+//
+//                        Set<String> compilerFlags = new HashSet<>();
+//                        compilerFlags.add("-c");
+//                        compileCPP(
+//                                "",
+//                                file.getAbsolutePath(),
+//                                new HashSet<File>(),
+//                                includes,
+//                                outDir,
+//                                fname,
+//                                compilerFlags,
+//                                compilerBin.getAbsolutePath(),
+//                                libsPaths,
+//                                new HashSet<String>()
+//                        );
+//
+//
+//
+//
+//
+//                        if (loutFile.exists()){
+//                            compiled.add(loutFile);
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//
+//        return compiled;
+//    }
+
+    private boolean isPartOf(File f, Set<File> files){
+        for (File x: files){
+            if (f.getAbsolutePath().equals(x.getAbsolutePath())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Set<File> compileObjects() {
+
+        Set<File> res = new HashSet<>();
+
+        for(File src: sources){
+            if (!isPartOf(src, mainSources)) {
+
+                File out = new File(outDir, src.getName().split("\\.")[0] + ".o");
+
+                List<String> arguments = new ArrayList<>();
+                //gcc
+                arguments.add(compilerBin.getAbsolutePath());
+
+                //-I
+                for (File i: includedDirectories){
+                    arguments.add("-I" + i.getAbsolutePath());
+
+                }
+
+
+                arguments.add("-c");
+                arguments.add(src.getAbsolutePath());
+
+
+
+
+
+                arguments.add("-o");
+                arguments.add(out.getAbsolutePath());
+
+//                System.out.println("[ " + StringUtil.join(arguments, " "));
+
+                String [] args = new String[arguments.size()];
+                arguments.toArray(args);
+                SYSUtils.exec(args);
+
+                res.add(out);
+            }
+        }
+
+       return res;
+
+
+    }
+
+    private void ccompile(Set<String> mainSources) {
+        System.out.println(StringUtil.join(mainSources, ","));
     }
 
 
@@ -236,18 +280,28 @@ public class CCompiler {
         return this;
     }
 
-    public CCompiler bin(String bin) {
-        binDir = FileUtil.getOrCreateDirs(bin);
+//    /**
+//     * @deprecated use file
+//     * @param bin
+//     * @return
+//     */
+//    @Deprecated
+//    public CCompiler bin(String bin) {
+//        binDir = FileUtil.getOrCreateDirs(bin);
+//        return this;
+//    }
+
+
+    public CCompiler outputDirectory(File out) {
+        if (!out.exists()){
+            out.mkdirs();
+        }
+        outDir = out;
         return this;
     }
 
-    public CCompiler output(String build) {
-        buildDir = FileUtil.getOrCreateDirs(build);
-        return this;
-    }
-
-    public CCompiler includeDir(String s) {
-        includes.add(s);
+    public CCompiler includeDirectory(File s) {
+        includedDirectories.add(s);
         return this;
     }
 
@@ -261,8 +315,8 @@ public class CCompiler {
         return this;
     }
 
-    public CCompiler srcMain(String o) {
-        mainSources.add(o);
+    public CCompiler mainSource(File src) {
+        mainSources.add(src);
         return this;
     }
 
@@ -305,5 +359,30 @@ public class CCompiler {
     public CCompiler extraLibPath(File path) {
         libsPaths.add(path);
         return this;
+    }
+
+    public void compileMains(Set<File> objects) {
+        for (File f: mainSources){
+            List<String> args = new ArrayList<>();
+            args.add(compilerBin.getAbsolutePath());
+            args.add(f.getAbsolutePath());
+
+            for (File i: includedDirectories){
+                args.add("-I" + i.getAbsolutePath());
+
+            }
+            for (File x: objects){
+                args.add(x.getAbsolutePath());
+            }
+
+            args.add("-o");
+            args.add("main");
+
+            String[] a = new String[args.size()];
+            a = args.toArray(a);
+
+            System.out.println(StringUtil.join(a, " "));
+            SYSUtils.exec(a);
+        }
     }
 }
