@@ -43,12 +43,16 @@ public class DesktopFileHandler extends ContentHandler {
     private static File nwjsExe;
     static {
         try {
-            File nwjsDir = DependencyManager.solve(Dependencies.NWJS_0_12_0).uncompressed();
-            nwjsExe = new File(nwjsDir, "nw.exe");
-            if (!nwjsExe.exists()){
-                log.error("Unable to solve NWJS");
-                nwjsEnabled = false;
+            DependencyManager.Resolution resolution = DependencyManager.solve(Dependencies.NWJS_0_12_0);
+            if (resolution != null){
+                File nwjsDir = DependencyManager.solve(Dependencies.NWJS_0_12_0).uncompressed();
+                nwjsExe = new File(nwjsDir, "nw.exe");
+                if (!nwjsExe.exists()){
+                    log.error("Unable to solve NWJS");
+                    nwjsEnabled = false;
+                }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             nwjsEnabled = false;
@@ -151,7 +155,14 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-    private void openMedia(String path) {
+    private synchronized void openMedia(String path) {
+//        try {
+//            Thread.currentThread().join();
+//        } catch (InterruptedException e) {
+//
+//        }
+
+
         File local = new File(path);
         if (local.exists() && vlcEmbedded){
             ContentInfo info = contentInfoProvider.findByPath(local.getAbsolutePath().replaceAll("\\\\", "/"));
@@ -305,6 +316,10 @@ public class DesktopFileHandler extends ContentHandler {
                         String args[] = getCloseCommand(s);
                         log.info(StringUtil.join(args, " "));
                         Runtime.getRuntime().exec(args);
+                    }
+
+                    if (SYSUtils.isLinux()){
+                        Runtime.getRuntime().exec(new String[]{"pkill", "-9", s});
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

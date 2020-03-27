@@ -200,6 +200,9 @@ public class DependencyManager {
     public static Resolution solve(Dependency dependency) throws IOException {
         File out = getRoot();
         Rule systemRule = download(dependency, new File(out, "src"));
+        if (systemRule == null){
+            return null;
+        }
         File currentPath = uncompress(dependency, systemRule, new File(out, "out") );
         return new Resolution(systemRule, currentPath, dependency);
     }

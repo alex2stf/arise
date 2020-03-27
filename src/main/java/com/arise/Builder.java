@@ -414,7 +414,7 @@ public class Builder {
             } else {
                 r[0] = javac.getAbsolutePath();
                 r[1] = "-cp";
-                r[2] = concatJars(jarlibs, ";");
+                r[2] = concatJars(jarlibs, File.pathSeparator);
                 r[3] = "-d";
                 r[4] = output.getAbsolutePath();
             }
@@ -431,7 +431,16 @@ public class Builder {
                 if (i > 0){
                     sb.append(delimiter);
                 }
-                File f = new File(ROOT_DIRECTORY.getAbsolutePath() + File.separator +  values.get(i));
+                //test under linux for paths like roor/.:
+                String cwd = ROOT_DIRECTORY.getAbsolutePath();
+                if (cwd.endsWith(".")){
+                    cwd = cwd.substring(0, cwd.length() - 1);
+                }
+                if (!cwd.endsWith(File.separator)){
+                    cwd+=File.separator;
+                }
+
+                File f = new File(cwd,  values.get(i));
                 sb.append(f.getAbsolutePath());
             }
             return sb.toString();

@@ -413,6 +413,7 @@ public class FileUtil {
 //                }
                 recursiveScan(c, fileFoundHandler, filenameFilter);
             } else if (c.isFile() && fileFoundHandler != null){
+                System.out.println("found " + c.getAbsolutePath());
                 fileFoundHandler.foundFile(c);
             }
         }

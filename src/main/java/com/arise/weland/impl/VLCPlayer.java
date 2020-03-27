@@ -3,35 +3,28 @@ package com.arise.weland.impl;
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.tools.*;
-import com.arise.weland.WelandClient;
+import com.arise.core.tools.Mole;
 import com.arise.weland.dto.ContentInfo;
-import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.logger.Logger;
 import uk.co.caprica.vlcj.player.MediaMeta;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.TrackInfo;
-import uk.co.caprica.vlcj.player.TrackType;
-import uk.co.caprica.vlcj.player.VideoTrackInfo;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.concurrent.LinkedTransferQueue;
 
 
 /**
@@ -42,37 +35,59 @@ public class VLCPlayer {
 
     private static final Mole log = Mole.getInstance(VLCPlayer.class);
 
-    public static final String VLC_BIN;
-    static {
+    public static String VLC_BIN;
+
+    static{
+
         JHttpClient.disableSSL();
         String VLC_PATH = null;
+        String VLC_PATH_LIB_VLC = null;
+        String VLC_PATH_LIB_VLC_CORE = null;
         try {
-            VLC_PATH = DependencyManager.solve(Dependencies.VLC_2_1_0).uncompressed().getAbsolutePath();
-        } catch (IOException e) {
+            DependencyManager.Resolution resolution = DependencyManager.solve(Dependencies.VLC_2_1_0);
+            if (resolution != null){
+                VLC_PATH = resolution.uncompressed().getAbsolutePath();
+                VLC_PATH_LIB_VLC = VLC_PATH + File.separator + "libvlc.dll";
+                VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
+                VLC_BIN = VLC_PATH + File.separator + "vlc.exe";
+            }
+//            else {
+//                VLC_PATH = "/usr/lib/vlc";
+//                VLC_PATH_LIB_VLC="/usr/lib/libvlc.so";
+//                VLC_PATH_LIB_VLC_CORE="/usr/lib/libvlccore.so.8.0.0";
+//                VLC_BIN = "usr/bin/vlc";
+//            }
+
+
+        } catch (Exception e) {
             e.printStackTrace();
-            System.exit(-1);
         }
-        String VLC_PATH_LIB_VLC = VLC_PATH + File.separator + "libvlc.dll";
-        String VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
-        VLC_BIN = VLC_PATH + File.separator + "vlc.exe";
+
+        if (null != VLC_PATH) {
+
+            System.setProperty("VLC_PLUGIN_PATH", VLC_PATH + File.separator + "plugins");
+
+            NativeLibrary.addSearchPath(
+                    RuntimeUtil.getLibVlcLibraryName(), VLC_PATH);
+        }
+        if (null != VLC_PATH_LIB_VLC) {
+            try {
+                Native.loadLibrary(VLC_PATH_LIB_VLC, LibVlc.class);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
+        if (null != VLC_PATH_LIB_VLC_CORE) {
+            try {
+                Native.loadLibrary(VLC_PATH_LIB_VLC_CORE, LibVlc.class);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
 
 
 
-        System.setProperty("VLC_PLUGIN_PATH", VLC_PATH + "\\plugins");
-        NativeLibrary.addSearchPath(
-                RuntimeUtil.getLibVlcLibraryName(), VLC_PATH);
 
-        try {
-            Native.loadLibrary(VLC_PATH_LIB_VLC, LibVlc.class);
-        }
-        catch (Throwable t){
-            t.printStackTrace();
-        }
-        try {
-            Native.loadLibrary(VLC_PATH_LIB_VLC_CORE, LibVlc.class);
-        }catch (Throwable t){
-            t.printStackTrace();
-        }
 
 
     }
@@ -199,6 +214,8 @@ public class VLCPlayer {
 
             log.trace("cplay " + info.getPath());
             mediaPlayer.play();
+
+
         }
 
         public void play(String path){
