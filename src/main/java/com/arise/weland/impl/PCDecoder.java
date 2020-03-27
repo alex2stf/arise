@@ -41,7 +41,7 @@ public class PCDecoder extends ContentInfoDecoder {
         final ContentInfo info = new ContentInfo(file);
 
 
-//        new VLCPlayer.MmrData().fetchPrepareInfo(info);
+        new VLCPlayer.MmrData().fetchPrepareInfo(info);
 
         if (!StringUtil.hasText(info.getThumbnailId())){
             suggestionService.searchIcons(file.getName(), new SuggestionService.Manager() {

@@ -9,10 +9,13 @@ import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.logger.Logger;
 import uk.co.caprica.vlcj.player.MediaMeta;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.direct.BufferFormatCallback;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -51,12 +54,12 @@ public class VLCPlayer {
                 VLC_PATH_LIB_VLC_CORE = VLC_PATH + File.separator + "libvlccore.dll";
                 VLC_BIN = VLC_PATH + File.separator + "vlc.exe";
             }
-//            else {
-//                VLC_PATH = "/usr/lib/vlc";
-//                VLC_PATH_LIB_VLC="/usr/lib/libvlc.so";
-//                VLC_PATH_LIB_VLC_CORE="/usr/lib/libvlccore.so.8.0.0";
-//                VLC_BIN = "usr/bin/vlc";
-//            }
+            else {
+                VLC_PATH = "/usr/lib/vlc";
+                VLC_PATH_LIB_VLC="/usr/lib/libvlc.so.5";
+                VLC_PATH_LIB_VLC_CORE="/usr/lib/libvlccore.so.8.0.0";
+                VLC_BIN = "usr/bin/vlc";
+            }
 
 
         } catch (Exception e) {
@@ -118,7 +121,7 @@ public class VLCPlayer {
         mainFrame = new JFrame("VLC Player");
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.setLocation(0, 0);
-       WelandFrame.fullScreen(mainFrame, 1200, 800);
+//       WelandFrame.fullScreen(mainFrame, 1200, 800);
 
         mediaPlayerComponent = new MyStandardEmbeddedMediaPlayerComponent();
         mainFrame.setContentPane(mediaPlayerComponent);
@@ -254,8 +257,10 @@ public class VLCPlayer {
             }
             String actual = file.toURI().toASCIIString().replace("file:/", "file:///");
            try {
+
+
                mediaPlayer.prepareMedia(actual);
-               mediaPlayer.parseMedia();
+              // mediaPlayer.parseMedia();
            } catch (Throwable t){
                System.out.println(actual);
                t.printStackTrace();
@@ -293,6 +298,38 @@ public class VLCPlayer {
 
 
     public static void main(String[] args) {
-        VLCPlayer.getInstance().play("D:\\FILME\\Neighbors.2014.720p.WEBRiP.800MB.ShAaNiG.com.mkv");
+
+        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
+//        mediaPlayerFactory.newHeadlessMediaPlayer().playMedia(
+//                "/home/alex/Desktop/muzic/Baniciu/2 Dealul cu dor.mp3"
+//        );
+//
+        mediaPlayerFactory.newEmbeddedMediaPlayer().playMedia(
+                "/home/alex/Desktop/muzic/Baniciu/2 Dealul cu dor.mp3"
+        );
+
+//        JFrame frame = new JFrame();
+//
+//        EmbeddedMediaPlayerComponent
+//        mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+//
+//        frame.setContentPane(mediaPlayerComponent);
+//
+//        frame.setLocation(0, 0);
+//        frame.setSize(300,400);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setVisible(true);
+//
+//        mediaPlayerComponent.getMediaPlayer().playMedia(
+//                "/home/alex/Desktop/muzic/Baniciu/2 Dealul cu dor.mp3"
+//        );//Movie name which want to play
+
+
+        //VLCPlayer.getInstance().play("/home/alex/Desktop/muzic/Baniciu/2 Dealul cu dor.mp3");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
+        }
     }
 }
