@@ -2,7 +2,6 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.AppCache;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
@@ -21,44 +20,33 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfoProvider {
 
-    List<File> roots = new ArrayList<>();
-    private Mole log = Mole.getInstance(ContentInfoProvider.class);
-
-    private volatile boolean scanned = false;
-    private volatile boolean scanning = false;
-
     final ContentInfoDecoder decoder;
-
     final List<ContentInfo> music = new ArrayList<>();
     final List<ContentInfo> streams = new ArrayList<>();
     final List<ContentInfo> videos = new ArrayList<>();
     final List<ContentInfo> games = new ArrayList<>();
     final List<ContentInfo> presentations = new ArrayList<>();
+    List<File> roots = new ArrayList<>();
+    List<ContentInfo> contentInfoQueue = new ArrayList<>();
+    List<ContentInfo> imported = new ArrayList<>();
+    private Mole log = Mole.getInstance(ContentInfoProvider.class);
+    private volatile boolean scanned = false;
+    private volatile boolean scanning = false;
+    private int fcnt = 0;
+    private boolean shuffleMusic = false;
+    private boolean shuffleVideos = false;
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
         decoder.setProvider(this);
     }
-
-
-
-    private boolean isMusic(File f){
-        return ContentType.isMusic(f);
-    }
-
-    private boolean isVideo(File f){
-        return ContentType.isVideo(f);
-    }
-
-
-
-
 
     static boolean acceptFilename(String name){
         if (name.indexOf(".") > -1){
@@ -68,9 +56,13 @@ public class ContentInfoProvider {
         return true;
     }
 
+    private boolean isMusic(File f){
+        return ContentType.isMusic(f);
+    }
 
-
-    private int fcnt = 0;
+    private boolean isVideo(File f){
+        return ContentType.isVideo(f);
+    }
 
     private void asyncScan(){
 
@@ -81,6 +73,17 @@ public class ContentInfoProvider {
         fireAndForget(new Runnable() {
             @Override
             public void run() {
+
+                File queueFile = getQueueFile();
+                if (queueFile.exists()){
+
+                    try {
+                        String json = FileUtil.read(queueFile);
+                        contentInfoQueue = ContentInfo.deserializeCollection(json);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
 
                 for (final File root: roots){
                     log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
@@ -179,7 +182,6 @@ public class ContentInfoProvider {
 
     }
 
-
     public ContentInfoProvider addRoot(File root) {
         if (root == null || !root.exists() || !root.isDirectory()){
             return this;
@@ -187,7 +189,6 @@ public class ContentInfoProvider {
         roots.add(root);
         return this;
     }
-
 
     private List<ContentInfo> getPlaylist(Playlist playlist){
         switch (playlist){
@@ -204,7 +205,6 @@ public class ContentInfoProvider {
         }
         return music;
     }
-
 
     public ContentPage getPage(Playlist playlist, Integer index) {
         int rIndex = 0;
@@ -248,14 +248,9 @@ public class ContentInfoProvider {
                 .setIndex(limit);
     }
 
-
-
-
     public  ContentInfo getCurrentInfo() {
         return decoder.currentInfo;
     }
-
-
 
     public HttpResponse getMediaPreview(String id) {
         HttpResponse response = new HttpResponse();
@@ -266,17 +261,20 @@ public class ContentInfoProvider {
         return response;
     }
 
-
-
     public ContentInfoDecoder getDecoder() {
         return decoder;
     }
 
-    public void addToQueue(ContentInfo info, String mode) {
-
-        System.out.println(info);
+    private File getQueueFile(){
+        return new File(decoder.getStateDirectory(), "media-queue.json");
     }
 
+    public void addToQueue(ContentInfo info) {
+        File stateDirectory = decoder.getStateDirectory();
+        contentInfoQueue.add(info);
+        String content = ContentInfo.serializeCollection(contentInfoQueue);
+        FileUtil.writeStringToFile(getQueueFile(), content);
+    }
 
     public final void saveState(ContentInfo currentInfo) {
         decoder.saveState(currentInfo);
@@ -285,9 +283,6 @@ public class ContentInfoProvider {
     public void clearState() {
         decoder.clearState();
     }
-
-    private boolean shuffleMusic = false;
-    private boolean shuffleVideos = false;
 
     public void shuffle(String playlistId) {
         if (scanned){
@@ -313,19 +308,6 @@ public class ContentInfoProvider {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public ContentInfo nextFile(Playlist playlist){
 
@@ -365,9 +347,6 @@ public class ContentInfoProvider {
         return info.incrementVisit();
 
     }
-
-
-    List<ContentInfo> imported = new ArrayList<>();
 
     public ContentInfoProvider importJson(String path) {
         log.info("import json " + path);

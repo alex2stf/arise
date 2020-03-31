@@ -33,6 +33,8 @@ import java.net.URISyntaxException;
 /**
  * Created by Alexandru on 1/24/2020.
  */
+
+@Deprecated
 public class VLCPlayer {
 
 

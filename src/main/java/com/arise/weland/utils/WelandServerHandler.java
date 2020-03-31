@@ -239,8 +239,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     if (request.pathsStartsWith("queue", "add") && !"GET".equalsIgnoreCase(request.method())){
       Map obj = (Map) Groot.decodeBytes(request.payload());
       ContentInfo info = contentInfoProvider.getDecoder().find(obj);
-      String mode = request.getQueryParam("mode");
-      contentInfoProvider.addToQueue(info, mode);
+      contentInfoProvider.addToQueue(info);
       return HttpResponse.oK().addCorelationId(correlationId);
     }
 
