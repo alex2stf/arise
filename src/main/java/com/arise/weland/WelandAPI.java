@@ -245,6 +245,18 @@ public class WelandAPI {
         return this;
     }
 
+    public void addToQueue(ContentInfo info, String mode) {
+        HttpRequest request = new HttpRequest()
+                .setMethod("POST").setUri("/queue/add?mode" + mode)
+                .setBytes(info.toString().getBytes());
+        currentClient.sendAndReceive(request, new CompleteHandler() {
+            @Override
+            public void onComplete(Object data) {
+                System.out.println("DONE");
+            }
+        });
+    }
+
 
 //    public void moveMouse(int x, int y) {
 //        System.out.println("mouse move " + x + " " + y);

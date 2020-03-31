@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
@@ -271,8 +272,9 @@ public class ContentInfoProvider {
         return decoder;
     }
 
-    public void addToQueue(ContentInfo info) {
+    public void addToQueue(ContentInfo info, String mode) {
 
+        System.out.println(info);
     }
 
 
@@ -481,4 +483,8 @@ public class ContentInfoProvider {
     private File getGamesDirectory(){
         return new File(getImportDirectory(), "games");
     }
+
+
+
+
 }

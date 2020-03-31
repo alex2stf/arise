@@ -69,6 +69,7 @@ public class Main {
         });
 
 
+        AppCache.setWorker(new CacheWorker());
 
         try {
             ContentType.loadDefinitions();

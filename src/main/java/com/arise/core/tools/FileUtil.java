@@ -474,6 +474,9 @@ public class FileUtil {
     }
 
     public static <T extends Serializable> T serializableRead(File input){
+        if (!input.exists()){
+            return null;
+        }
         FileInputStream fileIn = null;
         ObjectInputStream objectIn = null;
         T r = null;

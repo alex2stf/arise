@@ -236,10 +236,11 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if ("/queue/add".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
+    if (request.pathsStartsWith("queue", "add") && !"GET".equalsIgnoreCase(request.method())){
       Map obj = (Map) Groot.decodeBytes(request.payload());
       ContentInfo info = contentInfoProvider.getDecoder().find(obj);
-      contentInfoProvider.addToQueue(info);
+      String mode = request.getQueryParam("mode");
+      contentInfoProvider.addToQueue(info, mode);
       return HttpResponse.oK().addCorelationId(correlationId);
     }
 
@@ -250,9 +251,15 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if (request.pathsStartsWith("media", "autoplay")){
-      String playlistId = request.getPathAt(2);
-      String mode = request.getPathAt(3);
-
+      String groupName = request.getQueryParam("group");
+      String playlistId = request.getQueryParam("playlist");
+      if (groupName != null){
+        AutoplayOptions.setAutoplayGroup(groupName);
+      }
+      else if(playlistId != null && Playlist.find(playlistId) != null) {
+        Playlist playlist = Playlist.find(playlistId);
+        AutoplayOptions.setAutoplayPlaylist(playlist);
+      }
       return HttpResponse.oK().addCorelationId(correlationId);
     }
 

@@ -49,16 +49,9 @@ public abstract class ContentInfoDecoder {
             }
         }
         ContentInfo contentInfo = decodeFile(file);
-        String parts[] = file.getAbsolutePath()
-                .replaceAll(Pattern.quote(root.getAbsolutePath()), "")
-                .split(Pattern.quote(File.separator));
-        for (String s: parts){
-            if (StringUtil.hasContent(s)){
-                contentInfo.setGroupId(s);
-                break;
-            }
+        if (file.getParentFile() != null){
+            contentInfo.setGroupId(file.getParentFile().getName());
         }
-
         return contentInfo;
     }
 

@@ -201,6 +201,11 @@ public class WelandClient {
         getClient(worker).playEmbedded(s, onSuccess);
     }
 
+    public static void addToQueue(ContentInfo info, String mode, Object worker) {
+        getClient(worker).addToQueue(info, mode);
+    }
+
+
     public static class MessageResponse {
        public Message message;
        public DeviceStat deviceStat;
