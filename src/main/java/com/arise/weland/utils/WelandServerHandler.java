@@ -80,12 +80,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
   ContentInfoProvider contentInfoProvider;
-  /**
-   *  = new ContentInfoProvider(new ContentInfoDecoder())
-   *           .addRoot(new File("/home"))
-   *           .addRoot(new File("/media/alex"))
-   *           .get();
-   */
+
 
   Handler<HttpRequest> liveMjpegHandler;
   Handler<HttpRequest> liveJpegHandler;
@@ -208,10 +203,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       String frameContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/frame.html"));
       return HttpResponse.html(whisker.compile(frameContent, args));
     }
-
-
-
-
 
     if ("/health".equalsIgnoreCase(request.path())){
       return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);

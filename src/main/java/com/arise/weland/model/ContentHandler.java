@@ -30,6 +30,8 @@ public abstract  class ContentHandler {
 
     public abstract HttpResponse stop(String string);
     public abstract HttpResponse pause(String string);
+
+
     public HttpResponse open(ContentInfo info){
         return open(info.getPath());
     }
