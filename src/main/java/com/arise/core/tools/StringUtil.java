@@ -32,6 +32,32 @@ import static com.arise.core.tools.TypeUtil.search;
 
 public class StringUtil {
 
+    public static  int extractInt(String input , int dv){
+        Integer x = extractInteger(input);
+        if (x != null){
+            return x;
+        }
+        return dv;
+    }
+
+    public static Integer extractInteger(String input){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.length(); i++){
+            char c = input.charAt(i);
+            if (Character.isDigit(c)){
+                sb.append(c);
+            }
+        }
+        Integer i;
+        try {
+            i = Integer.valueOf(sb.toString());
+        }catch (Exception e){
+            i = null;
+        }
+        return i;
+    }
+
+
     public static String quote(String string) {
         if (string == null || string.length() == 0) {
             return "\"\"";

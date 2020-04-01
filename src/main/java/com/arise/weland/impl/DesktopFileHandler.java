@@ -1,8 +1,6 @@
 package com.arise.weland.impl;
 
-import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.canter.Command;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
@@ -19,20 +17,15 @@ import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
-import com.arise.weland.utils.URLBeautifier;
-import uk.co.caprica.vlcj.player.MediaMeta;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class DesktopFileHandler extends ContentHandler {

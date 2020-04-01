@@ -4,6 +4,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.*;
 import com.arise.weland.IDGen;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
@@ -41,6 +42,12 @@ public class PCDecoder extends ContentInfoDecoder {
         final ContentInfo info = new ContentInfo(file);
         if (file.getParentFile() != null){
             info.setGroupId(file.getParentFile().getName());
+        }
+
+        try {
+            MediaInfoSolver.solve(info);
+        }catch (Exception e){
+
         }
 
         if (!StringUtil.hasText(info.getThumbnailId())){

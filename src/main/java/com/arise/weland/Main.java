@@ -21,6 +21,7 @@ import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.ui.desktop.WelandFrame;
+import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -64,6 +65,7 @@ public class Main {
     static AbstractServer ioServer;
 
     public static void main(String[] args) {
+        MediaInfoSolver.load();
         //VIP!!! load vlc native libs and dependencies
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
