@@ -1,5 +1,6 @@
 package com.arise.weland.impl;
 
+import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Command;
 import com.arise.canter.Registry;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +37,10 @@ import java.util.Set;
 
 public class DesktopFileHandler extends ContentHandler {
 
-    private final ContentInfoProvider contentInfoProvider;
-    private final Registry registry;
-    static boolean nwjsEnabled = !"false".equalsIgnoreCase(System.getProperty("nwjs.enabled"));
-    static boolean vlcEmbedded = !"false".equalsIgnoreCase(System.getProperty("vlc.enabled"));
     private static final Mole log = Mole.getInstance(DesktopFileHandler.class);
+    static boolean nwjsEnabled = !"false".equalsIgnoreCase(System.getProperty("nwjs.enabled"));
     private static File nwjsExe;
+
     static {
         try {
             DependencyManager.Resolution resolution = DependencyManager.solve(Dependencies.NWJS_0_12_0);
@@ -59,7 +59,15 @@ public class DesktopFileHandler extends ContentHandler {
         }
     }
 
+    private final ContentInfoProvider contentInfoProvider;
+    private final Registry registry;
     boolean fullScreenNwjs = "true".equalsIgnoreCase(System.getProperty("nwjs.fullscreen"));
+    MapObj commands;
+    volatile boolean clearing = false;
+    JFrame nf = null;
+    JLabel label = null;
+    ThreadUtil.TimerResult result;
+    Set<String> exes = new HashSet<>();
 
 
     public DesktopFileHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
@@ -67,7 +75,15 @@ public class DesktopFileHandler extends ContentHandler {
         this.registry = registry;
         setupArgs();
     }
-    MapObj commands;
+
+    public static void main(String[] args) {
+        Message message = new Message();
+        message.setText("some text");
+        DesktopFileHandler f = new DesktopFileHandler(null, null);
+                f.onMessageReceived(message);
+        message.setText("some text2");
+                f.onMessageReceived(message);
+    }
 
     private void setupArgs() {
         String s = StreamUtil.toString(
@@ -77,10 +93,45 @@ public class DesktopFileHandler extends ContentHandler {
         commands = (MapObj) Groot.decodeBytes(s);
     }
 
+    private Runnable playNextFromQueue(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("TIMED EVENT AT " + new Date());
+                ContentInfo info = contentInfoProvider.queueRemove();
+                if (info != null){
+                    System.out.println("Next to play " + info.getPath());
+                    openInfo(info);
+                }
+            }
+        };
+    }
 
-    public HttpResponse open(final String path) {
+    private ThreadUtil.TimerResult timerResult = null;
 
+    @Override
+    public HttpResponse openInfo(ContentInfo info) {
+        ThreadUtil.closeTimer(timerResult);
+
+        if (info.getDuration() > 10){
+            long delay = info.getDuration() + 1000;
+            this.timerResult = ThreadUtil.delayedTask(playNextFromQueue(), delay);
+        }
+        openString(info.getPath());
+        return null;
+    }
+
+
+
+    public HttpResponse openPath(final String path) {
+        ThreadUtil.closeTimer(timerResult);
         stop("-");
+        openString(path);
+        return null;
+    }
+
+
+    private void openString(String path){
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
@@ -89,27 +140,22 @@ public class DesktopFileHandler extends ContentHandler {
 
                 if (isInternal(path)){
                     openUrl(fix(path));
-                    return;
                 }
-
-                if (isHttpPath(path)){
+                else if (isHttpPath(path)){
                     openUrl(path);
-                    return;
                 }
-                if (isPicture(path)){
+                else if (isPicture(path)){
                     openPicture(path);
-                    return;
                 }
-
-                if (isMedia(path)){
+                else if (isMedia(path)){
                     openMedia(path);
-                    return;
                 }
-                SYSUtils.open(path);
+                else {
+                    SYSUtils.open(path);
+                }
                 return;
             }
         });
-        return null;
     }
 
     private boolean isInternal(String path) {
@@ -120,81 +166,43 @@ public class DesktopFileHandler extends ContentHandler {
         return  "http://localhost:8221" + data.substring("{host}".length());
     }
 
-
-    @Override
-    protected HttpResponse play(String path, Mode mode) {
-        stop("-");
-        log.info("PLAY " + mode + " " + path);
-        if (isInternal(path)){
-            return play(fix(path), mode);
-        }
-
-        if (isHttpPath(path)){
-            path = URLBeautifier.beautify(path);
-            if (mode.equals(Mode.NATIVE)) {
-                openInStandardBrowser(path);
-            }
-            else {
-                openInNwjs(path);
-            }
-        }
-
-        else if (isMedia(path)){
-            if (mode.equals(Mode.NATIVE)) {
-                execute(getCommands("media", path));
-            }
-            else {
-                VLCPlayer.getInstance().play(path);
-            }
-        }
-        else {
-            open(path);
-        }
-
-        return null;
-    }
-
+//    @Override
+//    protected HttpResponse play(String path, Mode mode) {
+//        stop("-");
+//        log.info("PLAY " + mode + " " + path);
+//        if (isInternal(path)){
+//            return play(fix(path), mode);
+//        }
+//
+//        else if (isHttpPath(path)){
+//            path = URLBeautifier.beautify(path);
+//            if (mode.equals(Mode.NATIVE)) {
+//                openInStandardBrowser(path);
+//            }
+//            else {
+//                openInNwjs(path);
+//            }
+//        }
+//        else {
+//            open(path);
+//        }
+//
+//        return null;
+//    }
 
     private synchronized void openMedia(String path) {
-//        try {
-//            Thread.currentThread().join();
-//        } catch (InterruptedException e) {
-//
-//        }
-
-
-        File local = new File(path);
-        if (local.exists() && vlcEmbedded){
-            ContentInfo info = contentInfoProvider.findByPath(local.getAbsolutePath().replaceAll("\\\\", "/"));
-            if (info != null){
-                VLCPlayer.getInstance().play(info);
-            }
-            else {
-                VLCPlayer.getInstance().play(path);
-            }
-        }
-        else {
-            execute(getCommands("media", path));
-        }
+        execute(getCommands("media", path));
     }
 
     private boolean isMedia(String path) {
         return ContentType.isMusic(path) || ContentType.isVideo(path);
     }
 
-    private boolean isHttpPath(String in){
-        try {
-            URI uri = new URI(in);
-            return uri != null && uri.getScheme().startsWith("http");
-        } catch (URISyntaxException e) {
-            return false;
-        }
-    }
+
 
     private boolean isPicture(String path){
         return ContentType.isPicture(path);
     }
-
 
     public void openPicture(String path){
         if (SYSUtils.isWindows()){
@@ -207,19 +215,13 @@ public class DesktopFileHandler extends ContentHandler {
         }
     }
 
-
-
     public void openUrl(String urlPath){
-
-
         if (shouldUseNwjs(urlPath)){
             openInNwjs(urlPath);
         }
         else {
            openInStandardBrowser(urlPath);
         }
-
-
     }
 
     private void openInNwjs(String url){
@@ -282,24 +284,18 @@ public class DesktopFileHandler extends ContentHandler {
         return null;
     }
 
-
     private void openInStandardBrowser(String path){
-
         execute(getCommands("browser", path));
-
     }
-
-
 
     @Override
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
-        VLCPlayer.getInstance().stop();
+        ThreadUtil.closeTimer(timerResult);
         closeSpawnedProcesses();
         return null;
     }
 
-    volatile boolean clearing = false;
     private void closeSpawnedProcesses(){
         if (clearing || exes.isEmpty()) {
             return;
@@ -341,15 +337,7 @@ public class DesktopFileHandler extends ContentHandler {
         return new String[]{"taskkill", "/IM", s, "/T", "/F"};
     }
 
-    @Override
-    public HttpResponse pause(String string) {
-        return null;
-    }
 
-
-    JFrame nf = null;
-    JLabel label = null;
-    ThreadUtil.TimerResult result;
 
     @Override
     public void onMessageReceived(Message message) {
@@ -381,10 +369,6 @@ public class DesktopFileHandler extends ContentHandler {
         }, 1000);
     }
 
-
-
-    Set<String> exes = new HashSet<>();
-
     private void execute(String args[]){
         log.info(StringUtil.join(args, " "));
         exes.add(new File(args[0]).getName());
@@ -393,16 +377,6 @@ public class DesktopFileHandler extends ContentHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static void main(String[] args) {
-        Message message = new Message();
-        message.setText("some text");
-        DesktopFileHandler f = new DesktopFileHandler(null, null);
-                f.onMessageReceived(message);
-        message.setText("some text2");
-                f.onMessageReceived(message);
     }
 
 

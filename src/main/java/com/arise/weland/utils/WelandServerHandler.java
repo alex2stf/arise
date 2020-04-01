@@ -86,7 +86,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   Handler<HttpRequest> liveJpegHandler;
   Handler<HttpRequest> liveWavHandler;
   Handler<HttpRequest> deviceControlsUpdate;
-  Handler<HttpRequest> commandExecHandler;
   ContentHandler contentHandler;
 
   IDeviceController iDeviceController;
@@ -104,10 +103,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-  public WelandServerHandler onCommandExecRequest(Handler<HttpRequest> commandExecHandler) {
-    this.commandExecHandler = commandExecHandler;
-    return this;
-  }
 
 
 
@@ -157,7 +152,6 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     deviceStat.setServerUUID(server.getUuid());
     deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
-
 
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
       deviceStat.setServerStatus(MSG_RECEIVE_OK);
@@ -254,23 +248,15 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if (request.pathsStartsWith("files", "open")){
-      HttpResponse response = contentHandler.play(request);
+    if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
+      HttpResponse response = contentHandler.openRequest(request);
       if (response != null){
         return response;
       }
       return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
     }
 
-    if (request.pathsStartsWith("files", "play")){
-      String mode = request.pathAt(2);
 
-      HttpResponse response = contentHandler.play(request, mode);
-      if (response != null){
-        return response;
-      }
-      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
-    }
 
     if (request.pathsStartsWith("files", "close")){
       HttpResponse response =  contentHandler.stop(request);
@@ -280,17 +266,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
     }
 
-    if (request.pathsStartsWith("files", "pause")){
-      HttpResponse response =  contentHandler.pause(request);
-      if (response != null){
-        return response;
-      }
-      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
-    }
-
-    if (request.pathsStartsWith("commands", "exec")){
-      return dispatch(commandExecHandler, request).addCorelationId(correlationId);
-    }
 
 
     if ("/ping".equals(request.path())){
@@ -301,13 +276,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       serverResponse.setText("PONG").addCorelationId(correlationId);
       return serverResponse;
     }
-
-
-    //static content:
-
-//    if ("/kontrol".equalsIgnoreCase(request.path())){
-//
-//    }
 
 
     if ("/webcam".equalsIgnoreCase(request.path())){

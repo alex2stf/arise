@@ -4,7 +4,14 @@ import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Registry;
-import com.arise.core.tools.*;
+import com.arise.core.tools.AppCache;
+import com.arise.core.tools.CacheWorker;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -12,8 +19,6 @@ import com.arise.weland.impl.DesktopFileHandler;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
-import com.arise.weland.impl.SelfUpdater;
-import com.arise.weland.impl.VLCPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.utils.WelandServerHandler;
@@ -60,7 +65,6 @@ public class Main {
 
     public static void main(String[] args) {
         //VIP!!! load vlc native libs and dependencies
-        VLCPlayer.getInstance();
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {

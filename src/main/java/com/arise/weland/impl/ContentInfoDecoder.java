@@ -41,21 +41,22 @@ public abstract class ContentInfoDecoder {
         }
     }
 
-    public final ContentInfo decode(File file, File root){
-        if (contentCache.containsKey(file.getAbsolutePath())){
-            ContentInfo info = contentCache.get(file.getAbsolutePath());
-            if (info != null){
-                return info;
-            }
-        }
-        ContentInfo contentInfo = decodeFile(file);
-        if (file.getParentFile() != null){
-            contentInfo.setGroupId(file.getParentFile().getName());
-        }
-        return contentInfo;
-    }
 
-    protected abstract ContentInfo decodeFile(File file);
+
+
+    public abstract ContentInfo decode(File file);
+//    {
+//        if (contentCache.containsKey(file.getAbsolutePath())){
+//            ContentInfo info = contentCache.get(file.getAbsolutePath());
+//            if (info != null){
+//                return info;
+//            }
+//        }
+//        ContentInfo contentInfo = decodeFile(file);
+
+//        return contentInfo;
+//    }
+
 
     protected abstract File getStateDirectory();
 

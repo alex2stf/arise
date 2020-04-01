@@ -34,14 +34,14 @@ public class PCDecoder extends ContentInfoDecoder {
 
 
     @Override
-    protected ContentInfo decodeFile(File file) {
+    public ContentInfo decode(File file) {
         if (contentCache.containsKey(file.getAbsolutePath())){
             return contentCache.get(file.getAbsolutePath());
         }
         final ContentInfo info = new ContentInfo(file);
-
-
-        new VLCPlayer.MmrData().fetchPrepareInfo(info);
+        if (file.getParentFile() != null){
+            info.setGroupId(file.getParentFile().getName());
+        }
 
         if (!StringUtil.hasText(info.getThumbnailId())){
             suggestionService.searchIcons(file.getName(), new SuggestionService.Manager() {

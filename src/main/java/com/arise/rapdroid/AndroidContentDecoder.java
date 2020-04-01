@@ -49,8 +49,13 @@ public class AndroidContentDecoder extends ContentInfoDecoder
     }
 
     @Override
-    public ContentInfo decodeFile(File file) {
-        return fromFile(file);
+    public ContentInfo decode(File file) {
+        ContentInfo info = fromFile(file);
+        if (file.getParentFile() != null){
+            info.setGroupId(file.getParentFile().getName());
+        }
+
+        return info;
     }
 
     @Override

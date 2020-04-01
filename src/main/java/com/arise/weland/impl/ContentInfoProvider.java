@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
@@ -78,7 +76,7 @@ public class ContentInfoProvider {
                 if (queueFile.exists()){
 
                     try {
-                        String json = FileUtil.read(queueFile);
+                        String json = FileUtil.read(queueFile).replaceAll("\\s+", " ");
                         contentInfoQueue = ContentInfo.deserializeCollection(json);
                     }catch (Exception e){
                         e.printStackTrace();
@@ -95,10 +93,10 @@ public class ContentInfoProvider {
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
                                     fcnt++;
-                                    music.add(decoder.decode(file, root).setPlaylist(Playlist.MUSIC));
+                                    music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
                                 } else if (isVideo(file)) {
                                     fcnt++;
-                                    videos.add(decoder.decode(file, root).setPlaylist(Playlist.VIDEOS));
+                                    videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
                                 }
                             }
                         }
@@ -270,8 +268,11 @@ public class ContentInfoProvider {
     }
 
     public void addToQueue(ContentInfo info) {
-        File stateDirectory = decoder.getStateDirectory();
         contentInfoQueue.add(info);
+        saveQueue();
+    }
+
+    private void saveQueue(){
         String content = ContentInfo.serializeCollection(contentInfoQueue);
         FileUtil.writeStringToFile(getQueueFile(), content);
     }
@@ -389,7 +390,10 @@ public class ContentInfoProvider {
     public ContentInfo findByPath(String path) {
         if (!scanned){
             log.warn("Scan not completed");
-            return findByPathInList(imported, path);
+            ContentInfo info = findByPathInList(imported, path);
+            if (info == null){
+                return decoder.decode(new File(path));
+            }
         }
         ContentInfo info = findByPathInList(streams, path);
         if (info == null){
@@ -429,13 +433,6 @@ public class ContentInfoProvider {
         return res;
     }
 
-    public ContentInfo decode(String currentPath) {
-        return decoder.decodeFile(new File(currentPath));
-    }
-
-    public ContentInfo previous(Playlist playlist) {
-        return null;
-    }
 
 
     public File getGame(String id) {
@@ -464,6 +461,13 @@ public class ContentInfoProvider {
     }
 
 
+    public ContentInfo queueRemove() {
 
-
+        if(CollectionUtil.isEmpty(contentInfoQueue)){
+            return null;
+        }
+        ContentInfo info = contentInfoQueue.remove(0);
+        saveQueue();
+        return info;
+    }
 }
