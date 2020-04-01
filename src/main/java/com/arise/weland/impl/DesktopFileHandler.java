@@ -131,7 +131,7 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-    private void openString(String path){
+    private void openString(final String path){
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
