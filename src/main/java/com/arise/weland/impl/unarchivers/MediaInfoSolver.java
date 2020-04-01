@@ -29,7 +29,7 @@ public class MediaInfoSolver {
      * DURATION duration : 7s 8ms
      * @param info
      */
-    public static void solve(ContentInfo info) {
+    public static void solve(final ContentInfo info) {
         if (mediaInfoResolution == null){
             return;
         }
