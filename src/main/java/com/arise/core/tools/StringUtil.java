@@ -1,7 +1,6 @@
 package com.arise.core.tools;
 
 
-import com.arise.core.tools.models.FilterCriteria;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,9 +24,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.TypeUtil.search;
 
 
 public class StringUtil {
@@ -168,6 +164,9 @@ public class StringUtil {
         return s.endsWith("\n") || s.endsWith("\r\n");
     }
 
+
+
+
     public static class URLDecodeResult {
         List<String> paths = new ArrayList<>();
         Map<String, List<String>> queryParams = new LinkedHashMap<>();
@@ -253,12 +252,24 @@ public class StringUtil {
     public static <T> String join(Iterable<T> values, String delimiter, JoinIterator<T> iterator) {
         StringBuilder sb = new StringBuilder();
         int cnt = 0;
-        for (T value: values){
-            if (cnt > 0){
-                sb.append(delimiter);
+
+        if (values instanceof List){
+            List<T> cp = (List) values;
+            for (cnt = 0; cnt < cp.size(); cnt++){
+                if (cnt > 0){
+                    sb.append(delimiter);
+                }
+                sb.append(iterator.toString(cp.get(cnt)));
             }
-            sb.append(iterator.toString(value));
-            cnt++;
+
+        } else {
+            for (T value : values) {
+                if (cnt > 0) {
+                    sb.append(delimiter);
+                }
+                sb.append(iterator.toString(value));
+                cnt++;
+            }
         }
         return sb.toString();
     }
@@ -576,6 +587,24 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static boolean bytesEndWithString(byte bytes[], String in){
+        if (in.length() > bytes.length){
+            return false;
+        }
+        for (int i = in.length() - 1, j = bytes.length - 1;
+             i > -1; i--, j--){
+            if (in.charAt(i) != bytes[j]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static String[] splitByFirstOccurrence(String input, String sub){
+        int index = input.indexOf(sub);
+        return new String[]{input.substring(0, index), input.substring(index + sub.length())};
+    }
+
     public static String[] splitByWhitespace(String s) {
         return s.split("\\s+");
     }
@@ -640,7 +669,7 @@ public class StringUtil {
      * @return
      */
     public static String map(String value, Map<String, Object> map, FilterCriteria<Field> ff, FilterCriteria<Method> mf){
-        if (!hasText(value) || value.length() < 3 || isEmpty(map)){
+        if (!hasText(value) || value.length() < 3 || CollectionUtil.isEmpty(map)){
             return value;
         }
         Matcher m = Pattern.compile("(?<!\\\\)\\{(.*?)\\}").matcher(value);
@@ -649,7 +678,7 @@ public class StringUtil {
             String key = s.substring(1, s.length() - 1);
             Object vr = null;
             if (key.indexOf('.') > -1){
-                vr = search(key.split("\\."), map, 0, ff, mf);
+                vr = TypeUtil.search(key.split("\\."), map, 0, ff, mf);
             } else {
                 vr = map.get(key);
             }

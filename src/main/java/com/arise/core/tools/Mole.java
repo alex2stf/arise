@@ -3,14 +3,9 @@ package com.arise.core.tools;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import static com.arise.core.tools.ReflectUtil.classExists;
-import static com.arise.core.tools.StringUtil.dump;
-import static com.arise.core.tools.StringUtil.join;
 import static java.lang.Class.forName;
 import static java.lang.String.valueOf;
 
@@ -112,7 +107,7 @@ public class Mole {
         for (Appender appender: appenders){
             appender.append(
                     id , bag,
-                    join(args, " ")
+                    StringUtil.join(args, " ")
             );
         }
     }
@@ -227,13 +222,13 @@ public class Mole {
         }
 
 
-        private boolean callLevel(java.util.logging.Level level, Object ... args){
+        private boolean callLevel(Level level, Object ... args){
             if (args == null){
                 return true;
             }
             if (args.length == 1){
                 if (args[0] instanceof Throwable){
-                    logger.log(level, dump(args[0]));
+                    logger.log(level, StringUtil.dump(args[0]));
                 } else {
                     logger.log(level, valueOf(args[0]));
                 }
@@ -241,7 +236,7 @@ public class Mole {
             } else if (args.length == 2 && args[1] instanceof Throwable){
                 logger.log(level, valueOf(args[0]), (Throwable) args[1]);
             } else {
-                logger.log(level, join(args, ""));
+                logger.log(level, StringUtil.join(args, ""));
             }
             return true;
 
@@ -249,37 +244,37 @@ public class Mole {
 
         @Override
         public boolean error(Object... args) {
-            return callLevel(java.util.logging.Level.SEVERE, args);
+            return callLevel(Level.SEVERE, args);
         }
 
         @Override
         public boolean info(Object... args) {
-            return callLevel(java.util.logging.Level.FINER, args);
+            return callLevel(Level.FINER, args);
         }
 
         @Override
         public boolean trace(Object... args) {
-            return callLevel(java.util.logging.Level.FINEST, args);
+            return callLevel(Level.FINEST, args);
         }
 
         @Override
         public boolean fatal(Object... args) {
-            return callLevel(java.util.logging.Level.SEVERE, args);
+            return callLevel(Level.SEVERE, args);
         }
 
         @Override
         public boolean warn(Object... args) {
-            return callLevel(java.util.logging.Level.WARNING, args);
+            return callLevel(Level.WARNING, args);
         }
 
         @Override
         public boolean debug(Object... args) {
-            return callLevel(java.util.logging.Level.FINE, args);
+            return callLevel(Level.FINE, args);
         }
 
         @Override
         public boolean log(Object... args) {
-            if (args.length > 1 && args[0] instanceof java.util.logging.Level){
+            if (args.length > 1 && args[0] instanceof Level){
 
             }
             return false;
@@ -339,7 +334,7 @@ public class Mole {
                     clzz.getMethod(method, Object.class, Throwable.class).invoke(log4J, args[0], args[1]);
                 }
                 else {
-                    clzz.getMethod(method, Object.class).invoke(log4J, join(args, ","));
+                    clzz.getMethod(method, Object.class).invoke(log4J, StringUtil.join(args, ","));
                 }
             }catch (Exception x){
                 return false;
@@ -430,7 +425,7 @@ public class Mole {
         }
 
         private boolean log(String level, Object ... args){
-            System.out.println( level + "| " + name + ": " + join(args, " "));
+            System.out.println( level + "| " + name + ": " + StringUtil.join(args, " "));
             return true;
         }
 
@@ -515,7 +510,7 @@ public class Mole {
                 }
                 else {
                     forName(ANDROID_LOG1_CLASS)
-                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, join(args, " "));
+                            .getDeclaredMethod(level, String.class, String.class).invoke(null, tag, StringUtil.join(args, " "));
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

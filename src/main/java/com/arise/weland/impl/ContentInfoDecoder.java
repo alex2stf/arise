@@ -19,47 +19,40 @@ import static com.arise.core.tools.StringUtil.hasContent;
 
 public abstract class ContentInfoDecoder {
 
+
     protected Map<String, ContentInfo> contentCache = new HashMap<>();
     protected Map<String, byte[]> bytesCache = new ConcurrentHashMap<>();
 
-    ContentInfo currentInfo;
+//    ContentInfo currentInfo;
     protected ContentInfoProvider provider;
 
     public ContentInfoDecoder(){
+
+    }
+
+
+    public ContentInfo getSavedState(){
         File cache = getCache();
         if (cache.exists()){
             try {
                 byte bytes[] = StreamUtil.fullyReadFileToBytes(getCache());
                 Map m = (Map) Groot.decodeBytes(bytes);
                 if (!m.isEmpty()) {
-                    ContentInfo info = find(m);
-                    currentInfo = info;
+                    return ContentInfo.fromMap(m);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
-
-
-
     public abstract ContentInfo decode(File file);
-//    {
-//        if (contentCache.containsKey(file.getAbsolutePath())){
-//            ContentInfo info = contentCache.get(file.getAbsolutePath());
-//            if (info != null){
-//                return info;
-//            }
-//        }
-//        ContentInfo contentInfo = decodeFile(file);
-
-//        return contentInfo;
-//    }
 
 
     protected abstract File getStateDirectory();
 
+    @Deprecated
     public final ContentInfo find(Map obj){
         String path = ContentInfo.getMediaPath(obj);
         if (hasContent(path) && contentCache.containsKey(path) && contentCache.get(path) != null){
@@ -74,7 +67,6 @@ public abstract class ContentInfoDecoder {
     }
 
     public final void saveState(ContentInfo currentInfo){
-        this.currentInfo = currentInfo;
         FileUtil.writeStringToFile(getCache(), currentInfo.toString());
     };
 

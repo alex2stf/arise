@@ -117,9 +117,10 @@ public class SelfManagedResponse extends HttpResponse {
                         }
                     });
                 }
-            } else {
-                log.info("SKIP BYTES IN WRITING STATE");
             }
+//            else {
+//                log.info("SKIP BYTES IN WRITING STATE");
+//            }
             return true;
         }
 

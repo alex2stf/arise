@@ -99,12 +99,12 @@ public class StressTests {
 
 
             try {
-                System.out.println("start write to " + socket.getInetAddress().getHostAddress());
+//                System.out.println("start write to " + socket.getInetAddress().getHostAddress());
 
 
                 socket.getOutputStream().write(postBody.getBytes());
 
-                System.out.println("end write, start read");
+//                System.out.println("end write, start read");
 
 
                 BufferedReader in =

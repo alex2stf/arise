@@ -74,6 +74,7 @@ public class SpringWebClientHandler implements WebClientGenerator.MethodHandler,
         return "_x_http_request";
     }
 
+
     @Override
     public boolean handle(Method method, WebClientGenerator gen) {
         String nextCall = getNextCall(method);

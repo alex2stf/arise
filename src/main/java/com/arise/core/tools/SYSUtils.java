@@ -139,7 +139,7 @@ public class SYSUtils {
 //            }
 
         }
-        System.out.println(os);
+//        System.out.println(os);
     }
 
     public static Result exec(List<String> list){
@@ -155,13 +155,13 @@ public class SYSUtils {
         exec(args, new ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
-                System.out.println(content);
+//                System.out.println(content);
                 sb.append(content);
             }
 
             @Override
             public void onErrLine(int line, String content) {
-                System.out.println(content);
+//                System.out.println(content);
                 eb.append(content);
             }
         }, true, false);
@@ -175,15 +175,15 @@ public class SYSUtils {
     public static void exec(String[] args, final ProcessOutputHandler outputHandler,
                             boolean useBuilder,
                             boolean async){
-        log.info("exec: " + StringUtil.join(args, "  ", new StringUtil.JoinIterator<String>() {
-            @Override
-            public String toString(String value) {
-                if (value.indexOf(" ") > -1){
-                    return "\"" + value + "\"";
-                }
-                return value;
-            }
-        }));
+//        log.info("exec: " + StringUtil.join(args, "  ", new StringUtil.JoinIterator<String>() {
+//            @Override
+//            public String toString(String value) {
+//                if (value.indexOf(" ") > -1){
+//                    return "\"" + value + "\"";
+//                }
+//                return value;
+//            }
+//        }));
         Process proc = null;
         if (!useBuilder){
             Runtime rt = Runtime.getRuntime();
@@ -410,12 +410,12 @@ public class SYSUtils {
 
 
         public void onStdoutLine(int line, String content) {
-            System.out.println(content);
+//            System.out.println(content);
         }
 
 
         public void onErrLine(int line, String content) {
-            System.out.println(content);
+//            System.out.println(content);
         }
 
         @Override

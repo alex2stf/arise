@@ -53,8 +53,15 @@ public class NotificationOps {
         return this;
     }
 
+
+
     public NotificationOps setSmallIcon(int smallIcon) {
         this.smallIcon = smallIcon;
+        return this;
+    }
+
+    public NotificationOps setFlags(int i) {
+        this.flags = i;
         return this;
     }
 }

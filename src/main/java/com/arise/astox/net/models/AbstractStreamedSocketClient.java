@@ -39,6 +39,7 @@ public abstract class AbstractStreamedSocketClient<I extends ServerRequest, O ex
         try {
             socket.getOutputStream().write(request.getBytes());
         } catch (IOException e) {
+            //TODO treat exception
             e.printStackTrace();
         }
     }

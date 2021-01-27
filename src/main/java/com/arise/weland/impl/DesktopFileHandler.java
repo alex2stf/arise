@@ -16,6 +16,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Message;
+import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.ContentHandler;
 
 import javax.swing.*;
@@ -90,10 +91,10 @@ public class DesktopFileHandler extends ContentHandler {
         return new Runnable() {
             @Override
             public void run() {
-                System.out.println("TIMED EVENT AT " + new Date());
-                ContentInfo info = contentInfoProvider.queueRemove();
+                log.info("Considered CLOSED at  " + new Date());
+                ContentInfo info = contentInfoProvider.nextFile(Playlist.MUSIC);
                 if (info != null){
-                    System.out.println("Next to play " + info.getPath());
+                    log.info("NEXT to play " + info.getPath());
                     openInfo(info);
                 }
             }
@@ -109,6 +110,7 @@ public class DesktopFileHandler extends ContentHandler {
         if (info.getDuration() > 10){
             long delay = info.getDuration() + 1000;
             this.timerResult = ThreadUtil.delayedTask(playNextFromQueue(), delay);
+            log.info("Schedule AUTOCLOSE in " + delay + " miliseconds");
         }
         openString(info.getPath());
         return null;
@@ -159,29 +161,6 @@ public class DesktopFileHandler extends ContentHandler {
         return  "http://localhost:8221" + data.substring("{host}".length());
     }
 
-//    @Override
-//    protected HttpResponse play(String path, Mode mode) {
-//        stop("-");
-//        log.info("PLAY " + mode + " " + path);
-//        if (isInternal(path)){
-//            return play(fix(path), mode);
-//        }
-//
-//        else if (isHttpPath(path)){
-//            path = URLBeautifier.beautify(path);
-//            if (mode.equals(Mode.NATIVE)) {
-//                openInStandardBrowser(path);
-//            }
-//            else {
-//                openInNwjs(path);
-//            }
-//        }
-//        else {
-//            open(path);
-//        }
-//
-//        return null;
-//    }
 
     private synchronized void openMedia(String path) {
         execute(getCommands("media", path));

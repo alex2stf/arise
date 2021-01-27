@@ -16,6 +16,7 @@ public abstract class CameraWorker {
     protected SurfaceTexture surfaceTexture;
 
     protected volatile boolean recording = false;
+    protected int cameraIndex;
 
     public CameraWorker setPreview(TextureView mPreview) {
         this.mPreview = mPreview;
@@ -40,6 +41,8 @@ public abstract class CameraWorker {
     public static Camera getDefaultCameraInstance() {
         int numberOfCameras = Camera.getNumberOfCameras();
         Camera camera = null;
+
+
         for (int i = 0; i < numberOfCameras; i++) {
             try {
                 camera = Camera.open(i);
@@ -58,4 +61,36 @@ public abstract class CameraWorker {
     protected abstract boolean prepare();
 
 
+    public static Camera getCameraInstance(int index) {
+        int numberOfCameras = Camera.getNumberOfCameras();
+        Camera camera = null;
+
+        try {
+            camera = Camera.open(index);
+        }
+        catch (Exception e){
+            log.error("FAILED TO OPEN CAMERA at index", index);
+        }
+        if (camera != null){
+            return camera;
+        }
+
+        for (int i = 0; i < numberOfCameras; i++) {
+            try {
+                camera = Camera.open(i);
+            } catch (Exception e) {
+                log.error("FAILED TO OPEN CAMERA", i);
+                e.printStackTrace();
+            } finally {
+                if (camera != null) {
+                    return camera;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setCameraIndex(int cameraIndex) {
+        this.cameraIndex = cameraIndex;
+    }
 }

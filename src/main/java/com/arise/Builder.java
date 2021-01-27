@@ -82,7 +82,7 @@ public class Builder {
             System.out.print(s + " ");
         }
 
-        System.out.println("");
+//        System.out.println("");
 
         ProcessBuilder processBuilder = new ProcessBuilder(xxx);
         processBuilder.redirectErrorStream(false);

@@ -1,0 +1,32 @@
+<img id="cam-img"/>
+
+<div id="cam-preview" class="page">
+
+
+    <div id="control-box" class="controls">
+        <div style="text-align: center;">
+            <div style="font-size: 26px; margin: 0px; margin-top: 2px;" id="device-status-container" style="overflow: auto;"></div>
+            <div id="btn-container">
+                <button class="btn btn-primary" onclick="rotateCamPreview();">rotate</button>
+                <button class="btn btn-primary" onclick="match_height();">Fit height</button>
+                <button class="btn btn-primary" onclick="match_width();">Fit width</button>
+                <button class="btn btn-primary" id="movieMod" onclick="toggleMovie()">MJPEG</button>
+                <button class="btn btn-primary" onclick="showInfo()">INFO</button>
+                <button id="cam_ctrl" class="btn btn-primary" onclick="toggleStream()">
+                    <img src="https://img.icons8.com/flat_round/64/000000/stop.png"/>
+                </button>
+
+                <select id="cameraIndex" name="cameraIndex" class="selectpicker" onchange="changeCameraIndex()">
+                    <option value="0">DEFAULT</option>
+                    <option value="1">OTHER</option>
+                </select>
+
+                <select id="lightMode" name="lightMode" class="selectpicker" onchange="changeLightMode()">
+                    <option value="0">Light OFF</option>
+                    <option value="1">Light ON</option>
+                </select>
+            </div>
+        </div>
+        <audio id="audio-src" src="#" controls autoplay></audio>
+    </div>
+</div>

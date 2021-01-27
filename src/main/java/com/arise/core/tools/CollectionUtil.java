@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.arise.core.tools.TypeUtil.isNull;
 
 public class CollectionUtil {
     public static boolean listContainsIgnorecase(String search, String[] items){
@@ -40,29 +39,29 @@ public class CollectionUtil {
     }
 
     public static <T, X> boolean isEmpty(Map<T, X> map) {
-        return isNull(map) || map.isEmpty();
+        return TypeUtil.isNull(map) || map.isEmpty();
     }
 
 
 
     public static <T> boolean isEmpty(List<T> list) {
-        return isNull(list) || list.isEmpty();
+        return TypeUtil.isNull(list) || list.isEmpty();
     }
 
     public static <T> boolean isEmpty(Collection<T> c) {
-        return isNull(c) || c.isEmpty();
+        return TypeUtil.isNull(c) || c.isEmpty();
     }
 
     public static <T> boolean isEmpty(Set<T> set) {
-        return isNull(set) || set.isEmpty();
+        return TypeUtil.isNull(set) || set.isEmpty();
     }
 
     public static boolean mapContains(Object obj, String name) {
-       return !isNull(obj) && (obj instanceof Map) && ((Map)obj).containsKey(name);
+       return !TypeUtil.isNull(obj) && (obj instanceof Map) && ((Map)obj).containsKey(name);
     }
 
     public static <T> boolean isEmpty(T[] any) {
-        return isNull(any) || any.length == 0;
+        return TypeUtil.isNull(any) || any.length == 0;
     }
 
 
@@ -127,7 +126,7 @@ public class CollectionUtil {
     }
 
     public interface CMatcher<T> {
-        boolean match(Collection <T> collection, T object);
+        boolean match(Collection<T> collection, T object);
     }
 
     public static final CMatcher DEFAULT_MATCHER = new CMatcher() {

@@ -17,6 +17,10 @@ public class Dependencies {
             .setName("media_info_cli_32")
             .setWindowsSource("https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip");
 
+    public static final Dependency MNT_CLI_WIN_32 = new Dependency()
+            .setName("mnt_cli_32")
+            .setWindowsSource("https://netix.dl.sourceforge.net/project/moviethumbnail/movie%20thumbnailer%20win32%20binary/mtn-200808a-win32/mtn-200808a-win32.zip");
+
     public static final Dependency NWJS_0_12_0 =
             new Dependency().setName("nwjs_0_12_0").setWindowsSource("http://dl.nwjs.io/v0.12.0/nwjs-v0.12.0-win-ia32.zip");
 

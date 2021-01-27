@@ -1,7 +1,5 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.models.FilterCriteria;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 

@@ -3,7 +3,7 @@ package com.arise.core.serializers.parser;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.models.FilterCriteria;
+import com.arise.core.tools.FilterCriteria;
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;

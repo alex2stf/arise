@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public class WelandClient {
     static String bluetoothUUID = "fa87c0d0-afac-11de-8a39-0800200c9a66";
 
@@ -66,7 +67,7 @@ public class WelandClient {
             return workersCache.get(id);
         }
         AbstractClient abstractClient = null;
-        if (ReflectUtil.isInstanceOf(worker, "android.bluetooth.BluetoothDevice")){
+        if (ReflectUtil.objectIsInstanceOf(worker, "android.bluetooth.BluetoothDevice")){
             abstractClient = (AbstractClient) ReflectUtil.newInstance("com.arise.rapdroid.BluetoothHttpClient", worker);
             abstractClient.setUuid(bluetoothUUID);
             ReflectUtil.getMethod(abstractClient, "setErrorHandler").call(ERROR_HANDLER);

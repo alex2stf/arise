@@ -3,6 +3,7 @@ package com.arise.weland.dto;
 
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StringUtil;
@@ -243,9 +244,10 @@ public class ContentInfo implements Serializable {
     }
 
     public static String serializeCollection(Collection<ContentInfo> infos){
-        if (infos == null){
+        if (CollectionUtil.isEmpty(infos)){
             return "[]";
         }
+
         return new StringBuilder().append("[").append(join(infos, ",")).append("]").toString();
     }
 
@@ -273,6 +275,9 @@ public class ContentInfo implements Serializable {
 
 
     public static String getMediaPath(Map m){
+        //if (m == null){
+         //  System.out.println(m);
+      //  }
         String src = MapUtil.getString(m, "P").replaceAll("\\\\/", "/");
         return decodePath(src);
     }

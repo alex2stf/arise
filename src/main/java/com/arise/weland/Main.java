@@ -116,19 +116,13 @@ public class Main {
 
             contentInfoProvider.addRoot(musicDir);
             contentInfoProvider.addRoot(videosDir);
-            for (File f: File.listRoots()){
-                if (!f.getAbsolutePath().startsWith("C:")) {
-                    contentInfoProvider.addRoot(f);
-                }
-            }
-
         }
 
 
         contentInfoProvider.get();
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
-                .setContentProvider(contentInfoProvider);;
+                .setContentProvider(contentInfoProvider);
 
         DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider,  registry);
         welandServerHandler.setContentHandler(desktopFileHandler);

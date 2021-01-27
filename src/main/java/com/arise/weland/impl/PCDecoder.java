@@ -284,6 +284,10 @@ public class PCDecoder extends ContentInfoDecoder {
 
     @Override
     protected File getStateDirectory() {
+       return thumbnailsDirectory();
+    }
+
+    public static File thumbnailsDirectory(){
         File f = new File(FileUtil.findAppDir(), "wlndicns");
         if (!f.exists()){
             f.mkdirs();
@@ -337,7 +341,6 @@ public class PCDecoder extends ContentInfoDecoder {
             try {
                 f = new File(new URI(id));
             } catch (Exception e) {
-                System.out.println("-----FAILED to read uri " + id);
                 f = null;
             }
         }

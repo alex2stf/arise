@@ -121,7 +121,7 @@ public class DependencyManager {
             dotCount++;
             if (dotCount % 100 == 0){
                 if (!nl){
-                    System.out.print("\n");
+//                    System.out.print("\n");
                     nl = true;
                 }
                 System.out.print(".");
@@ -195,6 +195,15 @@ public class DependencyManager {
     public static File getRoot(){
         File out = FileUtil.findAppDir();
         return new File(out, "dpmngmt");
+    }
+
+    public static Resolution solveSilent(Dependency dependency){
+        try {
+            return solve(dependency);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Resolution solve(Dependency dependency) throws IOException {

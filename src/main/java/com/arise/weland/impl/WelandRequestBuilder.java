@@ -4,12 +4,21 @@ import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.models.http.HttpRequestReader;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class WelandRequestBuilder extends HttpRequestBuilder {
     private final IDeviceController deviceController;
+
+    private static final Mole log = Mole.getInstance(WelandRequestBuilder.class);
 
     public WelandRequestBuilder(IDeviceController deviceController) {
         this.deviceController = deviceController;
@@ -26,11 +35,39 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
             @Override
             public void handleRest(HttpReader reader) {
                 byte[] bytes = this.bodyBytes.toByteArray();
+
+                //logica de device controller
                 if (bytes.length > 0 && bytes[0] == '>'){
-                    System.out.println("RECEIVED " + new String(bytes));
+//                    System.out.println("RECEIVED " + new String(bytes));
                     deviceController.digestBytes(bytes);
                     resetBodyBytes();
                     this.readInputStream(inputStream);
+                }
+
+                else if (request.pathsStartsWith("transfer")){
+                    String name = request.getQueryParam("name");
+                    log.info("transfer file " + name);
+                    try {
+
+                        FileOutputStream out = new FileOutputStream(new File(FileUtil.getUploadDir(), name));
+
+                        out.write(bytes);
+                        resetBodyBytes();
+
+                        byte[] buff = new byte[16*1024];
+                        int count;
+                        while ((count = inputStream.read(buff)) > 0) {
+                            out.write(buff, 0, count);
+                        }
+                        Util.close(out);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    getRequest().setBytes(bodyBytes.toByteArray());
+                    onSuccess.onComplete(this.getRequest());
+                    flush();
                 }
                 else {
                     getRequest().setBytes(bodyBytes.toByteArray());
@@ -48,7 +85,6 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
         reader.readInputStream(inputStream);
 
     }
-
 
 
 

@@ -8,8 +8,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StreamUtil {
+
+
 
 
     public static byte[] fullyReadFileToBytes(File f) throws IOException {
@@ -96,6 +101,7 @@ public class StreamUtil {
         try {
             result = bis.read();
             while(result != -1) {
+//            while(result > 0) {
                 buf.write((byte) result);
                 result = bis.read();
             }

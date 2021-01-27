@@ -1,0 +1,268 @@
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js" integrity="sha256-8zyeSXm+yTvzUN1VgAOinFgaVFEFTyYzWShOy9w7WoQ=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gauge.js/1.3.7/gauge.min.js" integrity="sha256-HH1wHY2j4sBftE2MShPBP66TfW18/D3xfq1nmIGbxbI=" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+    <style>
+        {{> style.css}}
+    </style>
+</head>
+
+<body>
+
+
+
+<div id="main-sidebar" class="sidebar">
+    <a id="camera-opt" href="#" onclick="showCameraOptions()">
+<!--        <img class="white-back-btn" src="https://img.icons8.com/wired/64/000000/bullet-camera.png"/>-->
+        <img class="white-back-btn" src="https://img.icons8.com/color/344/compact-camera.png"/>
+    </a>
+    <a href="#" onclick="showMedia('music')">
+<!--        <img class="white-back-btn" src="https://img.icons8.com/doodle/452/media.png"/>-->
+<!--        <img class="white-back-btn" src="https://img.icons8.com/color/2x/music-library.png"/>-->
+        <img class="white-back-btn" src="https://img.icons8.com/color/344/photos-folder.png"/>
+    </a>
+    <a href="#" onclick="showMedia('videos')">
+<!--        <img class="white-back-btn" src="https://img.icons8.com/doodle/452/media.png"/>-->
+        <img class="white-back-btn" src="https://img.icons8.com/color/344/video.png"/>
+    </a>
+    <a href="#" onclick="showDeviceCtrl()">
+        <img class="white-back-btn" src="https://img.icons8.com/color/452/load-balancer.png"/>
+    </a>
+    <a href="#">T</a>
+</div>
+
+
+
+
+<div id="main">
+
+    <h3>{{host}}</h3>
+<!--    Upload form:-->
+<!--    <form enctype="multipart/form-data" action="/upload" method="POST">-->
+<!--        <input type="hidden" name="MAX_FILE_SIZE" value="100000" />-->
+<!--        Choose a file to upload: <input name="uploadedfile" type="file" /><br />-->
+<!--        <input type="submit" value="Upload File" />-->
+<!--    </form>-->
+
+
+    {{> media_page.html}}
+    {{> cam_page.html}}
+
+    <div id="device-ctrl" class="page">
+
+        <div class="d-info">
+            <span class="dev-lbl">Device name:</span>
+            <span id="d-name">-</span>
+        </div>
+
+
+        <div class="d-info">
+            <span class="dev-lbl">Battery scale:</span>
+            <span id="d-bscale">-</span>
+        </div>
+
+        <div class="d-info">
+            <span class="dev-lbl">Battery level:</span>
+            <span id="d-blevel">-</span>
+        </div>
+
+        <div>Sensors data:</div>
+        <table id="sensors-data" class="d-info table">
+            <tr>
+                <td scope="col">Name</td>
+                <td scope="col">Info</td>
+                <td scope="col">Data (values)</td>
+            </tr>
+        </table>
+
+
+
+        <input type="range" class="custom-range" id="customRange1"  data-slider-step="1" data-slider-value="0">
+        <span class="font-weight-bold text-primary ml-2 valueSpan2"></span>
+
+    </div>
+</div>
+
+<div id="modal-area" onclick="$('#modal-area').hide()">
+    <h1 id="media-title">Title</h1>
+    <button id="play-btn">
+        <img src="https://img.icons8.com/dusk/64/000000/circled-play.png"/>
+    </button>
+    <button id="stop-btn">
+        <img src="https://img.icons8.com/dusk/64/000000/close-window.png"/>
+    </button>
+    <a id="download-btn" href="#" target="_blank">DOWNLOAD</a>
+</div>
+
+
+<script>
+
+    {{> cam.js}}
+
+    {{> media.js}}
+
+
+    function showCameraOptions() {
+        $('#media-page').hide();
+        $('#cam-preview').show();
+        $('#device-ctrl').hide();
+        $('#camera-opt').addClass('selected');
+        startStream();
+
+
+    }
+
+
+
+
+    function showMedia(p){
+        stopStream();
+        $('#cam-preview').hide();
+        $('#media-page').show();
+        $('.media-list').hide();
+
+        var mRoot = document.getElementById('media-list-' + p);
+        if (!mRoot){
+            mRoot = document.createElement('div');
+            mRoot.setAttribute('class', 'media-list');
+            mRoot.id = 'media-list-' + p;
+            $('#media-page').append(mRoot);
+        }
+        mRoot.style.display = 'block';
+
+        fetchMedia(p);
+    }
+
+
+    function showDeviceCtrl(){
+        stopStream();
+        $('#cam-preview').hide();
+        $('#media-list').hide();
+        $('#device-ctrl').show();
+        getDeviceStat();
+
+    }
+
+
+    function getDeviceStat(){
+        $.get(host + '/device/stat', function (x) {
+            console.log(x);
+            if (x.D) {
+                document.getElementById('d-name').innerHTML = x.D;
+            }
+
+            if (x.B1){
+                document.getElementById('d-bscale').innerHTML = x.B1;
+            }
+            if (x.B2){
+                document.getElementById('d-blevel').innerHTML = x.B2;
+            }
+
+            if (x.pP){
+                readSensors(x.pP);
+            }
+        });
+    }
+
+    var sensors = {};
+
+    function readSensors(obj){
+        for(var prop in obj){
+            if(prop.indexOf("s.") == 0){
+                var keys = prop.split(".");
+                if (keys.length == 3){
+
+                    var key = keys[1];
+                    if (!sensors[key]){
+                        sensors[key] = {};
+                    }
+
+
+
+                    sensors[key].name = obj['s.'+ key + ".N"];
+                    sensors[key].power = obj['s.'+ key + ".P"];
+                    sensors[key].accuracy = obj['s.'+ key + ".A"];
+                    sensors[key].version = obj['s.'+ key + ".V"];
+                    sensors[key].vendor = obj['s.'+ key + ".vd"];
+                    sensors[key].values = obj['s.'+ key + ".L"];
+                    if (sensors[key].values){
+                        sensors[key].values = sensors[key].values.split(",");
+                    }
+
+
+
+                }
+            }
+        }
+
+
+        for(var key in sensors){
+            if (sensors[key].values && 0 < sensors[key].values.length ){
+                 placeSensorInDOM(sensors[key], key)
+            }
+        }
+    }
+
+
+    function placeSensorInDOM(sensor, id){
+        var div;
+        id =  "s_dinfo_" + id;
+
+        if (null == document.getElementById(id) || !document.getElementById(id)){
+            div = document.createElement('tr');
+            div.setAttribute('class', 'd-info sensor-data');
+            div.id = id;
+            $('#sensors-data').append(div);
+            var innerHTML = ' <td class="dev-lbl sensor-name"> ' + sensor.name + ' ' + sensor.version +  ' </td>';
+                 innerHTML += ' <td class="dev-lbl sensor-info"> ' + sensor.vendor + ' P'  + sensor.power + ' A' + sensor.accuracy +   ' </td>';
+            if (sensor.values){
+                innerHTML +='<td id="s_' + id + '_values" class="sensor-values"> ' + sensor.values + '</td>';
+            }
+            div.innerHTML = innerHTML;
+        } else {
+            div = document.getElementById(id);
+            console.log("place " + id + "REUSE");
+        }
+
+
+
+
+
+    }
+
+
+
+
+    $(document).ready(function(){
+       showDeviceCtrl();
+    })
+</script>
+
+</body>
+
+</html>
+
+

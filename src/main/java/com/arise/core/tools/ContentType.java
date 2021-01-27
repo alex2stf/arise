@@ -269,7 +269,12 @@ public enum ContentType  {
     }
 
     public static boolean isMusic(String name) {
-        return name.endsWith(".mp3") || name.endsWith(".flac") || name.endsWith(".wav")|| name.endsWith(".aacp");
+        return name.endsWith(".mp3") ||
+                name.endsWith(".flac") ||
+                name.endsWith(".m4a") ||
+                name.endsWith(".aac") ||
+                name.endsWith(".wav")||
+                name.endsWith(".aacp");
     }
 
     public static boolean isPicture(File f) {

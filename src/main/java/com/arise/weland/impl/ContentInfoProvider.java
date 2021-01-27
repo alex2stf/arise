@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
@@ -14,32 +15,33 @@ import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.Playlist;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class ContentInfoProvider {
 
     final ContentInfoDecoder decoder;
-    final List<ContentInfo> music = new ArrayList<>();
-    final List<ContentInfo> streams = new ArrayList<>();
-    final List<ContentInfo> videos = new ArrayList<>();
-    final List<ContentInfo> games = new ArrayList<>();
-    final List<ContentInfo> presentations = new ArrayList<>();
+
     List<File> roots = new ArrayList<>();
-    List<ContentInfo> contentInfoQueue = new ArrayList<>();
-    List<ContentInfo> imported = new ArrayList<>();
+
+//    @Deprecated
+//    List<ContentInfo> contentInfoQueue = new ArrayList<>();
+//    List<ContentInfo> imported = new ArrayList<>();
     private Mole log = Mole.getInstance(ContentInfoProvider.class);
-    private volatile boolean scanned = false;
+    private volatile boolean scannedOnce = false;
     private volatile boolean scanning = false;
     private int fcnt = 0;
-    private boolean shuffleMusic = false;
-    private boolean shuffleVideos = false;
+
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
@@ -67,21 +69,16 @@ public class ContentInfoProvider {
         if (scanning){
             return;
         }
+        final List<ContentInfo> music = new ArrayList<>();
+        final List<ContentInfo> streams = new ArrayList<>();
+        final List<ContentInfo> videos = new ArrayList<>();
+        final List<ContentInfo> games = new ArrayList<>();
+        final List<ContentInfo> presentations = new ArrayList<>();
+
         scanning = true;
         fireAndForget(new Runnable() {
             @Override
             public void run() {
-
-                File queueFile = getQueueFile();
-                if (queueFile.exists()){
-
-                    try {
-                        String json = FileUtil.read(queueFile).replaceAll("\\s+", " ");
-                        contentInfoQueue = ContentInfo.deserializeCollection(json);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
 
                 for (final File root: roots){
                     log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
@@ -109,17 +106,10 @@ public class ContentInfoProvider {
                 }
 
 
-                scanned = true;
-                if (shuffleMusic) {
-                    Collections.shuffle(music);
-                    log.trace("Scan complete shuffle music");
-                }
 
-                if (shuffleVideos) {
-                    Collections.shuffle(videos);
-                    log.trace("Scan complete shuffle videos");
-                }
-
+                merge(Playlist.MUSIC, music);
+                merge(Playlist.VIDEOS, videos);
+                scannedOnce = true;
 
                 log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
 
@@ -129,10 +119,64 @@ public class ContentInfoProvider {
         });
     }
 
+    int getMatchIndex(List<ContentInfo> sources, ContentInfo criteria){
+        for (int i = 0; i < sources.size(); i++){
+            if (sources.get(i).getPath().equals(criteria.getPath())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void merge(Playlist playlist, List<ContentInfo> scannedSource){
+        List<ContentInfo> saved = getNullablePersistedPlaylist(playlist);
+        if (CollectionUtil.isEmpty(saved)){
+            persistPlaylist(playlist, scannedSource);
+            return;
+        }
+        for (int i = 0; i < scannedSource.size(); i++){
+            int matchIndex = getMatchIndex(saved, scannedSource.get(i));
+            if (matchIndex > -1 ){
+                scannedSource.get(i).setVisited(
+                       saved.get(matchIndex).getVisited()
+                );
+            }
+        }
+        persistPlaylist(playlist, scannedSource);
+    }
+
     public boolean noFilesScanned(){
         return fcnt == 0;
     }
 
+
+    public void registerFile(File file) {
+//        if (!file.getName().startsWith(".")) {
+//            if (scannedOnce && isMusic(file) && !infoAlreadyExists(file, music)) {
+//                music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
+//                persistPlaylist(Playlist.MUSIC, music);
+//            } else if (scannedOnce && isVideo(file) && !infoAlreadyExists(file, videos)) {
+//                videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
+//                persistPlaylist(Playlist.VIDEOS, videos);
+//            }
+//        }
+    }
+
+
+
+
+
+
+    boolean infoAlreadyExists(File file, List<ContentInfo> playlist){
+        for (ContentInfo c: playlist){
+            if (c.getPath().equals(file.getAbsolutePath())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
     public ContentInfoProvider get(){
         readStaticContent();
         asyncScan();
@@ -156,7 +200,7 @@ public class ContentInfoProvider {
                                 .setTitle(obj.getString("title"))
                                 .setThumbnailId(obj.getString("thumbnail"))
                                 .setPath("{host}/games/" + gdir.getName());
-                        games.add(info);
+//                        games.add(info);
                         System.out.println("import game " + info);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -189,19 +233,19 @@ public class ContentInfoProvider {
     }
 
     private List<ContentInfo> getPlaylist(Playlist playlist){
-        switch (playlist){
-            case MUSIC:
-                return music;
-            case VIDEOS:
-                return videos;
-            case GAMES:
-                return games;
-            case  PRESENTATIONS:
-                return presentations;
-            case STREAMS:
-                return streams;
-        }
-        return music;
+//        switch (playlist){
+//            case MUSIC:
+//                return music;
+//            case VIDEOS:
+//                return videos;
+//            case GAMES:
+//                return games;
+//            case  PRESENTATIONS:
+//                return presentations;
+//            case STREAMS:
+//                return streams;
+//        }
+        return getSafePersistedPlaylist(playlist);
     }
 
     public ContentPage getPage(Playlist playlist, Integer index) {
@@ -216,7 +260,7 @@ public class ContentInfoProvider {
         int sourceSize = source.size();
 
         if (sourceSize == 0){
-            if (!scanned){
+            if (!scannedOnce){
                 return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(rIndex);
             }
             else {
@@ -234,7 +278,7 @@ public class ContentInfoProvider {
 
 
         log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
-        if (rIndex == limit && scanned){
+        if (rIndex == limit && scannedOnce){
             return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
         }
         for (int i = rIndex; i < limit; i++){
@@ -246,9 +290,7 @@ public class ContentInfoProvider {
                 .setIndex(limit);
     }
 
-    public  ContentInfo getCurrentInfo() {
-        return decoder.currentInfo;
-    }
+
 
     public HttpResponse getMediaPreview(String id) {
         HttpResponse response = new HttpResponse();
@@ -268,15 +310,16 @@ public class ContentInfoProvider {
     }
 
     public void addToQueue(ContentInfo info) {
-        contentInfoQueue.add(info);
-        saveQueue();
+//        contentInfoQueue.add(info);
+//        saveQueue();
     }
 
     private void saveQueue(){
-        String content = ContentInfo.serializeCollection(contentInfoQueue);
-        FileUtil.writeStringToFile(getQueueFile(), content);
+//        String content = ContentInfo.serializeCollection(contentInfoQueue);
+//        FileUtil.writeStringToFile(getQueueFile(), content);
     }
 
+    @Deprecated
     public final void saveState(ContentInfo currentInfo) {
         decoder.saveState(currentInfo);
     }
@@ -285,69 +328,154 @@ public class ContentInfoProvider {
         decoder.clearState();
     }
 
+    @Deprecated
     public void shuffle(String playlistId) {
-        if (scanned){
-            switch (playlistId){
-                case "music":
-                    Collections.shuffle(music);
-                    log.trace("Instant shuffle music");
-                    break;
-                case "videos":
-                    Collections.shuffle(videos);
-                    log.trace("Instant shuffle videos");
-                    break;
-            }
-        }
-        else {
-            switch (playlistId){
-                case "music":
-                    shuffleMusic = true;
-                    break;
-                case "videos":
-                    shuffleVideos = true;
-                    break;
-            }
-        }
+
     }
 
-    public ContentInfo nextFile(Playlist playlist){
-
-        List<ContentInfo> data = getPlaylist(playlist);
-        List<ContentInfo> r = new ArrayList<>();
-        int size = data.size();
-        for(int i = 0; i < size; i++){
-            ContentInfo c = data.get(i);
-            if (!c.isWebPage()){
-                r.add(c);
-            }
-        }
-        return next(r);
+    File getPersistedPlaylistFile(Playlist playlist){
+        return new File(FileUtil.findAppDir() + File.separator + playlist.name() + ".plst");
     }
 
-    public ContentInfo next(Playlist playlist){
-        return next(getPlaylist(playlist));
-    }
 
-    public ContentInfo next(List<ContentInfo> data){
-
-
-        if (CollectionUtil.isEmpty(data)){
+    public String getPersistedPlaylistContent(Playlist playlist){
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(getPersistedPlaylistFile(playlist));
+        } catch (FileNotFoundException e) {
             return null;
         }
-        if (data.size() == 1){
-            return data.get(0);
+        if (inputStream == null){
+            return null;
         }
-        int size = data.size();
-        ContentInfo info = data.get(0);
-        for (int i = 1; i < size; i++){
-            ContentInfo tmp = data.get(i);
-            if (tmp.getVisited() < info.getVisited()){
-                info = tmp;
+        return StreamUtil.toString(inputStream);
+    }
+
+    List<ContentInfo> getNullablePersistedPlaylist(Playlist playlist){
+        String cnt = getPersistedPlaylistContent(playlist);
+        if (!StringUtil.hasContent(cnt)){
+            return null;
+        }
+         cnt = cnt.replaceAll("\r\n", " ");
+        try {
+            //TODO verifica daca fisierul mai exista???
+            return  ContentInfo.deserializeCollection(cnt);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+
+
+    List<ContentInfo> persistPlaylist(Playlist playlist, List<ContentInfo> infos){
+//        List<ContentInfo> copies = getPlayableCopyOf(infos);
+        File out = getPersistedPlaylistFile(playlist);
+        FileUtil.writeStringToFile(out, ContentInfo.serializeCollection(infos));
+        return infos;
+    }
+
+    void quickSort(List<ContentInfo> arr, int start, int end) {
+        int partition = partition(arr, start, end);
+
+        if(partition-1>start) {
+            quickSort(arr, start, partition - 1);
+        }
+        if(partition+1<end) {
+            quickSort(arr, partition + 1, end);
+        }
+    }
+
+    int compare(ContentInfo a, ContentInfo b){
+        return Integer.compare(a.getVisited(), b.getVisited());
+    }
+
+    private static final Random rd = new Random();
+
+    private int partition(List<ContentInfo> infos, int start, int end) {
+        ContentInfo pivot = infos.get(end);
+        if (pivot.getVisited() > 99){
+            pivot.setVisited(0);
+        }
+
+        for(int i= start; i < end; i++){
+            int compare = compare(infos.get(i), pivot);
+            if (compare < 0  || (compare == 0 && rd.nextBoolean() )){
+                ContentInfo temp = infos.get(start);
+                infos.set(start, infos.get(i));
+                infos.set(i, temp);
+                start++;
             }
         }
-        return info.incrementVisit();
 
+        ContentInfo temp = infos.get(start);
+        infos.set(start, pivot);
+        infos.set(end, temp);
+
+        return start;
     }
+
+    private void shuffle(List<ContentInfo> infos){
+
+        if (CollectionUtil.isEmpty(infos) || infos.size() < 4){
+            return;
+        }
+        quickSort(infos, 0, infos.size() - 1);
+    }
+
+
+    public  List<ContentInfo> getSafePersistedPlaylist(Playlist playlist){
+        List<ContentInfo> infos = getNullablePersistedPlaylist(playlist);
+        if (infos == null){
+            return Collections.emptyList();
+        }
+        return infos;
+    }
+
+
+    public ContentInfo nextFile(Playlist playlist){
+        List<ContentInfo> infos = getSafePersistedPlaylist(playlist);
+
+        if(CollectionUtil.isEmpty(infos)){
+            return null;
+        }
+
+        if (infos.size() == 1){
+            return infos.get(0);
+        }
+        String indexKey = "INDX"+ playlist.name();
+
+        int index = AppCache.getInt(indexKey, 0);
+
+        if (index > infos.size() - 1){
+            index = 0;
+
+            if (!scanning){
+                shuffle(infos);
+                persistPlaylist(playlist, infos);
+            }
+        }
+
+        ContentInfo current = infos.get(index);
+
+        File f = new File(current.getPath());
+        if (!f.exists()){
+            infos.remove(index);
+            if (!scanning){
+                persistPlaylist(playlist, infos);
+            }
+
+            AppCache.putInt(indexKey, ++index);
+            return nextFile(playlist);
+        }
+
+        AppCache.putInt(indexKey, ++index);
+        current.incrementVisit();
+        if (!scanning) {
+            persistPlaylist(playlist, infos);
+        }
+        return current;
+    }
+
 
     public ContentInfoProvider importJson(String path) {
         log.info("import json " + path);
@@ -364,7 +492,6 @@ public class ContentInfoProvider {
 
         for (ContentInfo info: infos){
             //TODO check path not null
-            imported.add(info); //add to imported no matter what
             Playlist playlist = info.getPlaylist();
             if (playlist == null){
                 log.warn("Content Info" + info.getPath() + " has no playlist defined");
@@ -377,37 +504,37 @@ public class ContentInfoProvider {
     }
 
     private void push(Playlist playlist, ContentInfo info){
-        switch (playlist){
-            case STREAMS:
-                streams.add(info);
-                break;
-            case VIDEOS:
-                videos.add(info);
-                break;
-        }
+//        switch (playlist){
+//            case STREAMS:
+//                streams.add(info);
+//                break;
+//            case VIDEOS:
+//                videos.add(info);
+//                break;
+//        }
     }
 
     public ContentInfo findByPath(String path) {
-        if (!scanned){
+        if (!scannedOnce){
             log.warn("Scan not completed");
-            ContentInfo info = findByPathInList(imported, path);
-            if (info == null){
-                return decoder.decode(new File(path));
-            }
+
+            //TODO fix this
+            return decoder.decode(new File(path));
         }
-        ContentInfo info = findByPathInList(streams, path);
+        ContentInfo info = findByPathInList(getSafePersistedPlaylist(Playlist.MUSIC), path);
         if (info == null){
-            info = findByPathInList(videos, path);
+            info = findByPathInList(getSafePersistedPlaylist(Playlist.VIDEOS), path);
         }
-        if (info == null){
-            info = findByPathInList(music, path);
-        }
-        if (info == null){
-            info = findByPathInList(games, path);
-        }
-        if (info == null){
-            info = findByPathInList(presentations, path);
-        }
+//        if (info == null){
+//            info = findByPathInList(music, path);
+//        }
+//        if (info == null){
+//            info = findByPathInList(games, path);
+//        }
+//        if (info == null){
+//            info = findByPathInList(presentations, path);
+//        }
+//        return info;
         return info;
     }
 
@@ -422,15 +549,15 @@ public class ContentInfoProvider {
 
 
     public List<ContentInfo> getWebStreams() {
-        List<ContentInfo> res = new ArrayList<>();
-        int size = streams.size();
-        for (int i = 0; i < size; i++){
-            ContentInfo info = streams.get(i);
-            if (info.isWebPage()){
-                res.add(info);
-            }
-        }
-        return res;
+//        List<ContentInfo> res = new ArrayList<>();
+//        int size = streams.size();
+//        for (int i = 0; i < size; i++){
+//            ContentInfo info = streams.get(i);
+//            if (info.isWebPage()){
+//                res.add(info);
+//            }
+//        }
+        return Collections.emptyList();
     }
 
 
@@ -461,13 +588,82 @@ public class ContentInfoProvider {
     }
 
 
-    public ContentInfo queueRemove() {
 
-        if(CollectionUtil.isEmpty(contentInfoQueue)){
+
+//    public ContentInfo queueRemove() {
+//
+//
+//
+////        if(CollectionUtil.isEmpty(contentInfoQueue)){
+////            return null;
+////        }
+////        ContentInfo info = contentInfoQueue.remove(0);
+////        saveQueue();
+////        return info;
+//    }
+
+
+    public boolean finishedToScanAtLeastOnce() {
+        return scannedOnce;
+    }
+
+    public ContentInfo searchByKeyWord(ArrayList<String> data) {
+        if (CollectionUtil.isEmpty(data)){
             return null;
         }
-        ContentInfo info = contentInfoQueue.remove(0);
-        saveQueue();
-        return info;
+
+        List<String> alls = new ArrayList<>();
+        for (String s: data){
+            String parts[] = s.toLowerCase().split("\\s+");
+
+            for (String x: parts){
+                alls.add(x.toLowerCase());
+            }
+        }
+        Collections.sort(alls, new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return Integer.compare(s.length(), t1.length()) * -1;
+            }
+        });
+
+        List<ContentInfo> found = new ArrayList<>();
+        for (String s: alls){
+            for (ContentInfo info: getPlaylist(Playlist.MUSIC)){
+                if (info.getPath().toLowerCase().indexOf(s) > -1){
+                    found.add(info);
+                }
+            }
+        }
+
+        if (CollectionUtil.isEmpty(found)){
+            return null;
+        }
+
+        Collections.sort(found, new Comparator<ContentInfo>() {
+            @Override
+            public int compare(ContentInfo contentInfo, ContentInfo t1) {
+                return Integer.compare(contentInfo.getVisited(), t1.getVisited());
+            }
+        });
+
+        ContentInfo selected = found.get(0);
+        incrementAndPersistVisitFor(selected.getPath(), Playlist.MUSIC);
+
+        return selected;
+    }
+
+    private void incrementAndPersistVisitFor(String path, Playlist playlist) {
+        List<ContentInfo> infos  = getSafePersistedPlaylist(playlist);
+        for (int i = 0; i < infos.size(); i++){
+            ContentInfo x = infos.get(i);
+            if (x.getPath().equals(path)){
+                infos.get(i).incrementVisit();
+                if (!scanning) {
+                    persistPlaylist(playlist, infos);
+                }
+                return;
+            }
+        }
     }
 }

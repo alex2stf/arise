@@ -1,13 +1,13 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.ReflectUtil.InvokeHelper;
-import com.arise.core.tools.models.FilterCriteria;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,13 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.CollectionUtil.mapContains;
-import static com.arise.core.tools.ReflectUtil.hasAnyOfTheAnnotations;
-import static com.arise.core.tools.StringUtil.capFirst;
-import static com.arise.core.tools.StringUtil.hasContent;
-import static com.arise.core.tools.StringUtil.hasText;
 
 public class TypeUtil {
 
@@ -36,7 +29,7 @@ public class TypeUtil {
     public static boolean isBooleanTrue(Object c){
         if (c != null){
             if (c instanceof String){
-                return hasText((String) c);
+                return StringUtil.hasText((String) c);
             }
             if (c instanceof Boolean ){
                 return Boolean.TRUE.equals(c);
@@ -81,7 +74,7 @@ public class TypeUtil {
         public boolean isAcceptable(Method m) {
             return m != null && !Modifier.isStatic(m.getModifiers())
                     && isGetter(m)
-                    && !hasAnyOfTheAnnotations(m, jsonIgnoreAnnotations);
+                    && !ReflectUtil.hasAnyOfTheAnnotations(m, jsonIgnoreAnnotations);
         }
     };
 
@@ -91,7 +84,7 @@ public class TypeUtil {
             return field != null && !Modifier.isFinal(field.getModifiers())
                     && !field.getName().startsWith("this")
                     && !Modifier.isStatic(field.getModifiers())
-                    && !hasAnyOfTheAnnotations(field, jsonIgnoreAnnotations);
+                    && !ReflectUtil.hasAnyOfTheAnnotations(field, jsonIgnoreAnnotations);
         }
     };
 
@@ -171,8 +164,8 @@ public class TypeUtil {
                     boolean skippable = true;
 
                     //first searchIcons for getter:
-                    InvokeHelper helper = ReflectUtil.findGetter(o, field.getName());
-                    if (helper != InvokeHelper.NULL && helper.getMethod() != null && methodFilterCriteria.isAcceptable(helper.getMethod())){
+                    ReflectUtil.InvokeHelper helper = ReflectUtil.findGetter(o, field.getName());
+                    if (helper != ReflectUtil.InvokeHelper.NULL && helper.getMethod() != null && methodFilterCriteria.isAcceptable(helper.getMethod())){
                         value = helper.call();
                         skippable = false;
                         usedNames.add(helper.getMethod().getName());
@@ -193,7 +186,7 @@ public class TypeUtil {
                     if (!skippable  && (!ignoreNulls || value != null)){
                         iterator.found(name, value, i);
                         i++;
-                        usedNames.add("get" + capFirst(name));
+                        usedNames.add("get" + StringUtil.capFirst(name));
                     }
 
                 }
@@ -205,7 +198,7 @@ public class TypeUtil {
                     }
                 });
                 for (Method m: getters){
-                    InvokeHelper helper = InvokeHelper.of(m, o);
+                    ReflectUtil.InvokeHelper helper = ReflectUtil.InvokeHelper.of(m, o);
                     iterator.found(StringUtil.lowFirst(m.getName().substring(3)), helper.call(), i);
                 }
         }
@@ -240,7 +233,7 @@ public class TypeUtil {
     public static List<Field> findAllFields(final Class<?> cls,  FilterCriteria<Field> filter) {
         final List<Field> allFields = new ArrayList<>();
         Class<?> currentClass = cls;
-        while (currentClass != null) {
+        while (currentClass != null && !currentClass.equals(Object.class)) {
             final Field[] declaredFields = currentClass.getDeclaredFields();
             for (Field f: declaredFields){
                 if (filter.isAcceptable(f)){
@@ -282,11 +275,11 @@ public class TypeUtil {
      * @return
      */
     public static boolean invert(Object c){
-        if (c == null){
+        if (TypeUtil.isNull(c)){
             return true;
         }
         if (c instanceof String){
-            return !hasContent((String) c);
+            return !StringUtil.hasContent((String) c);
         }
 
         if (isBoolean(c) && !isBooleanTrue(c)){
@@ -525,11 +518,11 @@ public class TypeUtil {
     public static Object getField(final String name, Object obj,
                                   final FilterCriteria<Field> fieldFilterCriteria,
                                   final FilterCriteria<Method> methodFilterCriteria){
-        if (isNull(obj) || !hasText(name)){
+        if (isNull(obj) || !StringUtil.hasText(name)){
             return null;
         }
 
-        if (mapContains(obj, name)){
+        if (CollectionUtil.mapContains(obj, name)){
             return ((Map) obj).get(name);
         }
 
@@ -540,7 +533,7 @@ public class TypeUtil {
                 return fieldFilterCriteria.isAcceptable(data) && name.equals(data.getName());
             }
         });
-        if (!isEmpty(fields)){
+        if (!CollectionUtil.isEmpty(fields)){
             Field field = fields.get(0);
             field.setAccessible(true);
             try {
@@ -555,8 +548,8 @@ public class TypeUtil {
             @Override
             public boolean isAcceptable(Method m) {
                 boolean isAcceptable = methodFilterCriteria.isAcceptable(m);
-                boolean isGetter1 = ("get" + capFirst(name)).equals(m.getName());
-                boolean isGetter2 = ("is" + capFirst(name)).equals(m.getName());
+                boolean isGetter1 = ("get" + StringUtil.capFirst(name)).equals(m.getName());
+                boolean isGetter2 = ("is" + StringUtil.capFirst(name)).equals(m.getName());
                 boolean isInlineMethod = name.equals(m.getName());
                 boolean hasNoArgs = ReflectUtil.countParameters(m) == 0;
                 return methodFilterCriteria.isAcceptable(m) && hasNoArgs && (isGetter1 || isGetter2 || isInlineMethod);
@@ -564,7 +557,7 @@ public class TypeUtil {
         });
 
 
-        if (!isEmpty(methods)){
+        if (!CollectionUtil.isEmpty(methods)){
             Method m = methods.get(0);
             m.setAccessible(true);
             try {
@@ -674,7 +667,10 @@ public class TypeUtil {
     }
 
 
-    public interface Convertor {
-        Object convert(Object value);
+    public static Type getLastRawType(Type t){
+        if (t instanceof ParameterizedType){
+            return getLastRawType(((ParameterizedType)t).getRawType());
+        }
+        return t;
     }
 }

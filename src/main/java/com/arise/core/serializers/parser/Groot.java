@@ -30,6 +30,7 @@ public class Groot {
   public static Object decodeBytes(byte[] in, int firstIndex, int offset, Syntax s){
     //TODO improve this
 
+//    System.out.println(new String(in, firstIndex, offset));
 //    debug("IN", in, firstIndex, offset);
 
     while (s.isWhitespace(in[firstIndex])){

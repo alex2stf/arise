@@ -65,7 +65,20 @@ public class FileUtil {
     }
 
 
+    public static File getUploadDir(){
+        File docs = new File(findDocumentsDir(), "arise-app");
+        if (!docs.exists()){
+            docs.mkdirs();
+        }
+        return docs;
+    }
+
+
     public static File findDir(ContentType.Location location){
+
+        //new File(System.getenv("EXTERNAL_STORAGE") )
+
+        //System. getenv("EXTERNAL_SDCARD_STORAGE")
         switch (location){
             case MUSIC: return findMusicDir();
             case MOVIES: return findMoviesDir();
@@ -118,22 +131,51 @@ public class FileUtil {
         return moviesDir;
     }
 
+
+
     public static File findDocumentsDir(){
         File documentsDir = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
                 "getExternalStoragePublicDirectory", String.class)
                 .callFor(File.class, "Documents");
+
+        if (documentsDir == null || !documentsDir.exists()){
+           documentsDir = getUserDirectory("Documents");
+        }
         return documentsDir;
     }
 
+    private static final String[] locations = new String[]{
+            System.getenv("EXTERNAL_SDCARD_STORAGE"),   System.getenv("EXTERNAL_STORAGE"),  System.getProperty("user.home")
+    };
     public static File getUserDirectory(String name){
-        String usrHome = System.getProperty("user.home");
-        if (!StringUtil.hasText(usrHome)){
-            usrHome = "usr_dir";
+        File externalStorage  = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
+                "getExternalStorageDirectory")
+                .callFor(File.class);
+
+        if (externalStorage != null && externalStorage.exists()){
+            File next = new File(externalStorage, "Music");
+            if (!next.exists()){
+                next.mkdirs();
+            }
+            return next;
         }
-        if (!usrHome.endsWith(File.separator)){
-            usrHome += File.separator;
+        File rootDir = null;
+        for (String s: locations){
+            if (StringUtil.hasText(s)) {
+                rootDir = new File(s);
+                if (rootDir != null && rootDir.exists()) {
+                    break;
+                }
+            }
         }
-        return new File(usrHome, name);
+
+        if (rootDir == null){
+            rootDir = new File("arise-app" + File.separator + name);
+            if (!rootDir.exists()){
+                rootDir.mkdirs();
+            }
+        }
+        return new File(rootDir, name);
     }
 
     public static File findOrCreateUserDirectory(String name){
@@ -159,15 +201,19 @@ public class FileUtil {
         if (context != null){
             result = ReflectUtil.getMethod(context, "getFilesDir").callFor(File.class);
         }
-        if (result == null){
+        if (result == null || !result.exists()){
             result = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
                     "getDataDirectory")
                     .callFor(File.class);
 
         }
-        if (result == null){
+
+
+        if (result == null || !result.exists()){
             result = findOrCreateUserDirectory("arise-app");
         }
+
+
 
 
         return result;
@@ -413,7 +459,7 @@ public class FileUtil {
 //                }
                 recursiveScan(c, fileFoundHandler, filenameFilter);
             } else if (c.isFile() && fileFoundHandler != null){
-                System.out.println("found " + c.getAbsolutePath());
+//                System.out.println("found " + c.getAbsolutePath());
                 fileFoundHandler.foundFile(c);
             }
         }
@@ -635,6 +681,25 @@ public class FileUtil {
         }
         File c[] = d.listFiles();
         return c != null && c.length > 0;
+    }
+
+    public static void writeBytesToFile(byte[] bytes, File f) {
+        FileOutputStream fos = null;
+        try  {
+            fos = new FileOutputStream(f);
+            fos.write(bytes);
+            //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 

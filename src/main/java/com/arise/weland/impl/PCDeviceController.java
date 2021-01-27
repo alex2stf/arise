@@ -1,6 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ProgressiveRGBGenerator;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -110,6 +111,41 @@ public class PCDeviceController implements IDeviceController {
         }
 
         updateMouseMove();
+    }
+
+
+
+    public static void main(String[] args) throws Throwable {
+//        java.awt.Robot robot = new java.awt.Robot();
+//        int i = 0;
+//        java.text.DateFormatSymbols ds = new DateFormatSymbols(Locale.getDefault());
+//        ds.setWeekdays(new String[]{
+//                "ce kkt de zi",
+//                "Dum Duminica",
+//                "Muje Luni",
+//                "Gunoi Marti",
+//                "Mrc Miercuri",
+//                "J Joi",
+//                "InainteDeWeekend Vineri",
+//                "Atâââât Sâmbătă",
+//        });
+//        SimpleDateFormat z = new SimpleDateFormat("EEEEE", ds);
+//        String root = "ne-am facut ca muncim %s";
+//
+//        while (true){
+//            System.out.println(String.format(root, z.format(new Date())));
+//            robot.mouseMove(i, i);
+//            i++;
+//            Thread.sleep(1000 * 60 * 3);
+//        }
+
+        ProgressiveRGBGenerator colorGenerator = new ProgressiveRGBGenerator(10, 2);
+        while (true){
+            System.out.println(colorGenerator.next(2));
+            Thread.sleep(1000);
+        }
+
+
     }
 
 }

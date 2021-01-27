@@ -98,7 +98,7 @@ public class RAPDUtils {
         }
 
         Notification notification = mBuilder.build();
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        notification.flags = flags;
         notification.contentIntent = resultPendingIntent;
 
 //        if (vibrate) {

@@ -8,6 +8,7 @@ import java.nio.channels.SocketChannel;
 
 public abstract class ServerRequestBuilder<T extends ServerRequest> {
 
+    protected Object connection;
     public abstract void readInputStream(InputStream inputStream,
                                          CompleteHandler<T> onComplete,
                                          CompleteHandler<Throwable> onError);
@@ -19,4 +20,9 @@ public abstract class ServerRequestBuilder<T extends ServerRequest> {
     public abstract void readByteBuffer(ByteBuffer input,
                                         CompleteHandler<T> onComplete,
                                         CompleteHandler<Throwable> onError);
+
+    ServerRequestBuilder<T> withConnection(Object connection) {
+        this.connection = connection;
+        return this;
+    }
 }

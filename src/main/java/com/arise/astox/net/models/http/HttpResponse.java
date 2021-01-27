@@ -219,12 +219,18 @@ public class HttpResponse extends ServerResponse {
                 .setStatusText("OK")
                 .setProtocol(HttpProtocol.V1_0)
                 .addHeader("Server", "Astox-Srv")
-                .addHeader("Date", new Date());
+                .addHeader("Date", new Date())
+
+                ;
     }
 
 
     public HttpResponse addCorelationId(String correlationId) {
         addHeader("Correlation-Id", correlationId);
         return this;
+    }
+
+    public HttpResponse allowAnyOrigin() {
+        return addHeader("Access-Control-Allow-Origin", "*");
     }
 }

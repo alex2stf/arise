@@ -1,6 +1,6 @@
 package com.arise.canter;
 
-import com.arise.core.tools.models.FilterCriteria;
+import com.arise.core.tools.FilterCriteria;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.TypeUtil;
 

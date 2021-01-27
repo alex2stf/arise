@@ -3,6 +3,7 @@ package com.arise.astox.net.models.http;
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.arise.astox.net.models.http.HttpReader.CRLF;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -278,6 +280,15 @@ public class HttpRequest extends ServerRequest {
     }
 
 
+    public int getQueryParamInt(String arg, int defaultValue){
+        Integer x = getQueryParamInt(arg);
+        if (x == null){
+            return defaultValue;
+        }
+        return x;
+    }
+
+
 
     public boolean hasContent() {
         return contentLength() > 0;
@@ -317,5 +328,45 @@ public class HttpRequest extends ServerRequest {
             headers = new HashMap<>();
         }
         headers.put(key, value);
+    }
+
+    public String getQueryParamString(String key, String defaultVal) {
+        String x = getQueryParam(key);
+        if (x == null){
+            return defaultVal;
+        }
+        return x;
+    }
+
+
+
+
+
+
+    public boolean isMultipartFormData(){
+        String contentType = getHeaderParam("Content-Type");
+        if (!StringUtil.hasText(contentType)){
+            return false;
+        }
+        return contentType.indexOf("multipart/form-data") > -1;
+    }
+
+    public String getBoundary(){
+        String contentType = getHeaderParam("Content-Type");
+        if (!StringUtil.hasText(contentType)){
+            return null;
+        }
+        String parts[] = contentType.split(";");
+        for (String s: parts){
+            s = s.trim();
+            if (s.startsWith("boundary=")){
+                String kv[] = s.split("=");
+                if (kv.length == 2){
+                    return kv[1];
+                }
+            }
+        }
+        return null;
+
     }
 }

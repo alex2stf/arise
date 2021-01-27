@@ -121,6 +121,10 @@ public abstract class HttpReader<TYPE> {
             actualRead = readStream(inputStream, initChunk);
             sumRead = actualRead;
 
+//            if (actualRead == -1){
+//                System.out.println("ACTUAL READ -1");
+//                return;
+//            }
             //works in ndk
             if (getContentLength() > 0) {
                 while (sumRead < getContentLength() + headerLength() ){

@@ -1,21 +1,26 @@
 package com.arise.weland.utils;
 
 
+import com.arise.astox.net.clients.HttpClient;
+import com.arise.astox.net.models.AbstractClient;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.astox.net.models.http.Multipart;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
@@ -24,10 +29,15 @@ import com.arise.weland.dto.Playlist;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.model.FileTransfer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -139,7 +149,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
   Whisker whisker = new Whisker();
-  String playerContent = StreamUtil.toString(FileUtil.findStream("weland/player.html"));
+  String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
 
 
   @Override
@@ -147,7 +157,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     String correlationId = "";
     if (StringUtil.hasText(request.getHeaderParam("Correlation-Id"))){
-      correlationId = request.getHeaderParam("Correlation-Id");
+        correlationId = request.getHeaderParam("Correlation-Id");
     }
 
     deviceStat.setServerUUID(server.getUuid());
@@ -158,7 +168,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       MapObj mapObj = (MapObj) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
-      return HttpResponse.json(deviceStat.toJson());
+      return HttpResponse.json(deviceStat.toJson()).allowAnyOrigin();
     }
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
@@ -182,11 +192,12 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     //used by android app for audio streaming services
-    if ("/player".equalsIgnoreCase(request.path())){
+    if ("/app".equalsIgnoreCase(request.path())){
+      appContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/app.html"));
       Map<String, String> args = new HashMap<>();
-      args.put("imgSrc", request.getQueryParam("imgSrc"));
-      args.put("audioSrc", request.getQueryParam("audioSrc"));
-      return HttpResponse.html(whisker.compile(playerContent, args));
+      args.put("host", request.getQueryParamString("host", ""));
+      whisker.setTemplatesRoot("src/main/resources#weland");
+      return HttpResponse.html(whisker.compile(appContent, args));
     }
 
 
@@ -199,16 +210,16 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if ("/health".equalsIgnoreCase(request.path())){
-      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId).allowAnyOrigin();
     }
 
     if ("/device/stat".equals(request.path())){
-      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
+      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId).allowAnyOrigin();
     }
 
     if (request.pathsStartsWith("thumbnail")){
       String id = request.getQueryParam("id");
-      return contentInfoProvider.getMediaPreview(id).addCorelationId(correlationId);
+      return contentInfoProvider.getMediaPreview(id).addCorelationId(correlationId).allowAnyOrigin();
     }
 
     //list media based on type
@@ -217,7 +228,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       String what = request.getPathAt(2);
       Playlist playlist = Playlist.find(what);
       ContentPage page = contentInfoProvider.getPage(playlist, index);
-      return HttpResponse.json(page.toString()).addCorelationId(correlationId);
+      return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();
     }
 
 
@@ -231,7 +242,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     if (request.pathsStartsWith("media", "shuffle")){
       String playlistId = request.getPathAt(2);
       contentInfoProvider.shuffle(playlistId);
-      return HttpResponse.oK().addCorelationId(correlationId);
+      return HttpResponse.oK().addCorelationId(correlationId).allowAnyOrigin();
     }
 
     if (request.pathsStartsWith("media", "autoplay")){
@@ -251,19 +262,78 @@ public class WelandServerHandler extends HTTPServerHandler {
     if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
       HttpResponse response = contentHandler.openRequest(request);
       if (response != null){
-        return response;
+        return response.allowAnyOrigin();
       }
-      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
+      return HttpResponse.plainText(request.getQueryParam("path"))
+              .addCorelationId(correlationId)
+              .allowAnyOrigin();
     }
+
+
+    if ("/download".equals(request.path())){
+      String path = request.getQueryParam("file");
+      File f = new File(path);
+      ContentType contentType = ContentType.search(f);
+      byte[] bytes;
+      try {
+        bytes = StreamUtil.fullyReadFileToBytes(f);
+      } catch (IOException e) {
+        return HttpResponse.plainText("ERROR");
+      }
+
+      return new HttpResponse()
+              .setContentType(contentType)
+              .setContentLength(bytes.length)
+              .addHeader("Content-Disposition",  "attachment; filename=\"" + f.getName() + "\"")
+              .setStatusCode(200)
+              .setBytes(bytes)
+              .allowAnyOrigin();
+    }
+
+
+    if(request.pathsStartsWith("info", "persisted", "playlist", "music")){
+      return HttpResponse.plainText(contentInfoProvider.getPersistedPlaylistContent(Playlist.MUSIC));
+    }
+
+    if(request.pathsStartsWith("transfer")){
+      //file may be already copied
+      return HttpResponse.plainText("copied");
+    }
+
+    if ("/upload".equalsIgnoreCase(request.path())){
+      String path = request.getQueryParam("file");
+      File f = new File(path);
+      if (!f.exists()){
+        return HttpResponse.plainText("file does not exist");
+      }
+
+      URL url;
+      try {
+        url = new URL(request.getQueryParam("destination"));
+      } catch (MalformedURLException e) {
+        return HttpResponse.plainText("invalid destination");
+      }
+      FileTransfer.Client client = new FileTransfer.Client();
+      client.setHost(url.getHost());
+      client.setPort(url.getPort());
+      client.sendAndReceive(new FileTransfer.FileRequest(f), new CompleteHandler<HttpResponse>() {
+        @Override
+        public void onComplete(HttpResponse data) {
+//          System.out.println(data);
+        }
+      });
+      return HttpResponse.plainText(f.getAbsolutePath());
+    }
+
 
 
 
     if (request.pathsStartsWith("files", "close")){
       HttpResponse response =  contentHandler.stop(request);
       if (response != null){
-        return response;
+        return response.allowAnyOrigin();
       }
-      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId);
+      return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId).allowAnyOrigin();
     }
 
 
@@ -273,17 +343,11 @@ public class WelandServerHandler extends HTTPServerHandler {
       for (Map.Entry<String, String> entry : request.getHeaders().entrySet()){
         serverResponse.addHeader(entry.getKey() + "-Response" , entry.getValue() + "-Response");
       }
-      serverResponse.setText("PONG").addCorelationId(correlationId);
+      serverResponse.setText("PONG").addCorelationId(correlationId).allowAnyOrigin();
       return serverResponse;
     }
 
 
-    if ("/webcam".equalsIgnoreCase(request.path())){
-      Map<String, String> args = new HashMap<>();
-      args.put("imgSrc", "/device/live/mjpeg");
-      args.put("audioSrc", "/device/live/audio.wav");
-      return HttpResponse.html(whisker.compile(playerContent, args));
-    }
 
     if ("/kontrols".equalsIgnoreCase(request.path())){
       Map<String, Object> args = new HashMap<>();
@@ -322,9 +386,7 @@ public class WelandServerHandler extends HTTPServerHandler {
         e.printStackTrace();
       }
     }
-
-
-    return super.getHTTPResponse(request, server);
+    return super.getHTTPResponse(request, server).allowAnyOrigin();
   }
 
 
@@ -352,8 +414,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   public ServerResponse getDefaultResponse(AbstractServer server) {
     return HttpResponse.plainText("bad request");
   }
-
-
 
 
 }

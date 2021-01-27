@@ -8,6 +8,8 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class DeviceStat {
     private String displayName;
     private String serverUUID;
     private String conversationId;
+    private Map<String, String> props = new HashMap<>();
 
 
     public static final DeviceStat INSTANCE = new DeviceStat(true).scanIPV4();
@@ -72,6 +75,7 @@ public class DeviceStat {
         }
     }
 
+    @Deprecated
     public static DeviceStat fromMap(Map obj) {
         DeviceStat deviceStat = new DeviceStat(false);
         deviceStat.batteryScale = MapUtil.getInt(obj,"B1", 0);
@@ -128,11 +132,43 @@ public class DeviceStat {
         if (!isEmpty(ipv4Addrs)){
             sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
         }
+
+        if (!isEmpty(props)){
+            sb.append("\"pP\": {");
+            int cxx = 0;
+            for (Map.Entry<String, String> e: props.entrySet()){
+                if (cxx > 0){
+                    sb.append(",");
+                }
+                sb.append(jsonVal(e.getKey())).append(":").append(jsonVal(e.getValue()));
+                cxx++;
+            }
+            sb.append("},");
+        }
+
         addVal(sb, "x", os.getName());
         addVal(sb, "v", os.getVersion());
         addVal(sb, "a", os.getArch());
 
         sb.append("\"N\":").append(jsonVal(ContentInfo.encodePath(deviceName)));
+
+        Calendar calendar = Calendar.getInstance();
+        sb.append(",\"tz\":\"")
+                .append(calendar.get(Calendar.YEAR))
+                .append("-")
+                .append(calendar.get(Calendar.MONTH))
+                .append("-")
+                .append(calendar.get(Calendar.DAY_OF_MONTH))
+                .append("-")
+                .append(calendar.get(Calendar.HOUR_OF_DAY))
+                .append("-")
+                .append(calendar.get(Calendar.MINUTE))
+                .append("-")
+                .append(calendar.get(Calendar.SECOND))
+                .append("-")
+                .append(calendar.get(Calendar.MILLISECOND))
+        .append("\"");
+
         sb.append("}");
         return sb.toString();
     }
@@ -215,6 +251,11 @@ public class DeviceStat {
 
     public Set<String> getIpv4Addrs() {
         return ipv4Addrs;
+    }
+
+    public DeviceStat setProp(String key, String val) {
+        props.put(key, val);
+        return this;
     }
 
     public static class Screen {

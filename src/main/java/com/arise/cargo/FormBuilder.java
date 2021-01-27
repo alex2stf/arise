@@ -5,14 +5,13 @@ import com.arise.cargo.model.CGVar;
 import com.arise.cargo.model.InputType;
 import com.arise.cargo.model.UXField;
 import com.arise.core.serializers.parser.Whisker;
-import com.arise.core.tools.models.FilterCriteria;
+import com.arise.core.tools.FilterCriteria;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.TypeUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.*;

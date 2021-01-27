@@ -78,7 +78,10 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     protected void handle(final CONNECTION connection) {
 
         InputStream inputStream = getInputStream(connection);
-        this.serverRequestBuilder.readInputStream(inputStream, new CompleteHandler<ServerRequest>() {
+
+        this.serverRequestBuilder
+                .withConnection(connection)
+                .readInputStream(inputStream, new CompleteHandler<ServerRequest>() {
             @Override
             public void onComplete(ServerRequest serverRequest) {
 

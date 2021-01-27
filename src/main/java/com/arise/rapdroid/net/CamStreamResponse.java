@@ -126,7 +126,7 @@ public class CamStreamResponse extends CameraWorker {
 
     protected boolean prepare(){
 
-        mainCamera = getDefaultCameraInstance();
+        mainCamera = getCameraInstance(this.cameraIndex);
 
         try {
             Camera.Parameters parameters = mainCamera.getParameters();
@@ -205,17 +205,7 @@ public class CamStreamResponse extends CameraWorker {
         handler.sendMessage(message);
     }
 
-    public void turnFlashLightOff() {
-        lightOn = false;
-        stop();
-        startStream();
-    }
 
-    public void turnFlashLightOn() {
-       lightOn = true;
-       stop();
-       startStream();
-    }
 
 
     public void resume() {
@@ -225,5 +215,9 @@ public class CamStreamResponse extends CameraWorker {
 
     public boolean isRecording() {
         return recording;
+    }
+
+    public void setLightMode(int lightMode) {
+        lightOn = (1 == lightMode);
     }
 }

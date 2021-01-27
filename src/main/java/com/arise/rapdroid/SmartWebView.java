@@ -33,12 +33,15 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
 import com.arise.rapdroid.components.ui.Layouts;
 import com.arise.rapdroid.components.ui.adapters.URLAutocomplete;
 import com.arise.rapdroid.components.ui.views.SmartLayout;
 import com.arise.rapdroid.media.server.R;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -145,6 +148,9 @@ public class SmartWebView extends LinearLayout {
                 if (searchBar != null){
                     searchBar.setText(webView.getUrl());
                 }
+                InputStream inputStream = FileUtil.findStream("scripts/webview_postfix.js");
+                String script = StreamUtil.toString(inputStream);
+                webView.loadUrl("javascript:(function() { " + script + " \n postfix('"+url+"') })()");
                 super.onPageFinished(view, url);
             }
 
@@ -163,6 +169,7 @@ public class SmartWebView extends LinearLayout {
             }
 
 
+
         });
 
         webView.setPadding(0, 0, 0, 0);
@@ -170,7 +177,6 @@ public class SmartWebView extends LinearLayout {
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-//            soundThread.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
@@ -190,6 +196,17 @@ public class SmartWebView extends LinearLayout {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+
+        webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; SM-A530F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.getSettings().setDomStorageEnabled(true);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
         }
 
 
@@ -281,9 +298,14 @@ public class SmartWebView extends LinearLayout {
         webView.setInitialScale(1);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
+
     }
 
     public void loadUrl(String uri) {
+        log.info("load uri " + uri);
         this.uri = uri;
         webView.loadUrl(uri);
 

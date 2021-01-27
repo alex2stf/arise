@@ -2,6 +2,7 @@ package com.arise.core.tools;
 
 
 
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -9,17 +10,14 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.arise.core.tools.TypeUtil.isNull;
-
-
 
 public class ReflectUtil {
 
-    private static final Mole log = Mole.getInstance(ReflectUtil.class);
 
 
 
@@ -105,23 +103,6 @@ public class ReflectUtil {
         }
     }
 
-
-//    public static Object invoke(Method method, Object object, Object... parameters) {
-//        if (method == null)
-//        {
-//            return null;
-//        }
-//
-//        try
-//        {
-//            return method.invoke(object, parameters);
-//        }
-//        catch (Exception e)
-//        {
-//            return null;
-//        }
-//    }
-
     public static boolean classExists(String classname){
         return getClassByName(classname) != null;
     }
@@ -144,7 +125,7 @@ public class ReflectUtil {
 
 
     public static boolean classNameExtends(String className, Class clazz){
-        java.lang.Class thatClass = getClassByName(className);
+        Class thatClass = getClassByName(className);
         if (thatClass != null){
             return clazz.isAssignableFrom(thatClass);
         }
@@ -162,7 +143,7 @@ public class ReflectUtil {
             if (c != null) {
                 classList.add(getClassByName(s));
             } else {
-                log.warn(s + " interface not found");
+                ;;
             }
         }
         Class[] classes = new Class[classList.size()];
@@ -257,13 +238,7 @@ public class ReflectUtil {
     }
 
 
-    public static Object getAnnotation(Method method, String name){
-        Class annotation = getClassByName(name);
-        if (annotation != null){
-            return method.getAnnotation(annotation);
-        }
-        return null;
-    }
+
 
     public static int countParameters(Method method){
         InvokeHelper invoke = getMethod(method, "getParameterCount");
@@ -276,20 +251,65 @@ public class ReflectUtil {
         return method.getParameterTypes().length;
     }
 
-//    public static Object getAnnotation(Parameter parameter, String name){
-//        Class annotation = getClassByName(name);
-//        if (annotation != null){
-//            return parameter.getAnnotation(annotation);
-//        }
-//        return null;
-//    }
+    public static Object getAnnotation(Parameter parameter, String name){
+        Class annotation = getClassByName(name);
+        if (annotation != null){
+            //org.springframework.core.annotation.AnnotationUtils.findAnnotation()
+            return parameter.getAnnotation(annotation);
+        }
+        return null;
+    }
+
+    public static Object getAnnotation(Method xxx, String name){
+        Class annotation = getClassByName(name);
+        if (annotation != null){
+            return findAnnotation(xxx, annotation);
+        }
+        return null;
+    }
 
     public static Object getAnnotation(Class clazz, String name) {
         Class annotation = getClassByName(name);
         if (annotation != null){
-            return clazz.getAnnotation(annotation);
+            return findAnnotation(clazz, annotation);
         }
         return null;
+    }
+
+    public static <T> T findAnnotation(Class clazz, Class<T> annotation){
+        T response = (T) clazz.getAnnotation(annotation);
+        //search with spring
+        if (response == null){
+            Class annotationUtils = getClassByName("org.springframework.core.annotation.AnnotationUtils");
+            if (annotationUtils != null){
+               try {
+                   response = (T) getStaticMethod(annotationUtils, "findAnnotation", Class.class, Class.class)
+                           .call(clazz, annotation);
+               } catch (Exception e){
+                   e.printStackTrace();
+               }
+
+            }
+        }
+       return response;
+    }
+
+    public static <T extends Annotation> T findAnnotation(Method method, Class<T> annotation){
+        T response = method.getAnnotation(annotation);
+        //search with spring
+        if (response == null){
+            Class annotationUtils = getClassByName("org.springframework.core.annotation.AnnotationUtils");
+            if (annotationUtils != null){
+               try {
+                   response = (T) getStaticMethod(annotationUtils, "findAnnotation", Method.class, Class.class)
+                           .call(method, annotation);
+               }
+               catch (Exception e){
+                   e.printStackTrace();
+               }
+            }
+        }
+        return response;
     }
 
     public static boolean annotationsMatch(Annotation[] annotations, String [] names){
@@ -304,7 +324,7 @@ public class ReflectUtil {
     }
 
     private static boolean classMatchName(Class t, String n){
-        return !isNull(n) && !isNull(t) && (n.equals(t.getName()) || n.equals(t.getCanonicalName()) || n.equals(t.getSimpleName()));
+        return !TypeUtil.isNull(n) && !TypeUtil.isNull(t) && (n.equals(t.getName()) || n.equals(t.getCanonicalName()) || n.equals(t.getSimpleName()));
     }
 
 
@@ -344,23 +364,26 @@ public class ReflectUtil {
         return null;
     }
 
-    public static boolean isInstanceOf(Object worker, String className) {
-        if (isNull(worker)){
+    public static boolean objectIsInstanceOf(Object worker, String className) {
+        if (TypeUtil.isNull(worker)){
             return false;
         }
-
-        if (className.equals(worker.getClass().getName())){
-            return true;
-        }
-
-        if (className.equals(worker.getClass().getCanonicalName())){
-            return true;
-        }
-
-
-        return objectIsAssignableFrom(worker, className);
+        return classIsInstanceOf(worker.getClass(), className);
     }
 
+
+    public static boolean classIsInstanceOf(Class<?> clazz, String className) {
+        if (clazz == null || !StringUtil.hasText(className)){
+            return false;
+        }
+        Class testClazz = getClassByName(className);
+        if (testClazz == null){
+            return false;
+        }
+        return clazz.equals(testClazz)
+                || testClazz.isAssignableFrom(clazz)
+                || className.equals(clazz.getCanonicalName());
+    }
 
     public abstract static class IMethod<T>{
 
