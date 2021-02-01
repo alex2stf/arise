@@ -161,6 +161,10 @@ public class Builder {
         if (args.length > 2){
             JDK_HOME = args[2];
         }
+        
+        System.out.println("arise builder start at " + new Date());
+        System.out.println("root directory: " + ROOT_DIRECTORY);
+        System.out.println("jdk home: " + JDK_HOME);
 
         File buildInfoFile = new File("build-info.properties");
         Properties properties;
@@ -509,7 +513,7 @@ public class Builder {
 
 
 
-
+    
             String name = source.getPath()
                     .replaceAll(Pattern.quote(ROOT_DIRECTORY.getAbsolutePath()), " ")
                     .replaceAll("\\\\", "/");
