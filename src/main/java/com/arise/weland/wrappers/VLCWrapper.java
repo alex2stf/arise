@@ -24,7 +24,6 @@ public class VLCWrapper {
         String actualArgs[] = new String[]{
                 executable.getAbsolutePath(),
                 args[1]
-//                ,"--reset-plugins-cache"
                 , "--fullscreen"
                 , "-I",
                 "http",
