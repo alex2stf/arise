@@ -155,13 +155,13 @@ public class SYSUtils {
         exec(args, new ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
-//                System.out.println(content);
+                System.out.println(" >>>>" + content);
                 sb.append(content);
             }
 
             @Override
             public void onErrLine(int line, String content) {
-//                System.out.println(content);
+                System.out.println(" >>>>" + content);
                 eb.append(content);
             }
         }, true, false);
@@ -201,12 +201,12 @@ public class SYSUtils {
         } else {
             ProcessBuilder processBuilder = new ProcessBuilder(args);
             processBuilder.redirectErrorStream(false);
-            String path = processBuilder.environment().get("PATH");
-            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\bin";
-            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\msys\\1.0\\bin";
-            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\dll";
-            processBuilder.environment().put("PATH", path);
-            processBuilder.environment().put("Path", path);
+//            String path = processBuilder.environment().get("PATH");
+//            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\bin";
+//            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\msys\\1.0\\bin";
+//            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\dll";
+//            processBuilder.environment().put("PATH", path);
+//            processBuilder.environment().put("Path", path);
             try {
                 proc = processBuilder.start();
                 if (outputHandler != null){

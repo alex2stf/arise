@@ -119,6 +119,7 @@ public class Main {
         }
 
 
+
         contentInfoProvider.get();
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()

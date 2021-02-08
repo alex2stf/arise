@@ -18,6 +18,7 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.wrappers.VLCWrapper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -87,31 +88,25 @@ public class DesktopFileHandler extends ContentHandler {
         commands = (MapObj) Groot.decodeBytes(s);
     }
 
-    private Runnable playNextFromQueue(){
-        return new Runnable() {
-            @Override
-            public void run() {
-                log.info("Considered CLOSED at  " + new Date());
-                ContentInfo info = contentInfoProvider.nextFile(Playlist.MUSIC);
-                if (info != null){
-                    log.info("NEXT to play " + info.getPath());
-                    openInfo(info);
-                }
-            }
-        };
-    }
+//    private Runnable playNextFromQueue(){
+//        return new Runnable() {
+//            @Override
+//            public void run() {
+//                log.info("Considered CLOSED at  " + new Date());
+//                ContentInfo info = contentInfoProvider.nextFile(Playlist.MUSIC);
+//                if (info != null){
+//                    log.info("NEXT to play " + info.getPath());
+//                    openInfo(info);
+//                }
+//            }
+//        };
+//    }
 
     private ThreadUtil.TimerResult timerResult = null;
 
     @Override
     public HttpResponse openInfo(ContentInfo info) {
         ThreadUtil.closeTimer(timerResult);
-
-        if (info.getDuration() > 10){
-            long delay = info.getDuration() + 1000;
-            this.timerResult = ThreadUtil.delayedTask(playNextFromQueue(), delay);
-            log.info("Schedule AUTOCLOSE in " + delay + " miliseconds");
-        }
         openString(info.getPath());
         return null;
     }
@@ -163,7 +158,12 @@ public class DesktopFileHandler extends ContentHandler {
 
 
     private synchronized void openMedia(String path) {
-        execute(getCommands("media", path));
+        log.info("received request to open ", path);
+        VLCWrapper.open(getCommands("media", path));
+
+
+
+//        execute(getCommands("media", path));
     }
 
     private boolean isMedia(String path) {
