@@ -1,6 +1,6 @@
 package com.arise.core.tools;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +67,26 @@ public class MapUtil {
     }
 
 
+    public static <K, V>  MapBuilder<K, V> newMap(K key, V value) {
+        return new MapBuilder<K, V>(new HashMap<K, V>()).put(key, value);
+    }
 
 
+    public static class MapBuilder<K, V> {
+        final Map<K, V> x;
+
+        public MapBuilder(Map<K, V> x) {
+            this.x = x;
+        }
+
+        public Map<K, V> get(){
+            return x;
+        }
+
+        public MapBuilder<K, V> put(K ky, V vl){
+            x.put(ky, vl);
+            return this;
+        }
+    }
 
 }

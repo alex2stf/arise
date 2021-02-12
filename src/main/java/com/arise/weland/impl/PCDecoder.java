@@ -297,7 +297,7 @@ public class PCDecoder extends ContentInfoDecoder {
 
     @Override
     public byte[] getThumbnail(String id) {
-        System.out.println("GET THUMBNAIL " + id);
+//        System.out.println("GET THUMBNAIL " + id);
         if (!StringUtil.hasText(id)){
             return null;
         }

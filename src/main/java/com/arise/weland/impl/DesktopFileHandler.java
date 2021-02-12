@@ -120,6 +120,13 @@ public class DesktopFileHandler extends ContentHandler {
         return null;
     }
 
+    @Override
+    protected HttpResponse pause(String path) {
+        VLCWrapper.pauseHttp();
+        //TODO return device state
+        return HttpResponse.oK();
+    }
+
 
     private void openString(final String path){
         ThreadUtil.fireAndForget(new Runnable() {
@@ -157,13 +164,14 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-    private synchronized void openMedia(String path) {
+    private void openMedia(String path) {
         log.info("received request to open ", path);
-        VLCWrapper.open(getCommands("media", path));
-
-
-
-//        execute(getCommands("media", path));
+        File vlcExecutable = VLCWrapper.open(getCommands("media", path));
+        if (vlcExecutable != null){
+            exes.add(vlcExecutable.getAbsolutePath());
+        } else {
+            execute(getCommands("media", path));
+        }
     }
 
     private boolean isMedia(String path) {
@@ -264,6 +272,11 @@ public class DesktopFileHandler extends ContentHandler {
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
         ThreadUtil.closeTimer(timerResult);
+
+        //pause vlc http instance
+        if (VLCWrapper.isHttpOpened()){
+            VLCWrapper.stopHttp();
+        }
         closeSpawnedProcesses();
         return null;
     }

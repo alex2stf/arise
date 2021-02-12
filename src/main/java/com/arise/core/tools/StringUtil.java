@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -291,6 +293,27 @@ public class StringUtil {
 
     public static <T> String join(Iterable<T> values, String delimiter) {
         return join(values, delimiter, DEFAULT_ITERATOR);
+    }
+
+    public static String urlDecodeUTF8(String input){
+        try {
+            return URLDecoder.decode(input, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            //TODO throw runtime exception
+            e.printStackTrace();
+        }
+        return input;
+    }
+
+    public static String urlEncodeUTF8(String input){
+        try {
+            return URLEncoder.encode(input, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+
+            //TODO throw runtime exception
+            e.printStackTrace();
+        }
+        return input;
     }
 
     public static Integer toInt(String s){

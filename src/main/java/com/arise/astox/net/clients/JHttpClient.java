@@ -92,6 +92,14 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
+    public void sendAndReceiveSync(HttpRequest request, CompleteHandler<HttpResponse> httpResponseCompleteHandler){
+        connectSync(request, new CompleteHandler<HttpURLConnection>() {
+            @Override
+            public void onComplete(HttpURLConnection data) {
+                read(data, httpResponseCompleteHandler);
+            }
+        });
+    }
 
 
 
@@ -105,7 +113,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
     }
 
 
-    protected void connectSync(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler){
+    public void connectSync(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler){
         try {
 
             HttpURLConnection con = getConnection(request);
@@ -145,6 +153,8 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
     }
 
     public HttpURLConnection getConnection(HttpRequest request) throws Exception {
+
+        //TODO url connection nu are nevoie de uri encodat
         URL connectionURL = new URL("http://" + getHost() + ":" + getPort() + request.getUri());
 
         HttpURLConnection res = null;
@@ -171,7 +181,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
     }
 
     @Override
-    protected void read(HttpURLConnection con, CompleteHandler<HttpResponse> responseHandler) {
+    public void read(HttpURLConnection con, CompleteHandler<HttpResponse> responseHandler) {
 
 
         HttpResponse httpResponse = new HttpResponse();
@@ -200,6 +210,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
                 inputStream.close();
             }
         } catch (Exception ex){
+            //TODO throw runtime error
             ex.printStackTrace();
         }
 

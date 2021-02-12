@@ -28,9 +28,13 @@ public abstract  class ContentHandler {
         return openPath(path);
     }
 
-
     protected abstract HttpResponse openInfo(ContentInfo info);
     protected abstract HttpResponse openPath(String path);
+    protected abstract HttpResponse pause(String path);
+
+    public  HttpResponse pauseRequest(HttpRequest request){
+        return pause(request.getQueryParam("path"));
+    }
 
     public HttpResponse stop(HttpRequest request){
         return stop(request.getQueryParam("path"));
@@ -48,12 +52,6 @@ public abstract  class ContentHandler {
 
     public abstract HttpResponse stop(String string);
 
-
-//    public HttpResponse open(ContentInfo info){
-//        return open(info.getPath());
-//    }
-
-
     public HttpResponse stop(ContentInfo info){
         return stop(info.getPath());
     }
@@ -61,15 +59,5 @@ public abstract  class ContentHandler {
 
     public abstract void onMessageReceived(Message message);
 
-//    public HttpResponse play(HttpRequest request, String mode){
-//        return play(request.getQueryParam("path"), mode.equalsIgnoreCase("native") ? Mode.NATIVE : Mode.EMBEDDED);
-//    }
 
-//    protected abstract HttpResponse play(String path, Mode mode);
-
-
-
-//    public enum Mode {
-//        NATIVE, EMBEDDED;
-//    }
 }

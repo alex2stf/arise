@@ -138,6 +138,10 @@ public class HttpRequest extends ServerRequest {
 
 
     public String getUri(){
+        return getUri(true);
+    }
+
+    public String getUri(boolean encoded){
         StringBuilder sb = new StringBuilder().append("/");
         if (!isEmpty(pathParams)){
             sb.append(StringUtil.join(pathParams, "/"));
@@ -148,9 +152,10 @@ public class HttpRequest extends ServerRequest {
             for (Map.Entry<String, List<String>> e: queryParams.entrySet()){
                 sb.append(e.getKey());
                 if (!e.getValue().isEmpty()){
-                    sb.append("=").append(
-                            URLEncoder.encode(StringUtil.toCSV(e.getValue()))
-                    );
+                        String value = StringUtil.toCSV(e.getValue());
+                        sb.append("=").append(
+                                encoded ? StringUtil.urlEncodeUTF8(value) : value
+                        );
                 }
                 if (cnt < queryParams.size() -1 ){
                     sb.append("&");
@@ -323,11 +328,12 @@ public class HttpRequest extends ServerRequest {
         return pathParams.get(i);
     }
 
-    public void addHeader(String key, String value) {
+    public HttpRequest addHeader(String key, String value) {
         if (headers == null){
             headers = new HashMap<>();
         }
         headers.put(key, value);
+        return this;
     }
 
     public String getQueryParamString(String key, String defaultVal) {

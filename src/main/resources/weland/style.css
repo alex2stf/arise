@@ -2,37 +2,47 @@ body {
     font-family: "Lato", sans-serif;
 }
 
-.sidebar {
-    height: 100%;
-    width: 40px;
+.nvbar {
+    text-align: left;
+    height: 130px;
     position: fixed;
-    z-index: 1;
+    width: 100%;
     top: 0;
-    left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 0;
+    overflow: scroll;
+    z-index: 40;
+    background: white;
+}
+
+.nvcnt {
+    height: 100%;
+    width: 300%;
+}
+
+.nvcnt a {
+    display: inline-block;
+    height: 100%;
+    background: #284660;
+    padding: 20px;
+}
+
+.nvcnt a img {
+    width: auto;
+    height: 100%;
+}
+
+
+#main {
+    margin-top: 132px;
+}
+
+.media-list{
     text-align: center;
 }
 
-.sidebar a {
-    padding: 20% 0px 20% 0px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-}
 
-.white-back-btn {
-    background: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 10%;
-    -webkit-border-radius: 10%;
-    -moz-border-radius: 10%;
-}
+
+
+
 
 .sidebar a:hover {
     color: #f1f1f1;
@@ -45,10 +55,7 @@ a.selected {
     text-decoration: underline;
 }
 
-#main {
-    margin-left: 45px;
-    text-align: center;
-}
+
 
 .page {
     width: 96%;
@@ -122,24 +129,27 @@ a.selected {
 }
 
 #modal-area button {
-    width: 100%;
-    margin: 0.55%;
+    width: 20%;
     background: none;
     border: none;
     -webkit-appearance: none;
-    height: 34%;
+    margin: 4px;
+    background: #284660;
+    padding: 14px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
 
 #modal-area button img{
-    height: 100%;
+    width: 100%;
 }
 
 .media-icon {
-    /*float: left;*/
     display: inline-block;
-    margin: 1%;
-    width: 200px;
-    height: 200px;
+    margin: 3px;
+    width: 22%;
+    height: 20%; /*TO DO ADJUST */
     background: #001a4b;
     border: none;
     border-radius: 20px;

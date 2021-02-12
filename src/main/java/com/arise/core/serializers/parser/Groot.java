@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -83,6 +84,7 @@ public class Groot {
     }
 
     debug("FAILED FOR", in, firstIndex, lastIndex);
+
 
 
 
@@ -370,7 +372,7 @@ public class Groot {
 
   private static String debug(String prefix, byte[] bytes, int from, int to){
 //    StringBuilder full = new StringBuilder();
-    StringBuilder sb = new StringBuilder();
+    StringBuffer sb = new StringBuffer();
     for (int i = from; i < to; i++){
       sb.append((char)bytes[i]);
     }

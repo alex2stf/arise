@@ -87,6 +87,11 @@ public class ContentInfoProvider {
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
+
+                            if (file.getName().indexOf("+") > -1){
+                                System.out.println(file);
+                            }
+
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
                                     fcnt++;

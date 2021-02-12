@@ -337,6 +337,16 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
+      if (request.pathsStartsWith("media", "pause")){
+          HttpResponse response =  contentHandler.pauseRequest(request);
+          if (response != null){
+              return response.allowAnyOrigin();
+          }
+          //TODO return device stat
+          return HttpResponse.plainText(request.getQueryParam("path")).addCorelationId(correlationId).allowAnyOrigin();
+      }
+
+
 
     if ("/ping".equals(request.path())){
       HttpResponse serverResponse = HttpResponse.oK();

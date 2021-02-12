@@ -10,7 +10,7 @@ function startFetch(playlist) {
         mindex[playlist] = 0;
     }
     $.get( host + "/media/list/" + playlist + "?index=" + mindex[playlist], function( data ) {
-        // console.log(data);
+         console.log(data);
 
         for(var i = 0; i < data.d.length; i++){
             placeThumbnail(data.d[i], playlist);
@@ -79,8 +79,15 @@ function showOptions(path) {
     $('#media-title').text(name);
     $('#play-btn').attr('onclick', 'openFile(\''+path+'\')')
     $('#stop-btn').attr('onclick', 'closeFile(\''+path+'\')')
+    $('#pause-btn').attr('onclick', 'pauseFile(\''+path+'\')')
     $('#download-btn').attr('href', host + '/download?file='+path);
     $('#modal-area').show();
+}
+
+function pauseFile(x) {
+    $.get( host + "/media/pause?path=" + x, function( data ) {
+        console.log("PAUSE PLAY " + data);
+    });
 }
 
 function openFile(x) {

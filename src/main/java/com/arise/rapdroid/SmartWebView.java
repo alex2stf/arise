@@ -144,13 +144,13 @@ public class SmartWebView extends LinearLayout {
 
             public void onPageFinished(WebView view, String url) {
                 log.i("Finished loading URL: " + url);
-                uri = url;
-                if (searchBar != null){
-                    searchBar.setText(webView.getUrl());
-                }
-                InputStream inputStream = FileUtil.findStream("scripts/webview_postfix.js");
-                String script = StreamUtil.toString(inputStream);
-                webView.loadUrl("javascript:(function() { " + script + " \n postfix('"+url+"') })()");
+//                uri = url;
+//                if (searchBar != null){
+//                    searchBar.setText(webView.getUrl());
+//                }
+//                InputStream inputStream = FileUtil.findStream("scripts/webview_postfix.js");
+//                String script = StreamUtil.toString(inputStream);
+//                webView.loadUrl("javascript:(function() { " + script + " \n postfix('"+url+"') })()");
                 super.onPageFinished(view, url);
             }
 

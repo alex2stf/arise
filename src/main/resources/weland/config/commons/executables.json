@@ -6,7 +6,7 @@
     ["/usr/bin/firefox", "{arg}"]
   ],
   "media": [
-    ["C:\\Users\\alexandru2.stefan\\Desktop\\cminion\\VLCPortable\\VLCPortable.exe", "{arg}", "--fullscreen", "-I", "http", "--http-host=127.0.0.", "--http-port=9090", "--http-password=arise"],
+    ["C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe", "{arg}", "--fullscreen", "-I", "http", "--http-host=127.0.0.", "--http-port=9090", "--http-password=arise"],
     ["C:\\Program Files\\Windows Media Player\\wmplayer.exe", "{arg}", "/fullscreen"],
 
     ["/usr/bin/vlc", "{arg}", "--fullscreen"]
