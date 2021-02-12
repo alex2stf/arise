@@ -300,7 +300,9 @@ public class DesktopFileHandler extends ContentHandler {
                     }
 
                     if (SYSUtils.isLinux()){
-                        Runtime.getRuntime().exec(new String[]{"pkill", "-9", s});
+                        String args[] = new String[]{"pkill", "-9", s};
+                        log.info(StringUtil.join(args, " "));
+                        Runtime.getRuntime().exec(args);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
