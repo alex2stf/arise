@@ -7,6 +7,7 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Base64;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
@@ -17,6 +18,10 @@ import com.arise.weland.dto.DeviceStat;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,7 +33,18 @@ public class VLCWrapper {
     private static final String VLC_HTTP_PORT = "9090";
 //    private static final String VLC_HTTP_HOST = "192.168.1.7";
     //TODO use public ip
-    private static final String VLC_HTTP_HOST = "localhost";
+    private static final String VLC_HTTP_HOST;
+
+    static {
+        String tmp = "localhost";
+        try {
+            tmp = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        VLC_HTTP_HOST = tmp;
+    }
+
 
     private static final Mole log = Mole.getInstance(VLCWrapper.class);
 

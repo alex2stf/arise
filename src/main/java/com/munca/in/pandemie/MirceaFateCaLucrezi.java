@@ -5,6 +5,8 @@ package com.munca.in.pandemie;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.*;
 import java.util.*;
 
@@ -12,7 +14,17 @@ public class MirceaFateCaLucrezi {
 
 
 
+
+
     public static void main(String[] args) throws Throwable {
+            try {
+               for (NetworkInterface networkInterface:   Collections.list(NetworkInterface.getNetworkInterfaces()) ){
+                   System.out.println(networkInterface.getDisplayName());
+               };
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+
         Robot r = new Robot(); int i = 0;
 
         System.out.println(new BigDecimal("\n \t0000040 ".trim()).toPlainString());

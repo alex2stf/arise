@@ -5,6 +5,9 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Playlist;
 
 public class AppSettings {
+
+//    private String preferred
+
     public static void setVideosAutoplay(boolean h){
         if (h){
             AppCache.putString("autoplay", Playlist.VIDEOS.name());
