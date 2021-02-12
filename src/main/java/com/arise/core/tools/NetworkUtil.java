@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NetworkUtil {
+
+
 
     public static List<NetworkInterface> networkInterfaces(){
         try {
@@ -25,46 +28,87 @@ public class NetworkUtil {
         }
     }
 
-    public static void scanIPV4(final IPIterator ipIterator){
+    private static AddressIterator newIPV4Iterator(IPIterator iter){
         final Set<String> ips = new HashSet<>();
-        inetAddresses(new AddressIterator() {
+        return new AddressIterator() {
+             @Override
+             public void onIterate(InetAddress inetAddress, NetworkInterface networkInterface) {
+                 boolean isIPv4 = inetAddress.getHostAddress().indexOf(':') < 0; // InetAddressUtils.isIPv4Address(sAddr);
+                 String sAddr = inetAddress.getHostAddress();
+                 if (isIPv4 && !"127.0.0.1".equals(sAddr)){
+                     iter.onFound(sAddr);
+                     ips.add(sAddr);
+                 }
+             }
+
+             @Override
+             public void onComplete(Iterable<InetAddress> inetAddresses) {
+                 String[] x = new String[ips.size()];
+                 x = ips.toArray(x);
+                 iter.onComplete(x);
+             }
+         };
+    }
+
+    public static void scanIPV4(final IPIterator ipIterator){
+        inetAddresses(newIPV4Iterator(ipIterator));
+    }
+
+
+    public static String getCurrentIPV4AddressSync(){
+        String ga = "127.0.0.1";
+        try {
+            ga = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            ga = "127.0.0.1";
+        }
+
+        String fga = ga;
+        final String[] act = new String[]{ ga };
+        final String[] fnd = new String[0];
+        inetAdressesSync(newIPV4Iterator(new IPIterator() {
             @Override
-            public void onIterate(InetAddress inetAddress, NetworkInterface networkInterface) {
-                boolean isIPv4 = inetAddress.getHostAddress().indexOf(':') < 0; // InetAddressUtils.isIPv4Address(sAddr);
-                String sAddr = inetAddress.getHostAddress();
-                if (isIPv4 && !"127.0.0.1".equals(sAddr)){
-                    ipIterator.onFound(sAddr);
-                    ips.add(sAddr);
+            public void onFound(String ip) {
+                if (fga.equals(ip)){
+                   act[0] = ip;
                 }
             }
 
             @Override
-            public void onComplete(Iterable<InetAddress> inetAddresses) {
-                String[] x = ips.toArray(new String[ips.size()]);
-                ipIterator.onComplete(x);
+            public void onComplete(String[] ips) {
+                if ("127.0.0.1".equals(act[0]) && ips.length > 0){
+                    act[0] = ips[0];
+                }
             }
-        });
+        }));
+
+        return act[0];
+    }
+
+
+    public static void inetAdressesSync(final AddressIterator c){
+        final List<InetAddress> rsp = new ArrayList<>();
+        List<NetworkInterface> intfs = networkInterfaces();
+        for (NetworkInterface ni : intfs) {
+            List<InetAddress> ads = Collections.list(ni.getInetAddresses());
+            for (InetAddress a: ads){
+                rsp.add(a);
+                if (c != null){
+                    c.onIterate(a, ni);
+                }
+            }
+        }
+        if (c != null){
+            c.onComplete(rsp);
+        }
     }
 
 
     public static void inetAddresses(final AddressIterator c){
-        final List<InetAddress> rsp = new ArrayList<>();
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                List<NetworkInterface> intfs = networkInterfaces();
-                for (NetworkInterface ni : intfs) {
-                    List<InetAddress> ads = Collections.list(ni.getInetAddresses());
-                    for (InetAddress a: ads){
-                        rsp.add(a);
-                        if (c != null){
-                            c.onIterate(a, ni);
-                        }
-                    }
-                }
-                if (c != null){
-                    c.onComplete(rsp);
-                }
+                inetAdressesSync(c);
             }
         });
     }

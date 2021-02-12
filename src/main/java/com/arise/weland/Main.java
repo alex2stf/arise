@@ -9,6 +9,7 @@ import com.arise.core.tools.CacheWorker;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
@@ -67,12 +68,12 @@ public class Main {
     public static void main(String[] args) {
         MediaInfoSolver.load();
         //VIP!!! load vlc native libs and dependencies
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-//                new SelfUpdater().check();
-            }
-        });
+//        ThreadUtil.fireAndForget(new Runnable() {
+//            @Override
+//            public void run() {
+////                new SelfUpdater().check();
+//            }
+//        });
 
 
         AppCache.setWorker(new CacheWorker());
@@ -143,6 +144,7 @@ public class Main {
                         .setHost("localhost")
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);
+                log.info("SERVER STARTED at http://" + NetworkUtil.getCurrentIPV4AddressSync() + ":8221/app");
                 try {
                     ioServer.start();
                 } catch (Exception e) {

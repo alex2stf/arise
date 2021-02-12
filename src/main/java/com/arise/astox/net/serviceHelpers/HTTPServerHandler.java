@@ -25,7 +25,6 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
     @Override
     public void postInit(AbstractServer server) {
         rootInfo = server.getConnectionPath();
-        log.info("SERVER STARTED AT " + rootInfo);
     }
 
     @Override

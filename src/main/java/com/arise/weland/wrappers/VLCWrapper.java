@@ -33,17 +33,9 @@ public class VLCWrapper {
     private static final String VLC_HTTP_PORT = "9090";
 //    private static final String VLC_HTTP_HOST = "192.168.1.7";
     //TODO use public ip
-    private static final String VLC_HTTP_HOST;
+    private static String VLC_HTTP_HOST = NetworkUtil.getCurrentIPV4AddressSync();
 
-    static {
-        String tmp = "localhost";
-        try {
-            tmp = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        VLC_HTTP_HOST = tmp;
-    }
+
 
 
     private static final Mole log = Mole.getInstance(VLCWrapper.class);
@@ -80,6 +72,7 @@ public class VLCWrapper {
             }
         }
 
+//        String vlcHost = NetworkUtil.getCurrentIPV4AddressSync();
         DeviceStat.getInstance().setProp("vlc-host", VLC_HTTP_HOST + ":" + VLC_HTTP_PORT + "/mobile.html");
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
@@ -107,6 +100,8 @@ public class VLCWrapper {
 
         SYSUtils.exec(actualArgs);
     }
+
+
 
     static Status clearPlaylist(){
         Map<String, String> map = new HashMap<>();
