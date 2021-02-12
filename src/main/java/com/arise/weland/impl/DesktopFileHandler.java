@@ -15,6 +15,7 @@ import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.ContentHandler;
@@ -33,6 +34,7 @@ import java.util.Set;
 public class DesktopFileHandler extends ContentHandler {
 
     private static final Mole log = Mole.getInstance(DesktopFileHandler.class);
+    private static final String CURRENT_RUNNING = "cbin";
     static boolean nwjsEnabled = !"false".equalsIgnoreCase(System.getProperty("nwjs.enabled"));
     private static File nwjsExe;
 
@@ -129,30 +131,24 @@ public class DesktopFileHandler extends ContentHandler {
 
 
     private void openString(final String path){
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
+            log.info("OPEN " + path);
 
-                log.info("OPEN " + path);
-
-                if (isInternal(path)){
-                    openUrl(fix(path));
-                }
-                else if (isHttpPath(path)){
-                    openUrl(path);
-                }
-                else if (isPicture(path)){
-                    openPicture(path);
-                }
-                else if (isMedia(path)){
-                    openMedia(path);
-                }
-                else {
-                    SYSUtils.open(path);
-                }
-                return;
+            if (isInternal(path)){
+                openUrl(fix(path));
             }
-        });
+            else if (isHttpPath(path)){
+                openUrl(path);
+            }
+            else if (isPicture(path)){
+                openPicture(path);
+            }
+            else if (isMedia(path)){
+                openMedia(path);
+            }
+            else {
+                SYSUtils.open(path);
+            }
+            return;
     }
 
     private boolean isInternal(String path) {
@@ -169,6 +165,7 @@ public class DesktopFileHandler extends ContentHandler {
         File vlcExecutable = VLCWrapper.open(getCommands("media", path));
         if (vlcExecutable != null){
             exes.add(vlcExecutable.getAbsolutePath());
+            DeviceStat.getInstance().setProp(CURRENT_RUNNING, "vlc");
         } else {
             execute(getCommands("media", path));
         }
@@ -279,7 +276,8 @@ public class DesktopFileHandler extends ContentHandler {
             VLCWrapper.stopHttp();
         }
         closeSpawnedProcesses();
-        return null;
+
+        return DeviceStat.getInstance().setProp(CURRENT_RUNNING, "").toHttp();
     }
 
     private void closeSpawnedProcesses(){

@@ -9,8 +9,10 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.DeviceStat;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +26,9 @@ public class VLCWrapper {
 
     private static final String VLC_HTTP_PASSWORD = "arise";
     private static final String VLC_HTTP_PORT = "9090";
-    private static final String VLC_HTTP_HOST = "192.168.1.7";
+//    private static final String VLC_HTTP_HOST = "192.168.1.7";
+    //TODO use public ip
+    private static final String VLC_HTTP_HOST = "localhost";
 
     private static final Mole log = Mole.getInstance(VLCWrapper.class);
 
@@ -59,7 +63,14 @@ public class VLCWrapper {
                 }
             }
         }
-        startVlcInstance(executable, source);
+
+        DeviceStat.getInstance().setProp("vlc-host", VLC_HTTP_HOST + ":" + VLC_HTTP_PORT + "/mobile.html");
+        ThreadUtil.fireAndForget(new Runnable() {
+            @Override
+            public void run() {
+                startVlcInstance(executable, source);
+            }
+        });
         return executable;
     }
 
@@ -76,6 +87,7 @@ public class VLCWrapper {
         };
 
         System.out.println("VLC instance init " + (StringUtil.join(actualArgs, " ")));
+
 
         SYSUtils.exec(actualArgs);
     }

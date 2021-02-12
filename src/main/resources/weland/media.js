@@ -92,12 +92,16 @@ function pauseFile(x) {
 
 function openFile(x) {
     $.get( host + "/files/open?path=" + x, function( data ) {
-        console.log("START PLAY " + data);
+        console.log("START PLAY ", data);
+        updateUi(data);
     });
 }
 
 function closeFile(x) {
     $.get( host + "/files/close?path=" + x, function( data ) {
-        console.log(data);
+        console.log("after close ", data);
+        updateUi(data);
     });
 }
+
+

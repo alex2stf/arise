@@ -1,5 +1,7 @@
 package com.arise.weland.dto;
 
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
@@ -256,6 +258,14 @@ public class DeviceStat {
     public DeviceStat setProp(String key, String val) {
         props.put(key, val);
         return this;
+    }
+
+    public HttpResponse toHttp() {
+        return HttpResponse.json(toJson()).allowAnyOrigin();
+    }
+
+    public HttpResponse toHttp(HttpRequest request) {
+        return HttpResponse.json(toJson()).allowAnyOrigin();
     }
 
     public static class Screen {

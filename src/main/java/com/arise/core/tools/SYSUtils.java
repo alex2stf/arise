@@ -155,13 +155,13 @@ public class SYSUtils {
         exec(args, new ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
-                System.out.println(" >>>>" + content);
+                System.out.println("   !" + content);
                 sb.append(content);
             }
 
             @Override
             public void onErrLine(int line, String content) {
-                System.out.println(" >>>>" + content);
+                System.out.println("   !" + content);
                 eb.append(content);
             }
         }, true, false);
