@@ -62,6 +62,8 @@ public class NetworkUtil {
         } catch (UnknownHostException e) {
             ga = "127.0.0.1";
         }
+        
+        System.out.println("xxxx given" + ga); 
 
         String fga = ga;
         final String[] act = new String[]{ ga };
@@ -69,14 +71,16 @@ public class NetworkUtil {
         inetAdressesSync(newIPV4Iterator(new IPIterator() {
             @Override
             public void onFound(String ip) {
+                System.out.println("xxxx found" + ip);
                 if (fga.equals(ip)){
+                    System.out.println("xxxx match" + fga);
                    act[0] = ip;
                 }
             }
 
             @Override
             public void onComplete(String[] ips) {
-                if ("127.0.0.1".equals(act[0]) && ips.length > 0){
+                if (act[0].indexOf("127.0") == 0 && ips.length == 1){
                     act[0] = ips[0];
                 }
             }
