@@ -24,7 +24,7 @@ public class VLCWrapper {
 
     private static final String VLC_HTTP_PASSWORD = "arise";
     private static final String VLC_HTTP_PORT = "9090";
-    private static final String VLC_HTTP_HOST = "127.0.0.1";
+    private static final String VLC_HTTP_HOST = "192.168.1.7";
 
     private static final Mole log = Mole.getInstance(VLCWrapper.class);
 
@@ -154,7 +154,10 @@ public class VLCWrapper {
 
     public static Status stopHttp() {
         clearPlaylist();
-        return httpPlay("vlc://quit");
+        Map<String, String> map = new HashMap<>();
+        map.put("command", "in_play");
+        map.put("input", "vlc://quit");
+        return getStatusRequest(map);
     }
 
 

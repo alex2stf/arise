@@ -275,6 +275,7 @@ public class DesktopFileHandler extends ContentHandler {
 
         //pause vlc http instance
         if (VLCWrapper.isHttpOpened()){
+            log.info("vlc stop " + x);
             VLCWrapper.stopHttp();
         }
         closeSpawnedProcesses();
