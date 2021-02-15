@@ -2,6 +2,7 @@
 /build
 *.iml
 .idea
+application.properties
 Bunga_and_Kion.png
 arch/
 scripts/

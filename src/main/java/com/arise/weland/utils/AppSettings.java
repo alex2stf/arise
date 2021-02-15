@@ -93,6 +93,9 @@ public class AppSettings {
             else if ("videos".equalsIgnoreCase(s) || "movie".equalsIgnoreCase(s)){
                 r.add(FileUtil.findMoviesDir());
             }
+            else if ("downloads".equalsIgnoreCase(s) || "download".equalsIgnoreCase(s)){
+                r.add(FileUtil.findDownloadDir());
+            }
 
         }
         return r;

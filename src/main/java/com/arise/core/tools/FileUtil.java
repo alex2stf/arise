@@ -112,10 +112,16 @@ public class FileUtil {
     }
 
     public static File findDownloadDir(){
-        File musicDir = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
+        File downloadDir = ReflectUtil.getStaticMethod(ANDROID_OS_ENVIRONMENT,
                 "getExternalStoragePublicDirectory", String.class)
                 .callFor(File.class, "Download");
-        return musicDir;
+        if (downloadDir == null || !downloadDir.exists()){
+            downloadDir = getUserDirectory("Downloads");
+        }
+        if (downloadDir == null || !downloadDir.exists()){
+            downloadDir = getUserDirectory("Download");
+        }
+        return downloadDir;
     }
 
     public static File findMoviesDir(){
