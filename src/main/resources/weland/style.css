@@ -1,5 +1,6 @@
 body {
     font-family: "Lato", sans-serif;
+    font-size: 20px;
 }
 
 .nvbar {
@@ -32,7 +33,7 @@ body {
 
 
 #main {
-    margin-top: 132px;
+    margin-top: 138px;
 }
 
 .media-list{
@@ -56,14 +57,49 @@ a.selected {
 }
 
 
+#lnk {
+    text-align: center;
+    padding: 10px;
+}
+
+#lnk input {
+    width: 100%;
+    background: #ebf6eb;
+    font-size: 30px;
+    text-align: center;
+}
+
+.item {
+    text-align: center;
+    border: 1px solid black;
+    margin: 12px 12px 0 12px;
+    padding: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.item span {
+    font-size: 30px;
+}
+
+.item button {
+    display: inline-block !important;
+    margin: 2 !important;
+}
+
+#lnk button {
+    padding: 14px;
+    background: #ebf6eb;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
 
 .page {
-    width: 96%;
-    height: 100%;
     display: none;
-    margin: 0;
-    padding: 0;
-    float: right;
 }
 
 #cam-img {
@@ -128,17 +164,20 @@ a.selected {
     color: white;
 }
 
-#modal-area button {
-    width: 20%;
-    background: none;
-    border: none;
+button {
     -webkit-appearance: none;
-    margin: 4px;
-    background: #284660;
-    padding: 14px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+    border: none;
+}
+
+#modal-area button {
+    width: 20%;
+    background: none;
+    margin: 4px;
+    background: #284660;
+    padding: 14px;
 }
 
 #modal-area button img{

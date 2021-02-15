@@ -10,7 +10,7 @@ function startFetch(playlist) {
         mindex[playlist] = 0;
     }
     $.get( host + "/media/list/" + playlist + "?index=" + mindex[playlist], function( data ) {
-         console.log(data);
+         // console.log(data);
 
         for(var i = 0; i < data.d.length; i++){
             placeThumbnail(data.d[i], playlist);
@@ -74,13 +74,15 @@ function placeThumbnail(obj, playlist) {
 
 function showOptions(path) {
     var name = getFileName(path);
-
-    // console.log(name);
     $('#media-title').text(name);
-    $('#play-btn').attr('onclick', 'openFile(\''+path+'\')')
-    $('#stop-btn').attr('onclick', 'closeFile(\''+path+'\')')
+    $('#play-btn').attr('onclick', 'openFile(\''+path+'\')');
+    $('#play-btn').show();
+    $('#stop-btn').attr('onclick', 'closeFile(\''+path+'\')');
+    $('#stop-btn').show();
     $('#pause-btn').attr('onclick', 'pauseFile(\''+path+'\')')
+    $('#pause-btn').show();
     $('#download-btn').attr('href', host + '/download?file='+path);
+    $('#download-btn').show();
     $('#modal-area').show();
 }
 

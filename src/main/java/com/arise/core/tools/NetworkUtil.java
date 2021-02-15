@@ -63,17 +63,12 @@ public class NetworkUtil {
             ga = "127.0.0.1";
         }
         
-        System.out.println("xxxx given" + ga); 
-
         String fga = ga;
         final String[] act = new String[]{ ga };
-        final String[] fnd = new String[0];
         inetAdressesSync(newIPV4Iterator(new IPIterator() {
             @Override
             public void onFound(String ip) {
-                System.out.println("xxxx found" + ip);
                 if (fga.equals(ip)){
-                    System.out.println("xxxx match" + fga);
                    act[0] = ip;
                 }
             }

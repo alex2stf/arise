@@ -1,23 +1,19 @@
-function getDeviceStat(){
-    $.get(host + '/device/stat', function (data) {
-        console.log("get device stat", data);
-        updateUi(data);
-        // console.log(x);
-        // if (x.D) {
-        //     document.getElementById('d-name').innerHTML = x.D;
-        // }
-        //
-        // if (x.B1){
-        //     document.getElementById('d-bscale').innerHTML = x.B1;
-        // }
-        // if (x.B2){
-        //     document.getElementById('d-blevel').innerHTML = x.B2;
-        // }
-        //
-        // if (x.pP){
-        //     readSensors(x.pP);
-        // }
+function showSettingsView() {
+    _h();
+    $('#sting').show();
+}
+
+function gsfh(x, h){
+    $.get(x + '/device/stat', function (data) {
+        h(data);
     });
+}
+
+
+function getDeviceStat(){
+    gsfh(host, function (d) {
+        updateUi(d);
+    })
 }
 
 function updateUi(x) {
@@ -125,6 +121,3 @@ function updateProps(props){
 }
 
 
-$(document).ready(function(){
-    getDeviceStat();
-})

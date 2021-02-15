@@ -209,6 +209,28 @@ public class WelandServerHandler extends HTTPServerHandler {
       return DeviceStat.getInstance().toHttp(request);
     }
 
+    //test connection
+    if (request.pathsStartsWith("connections")){
+      String name = request.getQueryParam("name");
+      String host = request.getQueryParam("host");
+
+      Map<String, String> hosts;
+      if (StringUtil.hasText(name) && StringUtil.hasText(host)){
+        try {
+          URL url = new URL(host);
+          hosts = AppSettings.storeHost(name, url.toString());
+        } catch (MalformedURLException e) {
+          e.printStackTrace();
+          hosts = AppSettings.getSavedConnections();
+        }
+      }
+      else {
+        hosts = AppSettings.getSavedConnections();
+      }
+
+      return HttpResponse.json(Groot.toJson(hosts)).allowAnyOrigin();
+    }
+
     //fetch thumbnail
     if (request.pathsStartsWith("thumbnail")){
       String id = request.getQueryParam("id");

@@ -72,8 +72,6 @@ public class DeviceStat {
             } catch (Exception e){
 
             }
-
-
         }
     }
 
