@@ -492,6 +492,7 @@ public class FileUtil {
 
         }
         catch (Exception e ) {
+            //TODO throw runtime exception
             e.printStackTrace();
         }
     }
@@ -500,10 +501,13 @@ public class FileUtil {
 
 
     public static Properties loadProps(File file) throws IOException {
+        return loadProps(new FileInputStream(file));
+    }
+
+    public static Properties loadProps(InputStream inputStream) throws IOException {
         Properties prop = new Properties();
-        InputStream in = new FileInputStream(file);
-        prop.load(in);
-        in.close();
+        prop.load(inputStream);
+        inputStream.close();
         return prop;
     }
 

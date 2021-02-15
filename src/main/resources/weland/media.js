@@ -48,6 +48,7 @@ function placeThumbnail(obj, playlist) {
     }
     var div = document.createElement('div');
     div.setAttribute('class', 'media-icon');
+    div.setAttribute("onclick", "showOptions('" + obj.P + "')");
     div.id = id;
     var name = getFileName(obj.P);
     var innerHtml = '<span class="media-title">'+name+'</span><button class="media-btn" onclick="showOptions(\'' + obj.P + '\')">';

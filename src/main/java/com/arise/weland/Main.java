@@ -23,6 +23,7 @@ import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
+import com.arise.weland.utils.AppSettings;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -103,23 +104,13 @@ public class Main {
 
         final IDeviceController deviceController = new PCDeviceController();
         final ContentInfoDecoder decoder = new PCDecoder();
-        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder).importJson("weland/config/commons/content-infos.json");
+        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
+                .importJson("weland/config/commons/content-infos.json");
 
-
-
-        if (StringUtil.hasText(System.getProperty("scan.root.file"))){
-            File rootFile = new File(System.getProperty("scan.root.file"));
-            contentInfoProvider.addRoot(rootFile);
+        for (File file: AppSettings.getScannableLocations()){
+            contentInfoProvider.addRoot(file);
+            log.info("added scannable root ", file.getAbsolutePath());
         }
-        else {
-            File musicDir = FileUtil.findMusicDir();
-            File videosDir = FileUtil.findMoviesDir();
-
-            contentInfoProvider.addRoot(musicDir);
-            contentInfoProvider.addRoot(videosDir);
-        }
-
-
 
         contentInfoProvider.get();
 
@@ -131,6 +122,9 @@ public class Main {
         welandServerHandler.setDeviceController(deviceController);
 
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
+
+        AppSettings.getAutoPlaylist();
+
 
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
