@@ -416,7 +416,6 @@ public class FileUtil {
             files = directory.listFiles();
         }
         if (files == null){
-//            log.debug("no files found inside " + directory.getAbsolutePath() );
             return new File[]{};
         }
 
@@ -434,8 +433,6 @@ public class FileUtil {
         if (!fileExists(directory)){
             return;
         }
-
-
 
         File[] files = listFiles(directory, filenameFilter);
 

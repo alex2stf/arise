@@ -118,6 +118,12 @@ function updateProps(props){
     else {
         $('#nwi-btn').hide();
     }
+
+
+    if (true == props.ks || 'true' == props.ks){
+        _h();
+        $('#controls').show();
+    }
 }
 
 

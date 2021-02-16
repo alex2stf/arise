@@ -96,6 +96,12 @@ public class AppSettings {
             else if ("downloads".equalsIgnoreCase(s) || "download".equalsIgnoreCase(s)){
                 r.add(FileUtil.findDownloadDir());
             }
+            else {
+                File f = new File(s);
+                if (f.exists()){
+                    r.add(f);
+                }
+            }
 
         }
         return r;

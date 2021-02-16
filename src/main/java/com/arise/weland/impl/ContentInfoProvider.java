@@ -7,6 +7,7 @@ import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
@@ -34,9 +36,6 @@ public class ContentInfoProvider {
 
     List<File> roots = new ArrayList<>();
 
-//    @Deprecated
-//    List<ContentInfo> contentInfoQueue = new ArrayList<>();
-//    List<ContentInfo> imported = new ArrayList<>();
     private Mole log = Mole.getInstance(ContentInfoProvider.class);
     private volatile boolean scannedOnce = false;
     private volatile boolean scanning = false;
@@ -50,7 +49,7 @@ public class ContentInfoProvider {
 
     static boolean acceptFilename(String name){
         if (name.indexOf(".") > -1){
-            return ContentType.isMusic(name) || ContentType.isVideo(name);
+            return ContentType.isMusic(name) || ContentType.isVideo(name) || "package-info.json".equals(name);
 
         }
         return true;
@@ -70,10 +69,8 @@ public class ContentInfoProvider {
             return;
         }
         final List<ContentInfo> music = new ArrayList<>();
-        final List<ContentInfo> streams = new ArrayList<>();
         final List<ContentInfo> videos = new ArrayList<>();
         final List<ContentInfo> games = new ArrayList<>();
-        final List<ContentInfo> presentations = new ArrayList<>();
 
         scanning = true;
         fireAndForget(new Runnable() {
@@ -87,11 +84,6 @@ public class ContentInfoProvider {
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
-
-                            if (file.getName().indexOf("+") > -1){
-                                System.out.println(file);
-                            }
-
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
                                     fcnt++;
@@ -99,6 +91,18 @@ public class ContentInfoProvider {
                                 } else if (isVideo(file)) {
                                     fcnt++;
                                     videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
+                                }
+                                else if(isPackageInfo(file)) {
+                                    fcnt++;
+                                    Object[] args = decodePackageInfo(file);
+                                    if (args != null){
+                                        Playlist p = (Playlist) args[1];
+                                        switch (p){
+                                            case GAMES:
+                                                games.add((ContentInfo) args[0]);
+                                                break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -114,6 +118,7 @@ public class ContentInfoProvider {
 
                 merge(Playlist.MUSIC, music);
                 merge(Playlist.VIDEOS, videos);
+                merge(Playlist.GAMES, games);
                 scannedOnce = true;
 
                 log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
@@ -122,6 +127,53 @@ public class ContentInfoProvider {
                 scanning = false;
             }
         });
+    }
+
+
+    public static Map packageInfoProps(File f) throws IOException {
+        String content = FileUtil.read(f);
+        return (Map) Groot.decodeBytes(content.replaceAll("\\s+", " ").getBytes());
+    }
+
+    public static Object[] decodePackageInfo(File f){
+        Object[] r = new Object[2];
+        try {
+            String content = FileUtil.read(f);
+            Map props = (Map) Groot.decodeBytes(content.replaceAll("\\s+", " ").getBytes());
+            ContentInfo contentInfo = new ContentInfo();
+            String main = MapUtil.getString(props, "main");
+            String pname = MapUtil.getString(props, "playlist");
+
+            if (!StringUtil.hasText(main) || !StringUtil.hasText(pname)){
+                return null;
+            }
+            Playlist plobj = Playlist.find(pname);
+            if (plobj == null){
+                return null;
+            }
+            File mainFile = new File(f.getParentFile(), main);
+            if (!mainFile.exists()){
+                return null;
+            }
+            contentInfo.setPath(f.getAbsolutePath());
+            String title = MapUtil.getString(props, "title");
+            contentInfo.setTitle(title);
+            contentInfo.setPlaylist(plobj);
+//            contentInfo.setGroupId()
+
+            r[0] = contentInfo;
+            r[1] = plobj;
+            return r;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private boolean isPackageInfo(File file) {
+        return "package-info.json".equalsIgnoreCase(file.getName());
     }
 
     int getMatchIndex(List<ContentInfo> sources, ContentInfo criteria){
@@ -134,6 +186,9 @@ public class ContentInfoProvider {
     }
 
     private void merge(Playlist playlist, List<ContentInfo> scannedSource){
+        if (CollectionUtil.isEmpty(scannedSource)){
+            return;
+        }
         List<ContentInfo> saved = getNullablePersistedPlaylist(playlist);
         if (CollectionUtil.isEmpty(saved)){
             persistPlaylist(playlist, scannedSource);
@@ -150,22 +205,31 @@ public class ContentInfoProvider {
         persistPlaylist(playlist, scannedSource);
     }
 
+    /**
+     * used by android for same check thread mechanism
+     * @return
+     */
+    @SuppressWarnings("unused")
     public boolean noFilesScanned(){
         return fcnt == 0;
     }
 
-
-    public void registerFile(File file) {
-//        if (!file.getName().startsWith(".")) {
-//            if (scannedOnce && isMusic(file) && !infoAlreadyExists(file, music)) {
-//                music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
-//                persistPlaylist(Playlist.MUSIC, music);
-//            } else if (scannedOnce && isVideo(file) && !infoAlreadyExists(file, videos)) {
-//                videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
-//                persistPlaylist(Playlist.VIDEOS, videos);
-//            }
-//        }
-    }
+//    public boolean noFilesScanned(){
+//        return fcnt == 0;
+//    }
+//
+//
+//    public void registerFile(File file) {
+////        if (!file.getName().startsWith(".")) {
+////            if (scannedOnce && isMusic(file) && !infoAlreadyExists(file, music)) {
+////                music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
+////                persistPlaylist(Playlist.MUSIC, music);
+////            } else if (scannedOnce && isVideo(file) && !infoAlreadyExists(file, videos)) {
+////                videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
+////                persistPlaylist(Playlist.VIDEOS, videos);
+////            }
+////        }
+//    }
 
 
 
@@ -183,51 +247,11 @@ public class ContentInfoProvider {
 
     
     public ContentInfoProvider get(){
-        readStaticContent();
         asyncScan();
         return this;
     }
 
-    private void readStaticContent() {
-        File importDirectory = getImportDirectory();
-        if (importDirectory == null || !getImportDirectory().exists()){
-            return;
-        }
 
-        File gamedirs[] = getGamesDirectory().listFiles();
-        if (gamedirs != null || gamedirs.length > 0){
-            for (File gdir: gamedirs){
-                File json = new File(gdir, "package-info.json");
-                if (json.exists()){
-                    try {
-                        MapObj obj = (MapObj) Groot.decodeFile(json);
-                        ContentInfo info = new ContentInfo()
-                                .setTitle(obj.getString("title"))
-                                .setThumbnailId(obj.getString("thumbnail"))
-                                .setPath("{host}/games/" + gdir.getName());
-//                        games.add(info);
-                        System.out.println("import game " + info);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-
-        if (StringUtil.hasText(System.getProperty("profiles"))){
-            String parts[] = System.getProperty("profiles").split(",");
-            for (String s: parts){
-                File jsonLocal = new File(importDirectory, s + ".json");
-                if (jsonLocal.exists()){
-                    importJson(jsonLocal.getAbsolutePath());
-                }
-            }
-
-        }
-
-
-    }
 
     public ContentInfoProvider addRoot(File root) {
         if (root == null || !root.exists() || !root.isDirectory()){
@@ -238,18 +262,6 @@ public class ContentInfoProvider {
     }
 
     private List<ContentInfo> getPlaylist(Playlist playlist){
-//        switch (playlist){
-//            case MUSIC:
-//                return music;
-//            case VIDEOS:
-//                return videos;
-//            case GAMES:
-//                return games;
-//            case  PRESENTATIONS:
-//                return presentations;
-//            case STREAMS:
-//                return streams;
-//        }
         return getSafePersistedPlaylist(playlist);
     }
 
@@ -373,7 +385,6 @@ public class ContentInfoProvider {
 
 
     List<ContentInfo> persistPlaylist(Playlist playlist, List<ContentInfo> infos){
-//        List<ContentInfo> copies = getPlayableCopyOf(infos);
         File out = getPersistedPlaylistFile(playlist);
         FileUtil.writeStringToFile(out, ContentInfo.serializeCollection(infos));
         return infos;
@@ -415,12 +426,10 @@ public class ContentInfoProvider {
         ContentInfo temp = infos.get(start);
         infos.set(start, pivot);
         infos.set(end, temp);
-
         return start;
     }
 
     private void shuffle(List<ContentInfo> infos){
-
         if (CollectionUtil.isEmpty(infos) || infos.size() < 4){
             return;
         }
@@ -437,6 +446,7 @@ public class ContentInfoProvider {
     }
 
 
+    @SuppressWarnings("unused")
     public ContentInfo nextFile(Playlist playlist){
         List<ContentInfo> infos = getSafePersistedPlaylist(playlist);
 
@@ -482,42 +492,8 @@ public class ContentInfoProvider {
     }
 
 
-    public ContentInfoProvider importJson(String path) {
-        log.info("import json " + path);
-        InputStream inputStream = FileUtil.findStream(path);
-        if (inputStream == null){
-            return this;
-        }
 
-        String cnt = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
-        if (!StringUtil.hasContent(cnt)){
-            return this;
-        }
-        List<ContentInfo> infos = ContentInfo.deserializeCollection(cnt);
 
-        for (ContentInfo info: infos){
-            //TODO check path not null
-            Playlist playlist = info.getPlaylist();
-            if (playlist == null){
-                log.warn("Content Info" + info.getPath() + " has no playlist defined");
-                continue;
-            }
-            push(playlist, info);
-        }
-
-        return this;
-    }
-
-    private void push(Playlist playlist, ContentInfo info){
-//        switch (playlist){
-//            case STREAMS:
-//                streams.add(info);
-//                break;
-//            case VIDEOS:
-//                videos.add(info);
-//                break;
-//        }
-    }
 
     public ContentInfo findByPath(String path) {
         if (!scannedOnce){
@@ -553,34 +529,34 @@ public class ContentInfoProvider {
     }
 
 
-    public List<ContentInfo> getWebStreams() {
-//        List<ContentInfo> res = new ArrayList<>();
-//        int size = streams.size();
-//        for (int i = 0; i < size; i++){
-//            ContentInfo info = streams.get(i);
-//            if (info.isWebPage()){
-//                res.add(info);
-//            }
+//    public List<ContentInfo> getWebStreams() {
+////        List<ContentInfo> res = new ArrayList<>();
+////        int size = streams.size();
+////        for (int i = 0; i < size; i++){
+////            ContentInfo info = streams.get(i);
+////            if (info.isWebPage()){
+////                res.add(info);
+////            }
+////        }
+//        return Collections.emptyList();
+//    }
+
+
+
+//    public File getGame(String id) {
+//        File root = getGamesDirectory();
+//        File gameDir = new File(root, id);
+//        File json = new File(gameDir, "package-info.json");
+//
+//        MapObj mapObj = null;
+//        try {
+//            mapObj = (MapObj) Groot.decodeFile(json);
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
-        return Collections.emptyList();
-    }
-
-
-
-    public File getGame(String id) {
-        File root = getGamesDirectory();
-        File gameDir = new File(root, id);
-        File json = new File(gameDir, "package-info.json");
-
-        MapObj mapObj = null;
-        try {
-            mapObj = (MapObj) Groot.decodeFile(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return new File(gameDir, mapObj.getString("main"));
-    }
+//
+//        return new File(gameDir, mapObj.getString("main"));
+//    }
 
 
     //TODO support android
@@ -593,25 +569,21 @@ public class ContentInfoProvider {
     }
 
 
-
-
-//    public ContentInfo queueRemove() {
-//
-//
-//
-////        if(CollectionUtil.isEmpty(contentInfoQueue)){
-////            return null;
-////        }
-////        ContentInfo info = contentInfoQueue.remove(0);
-////        saveQueue();
-////        return info;
-//    }
-
-
+    /**
+     * used in android
+     * @return
+     */
+    @SuppressWarnings("unused")
     public boolean finishedToScanAtLeastOnce() {
         return scannedOnce;
     }
 
+    /**
+     * used by speech recognition in android
+     * @param data
+     * @return
+     */
+    @SuppressWarnings("unused")
     public ContentInfo searchByKeyWord(ArrayList<String> data) {
         if (CollectionUtil.isEmpty(data)){
             return null;

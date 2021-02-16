@@ -45,7 +45,9 @@ public class HttpResponse extends ServerResponse {
 
 
     public static HttpResponse html(String content) {
-        return oK().setContentType(ContentType.TEXT_HTML).setText(content);
+        return oK().addHeader("Content-Type", "text/html; charset=UTF-8")
+                .addHeader("X-Content-Type-Options", "nosniff")
+                .setText(content);
     }
 
     public static HttpResponse javascript(String content) {

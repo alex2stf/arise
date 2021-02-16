@@ -13,6 +13,7 @@ import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
@@ -157,6 +158,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     deviceStat.setServerUUID(server.getUuid());
     deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
+    deviceStat.setProp("ks", "false");
 
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
       deviceStat.setServerStatus(MSG_RECEIVE_OK);
@@ -187,7 +189,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     //main html rendering
-    if ("/app".equalsIgnoreCase(request.path())){
+    if ("/app".equalsIgnoreCase(request.path()) || "/app.html".equalsIgnoreCase(request.path())){
       appContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/app.html"));
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
@@ -313,7 +315,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-
+    //close || stop
     if (request.pathsStartsWith("files", "close")){
       contentHandler.stop(request);
       return DeviceStat.getInstance().toHttp(request);
@@ -328,7 +330,20 @@ public class WelandServerHandler extends HTTPServerHandler {
           return DeviceStat.getInstance().toHttp(request);
       }
 
+      //package-info loader
+      if (request.pathsStartsWith("pack")){
+        String path = request.getQueryParam("root");
+        File f = new File(path);
+        try {
+          Map props = ContentInfoProvider.packageInfoProps(f);
+          File html = new File(f.getParentFile(), MapUtil.getString(props, "main"));
+          return HttpResponse.html(FileUtil.read(html));
+        } catch (IOException e) {
+          e.printStackTrace();
+          return HttpResponse.oK();
+        }
 
+      }
 
     if ("/ping".equals(request.path())){
       HttpResponse serverResponse = HttpResponse.oK();
@@ -368,16 +383,16 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if (request.pathsStartsWith("games")){
-      String id = request.getPathAt(1);
-      File main = contentInfoProvider.getGame(id);
-
-      try {
-        return HttpResponse.html(FileUtil.read(main));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+//    if (request.pathsStartsWith("games")){
+//      String id = request.getPathAt(1);
+//      File main = contentInfoProvider.getGame(id);
+//
+//      try {
+//        return HttpResponse.html(FileUtil.read(main));
+//      } catch (IOException e) {
+//        e.printStackTrace();
+//      }
+//    }
     return super.getHTTPResponse(request, server).allowAnyOrigin();
   }
 

@@ -1,47 +1,13 @@
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+<div id="controls" class="page">
 
-</body>
-<style>
-    html, body {height:100%;}
-
-    body {
-        margin: 0;
-        padding: 0;
-    }
-    .kontrols {
-        border: 1px solid black;
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-
-    .kontrols td {
-        border: 1px solid black;
-        padding: 0;
-    }
-
-    .kontrols td button {
-        width: 100%;
-        height: 100%;
-    }
-
-    .kontrols tr {
-        border: 1px solid black;
-        padding: 0;
-    }
-</style>
+</div>
 
 <script src="WSKontrol"></script>
 
 
 <script>
 
-    WSKontrol.connect();
+
 
 
 
@@ -93,7 +59,7 @@
         row.style.marginLeft = "auto";
         row.style.marginRight = "auto";
         row.style.backgroundColor = "red";
-        document.body.appendChild(row);
+        document.getElementById('controls').appendChild(row);
 
         for (var j = 0; j < 7; j++){
             var cell = document.createElement("button");

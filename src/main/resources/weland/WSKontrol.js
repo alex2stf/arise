@@ -6,43 +6,66 @@ var WSKontrol = (function(){
         opened = false,
         ws = null,
         call = null,
-    buffer = [];
+    buffer = [], tested = {};
+
+
+
+    function  tryConnect(index) {
+        if (index > ips.length - 1){
+            return;
+        }
+
+
+
+        var url = protocol + "://" + ips[index] + ":" + port + "/kontrol";
+        if (tested[url]){
+            tryConnect(index + 1);
+            return;
+        }
+
+        try {
+            ws = new WebSocket(url)
+        }catch (e) {
+            ws = null;
+        }
+
+        if (ws != null){
+            console.log("ws connection found at " + url);
+
+            ws.onopen = function() {
+                opened = true;
+                for(var i = 0; i < buffer.length; i++){
+                    ws.send(id + "|" + buffer[i]);
+                }
+                buffer = [];
+            };
+
+            ws.onmessage = function (evt) {
+                var msg = evt.data;
+                console.log("RECEIVED " + msg)
+                if (call != null){
+                    var pts = msg.split("|");
+                    call(pts[0], +pts[1])
+                }
+            };
+
+            ws.onerror = function(e){
+                ws = null;
+                opened = false;
+                tryConnect( index + 1);
+            }
+
+            ws.onclose = function() {
+                console.log("CLOSING " + url);
+                opened = false;
+            };
+        } else {
+            tryConnect( index + 1);
+        }
+    }
 
     function connect(){
-        for (var i = 0; i < ips.length; i++){
-            var url = protocol + "://" + ips[i] + ":" + port + "/kontrol";
-            try {
-                ws = new WebSocket(url)
-            }catch (e) {
-                ws = null;
-            }
-
-            if (ws != null){
-                console.log("ws connection found at " + url);
-                ws.onopen = function() {
-                    opened = true;
-                    for(var i = 0; i < buffer.length; i++){
-                        ws.send(id + "|" + buffer[i]);
-                    }
-                    buffer = [];
-                };
-
-                ws.onmessage = function (evt) {
-                    var msg = evt.data;
-                    console.log("RECEIVED " + msg)
-                    if (call != null){
-                        var pts = msg.split("|");
-                        call(pts[0], +pts[1])
-                    }
-                };
-
-                ws.onclose = function() {
-                    console.log("CLOSING")
-                };
-
-                break;
-            }
-        }
+        tryConnect(0);
     }
 
 

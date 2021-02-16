@@ -31,9 +31,7 @@ public class VLCWrapper {
 
     private static final String VLC_HTTP_PASSWORD = "arise";
     private static final String VLC_HTTP_PORT = "9090";
-//    private static final String VLC_HTTP_HOST = "192.168.1.7";
-    //TODO use public ip
-    private static String VLC_HTTP_HOST = NetworkUtil.getCurrentIPV4AddressSync();
+    public static String VLC_HTTP_HOST = NetworkUtil.getCurrentIPV4AddressSync();
 
 
 

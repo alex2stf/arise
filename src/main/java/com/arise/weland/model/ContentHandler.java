@@ -1,5 +1,6 @@
 package com.arise.weland.model;
 
+import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.weland.dto.ContentInfo;
@@ -11,6 +12,8 @@ import java.net.URL;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
+
+
 
     public ContentHandler setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;

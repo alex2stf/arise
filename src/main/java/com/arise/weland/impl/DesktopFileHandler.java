@@ -90,19 +90,6 @@ public class DesktopFileHandler extends ContentHandler {
         commands = (MapObj) Groot.decodeBytes(s);
     }
 
-//    private Runnable playNextFromQueue(){
-//        return new Runnable() {
-//            @Override
-//            public void run() {
-//                log.info("Considered CLOSED at  " + new Date());
-//                ContentInfo info = contentInfoProvider.nextFile(Playlist.MUSIC);
-//                if (info != null){
-//                    log.info("NEXT to play " + info.getPath());
-//                    openInfo(info);
-//                }
-//            }
-//        };
-//    }
 
     private ThreadUtil.TimerResult timerResult = null;
 
@@ -117,23 +104,37 @@ public class DesktopFileHandler extends ContentHandler {
 
     public HttpResponse openPath(final String path) {
         ThreadUtil.closeTimer(timerResult);
-        stop("-");
-        openString(path);
-        return null;
+//        stop("-");
+        return openString(path);
+
     }
+
+
 
     @Override
     protected HttpResponse pause(String path) {
         VLCWrapper.pauseHttp();
-        //TODO return device state
         return HttpResponse.oK();
     }
 
-
-    private void openString(final String path){
+    //TODO fa stop mai destept
+    private HttpResponse openString(final String path){
             log.info("OPEN " + path);
+           DeviceStat deviceStat = DeviceStat.getInstance();
+           deviceStat.setProp("ks", "false");
 
-            if (isInternal(path)){
+            if (path.endsWith("package-info.json")){
+                Object[] args = ContentInfoProvider.decodePackageInfo(new File(path));
+                if (args != null){
+                    ContentInfo contentInfo = (ContentInfo) args[0];
+                    //TODO use AppSettings and package info settings
+                    String host = "http://" + VLCWrapper.VLC_HTTP_HOST + ":8221/pack?root=" + contentInfo.getPath();
+                    openUrl(host);
+                    deviceStat.setProp("ks", "true");
+                }
+            }
+
+            else if (isInternal(path)){
                 openUrl(fix(path));
             }
             else if (isHttpPath(path)){
@@ -148,7 +149,7 @@ public class DesktopFileHandler extends ContentHandler {
             else {
                 SYSUtils.open(path);
             }
-            return;
+            return deviceStat.toHttp();
     }
 
     private boolean isInternal(String path) {
@@ -264,6 +265,8 @@ public class DesktopFileHandler extends ContentHandler {
     private void openInStandardBrowser(String path){
         execute(getCommands("browser", path));
     }
+
+
 
     @Override
     public HttpResponse stop(String x) {

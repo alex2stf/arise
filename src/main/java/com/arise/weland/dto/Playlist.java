@@ -27,6 +27,9 @@ public enum Playlist {
                 return p;
             }
         }
+        if ("game".equalsIgnoreCase(what)){
+            return GAMES;
+        }
         return null;
     }
 
