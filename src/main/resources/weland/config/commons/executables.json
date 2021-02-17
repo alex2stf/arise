@@ -3,6 +3,7 @@
     ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "{arg}"],
     ["C:\\Program Files\\Mozilla Firefox\\firefox.exe", "{arg}"],
     ["C:\\Program Files\\internet explorer\\iexplore.exe", "{arg}"],
+    ["/usr/bin/chromium-browser", "{arg}"]
     ["/usr/bin/firefox", "{arg}"]
   ],
   "media": [
