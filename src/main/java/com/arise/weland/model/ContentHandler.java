@@ -22,13 +22,15 @@ public abstract  class ContentHandler {
 
     public final HttpResponse openRequest(HttpRequest request){
         String path = request.getQueryParam("path");
-        if (!isHttpPath(path)) {
-            ContentInfo info = contentInfoProvider.findByPath(path);
-            if (info != null) {
-                return openInfo(info);
-            }
-        }
-        return openPath(path);
+        //if (!isHttpPath(path)) {
+         //   ContentInfo info = contentInfoProvider.findByPath(path);
+          //  if (info != null) {
+            //    return openInfo(info);
+            //}
+        //}
+        
+        
+        return openPath(ContentInfo.decodePath(path));
     }
 
     protected abstract HttpResponse openInfo(ContentInfo info);

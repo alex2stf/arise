@@ -248,7 +248,9 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     //open given path
     if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
+      System.out.println(request);
       HttpResponse response = contentHandler.openRequest(request);
+      
       if (response != null){
         return response.allowAnyOrigin();
       }

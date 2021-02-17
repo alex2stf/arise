@@ -71,8 +71,17 @@ public class HttpRequest extends ServerRequest {
 
     public HttpRequest setUri(String uri){
         StringUtil.URLDecodeResult urlDecodeResult = StringUtil.urlDecode(uri);
+        
+        
         pathParams = urlDecodeResult.getPaths();
         queryParams = urlDecodeResult.getQueryParams();
+        
+        for(Map.Entry<String, List<String>> e: queryParams.entrySet()){
+            System.out.println("qparam" + e.getKey());
+            for (String s: e.getValue()){
+                System.out.println("    =" + s);
+            }
+        }
         return this;
     }
 
