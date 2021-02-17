@@ -55,8 +55,8 @@ public abstract class HttpRequestReader extends HttpReader<HttpRequest> {
     @Override
     public void onUrlFound(String url) {
         try {
-            String decoded = URLDecoder.decode(url, "UTF-8"); //use string for android devices
-            request.setUri(decoded);
+//            String decoded = URLDecoder.decode(url, "UTF-8"); //use string for android devices
+            request.setUri(url);
             return;
         } catch (Exception e) {
             e.printStackTrace();

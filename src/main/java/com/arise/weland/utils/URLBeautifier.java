@@ -10,6 +10,22 @@ import java.util.List;
 import java.util.Map;
 
 public class URLBeautifier {
+
+
+    public static String getFixedUri(String path){
+        try {
+            URI uri = new URI(path);
+
+            if (uri.getHost().indexOf("youtube") > -1){
+                return path + "&autoplay=1";
+            }
+        } catch (URISyntaxException e) {
+            return path;
+        }
+        return path;
+    }
+
+
     public static String beautify(String url) {
 
 

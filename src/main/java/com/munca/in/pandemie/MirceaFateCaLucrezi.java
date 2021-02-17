@@ -3,10 +3,15 @@
 
 package com.munca.in.pandemie;
 
+import com.arise.core.tools.models.CompleteHandler;
+import com.arise.weland.WelandAPI;
+import com.arise.weland.WelandClient;
+
 import java.awt.*;
 import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URLEncoder;
 import java.text.*;
 import java.util.*;
 
@@ -17,14 +22,14 @@ public class MirceaFateCaLucrezi {
 
 
     public static void main(String[] args) throws Throwable {
-            try {
-               for (NetworkInterface networkInterface:   Collections.list(NetworkInterface.getNetworkInterfaces()) ){
-                   System.out.println(networkInterface.getDisplayName());
-               };
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
-
+        WelandClient.openFile("http://localhost:8221/",
+                "https://www.youtube.com/watch?v=Uuc7Md2adSU&autoplay=1",
+                new CompleteHandler() {
+                    @Override
+                    public void onComplete(Object data) {
+                        System.out.println(data);
+                    }
+                });
         Robot r = new Robot(); int i = 0;
 
         System.out.println(new BigDecimal("\n \t0000040 ".trim()).toPlainString());

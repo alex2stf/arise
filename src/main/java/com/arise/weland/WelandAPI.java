@@ -95,9 +95,16 @@ public class WelandAPI {
 
 
     public void openFile(String s, CompleteHandler onSuccess) {
-        HttpRequest request = new HttpRequest()
-                .setMethod("GET").setUri("/files/open?path=" + URLEncoder.encode(s));
-        currentClient.sendAndReceive(request, onSuccess);
+        HttpRequest request = null;
+        s = ContentInfo.encodePath(s);
+        try {
+            request = new HttpRequest()
+                    .setMethod("GET").setUri("/files/open?path=" + URLEncoder.encode(s, "UTF-8"));
+            currentClient.sendAndReceive(request, onSuccess);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void playNative(String s, CompleteHandler onSuccess) {

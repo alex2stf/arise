@@ -19,6 +19,7 @@ import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.utils.URLBeautifier;
 import com.arise.weland.wrappers.VLCWrapper;
 
 import javax.swing.*;
@@ -138,7 +139,7 @@ public class DesktopFileHandler extends ContentHandler {
                 openUrl(fix(path));
             }
             else if (isHttpPath(path)){
-                openUrl(path);
+                openUrl(URLBeautifier.getFixedUri(path));
             }
             else if (isPicture(path)){
                 openPicture(path);
@@ -213,8 +214,9 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
     private boolean shouldUseNwjs(String path){
-        return nwjsEnabled &&  nwjsExe != null && nwjsExe.exists() &&
-                path.toLowerCase().indexOf("youtube") > -1;
+        return false;
+//                nwjsEnabled &&  nwjsExe != null && nwjsExe.exists() &&
+//                path.toLowerCase().indexOf("youtube") > -1;
     }
 
     private void openInNwjs(String url, File outputDir){

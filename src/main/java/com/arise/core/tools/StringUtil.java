@@ -127,9 +127,9 @@ public class StringUtil {
         }
         String qrs = in.substring(index + 1 );
         try {
-            String dec  = URLDecoder.decode(qrs);
+            String dec  = URLDecoder.decode(qrs, "UTF-8");
             qrs = dec;
-        }catch (Exception e){
+        } catch (Exception e){
 
         }
         decodeQuery(qrs, urlDecodeResult.queryParams);
