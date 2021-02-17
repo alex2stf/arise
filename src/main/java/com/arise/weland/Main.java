@@ -5,13 +5,11 @@ import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Registry;
 import com.arise.core.tools.AppCache;
-import com.arise.core.tools.CacheWorker;
+import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
@@ -68,16 +66,9 @@ public class Main {
 
     public static void main(String[] args) {
         MediaInfoSolver.load();
-        //VIP!!! load vlc native libs and dependencies
-//        ThreadUtil.fireAndForget(new Runnable() {
-//            @Override
-//            public void run() {
-////                new SelfUpdater().check();
-//            }
-//        });
 
 
-        AppCache.setWorker(new CacheWorker());
+        AppCache.setWorker(new StandardCacheWorker());
 
         try {
             ContentType.loadDefinitions();

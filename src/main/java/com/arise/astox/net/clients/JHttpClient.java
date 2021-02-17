@@ -222,8 +222,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
-    public JHttpClient setUri(URI uri) {
-        readUri(uri.toString());
-        return this;
-    }
+
+
+
 }

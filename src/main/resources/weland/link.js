@@ -43,7 +43,12 @@ function updateConnectionsUi(CNX) {
 
 
 function dvput(x){
-    window.location.href = x + '/app';
+    var url = x + '/app';
+    if(quixot && quixot.loadUrl){
+        quixot.loadUrl(url);
+    } else {
+        window.location.href = x + '/app';
+    }
 }
 
 $(document).ready(function(){

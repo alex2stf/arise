@@ -1,6 +1,7 @@
 package com.arise.weland.utils;
 
 import com.arise.core.tools.AppCache;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
@@ -26,11 +27,18 @@ public class AppSettings {
 
     private static final Properties applicationProperties;
 
+
+
+
     static {
         File expect;
 
         if (SYSUtils.isAndroid()){
-            expect = new File(FileUtil.findDocumentsDir(), "weland.properties");
+            File dir = new File(FileUtil.findDocumentsDir(), "laynee-config");
+            if (!dir.exists()){
+                dir.mkdir();
+            }
+            expect = new File(dir, "application.properties");
         }
         else {
             expect = new File("application.properties");
@@ -152,15 +160,48 @@ public class AppSettings {
         return Playlist.MUSIC.equals(getAutoPlaylist());
     }
 
-    private static final HashMap<String, String> savedConnections = new HashMap<>();
+    //TODO thread safe
+    private static HashMap<String, String> savedConnections = new HashMap<>();
+
+
 
     public static Map<String, String> storeHost(String name, String host) {
         savedConnections.put(name, host);
-        FileUtil.serializableSave(savedConnections, new File("connections.txt"));
+        FileUtil.serializableSave(savedConnections, new File(FileUtil.findAppDir(), "connections.txt"));
         return savedConnections;
     }
 
+
+    /**
+     * Android usage
+     * @return
+     */
+    public static String[] getSavedConnectionsNames(){
+        Map<String, String> c = getSavedConnections();
+        if (CollectionUtil.isEmpty(c)){
+            return new String[]{};
+        }
+        String[]s = new String[c.size()];
+        int i = 0;
+        for (Map.Entry<String, String> e: c.entrySet()){
+            s[i] = e.getKey();
+            i++;
+        }
+
+        return s;
+    }
+
     public static Map<String, String> getSavedConnections(){
+        if (CollectionUtil.isEmpty(savedConnections)){
+            HashMap<String, String> tmp = FileUtil.serializableRead(new File( FileUtil.findAppDir(), "connections.txt"));
+            if (tmp != null){
+                savedConnections =  tmp;
+            }
+        }
         return savedConnections;
+    }
+
+    public static String getSavedConnectionUri(String name) {
+        return getSavedConnections().get(name);
     }
 }

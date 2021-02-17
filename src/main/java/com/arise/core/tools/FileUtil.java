@@ -65,8 +65,10 @@ public class FileUtil {
     }
 
 
+
+
     public static File getUploadDir(){
-        File docs = new File(findDocumentsDir(), "arise-app");
+        File docs = new File(findDocumentsDir(), "received-files");
         if (!docs.exists()){
             docs.mkdirs();
         }

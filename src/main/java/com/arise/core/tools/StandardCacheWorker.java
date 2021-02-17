@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CacheWorker {
+public class StandardCacheWorker {
     HashMap<String, String> map ;
 
-    public CacheWorker(){
+    public StandardCacheWorker(){
         map = FileUtil.serializableRead(new File("local-cache"));
         if (map == null){
             map = new HashMap<>();

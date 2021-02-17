@@ -216,8 +216,9 @@ public class WelandServerHandler extends HTTPServerHandler {
       String name = request.getQueryParam("name");
       String host = request.getQueryParam("host");
 
-      Map<String, String> hosts;
-      if (StringUtil.hasText(name) && StringUtil.hasText(host)){
+      Map<String, String> hosts = AppSettings.getSavedConnections();;
+
+      if (StringUtil.hasText(name) && StringUtil.hasText(host)) {
         try {
           URL url = new URL(host);
           hosts = AppSettings.storeHost(name, url.toString());
@@ -225,9 +226,6 @@ public class WelandServerHandler extends HTTPServerHandler {
           e.printStackTrace();
           hosts = AppSettings.getSavedConnections();
         }
-      }
-      else {
-        hosts = AppSettings.getSavedConnections();
       }
 
       return HttpResponse.json(Groot.toJson(hosts)).allowAnyOrigin();

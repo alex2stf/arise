@@ -1,5 +1,7 @@
 package com.arise.weland.dto;
 
+
+@Deprecated
 public class RemoteConnection  {
     private final Object payload;
     private DeviceStat deviceStat;

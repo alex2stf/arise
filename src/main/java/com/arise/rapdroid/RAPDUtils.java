@@ -16,11 +16,16 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.core.app.NotificationCompat;
 
 import com.arise.core.tools.ContentType;
+import com.arise.rapdroid.media.server.MainActivity;
 import com.arise.rapdroid.media.server.R;
 
 import java.util.Map;
 
 public class RAPDUtils {
+
+
+
+
 
 
     public static void hideKeyboard(View v){
@@ -75,9 +80,10 @@ public class RAPDUtils {
 //        }
 
 
-        Intent intent = new Intent(ctx, ctx.getClass());
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = new Intent(ctx, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         for (Map.Entry<String, String> entry: extra.entrySet()){
             intent.putExtra(entry.getKey(), entry.getValue());
         }
@@ -91,6 +97,7 @@ public class RAPDUtils {
                 );
 
 
+//        mBuilder.setAutoCancel()
         mBuilder.setContentIntent(resultPendingIntent);
 
         if (flags == Notification.FLAG_ONGOING_EVENT) {

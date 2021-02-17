@@ -74,8 +74,7 @@ public class WelandClient {
             workersCache.put(id, abstractClient);
         }
         else if (worker instanceof URI){
-            abstractClient = new JHttpClient().setUri((URI) worker).setErrorHandler(ERROR_HANDLER);
-            workersCache.put(id, abstractClient);
+
         }
         else {
             throw new RuntimeException("Cannot track worker " + worker);
@@ -177,9 +176,23 @@ public class WelandClient {
 //        getClient(worker).openFile(info.getPath(), onSuccess);
 //    }
 
-    public static void openFile(String path, Object worker, CompleteHandler onSuccess) {
-        getClient(worker).openFile(path, onSuccess);
+
+    public static void openFile(String uri, String path, CompleteHandler onSuccess) {
+
+        JHttpClient jHttpClient = new JHttpClient();
+        jHttpClient.setUri(uri);
+
+        WelandAPI welandAPI = new WelandAPI();
+        welandAPI.setClient(jHttpClient);
+        welandAPI.openFile(path, onSuccess);
+
     }
+
+
+//    @Deprecated
+//    public static void openFile(String path, Object worker, CompleteHandler onSuccess) {
+//        getClient(worker).openFile(path, onSuccess);
+//    }
 
     public static void findThumbnail( Object worker, String thumbnailId, CompleteHandler<byte[]> completeHandler) {
         getClient(worker).findThumbnail(thumbnailId, completeHandler, new CompleteHandler() {

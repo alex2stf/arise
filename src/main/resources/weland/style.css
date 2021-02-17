@@ -5,7 +5,7 @@ body {
 
 .nvbar {
     text-align: left;
-    height: 130px;
+    height: 90px;
     position: fixed;
     width: 100%;
     top: 0;
@@ -23,7 +23,7 @@ body {
     display: inline-block;
     height: 100%;
     background: #284660;
-    padding: 20px;
+    padding: 10px;
 }
 
 .nvcnt a img {
@@ -33,7 +33,7 @@ body {
 
 
 #main {
-    margin-top: 138px;
+    margin-top: 98px;
 }
 
 .media-list{

@@ -213,7 +213,7 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
     private boolean shouldUseNwjs(String path){
-        return nwjsEnabled &&  nwjsExe.exists() &&
+        return nwjsEnabled &&  nwjsExe != null && nwjsExe.exists() &&
                 path.toLowerCase().indexOf("youtube") > -1;
     }
 

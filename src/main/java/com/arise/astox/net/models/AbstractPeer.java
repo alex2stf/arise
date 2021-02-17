@@ -58,11 +58,16 @@ public abstract class AbstractPeer {
         return this;
     }
 
-    public AbstractPeer readUri(String input){
+    public AbstractPeer setUri(URI uri){
+        this.setHost(uri.getHost());
+        this.setPort(uri.getPort());
+        return this;
+    }
+
+
+    public AbstractPeer setUri(String input){
         try {
-            URI uri = new URI(input);
-            this.setHost(uri.getHost());
-            this.setPort(uri.getPort());
+            return setUri(new URI(input));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

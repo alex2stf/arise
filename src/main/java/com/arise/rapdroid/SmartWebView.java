@@ -223,6 +223,8 @@ public class SmartWebView extends LinearLayout {
         return webView.getUrl();
     }
 
+
+
     private SmartLayout getTopView(){
         if (top == null){
             top = new SmartLayout(ctx);
