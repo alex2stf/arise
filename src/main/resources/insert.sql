@@ -1,2 +1,3 @@
-INSERT INTO MCC_CODE (ID, CODE,CAMPAIGN_NAME,MERCHANT_ID,TERMINAL_ID,TERMINAL_NAME,CREATED_DATE,MERCHANT_CATEGORY,MERCHANT_DESCRIPTION)
-    VALUES ( MCC_ID_SEQ.nextval, {{code}},'{{campaign}}','{{mid}}','{{tid}}','{{terminal_name}}',SYSDATE,'{{category}}','{{description}}');
+
+INSERT INTO PARTNER_SHOP (ID, NAME, MERCHANT_ID, TERMINAL_ID, CREATED_DATE)
+    VALUES (PARTNER_SHOP_ID_SEQ.nextval, '{{terminal_name}}', '{{mid}}', '{{tid}}', CURRENT_TIMESTAMP);

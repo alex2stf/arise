@@ -1,11 +1,8 @@
 package com.arise.core.tools;
 
-import com.arise.core.serializers.parser.Groot;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,7 +17,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,10 +24,9 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import static com.arise.core.tools.CollectionUtil.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
 
 public class FileUtil {
 

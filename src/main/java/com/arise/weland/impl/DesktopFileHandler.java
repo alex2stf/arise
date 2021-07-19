@@ -139,7 +139,7 @@ public class DesktopFileHandler extends ContentHandler {
                 openUrl(fix(path));
             }
             else if (isHttpPath(path)){
-                openUrl(URLBeautifier.getFixedUri(path));
+                openUrl(path);
             }
             else if (isPicture(path)){
                 openPicture(path);

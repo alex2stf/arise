@@ -53,9 +53,12 @@ public class CsvImport {
             Map map = mapper.map(cp);
             if (map != null) {
 //                String query = whisker.compile(compile, map);
-               String query = 
+               String query =
                        "INSERT INTO MCC_CODE (ID, CODE,CAMPAIGN_NAME,MERCHANT_ID,TERMINAL_ID,TERMINAL_NAME,CREATED_DATE,MERCHANT_CATEGORY,MERCHANT_DESCRIPTION)\n" +
                                "    VALUES ( MCC_ID_SEQ.nextval, " + map.get("code") + ",'" + map.get("campaign") + "','"+map.get("mid")+"','"+map.get("tid")+"','"+map.get("terminal_name")+"',SYSDATE,'"+map.get("category")+"','"+map.get("description")+"');\n";
+//               query = "INSERT INTO PARTNER_SHOP (ID, NAME, MERCHANT_ID, TERMINAL_ID, CREATED_DATE)\n" +
+//                       "    VALUES (PARTNER_SHOP_ID_SEQ.nextval, '"+map.get("terminal_name")+
+//                       "', '"+map.get("mid")+"', '"+map.get("tid")+"', CURRENT_TIMESTAMP);\n";
                 sb.append(query).append("\n");
                 System.out.println(query);
             }
@@ -90,76 +93,7 @@ public class CsvImport {
     public static void main(String[] args) throws IOException {
 
 
-
-
-
-
-
-        readFolder("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\csv-export-MID_TID" , new Mapper() {
-                @Override
-                public Map map(String[] cols) {
-                    if (cols[1].startsWith("Urmeaz")){
-                        return null;
-                    }
-                    String c5 = cols.length > 5 ? cols[5] : "";
-                    Map map = new HashMap();
-                    map.put("code", "null");
-                    map.put("mid", cols[1]);
-                    map.put("tid", cols[2].replaceAll("�", ""));
-                    map.put("terminal_name", c5 + " " + cols[3]);
-                    map.put("campaign", "ORANGE_PACKAGE");
-                    map.put("category", "n/a");
-                    map.put("description", ( (cols[0] + " " + cols[4]) ) );
-                    return map;
-                }
-            });
-
-
-
-//
-
-        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\csv-export-MID-TID2\\BRD.csv" , new Mapper() {
-            @Override
-            public Map map(String[] cols) {
-                if (cols[1].startsWith("Urmeaz")){
-                    return null;
-                }
-                String c2 = cols.length > 2 ? cols[2] : "";
-                Map map = new HashMap();
-                map.put("code", "null");
-                map.put("mid", cols[0]);
-                map.put("tid", cols[1]);
-                map.put("terminal_name", c2);
-                map.put("campaign", "ORANGE_PACKAGE");
-                map.put("category", "n/a");
-                map.put("description", ( c2 ) );
-                return map;
-            }
-        });
-
-
-        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\csv-export-MID-TID2\\BT.csv" , new Mapper() {
-            @Override
-            public Map map(String[] cols) {
-                if (cols[1].startsWith("Urmeaz")){
-                    return null;
-                }
-                String c2 = cols.length > 2 ? cols[2] : "";
-                Map map = new HashMap();
-                map.put("code", "null");
-                map.put("mid", cols[0]);
-                map.put("tid", cols[1]);
-                map.put("terminal_name", c2);
-                map.put("campaign", "ORANGE_PACKAGE");
-                map.put("category", "n/a");
-                map.put("description", ( c2 ) );
-                return map;
-            }
-        });
-
-
-
-        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\csv-export-MID-TID2\\ING.csv" , new Mapper() {
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\BCR.csv" , new Mapper() {
             @Override
             public Map map(String[] cols) {
                 if (cols[1].startsWith("Urmeaz")){
@@ -167,18 +101,18 @@ public class CsvImport {
                 }
                 Map map = new HashMap();
                 map.put("code", "null");
-                map.put("mid", cols[1]);
-                map.put("tid", cols[2]);
-                map.put("terminal_name", cols[0]);
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[4].trim() + " " + cols[5].trim());
                 map.put("campaign", "ORANGE_PACKAGE");
                 map.put("category", "n/a");
-                map.put("description", "ING " + cols[5] );
+                map.put("description", cols[5].trim() );
                 return map;
             }
         });
 
 
-        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\csv-export-MID-TID2\\online.csv" , new Mapper() {
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\BRD.csv" , new Mapper() {
             @Override
             public Map map(String[] cols) {
                 if (cols[1].startsWith("Urmeaz")){
@@ -186,69 +120,132 @@ public class CsvImport {
                 }
                 Map map = new HashMap();
                 map.put("code", "null");
-                map.put("mid", cols[0]);
-                map.put("tid", "n/a");
-                map.put("terminal_name", cols[1]);
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[4].trim() + " " + cols[5].trim());
                 map.put("campaign", "ORANGE_PACKAGE");
                 map.put("category", "n/a");
-                map.put("description", cols[2] );
+                map.put("description", cols[5].trim() );
                 return map;
             }
         });
 
 
-        readFolder("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\travel-1" , new Mapper() {
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\ING.csv" , new Mapper() {
             @Override
             public Map map(String[] cols) {
                 if (cols[1].startsWith("Urmeaz")){
                     return null;
                 }
                 Map map = new HashMap();
-                map.put("code", cols[1]);
-                map.put("mid", "n/a");
-                map.put("tid", "n/a");
-                map.put("terminal_name", "n/a");
-                map.put("campaign", "TRAVEL_PACKAGE");
-                map.put("category", cols[1]);
-                map.put("description", cols[2] );
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[0].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[5].trim() );
                 return map;
             }
         });
 
 
-        readFolder("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\travel-2" , new Mapper() {
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\CREDIT_EUROPE_BANK.csv" , new Mapper() {
             @Override
             public Map map(String[] cols) {
                 if (cols[1].startsWith("Urmeaz")){
                     return null;
                 }
                 Map map = new HashMap();
-                map.put("code", cols[1]);
-                map.put("mid", "n/a");
-                map.put("tid", "n/a");
-                map.put("terminal_name", "n/a");
-                map.put("campaign", "TRAVEL_PACKAGE");
-                map.put("category", cols[1]);
-                map.put("description", cols[2] );
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[3].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[0].trim() + " "  + cols[4].trim() + " " + cols[5].trim() );
                 return map;
             }
         });
 
 
-        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\bonuses.csv" , new Mapper() {
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\GARANTI_BANI.csv" , new Mapper() {
             @Override
             public Map map(String[] cols) {
+                if (cols[1].startsWith("Urmeaz")){
+                    return null;
+                }
                 Map map = new HashMap();
-                map.put("code", cols[1]);
-                map.put("mid", "n/a");
-                map.put("tid", "n/a");
-                map.put("terminal_name", "n/a");
-                map.put("campaign", "FAMILY_PACKAGE");
-                map.put("category", cols[0]);
-                map.put("description", cols[2] );
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[3].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[0].trim() + " " +cols[4].trim() + " " + cols[5].trim() );
                 return map;
             }
         });
+
+
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\RAIFFEISEN.csv" , new Mapper() {
+            @Override
+            public Map map(String[] cols) {
+                if (cols[1].startsWith("Urmeaz")){
+                    return null;
+                }
+                Map map = new HashMap();
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[3].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[0].trim() + " " +cols[4].trim() + " " + cols[5].trim() );
+                return map;
+            }
+        });
+
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\TRANSILVANIA.csv" , new Mapper() {
+            @Override
+            public Map map(String[] cols) {
+                if (cols[1].startsWith("Urmeaz")){
+                    return null;
+                }
+                Map map = new HashMap();
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[3].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[0].trim() + " " +cols[4].trim() + " " + cols[5].trim() );
+                return map;
+            }
+        });
+
+
+        iterateFile("C:\\Users\\alexandru2.stefan\\Desktop\\DesktopDocs\\__MCC_CODES\\octombrie_2020\\UNICREDIT.csv" , new Mapper() {
+            @Override
+            public Map map(String[] cols) {
+                if (cols[1].startsWith("Urmeaz")){
+                    return null;
+                }
+                Map map = new HashMap();
+                map.put("code", "null");
+                map.put("mid", cols[1].trim());
+                map.put("tid", cols[2].trim());
+                map.put("terminal_name", cols[3].trim());
+                map.put("campaign", "ORANGE_PACKAGE");
+                map.put("category", "n/a");
+                map.put("description", cols[0].trim() + " " +cols[4].trim() + " " + cols[5].trim() );
+                return map;
+            }
+        });
+
+
+
+
 
 
         FileUtil.writeStringToFile(new File("all.sql"), all.toString());

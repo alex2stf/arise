@@ -3,43 +3,64 @@
 
 package com.munca.in.pandemie;
 
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.weland.WelandAPI;
-import com.arise.weland.WelandClient;
-
 import java.awt.*;
 import java.math.BigDecimal;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.URLEncoder;
-import java.text.*;
-import java.util.*;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 public class MirceaFateCaLucrezi {
 
 
+    public static String unhash(int target) {
+        StringBuilder answer = new StringBuilder();
+        if (target < 0) {
+            // String with hash of Integer.MIN_VALUE, 0x80000000
+            answer.append("\\u0915\\u0009\\u001e\\u000c\\u0002");
+            if (target == Integer.MIN_VALUE)
+                return answer.toString();
+            // Find target without sign bit set
+            target = target & Integer.MAX_VALUE;
+        }
+        unhash0(answer, target);
+        return answer.toString();
+    }
 
-
+    private static void unhash0(StringBuilder partial, int target) {
+        int div = target / 31;
+        int rem = target % 31;
+        if (div <= Character.MAX_VALUE) {
+            if (div != 0)
+                partial.append((char)div);
+            partial.append((char)rem);
+        } else {
+            unhash0(partial, div);
+            partial.append((char)rem);
+        }
+    }
 
     public static void main(String[] args) throws Throwable {
-        WelandClient.openFile("http://localhost:8221/",
-                "https://www.youtube.com/watch?v=Uuc7Md2adSU&autoplay=1",
-                new CompleteHandler() {
-                    @Override
-                    public void onComplete(Object data) {
-                        System.out.println(data);
-                    }
-                });
+
+
+        System.out.println(
+                new String(unhash(290269593).getBytes())
+        );
+
+
         Robot r = new Robot(); int i = 0;
 
-        System.out.println(new BigDecimal("\n \t0000040 ".trim()).toPlainString());
+        System.out.println("Salut " + System.getProperty("user.name") + " ... hai sa vedem ce am facut azi!");
         DateFormatSymbols f = new DateFormatSymbols(Locale.getDefault());
         f.setWeekdays(new String[]{
                 "ce kkt de zi e asta?", "Duminica", "Luni", "Marti",
                 "Miercuri", "Joi", "Vineri", "Sâmbătă",
         });
-        SimpleDateFormat z = new SimpleDateFormat("EEEEE dd MM yyyy 'la ora' HH:mm:ss '_|_'", f);
-        String t = "ne-am facut ca muncim %s";
+        SimpleDateFormat z = new SimpleDateFormat("EEEEE dd MM yyyy 'la ora' HH:mm:ss", f);
+        String t = "%s ne-am facut ca muncim";
+
 
         while (true){
             System.out.println(String.format(t, z.format(new Date())));

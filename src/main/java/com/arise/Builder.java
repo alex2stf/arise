@@ -131,11 +131,10 @@ public class Builder {
             /**
             * steiner base lib
             */
-//            ,new Lib(ROOT + "core", ROOT + "canter", ROOT + "cargo",
-//                           ROOT + "astox/net/models", ROOT + "astox/net/clients")
-//                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
-//                    .named("jumper")
-//                    .version("1.0")
+            ,new Lib( "src/main/java/com/munca/in/pandemie")
+                    .named("poze_concediu")
+                    .mainClass("com.munca.in.pandemie.MirceaFateCaLucrezi")
+                    .version("1.0")
 
 
 
@@ -163,7 +162,7 @@ public class Builder {
         }
         
         System.out.println("arise builder start at " + new Date());
-        System.out.println("root directory: " + ROOT_DIRECTORY);
+        System.out.println("root directory: " + ROOT_DIRECTORY.getAbsolutePath());
         System.out.println("jdk home: " + JDK_HOME);
 
         File buildInfoFile = new File("build-info.properties");

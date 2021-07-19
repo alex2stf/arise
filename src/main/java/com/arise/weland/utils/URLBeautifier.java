@@ -12,49 +12,36 @@ import java.util.Map;
 public class URLBeautifier {
 
 
-    public static String getFixedUri(String path){
+
+
+
+
+    public static String fix(String path) {
+
+        String yIdKey = "v";
+        String yDomainMatch = "youtube";
+
         try {
             URI uri = new URI(path);
 
-            if (uri.getHost().indexOf("youtube") > -1){
-                return path + "&autoplay=1";
+            if (uri.getHost().indexOf(yDomainMatch) > -1){
+
+                String schema = uri.getScheme();
+                String host = uri.getHost();
+                String query = uri.getRawQuery();
+
+                Map<String, List<String>> queryparams = new HashMap<>();
+                StringUtil.decodeQuery(query, queryparams);
+                if (queryparams.containsKey(yIdKey)){
+
+                }
+
+                System.out.println(queryparams);
+
             }
         } catch (URISyntaxException e) {
             return path;
         }
         return path;
-    }
-
-
-    public static String beautify(String url) {
-
-
-
-
-
-        //https://m.youtube.com/channel/UCa6ufakZHYGC62Io9rsWaiA
-
-
-        if (url.indexOf("youtube.com") > -1) {
-            try {
-                String prefix = "://www.youtube.com/embed/";
-//                if (SYSUtils.isAndroid()){
-//
-//                }
-                URI uri = new URI(url);
-                Map<String, List<String>> params = new HashMap<String, List<String>>();
-                StringUtil.decodeQuery(uri.getQuery(), params);
-                if (params.containsKey("v") && params.get("v").size() > 0){
-                    String embedded = uri.getScheme() + prefix + params.get("v").get(0) + "?autoplay=1";
-//                    return "http://localhost:8221/frame?src=" + embedded;
-                    return embedded;
-                    //                    return "https://youtu.be/" + params.get("v").get(0) + "?t=0";
-                }
-            } catch (URISyntaxException e) {
-
-            }
-        }
-
-        return url;
     }
 }
