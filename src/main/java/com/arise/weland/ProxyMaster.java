@@ -50,7 +50,6 @@ public class ProxyMaster {
                     httpRequestBuilder.readInputStream(server.getInputStream(), new CompleteHandler<HttpRequest>() {
                         @Override
                         public void onComplete(HttpRequest data) {
-                            System.out.println("SERVER received" + data);
                             OutputStream out = null;
                             try {
                                 out = server.getOutputStream();
@@ -84,10 +83,10 @@ public class ProxyMaster {
                                 byte[] buf = new byte[8192];
                                 int length;
                                 in = client.getInputStream();
-//                                out = server.getOutputStream();
                                 while ((length = in.read(buf)) > 0) {
                                     out.write(buf, 0, length);
                                 }
+                                out.flush();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -98,7 +97,7 @@ public class ProxyMaster {
                     }, new CompleteHandler<Throwable>() {
                         @Override
                         public void onComplete(Throwable data) {
-
+                            log.error("Server error ", data);
                         }
                     });
 
