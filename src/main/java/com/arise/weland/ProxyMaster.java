@@ -4,6 +4,10 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.io.IOServer;
+import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
@@ -11,8 +15,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ProxyMaster {
+
+    static String host = null;
+    static String port = null;
+    static final Whisker whisker = new Whisker();
+    static final Mole log = Mole.getInstance(ProxyMaster.class);
 
     public static void main(String[] args) throws Exception {
         HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder();
@@ -37,7 +47,14 @@ public class ProxyMaster {
                             }
                             if (data.pathsStartsWith("proxy")){
                                 try {
-                                    out.write(HttpResponse.htmlResource("src/main/resources#weland/proxy.html").bytes());
+                                    java.util.Map<String, String> params = new HashMap<>();
+                                    params.put("host", data.getQueryParam("host"));
+                                    params.put("port", data.getQueryParam("port"));
+                                    host = data.getQueryParam("host");
+                                    port = data.getQueryParam("port");
+                                    log.info("Defined root " + host + ":" + port);
+                                    String content = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/proxy.html"));
+                                    out.write(HttpResponse.html(whisker.compile(content, params)).bytes());
                                     Util.close(out);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -48,7 +65,7 @@ public class ProxyMaster {
                             Socket client = null;
                             InputStream in = null;
                             try {
-                                client = new Socket("192.168.1.6", 8221);
+                                client = new Socket(host, Integer.valueOf(port));
                                 client.getOutputStream().write(data.getBytes());
                                 byte[] buf = new byte[8192];
                                 int length;
