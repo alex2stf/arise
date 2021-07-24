@@ -23,8 +23,18 @@ public class ProxyMaster {
     static String port = null;
     static final Whisker whisker = new Whisker();
     static final Mole log = Mole.getInstance(ProxyMaster.class);
+    static int proxyPort = 1234;
 
     public static void main(String[] args) throws Exception {
+        if (args.length > 0){
+            try {
+                proxyPort = Integer.valueOf(args[0]);
+            }catch (Exception e){
+
+            }
+            log.info("start proxy on port: " + proxyPort);
+        }
+
         HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder();
 
 
