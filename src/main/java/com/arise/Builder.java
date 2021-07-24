@@ -128,12 +128,6 @@ public class Builder {
                     .pack()
 
 
-            , new Lib(ROOT + "core", ROOT + "astox/net", ROOT + "weland")
-            .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
-            .mainClass("com.arise.weland.ProxyMaster")
-            .named("weland-proxy")
-            .version("1.0")
-            .pack()
 
 
             /**
@@ -464,7 +458,7 @@ public class Builder {
                 manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, mainClazz);
             }
 
-            String outJar = outputDirectory.getAbsolutePath() + File.separator + name + "-" + vrs + (!release ? "." + snapshotId() + "-SNAPSHOT"  : "") + ".jar";
+            String outJar = outputDirectory.getAbsolutePath() + File.separator + name + "-" + vrs  + ".jar";
             FileOutputStream jarFileOutputStream = new FileOutputStream(outJar);
             JarOutputStream target = new JarOutputStream(jarFileOutputStream, manifest);
             File[] files = inputDir.listFiles();

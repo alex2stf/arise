@@ -34,8 +34,10 @@ public class ProxyMaster {
             }catch (Exception e){
 
             }
-            log.info("start proxy on port: " + proxyPort);
         }
+
+        log.info("Weland proxy started on port: " + proxyPort);
+
 
         HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder();
 
