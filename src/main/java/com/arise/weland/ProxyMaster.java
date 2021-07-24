@@ -25,10 +25,12 @@ public class ProxyMaster {
     static final Mole log = Mole.getInstance(ProxyMaster.class);
     static int proxyPort = 1234;
 
+    static String PROXY_PORT_PROP = "weland.proxy.port";
+
     public static void main(String[] args) throws Exception {
-        if (args.length > 0){
+        if (System.getProperty(PROXY_PORT_PROP) != null){
             try {
-                proxyPort = Integer.valueOf(args[0]);
+                proxyPort = Integer.valueOf(System.getProperty(PROXY_PORT_PROP));
             }catch (Exception e){
 
             }
