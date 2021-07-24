@@ -124,7 +124,9 @@ public abstract class AbstractServer<READABLE> extends AbstractPeer {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                stateObserver.postInit(s);
+                if (stateObserver != null) {
+                    stateObserver.postInit(s);
+                }
             }
         }, "Post-Init");
     }

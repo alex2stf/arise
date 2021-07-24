@@ -5,6 +5,8 @@ import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 import static com.arise.astox.net.models.http.HttpReader.CRLF;
 import static com.arise.astox.net.models.http.HttpReader.HEADER_SEPARATOR;
+import static com.arise.core.tools.FileUtil.findStream;
 
 public class HttpResponse extends ServerResponse {
 
@@ -48,6 +51,10 @@ public class HttpResponse extends ServerResponse {
         return oK().addHeader("Content-Type", "text/html; charset=UTF-8")
                 .addHeader("X-Content-Type-Options", "nosniff")
                 .setText(content);
+    }
+
+    public static HttpResponse htmlResource(String file) {
+        return html(StreamUtil.toString(findStream(file)));
     }
 
     public static HttpResponse javascript(String content) {

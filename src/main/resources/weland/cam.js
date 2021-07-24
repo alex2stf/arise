@@ -58,12 +58,12 @@ function toggleStream() {
 }
 
 function fitPortrait() {
-    var img = document.getElementById('cam-preview');
-    var mSW = minScreenWidth();
-    img.style.width = mSW;
-    img.style.height = 'auto';
+//    var img = document.getElementById('cam-preview');
+//    var mSW = minScreenWidth();
+//    img.style.width = mSW;
+//    img.style.height = 'auto';
 
-    $('#cam-img').height("100%");
+//    $('#cam-img').height("100%");
     // img.style.top = ((img.offsetWidth - img.offsetHeight) / 2);
     // var diff = (img.offsetHeight - img.offsetWidth) / 2;
     // img.style.left = (diff + ((mSW - img.offsetHeight) / 2) );
@@ -81,30 +81,37 @@ function rotateCamPreview() {
     currentRotationIndex++;
 }
 
+function fit270(){
+    document.getElementById('cam-img').setAttribute('class', 'rotate270');
+
+     var img = document.getElementById('cam-img');
+
+
+        img.style.width = 'auto';
+}
+
 
 function match_width() {
     var img = document.getElementById('cam-img');
-    img.style.width = minScreenWidth() - sidebarSize - 4;
+    $('#cam-img').width($(window).width());
     img.style.height = 'auto';
 }
 
 function match_height() {
     var img = document.getElementById('cam-img');
     // img.style.width = minScreenWidth() - sidebarSize - 4;
+    $('#cam-img').height($(window).height());
     img.style.width = 'auto';
-    img.style.height = minScreenHeight();
 }
 
 function hideControls() {
     document.getElementById('cam-img').src = "#";
-    document.getElementById('cam-img').style.display = "none";
     document.getElementById('audio-src').src = "#";
     document.getElementById('audio-src').style.display = 'none';
 }
 
 function showControls() {
     document.getElementById('cam-img').src = cameraUrl();
-    document.getElementById('cam-img').style.display = "block";
     document.getElementById('audio-src').src = host + '/device/live/audio.wav?' + calculateDeviceParams();
     document.getElementById('audio-src').style.display = 'inline-block';
 }
