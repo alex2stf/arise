@@ -9,12 +9,12 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
+import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.core.tools.Mole;
-import com.arise.weland.utils.WavResponse;
 
 
-public class WavRecorderResponse extends WavResponse {
+public class WavRecorderResponse extends SingletonHttpResponse {
 
     private static final int RECORDER_BPP = 16;
     private static final int RECORDER_SAMPLERATE = 44100;
@@ -111,7 +111,6 @@ public class WavRecorderResponse extends WavResponse {
                     }catch (Exception e){
                         log.e("FAILED TO SEND SOUND");
                     }
-
                 }
             }
         });
@@ -122,7 +121,7 @@ public class WavRecorderResponse extends WavResponse {
 
 
 
-    public void stopRecording() {
+    public synchronized void stopRecording() {
         try {
             if (worker != null){
                 worker.interrupt();

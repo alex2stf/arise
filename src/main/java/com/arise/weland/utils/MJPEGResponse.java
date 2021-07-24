@@ -1,12 +1,12 @@
 package com.arise.weland.utils;
 
-import com.arise.astox.net.models.SelfManagedResponse;
+import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class MJPEGResponse extends SelfManagedResponse {
+public class MJPEGResponse extends SingletonHttpResponse {
 
     protected static String boundary = "some-rand-boundary";
 

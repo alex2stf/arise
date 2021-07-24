@@ -41,6 +41,15 @@
             <systemPath>${basedir}/libs/vlcj-3.0.1.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.webcam</groupId>
+            <artifactId>webcam</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/webcam-capture-0.3.12.jar</systemPath>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>

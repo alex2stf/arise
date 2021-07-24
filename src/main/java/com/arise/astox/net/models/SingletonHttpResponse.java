@@ -4,13 +4,16 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer.WriteCompleteEvent;
 import com.arise.core.tools.Mole;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class SelfManagedResponse extends HttpResponse {
+public class SingletonHttpResponse extends HttpResponse {
 
-    private static final Mole log = Mole.getInstance(SelfManagedResponse.class);
+    private static final Mole log = Mole.getInstance(SingletonHttpResponse.class);
 
     @Override
     public boolean isSelfManageable() {
@@ -41,7 +44,7 @@ public class SelfManagedResponse extends HttpResponse {
         }
     }
 
-    public void sendSync(byte[] bytes){
+    public synchronized void sendSync(byte[] bytes){
         if (setInModify){
             return;
         }
@@ -74,7 +77,7 @@ public class SelfManagedResponse extends HttpResponse {
         }
         for (Connection connection : connectionSet) {
             if (connection.headerSent) {
-                if(!connection.sendAsync(bytes)){
+                if(!connection.sendSync(bytes)){
                     remove(connection);
                 }
             }
@@ -97,9 +100,9 @@ public class SelfManagedResponse extends HttpResponse {
 
         volatile boolean headerSent = false;
 
-        final SelfManagedResponse parent;
+        final SingletonHttpResponse parent;
 
-        public Connection(SelfManagedResponse parent, Object ... args){
+        public Connection(SingletonHttpResponse parent, Object ... args){
             super(args);
             this.parent = parent;
         }
@@ -118,9 +121,6 @@ public class SelfManagedResponse extends HttpResponse {
                     });
                 }
             }
-//            else {
-//                log.info("SKIP BYTES IN WRITING STATE");
-//            }
             return true;
         }
 
@@ -141,15 +141,15 @@ public class SelfManagedResponse extends HttpResponse {
             }
         }
 
-        public boolean sendAsync(final byte[] bytes) {
-            server().write(bytes, this, new WriteCompleteEvent() {
-                @Override
-                public void onComplete() {
-                    isWriting = false;
-                }
-            });
-            return true;
-        }
+//        public boolean sendAsync(final byte[] bytes) {
+//            server().write(bytes, this, new WriteCompleteEvent() {
+//                @Override
+//                public void onComplete() {
+//                    isWriting = false;
+//                }
+//            });
+//            return true;
+//        }
     }
 
 

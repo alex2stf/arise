@@ -113,7 +113,7 @@ public class CamStreamResponse extends CameraWorker {
 
 
 
-    public void stop() {
+    public synchronized void stop() {
         releaseCamera();
         Util.close(worker);
     }

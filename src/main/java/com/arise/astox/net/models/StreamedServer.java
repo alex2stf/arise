@@ -38,10 +38,13 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
 
     public void write(byte[] bytes, ConnectionSolver connectionSolver, WriteCompleteEvent event) {
         CONNECTION connection = connectionSolver.getArg(connectionClass);
+        OutputStream o = null;
         try {
-            getOutputStream(connection).write(bytes);
+            o = getOutputStream(connection);
+            o.write(bytes);
+            o.flush();
             event.onComplete();
-        } catch (IOException e) {
+        } catch (Exception e) {
             event.onError(e);
             fireError(e);
         }

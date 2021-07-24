@@ -22,6 +22,7 @@ import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.utils.AppSettings;
+import com.arise.weland.utils.MJPEGResponse;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -105,6 +106,7 @@ public class Main {
         contentInfoProvider.get();
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
+//                .setLiveMjpegStream(new MJPEGResponse())
                 .setContentProvider(contentInfoProvider);
 
         DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider,  registry);

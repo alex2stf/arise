@@ -3,6 +3,7 @@ package com.arise.weland.utils;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
+import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
@@ -19,7 +20,6 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
@@ -46,7 +46,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   MJPEGResponse liveMjpegStream;
   JPEGOfferResponse liveJpeg;
-  WavResponse liveWav;
+  SingletonHttpResponse liveWav;
 
   public WelandServerHandler setLiveMjpegStream(MJPEGResponse liveMjpegStream) {
     this.liveMjpegStream = liveMjpegStream;
@@ -58,7 +58,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-  public WelandServerHandler setLiveWav(WavResponse liveWav) {
+  public WelandServerHandler setLiveWav(SingletonHttpResponse liveWav) {
     this.liveWav = liveWav;
     return this;
   }

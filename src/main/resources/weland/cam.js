@@ -49,12 +49,16 @@ function stopStream() {
 
 function toggleStream() {
     if (cameraEnabled){
-
         stopStream();
     }
     else {
         startStream();
     }
+}
+
+function takeSnapshot(){
+    stopStream();
+    document.getElementById('cam-img').src = '/device/live/jpeg'
 }
 
 function fitPortrait() {
@@ -117,7 +121,6 @@ function showControls() {
 }
 
 function refreshCamera() {
-
     if (!cameraEnabled){
         hideControls();
         setTimeout(function () {
