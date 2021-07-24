@@ -107,7 +107,7 @@ public class ProxyMaster {
                 }
             }//end handle
         }; //end instance
-        ioServer.setPort(1234);
+        ioServer.setPort(proxyPort);
         ioServer.start();
 
     }
