@@ -128,6 +128,14 @@ public class Builder {
                     .pack()
 
 
+            , new Lib(ROOT + "core", ROOT + "astox/net", ROOT + "weland")
+            .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
+            .mainClass("com.arise.weland.ProxyMaster")
+            .named("weland-proxy")
+            .version("1.0")
+            .pack()
+
+
             /**
             * steiner base lib
             */
