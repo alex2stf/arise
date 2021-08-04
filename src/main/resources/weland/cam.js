@@ -1,8 +1,9 @@
 var host = '{{host}}',
     cameraIndex = 0,
-    rotations =  ['rotate90', 'rotate180', 'rotate270', 'rotate0'],
+    rotations =  ['90', '180', '270', '0'],
     currentRotationIndex = 0,
     cameraEnabled = false,
+    cameraMode = 'mjpeg'
     lightMode = 0;
 
 var stopIcn = '<img src="https://img.icons8.com/flat_round/64/000000/stop.png"/>';
@@ -13,12 +14,10 @@ function calculateDeviceParams() {
     return 'camIndex=' + cameraIndex + '&lightMode=' + lightMode+ '&camEnabled=' + cameraEnabled;
 }
 
-function mjpegUrl() {
-    return host + '/device/live/mjpeg?' + calculateDeviceParams();
-}
+
 
 function cameraUrl() {
-    return mjpegUrl()
+    return host + '/device/live/'+cameraMode+'?' + calculateDeviceParams();
 }
 
 function minScreenHeight() {
@@ -81,31 +80,48 @@ function rotateCamPreview() {
         currentRotationIndex = 0;
     }
     var rotation = rotations[currentRotationIndex];
-    document.getElementById('cam-img').setAttribute('class', rotation);
+    document.getElementById('cam-img').style['transform-origin'] = 'center center';
+    rotateElement('cam-img', rotation);
+    // document.getElementById('cam-img').setAttribute('class', rotation);
+
     currentRotationIndex++;
 }
 
-function fit270(){
-    document.getElementById('cam-img').setAttribute('class', 'rotate270');
 
-     var img = document.getElementById('cam-img');
+function toggleStreamControls(){
+    var controlsVisible = AppSettings.get('controlsVisible', true) == 'true';
+
+    if(controlsVisible){
+        $('#stream-controls').hide();
+        AppSettings.set('controlsVisible', false);
+        rotateElement('btn-toggle', 0);
+    }
+    else {
+        $('#stream-controls').show();
+        AppSettings.set('controlsVisible', true);
+        rotateElement('btn-toggle', 180);
+    }
+}
+toggleStreamControls();
 
 
-        img.style.width = 'auto';
+function changeCameraMode() {
+    cameraMode = $('#camMode').val();
+    refreshCamera();
 }
 
 
 function match_width() {
-    var img = document.getElementById('cam-img');
     $('#cam-img').width($(window).width());
-    img.style.height = 'auto';
+    $('#cam-img').height('auto');
+    $('#cam-img').css('margin', '0');
 }
 
+
 function match_height() {
-    var img = document.getElementById('cam-img');
-    // img.style.width = minScreenWidth() - sidebarSize - 4;
-    $('#cam-img').height($(window).height());
-    img.style.width = 'auto';
+    $('#cam-img').height($(window).height() - 100);
+    $('#cam-img').width('auto');
+    $('#cam-img').css('margin', '0');
 }
 
 function hideControls() {
@@ -118,7 +134,27 @@ function showControls() {
     document.getElementById('cam-img').src = cameraUrl();
     document.getElementById('audio-src').src = host + '/device/live/audio.wav?' + calculateDeviceParams();
     document.getElementById('audio-src').style.display = 'inline-block';
+    if(cameraMode == 'jpeg'){
+        startRefreshTimer();
+    } else {
+        clearTimeout(rtimeout);
+    }
 }
+
+var rtimeout = -1;
+function startRefreshTimer() {
+    var d = new Date();
+    var x = d.getYear() + '' + d.getDate() + Math.round((Math.random() * 1000)) + '' + d.getHours() + d.getMilliseconds() + d.getMinutes() + d.getSeconds();
+    var src = cameraUrl() + '&id=' + x;
+    // console.log(src);
+    $('#cam-img').attr('src', src );
+    if(cameraMode === 'jpeg'){
+        rtimeout = setTimeout(function(){
+            startRefreshTimer();
+        }, 200)
+    }
+}
+
 
 function refreshCamera() {
     if (!cameraEnabled){

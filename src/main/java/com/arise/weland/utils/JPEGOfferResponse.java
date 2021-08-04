@@ -56,7 +56,7 @@ public class JPEGOfferResponse extends HttpResponse {
             if (getCount > imgBuffer.length - 1) {
                 getCount = 0;
             }
-//            System.out.println("IM_GET " + getCount);
+            System.out.println("IM_GET " + getCount);
         }
         return imgBuffer[getCount];
     }
@@ -67,9 +67,11 @@ public class JPEGOfferResponse extends HttpResponse {
             if (offerCount > imgBuffer.length -1){
                 offerCount = 0;
             }
-//            System.out.println("IM_PUT " + offerCount);
+
+            System.out.println("IM_PUT " + offerCount);
         }
         imgBuffer[offerCount] = bytes;
+
     }
 
     public synchronized void offerJPEG2(byte[] bytes) {

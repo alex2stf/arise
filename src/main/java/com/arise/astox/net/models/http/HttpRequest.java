@@ -73,11 +73,6 @@ public class HttpRequest extends ServerRequest {
         StringUtil.URLDecodeResult urlDecodeResult = StringUtil.urlDecode(uri);
         pathParams = urlDecodeResult.getPaths();
         queryParams = urlDecodeResult.getQueryParams();
-        for(Map.Entry<String, List<String>> e: queryParams.entrySet()){
-            for (String s: e.getValue()){
-                System.out.println("    =" + s);
-            }
-        }
         return this;
     }
 

@@ -60,6 +60,7 @@ public class AppSettings {
         else {
             Properties tmpProps;
             try {
+                log.info("Loading properties from " + expect.getAbsolutePath());
                 Properties svdProps = FileUtil.loadProps(expect);
                 Enumeration<String> enums = (Enumeration<String>) binProps.propertyNames();
                 boolean updated = false;

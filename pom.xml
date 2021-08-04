@@ -50,6 +50,32 @@
             <systemPath>${basedir}/libs/webcam-capture-0.3.12.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.sl4j</groupId>
+            <artifactId>sl4j</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/slf4j-api-1.7.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sl4j</groupId>
+            <artifactId>sl4j-simple</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/slf4j-simple-1.7.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bridj</groupId>
+            <artifactId>bridj</artifactId>
+            <version>3.0.1</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/bridj-0.7.0.jar</systemPath>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -202,10 +228,19 @@
             <scope>test</scope>
         </dependency>
 
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-slf4j-impl</artifactId>-->
+<!--            <version>LATEST</version>-->
+<!--        </dependency>-->
+
         <!--<dependency>-->
             <!--<groupId>org.mockito</groupId>-->
             <!--<artifactId>mockito-all</artifactId>-->
-            <!--<version>1.9.5</version>-->
+            <!--<version>1.9.5</verson>-->
             <!--<scope>test</scope>-->
         <!--</dependency>-->
 

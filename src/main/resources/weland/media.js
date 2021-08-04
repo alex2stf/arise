@@ -10,7 +10,7 @@ function startFetch(playlist) {
         mindex[playlist] = 0;
     }
     $.get( host + "/media/list/" + playlist + "?index=" + mindex[playlist], function( data ) {
-         // console.log(data);
+          console.log("media type " + playlist + " fecthed index " + mindex[playlist] + " response " + decodeURIComponent(JSON.stringify(data)));
 
         for(var i = 0; i < data.d.length; i++){
             placeThumbnail(data.d[i], playlist);
@@ -34,11 +34,15 @@ function  getFileName(x) {
    var n = names[names.length -1 ];
    var x = n.lastIndexOf('.');
    n = n.substr(0, x);
-   return n.replace(/\+/g, ' ');
+   return decodeString(n);
+}
+
+function decodeString(n) {
+    return decodeURIComponent(n.replace(/\+/g, ' ').replace(/\%27/g, ' '));
 }
 
 function placeThumbnail(obj, playlist) {
-    // console.log(obj);
+    console.log(obj);
     var id = (obj.P + '').replace(/\./g, '_')
         .replace(/%/g, '-')
         .replace(/\+/g, 'cP');
@@ -47,29 +51,31 @@ function placeThumbnail(obj, playlist) {
         return;
     }
     var div = document.createElement('div');
-    div.setAttribute('class', 'media-icon');
+    div.setAttribute('class', 'mb');
     div.setAttribute("onclick", "showOptions('" + obj.P + "')");
     div.id = id;
     var name = getFileName(obj.P);
-    var innerHtml = '<span class="media-title">'+name+'</span><button class="media-btn" onclick="showOptions(\'' + obj.P + '\')">';
+    var innerHtml = '';
+    //= '<span class="media-title">'+name+'</span><button class="media-btn" onclick="showOptions(\'' + obj.P + '\')">';
     if(obj.Q){
-        innerHtml += '<img src="' + host +  '/thumbnail?id=' + obj.Q +'" class="thumbnail"/>'
+        innerHtml += '<img src="' + host +  '/thumbnail?id=' + obj.Q +'" class="thmb"/>'
     } else {
         //TODO sensitive icon
-        innerHtml += '<img src="https://img.icons8.com/dusk/64/000000/musical.png" class="thumbnail"/>';
+        innerHtml += '<img src="https://img.icons8.com/dusk/64/000000/musical.png" class="thmb"/>';
     }
-    innerHtml +='</button>';
 
-    // innerHtml = btnHtml.replace(/_OBJP/g, obj.P)
-    //     .replace('_NAME', name)
-    //     .replace('_ID', id);
-
+    innerHtml += '<div class="mt">';
+    if(obj.B && obj.T){
+        innerHtml += '<div>' + decodeString(obj.B) + '</div>';
+        innerHtml += '<div style="font-style: italic">' + decodeString(obj.T) + '</div>';
+    } else {
+        innerHtml += '<div>' + name + '</div>';
+    }
+    innerHtml += '<div>';
     div.innerHTML = innerHtml;
-   // console.log(decodeURIComponent(obj.P));
 
 
     $('#media-list-' + playlist).append(div);
-
 
 }
 

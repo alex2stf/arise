@@ -2,19 +2,32 @@
 
 <div id="cam-preview" class="page">
     <img id="cam-img"/>
-
     <div id="control-box" class="controls">
-        <div style="text-align: center;">
+        <div class="controls-pane">
+            <button class="btn-img" onclick="toggleStreamControls()">
+                <img id="btn-toggle" src="https://img.icons8.com/ios/50/000000/chevron.png"/>
+            </button>
+        </div>
+        <div id="stream-controls" style="text-align: center;">
             <div style="font-size: 26px; margin: 0px; margin-top: 2px;" id="device-status-container" style="overflow: auto;"></div>
             <div id="btn-container">
-                <button class="btn btn-primary" onclick="rotateCamPreview();">rotate</button>
-                <button class="btn btn-primary" onclick="match_height();">Fit height</button>
-                <button class="btn btn-primary" onclick="match_width();">Fit width</button>
-                <button class="btn btn-primary" id="movieMod" onclick="toggleMovie()">MJPEG</button>
-                <button class="btn btn-primary" onclick="takeSnapshot()">SNAPSHOT</button>
+                <button class="btn-img" onclick="rotateCamPreview();">
+                    <img src="https://img.icons8.com/cotton/64/000000/rotate.png"/>
+                </button>
+                <button class="btn-img" onclick="match_height();">
+                    <img src="https://img.icons8.com/carbon-copy/50/000000/resize-vertical.png"/>
+
+                </button>
+                <button class="btn-img" onclick="match_width();">
+                    <img src="https://img.icons8.com/carbon-copy/50/000000/resize-horizontal.png"/>
+                </button>
                 <button id="cam_ctrl" class="btn btn-primary" onclick="toggleStream()">
                     <img src="https://img.icons8.com/flat_round/64/000000/stop.png"/>
                 </button>
+                <select id="camMode" name="camMode" class="selectpicker" onchange="changeCameraMode()">
+                    <option value="mjpeg">MJPEG</option>
+                    <option value="jpeg">JPEG</option>
+                </select>
 
                 <select id="cameraIndex" name="cameraIndex" class="selectpicker" onchange="changeCameraIndex()">
                     <option value="0">DEFAULT</option>

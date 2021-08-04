@@ -36,7 +36,6 @@ public class URLBeautifier {
 
                 }
 
-                System.out.println(queryparams);
 
             }
         } catch (URISyntaxException e) {

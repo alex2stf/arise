@@ -49,10 +49,7 @@ public class MJPEGResponse extends SingletonHttpResponse {
                             "\r\n").getBytes());
 
             b.write(bytes);
-
             b.write(("\r\n--" + boundary + "\r\n").getBytes());
-
-
             return b.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();

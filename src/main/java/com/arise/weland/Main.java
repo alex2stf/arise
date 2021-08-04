@@ -1,32 +1,34 @@
 package com.arise.weland;
 
 import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Registry;
 import com.arise.core.tools.AppCache;
-import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.DesktopCamStream;
 import com.arise.weland.impl.DesktopFileHandler;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
-import com.arise.weland.impl.ui.desktop.WelandFrame;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.utils.AppSettings;
+import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
-import javax.swing.*;
 import java.io.File;
 import java.util.UUID;
 
@@ -98,6 +100,7 @@ public class Main {
         final ContentInfoDecoder decoder = new PCDecoder();
         final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder);
 
+
         for (File file: AppSettings.getScannableLocations()){
             contentInfoProvider.addRoot(file);
             log.info("added scannable root ", file.getAbsolutePath());
@@ -105,8 +108,32 @@ public class Main {
 
         contentInfoProvider.get();
 
+
+
+        MJPEGResponse mjpegResponse = new MJPEGResponse();
+        JPEGOfferResponse jpegOfferResponse = new JPEGOfferResponse();
+        DesktopCamStream desktopCamStream = new DesktopCamStream(mjpegResponse, jpegOfferResponse);
+        WelandServerHandler.Handler<HttpRequest> cameraStreamHandler = new WelandServerHandler.Handler<HttpRequest>() {
+            @Override
+            public HttpResponse handle(HttpRequest request) {
+                boolean shouldStop = "false".equalsIgnoreCase(
+                        request.getQueryParamString("camEnabled", "false")
+                );
+                if (shouldStop){
+                    desktopCamStream.stop();
+                }
+                else {
+                    desktopCamStream.start();
+                }
+                return null;
+            }
+        };
+
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
-//                .setLiveMjpegStream(new MJPEGResponse())
+                .setLiveMjpegStream(mjpegResponse)
+                .setLiveJpeg(jpegOfferResponse)
+                .beforeLiveJPEG(cameraStreamHandler)
+                .beforeLiveMJPEG(cameraStreamHandler)
                 .setContentProvider(contentInfoProvider);
 
         DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider,  registry);
@@ -157,14 +184,6 @@ public class Main {
             }
         });
 
-        if ("true".equalsIgnoreCase(System.getProperty("weland.ui.enabled"))){
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            WelandFrame welandFrame= new WelandFrame(contentInfoProvider);
-            welandFrame.setVisible(true);
-            welandFrame.initComponents();
-            welandFrame.pack();
-            welandFrame.fullscreen();
-        }
 
     }
 
