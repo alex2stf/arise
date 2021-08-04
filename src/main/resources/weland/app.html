@@ -139,6 +139,13 @@
             mRoot = document.createElement('div');
             mRoot.setAttribute('class', 'media-list page');
             mRoot.id = 'media-list-' + p;
+            mRoot.innerHTML = '<div id="media-search-'+p+'">' +
+                '<input type="text" class="msrc" id="media-search-' + p + '"></input>' +
+                '<button class="msrc-btn" onclick="searchMedia(\'' + p + '\')">Search</button>' +
+                '<button class="msrc-btn" onclick="autoPlay(\'' + p + '\')">Autoplay</button>' +
+                '<button class="msrc-btn" onclick="playSelected(\'' + p + '\')">Play selected</button>' +
+                '</div>' +
+                '<div id="media-content-'+p+'"></div>';
             $('#media-page').append(mRoot);
         }
         mRoot.style.display = 'block';

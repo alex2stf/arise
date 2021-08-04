@@ -98,7 +98,8 @@ public class Main {
 
         final IDeviceController deviceController = new PCDeviceController();
         final ContentInfoDecoder decoder = new PCDecoder();
-        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder);
+        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
+                .addFromLocalResource("weland/config/commons/content-infos.json");
 
 
         for (File file: AppSettings.getScannableLocations()){

@@ -14,7 +14,6 @@ function startFetch(playlist) {
 
         for(var i = 0; i < data.d.length; i++){
             placeThumbnail(data.d[i], playlist);
-
         }
 
         if (data.i > 0){
@@ -75,7 +74,7 @@ function placeThumbnail(obj, playlist) {
     div.innerHTML = innerHtml;
 
 
-    $('#media-list-' + playlist).append(div);
+    $('#media-content-' + playlist).append(div);
 
 }
 
