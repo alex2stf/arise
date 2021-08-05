@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 
 public class ProxyMaster {
@@ -86,6 +87,18 @@ public class ProxyMaster {
                                 Util.close(acceptedSocket);
                                 return;
                             }
+                            try {
+                                client.setKeepAlive(true);
+                            } catch (SocketException e) {
+                                log.error("cannot keep alive", e);
+                            }
+
+                            try {
+                                client.setSoTimeout(5000);
+                            } catch (SocketException e) {
+                                log.error("cannot set read timeout", e);
+                            }
+
                             try {
                                 client.getOutputStream().write(data.getBytes());
                             } catch (IOException e) {
