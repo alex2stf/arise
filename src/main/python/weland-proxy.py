@@ -12,7 +12,7 @@ print ("socket is listening")
 
 
 host = '192.168.1.6'
-port = 8221
+port = 80
 
 
 def proxy_thread(client_socket, client_address):
