@@ -45,14 +45,14 @@ public class ProxyMaster {
         IOServer ioServer = new IOServer(){
 
             @Override
-            protected void handle(Socket server) {
+            protected void handle(Socket acceptedSocket) {
                 try {
-                    httpRequestBuilder.readInputStream(server.getInputStream(), new CompleteHandler<HttpRequest>() {
+                    httpRequestBuilder.readInputStream(acceptedSocket.getInputStream(), new CompleteHandler<HttpRequest>() {
                         @Override
                         public void onComplete(HttpRequest data) {
                             OutputStream out = null;
                             try {
-                                out = server.getOutputStream();
+                                out = acceptedSocket.getOutputStream();
                             } catch (IOException e) {
                                 System.out.println("Failed to obtain server getOutputStream");
                                 Util.close(out);
@@ -77,22 +77,64 @@ public class ProxyMaster {
 
                             Socket client = null;
                             InputStream in = null;
+
                             try {
                                 client = new Socket(host, Integer.valueOf(port));
+                            } catch (IOException e) {
+                                log.error("Failed to connect", e);
+                                Util.close(client);
+                                Util.close(acceptedSocket);
+                                return;
+                            }
+                            try {
                                 client.getOutputStream().write(data.getBytes());
-                                byte[] buf = new byte[8192];
-                                int length;
+                            } catch (IOException e) {
+                                log.error("Failed to write request", e);
+                                Util.close(client);
+                                Util.close(acceptedSocket);
+                                return;
+                            }
+                            byte[] buf = new byte[8192];
+                            int length = 0;
+                            try {
                                 in = client.getInputStream();
-                                while ((length = in.read(buf)) > 0) {
-                                    out.write(buf, 0, length);
+                            } catch (IOException e) {
+                                log.error("Failed to get client inputStream");
+                                Util.close(client);
+                                Util.close(acceptedSocket);
+                                return;
+                            }
+                            while (true) {
+                                try {
+                                    if (!((length = in.read(buf)) > 0)) break;
+                                } catch (IOException e) {
+                                    log.error("Failed to read client", e);
+                                    Util.close(in);
+                                    Util.close(client);
+                                    Util.close(acceptedSocket);
+                                    return;
                                 }
+                                try {
+                                    out.write(buf, 0, length);
+                                }catch (Exception ex){
+                                    log.error("Failed to write bytes to client", ex);
+                                    Util.close(in);
+                                    Util.close(client);
+                                    Util.close(acceptedSocket);
+                                    return;
+                                }
+                                log.info("written " + length + " bytes");
+                            }
+                            try {
                                 out.flush();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                log.error("Failed to flush");
                             }
+
                             Util.close(client);
                             Util.close(in);
                             Util.close(out);
+                            Util.close(acceptedSocket);
                         }
                     }, new CompleteHandler<Throwable>() {
                         @Override
@@ -102,7 +144,7 @@ public class ProxyMaster {
                     });
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                   log.error("Unexpected exception while parsing request ", e);
                 }
             }//end handle
         }; //end instance

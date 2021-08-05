@@ -65,7 +65,7 @@ public class CamStreamResponse extends CameraWorker {
                         @Override
                         public void handleMessage(Message msg) {
                             byte[] data = (byte[]) msg.obj;
-//                            System.out.println("Still working....");
+                            System.out.println("Still working....");
 
                             allowFrameSend = false;
                             try {
