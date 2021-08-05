@@ -123,7 +123,6 @@ public class ProxyMaster {
                                     Util.close(acceptedSocket);
                                     return;
                                 }
-                                log.info("written " + length + " bytes");
                             }
                             try {
                                 out.flush();
