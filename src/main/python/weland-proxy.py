@@ -1,10 +1,10 @@
-import socket, sys, os, threading, _thread
+import socket, sys, os, threading
 
 
 
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-serverSocket.bind( ('', 1234))
+serverSocket.bind( ('', 80))
 serverSocket.listen(10) # become a server socket
 # put the socket into listening mode
 # s.listen(5)
@@ -12,7 +12,7 @@ print ("socket is listening")
 
 
 host = '192.168.1.6'
-port = 80
+port = 8221
 
 
 def proxy_thread(client_socket, client_address):
@@ -34,11 +34,11 @@ def proxy_thread(client_socket, client_address):
         print("defined host = " + host + " port=" + str(port))
 
         body_raw = '<iframe src="/app" style="display: block; width: 100%; height: 100%"></iframe>'
-        client_socket.send(bytes("HTTP/1.0 200 OK", 'utf-8'))
-        client_socket.send(bytes("\nContent-Type:text/html", 'utf-8'))
-        client_socket.send(bytes("\nContent-Length:" + str(len(body_raw)), 'utf-8'))
-        client_socket.send(bytes('\n\n', 'utf-8'))  # to separate headers from body
-        client_socket.send(bytes(body_raw, 'utf-8'))  # to separate headers from body
+        client_socket.send("HTTP/1.0 200 OK".encode())
+        client_socket.send("\nContent-Type:text/html".encode())
+        client_socket.send("\nContent-Length:" + str(len(body_raw)).encode() )
+        client_socket.send('\n\n'.encode())  # to separate headers from body
+        client_socket.send(body_raw.encode())  # to separate headers from body
         client_socket.close()
         return
 

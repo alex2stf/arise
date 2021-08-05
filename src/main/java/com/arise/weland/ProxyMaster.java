@@ -94,7 +94,7 @@ public class ProxyMaster {
                             }
 
                             try {
-                                client.setSoTimeout(5000);
+                                client.setSoTimeout(1000 * 60 * 60 * 5);
                             } catch (SocketException e) {
                                 log.error("cannot set read timeout", e);
                             }
@@ -117,11 +117,12 @@ public class ProxyMaster {
                                 Util.close(acceptedSocket);
                                 return;
                             }
+                            log.info("start read at " + new java.util.Date());
                             while (true) {
                                 try {
                                     if (!((length = in.read(buf)) > 0)) break;
                                 } catch (IOException e) {
-                                    log.error("Failed to read client", e);
+                                    log.error("Failed to read client at " + new java.util.Date(), e);
                                     Util.close(in);
                                     Util.close(client);
                                     Util.close(acceptedSocket);
