@@ -125,9 +125,10 @@ function match_height() {
 }
 
 function hideControls() {
-    document.getElementById('cam-img').src = "#";
-    document.getElementById('audio-src').src = "#";
+    document.getElementById('cam-img').src = cameraUrl();
+    document.getElementById('audio-src').src = host + '/device/live/audio.wav?' + calculateDeviceParams();
     document.getElementById('audio-src').style.display = 'none';
+    clearTimeout(rtimeout);
 }
 
 function showControls() {

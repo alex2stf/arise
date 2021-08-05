@@ -18,26 +18,6 @@ public abstract class CameraWorker {
     protected volatile boolean recording = false;
     protected int cameraIndex;
 
-    public CameraWorker setPreview(TextureView mPreview) {
-        this.mPreview = mPreview;
-        return this;
-    }
-
-    public CameraWorker setPreview(SurfaceTexture surfaceTexture) {
-        this.surfaceTexture = surfaceTexture;
-        return this;
-    }
-
-    public void releaseCamera(){
-        if (mainCamera != null){
-            mainCamera.setPreviewCallback(null);
-            mainCamera.stopPreview();
-            mainCamera.release();
-            mainCamera = null;
-            recording = false;
-        }
-    }
-
     public static Camera getDefaultCameraInstance() {
         int numberOfCameras = Camera.getNumberOfCameras();
         Camera camera = null;
@@ -57,9 +37,6 @@ public abstract class CameraWorker {
         }
         return null;
     }
-
-    protected abstract boolean prepare();
-
 
     public static Camera getCameraInstance(int index) {
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -89,6 +66,28 @@ public abstract class CameraWorker {
         }
         return null;
     }
+
+    public CameraWorker setPreview(TextureView mPreview) {
+        this.mPreview = mPreview;
+        return this;
+    }
+
+    public CameraWorker setPreview(SurfaceTexture surfaceTexture) {
+        this.surfaceTexture = surfaceTexture;
+        return this;
+    }
+
+    public void releaseCamera(){
+        if (mainCamera != null){
+            mainCamera.setPreviewCallback(null);
+            mainCamera.stopPreview();
+            mainCamera.release();
+            mainCamera = null;
+            recording = false;
+        }
+    }
+
+    protected abstract boolean prepare();
 
     public void setCameraIndex(int cameraIndex) {
         this.cameraIndex = cameraIndex;

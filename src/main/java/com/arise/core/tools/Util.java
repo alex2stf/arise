@@ -46,6 +46,10 @@ public final class Util {
         if (stream == null){
             return;
         }
+        if(stream instanceof ThreadUtil.TimerResult){
+            ThreadUtil.closeTimer((ThreadUtil.TimerResult)stream);
+            return;
+        }
         try {
             closeWithEx(stream);
         } catch (Exception e){

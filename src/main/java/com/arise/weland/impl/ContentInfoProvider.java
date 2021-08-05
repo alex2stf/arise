@@ -314,15 +314,7 @@ public class ContentInfoProvider {
         return new File(decoder.getStateDirectory(), "media-queue.json");
     }
 
-    public void addToQueue(ContentInfo info) {
-//        contentInfoQueue.add(info);
-//        saveQueue();
-    }
 
-    private void saveQueue(){
-//        String content = ContentInfo.serializeCollection(contentInfoQueue);
-//        FileUtil.writeStringToFile(getQueueFile(), content);
-    }
 
     @Deprecated
     public final void saveState(ContentInfo currentInfo) {

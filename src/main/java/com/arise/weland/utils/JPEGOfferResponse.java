@@ -67,8 +67,6 @@ public class JPEGOfferResponse extends HttpResponse {
             if (offerCount > imgBuffer.length -1){
                 offerCount = 0;
             }
-
-            System.out.println("IM_PUT " + offerCount);
         }
         imgBuffer[offerCount] = bytes;
 

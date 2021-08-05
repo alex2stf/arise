@@ -27,14 +27,14 @@ public class ThreadUtil {
     }
 
     public static TimerResult repeatedTask(Runnable action, long rate){
-        Timer timer = new Timer(true);
+        Timer timer = new Timer(false);
         TimerResult timerResult = new TimerResult(timer, action);
         timer.scheduleAtFixedRate(timerResult.getTimerTask(), 0, rate);
         return timerResult;
     }
 
     public static TimerResult delayedTask(Runnable action, long delay){
-        Timer timer = new Timer(true);
+        Timer timer = new Timer(false);
         TimerResult timerResult = new TimerResult(timer, action);
         timer.schedule(timerResult.getTimerTask(), delay);
         return timerResult;

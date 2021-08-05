@@ -1,6 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 import com.github.sarxos.webcam.Webcam;
@@ -26,11 +27,13 @@ public class DesktopCamStream {
     }
 
     public synchronized void stop() {
+        ThreadUtil.closeTimer(timerResult);
+        started = false;
         if (webcam == null){
             return;
         }
         webcam.close();
-        started = false;
+
     }
 
     public static byte[] toByteArray(BufferedImage bi, String format) throws IOException {
@@ -44,6 +47,8 @@ public class DesktopCamStream {
         return bytes;
     }
 
+   private static ThreadUtil.TimerResult timerResult;
+
     public synchronized void start() {
         if (webcam == null){
             webcam = Webcam.getDefault();
@@ -52,9 +57,15 @@ public class DesktopCamStream {
             webcam.open();
         }
         started = true;
-        ThreadUtil.repeatedTask(new Runnable() {
+        ThreadUtil.closeTimer(timerResult);
+        timerResult = ThreadUtil.repeatedTask(new Runnable() {
             @Override
             public void run() {
+                if(!started){
+                    ThreadUtil.closeTimer(timerResult);
+                    System.out.println("closing time");
+                    return;
+                }
                 System.out.println("take snapshot at " + new Date());
                 byte[] bytes = null;
                 try {

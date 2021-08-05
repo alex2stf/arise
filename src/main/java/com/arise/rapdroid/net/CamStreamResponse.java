@@ -40,49 +40,8 @@ public class CamStreamResponse extends CameraWorker {
 
 
     public CamStreamResponse(final MJPEGResponse mjpegResponse, final JPEGOfferResponse jpegOfferResponse) {
-
         this.mjpegResponse = mjpegResponse;
         this.jpegOfferResponse = jpegOfferResponse;
-
-
-        frameThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        byte[] data = (byte[]) msg.obj;
-
-                        allowFrameSend = false;
-                        try {
-                            if(frameFormat == ImageFormat.JPEG){
-                                mjpegResponse.pushJPEGFrame(data);
-                                jpegOfferResponse.offerJPEG(data);
-                            }
-                            else {
-
-                                image = new YuvImage(data, frameFormat, frameWidth, frameHeight, null);
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                                image.compressToJpeg(rectangle, 20, stream);
-                                byte[] imgBytes = stream.toByteArray();
-                                mjpegResponse.pushJPEGFrame(imgBytes);
-                                jpegOfferResponse.offerJPEG(imgBytes);
-                            }
-                        } catch (Exception ex){
-                            ex.printStackTrace();
-                        }
-
-                        allowFrameSend = true;
-
-                    }
-                };
-                Looper.loop();
-            }
-        });
-        frameThread.setName("Frame-Thread");
-        frameThread.start();
     }
 
 
@@ -94,18 +53,94 @@ public class CamStreamResponse extends CameraWorker {
      *
      *
      */
-    public CamStreamResponse startStream() {
+    public synchronized CamStreamResponse startStream() {
         stop();
         worker = ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
                 if (prepare()) {
                     recording = true;
+                    Looper.prepare();
+                    handler = new Handler(){
+                        @Override
+                        public void handleMessage(Message msg) {
+                            byte[] data = (byte[]) msg.obj;
+//                            System.out.println("Still working....");
+
+                            allowFrameSend = false;
+                            try {
+                                if(frameFormat == ImageFormat.JPEG){
+                                    mjpegResponse.pushJPEGFrame(data);
+                                    jpegOfferResponse.offerJPEG(data);
+                                }
+                                else {
+
+                                    image = new YuvImage(data, frameFormat, frameWidth, frameHeight, null);
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                                    image.compressToJpeg(rectangle, 20, stream);
+                                    byte[] imgBytes = stream.toByteArray();
+                                    mjpegResponse.pushJPEGFrame(imgBytes);
+                                    jpegOfferResponse.offerJPEG(imgBytes);
+                                }
+                            } catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+
+                            allowFrameSend = true;
+
+                            if (recording == false){
+                                handler.getLooper().quit();
+                            }
+                        }//exit handle message
+                    };
+                    Looper.loop();
                 } else {
                     stop();
                 }
             }
         }, "CamStartStream");
+
+
+//        frameThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Looper.prepare();
+//                handler = new Handler(){
+//                    @Override
+//                    public void handleMessage(Message msg) {
+//                        byte[] data = (byte[]) msg.obj;
+//                        System.out.println("Still working....");
+//
+//                        allowFrameSend = false;
+//                        try {
+//                            if(frameFormat == ImageFormat.JPEG){
+//                                mjpegResponse.pushJPEGFrame(data);
+//                                jpegOfferResponse.offerJPEG(data);
+//                            }
+//                            else {
+//
+//                                image = new YuvImage(data, frameFormat, frameWidth, frameHeight, null);
+//                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//
+//                                image.compressToJpeg(rectangle, 20, stream);
+//                                byte[] imgBytes = stream.toByteArray();
+//                                mjpegResponse.pushJPEGFrame(imgBytes);
+//                                jpegOfferResponse.offerJPEG(imgBytes);
+//                            }
+//                        } catch (Exception ex){
+//                            ex.printStackTrace();
+//                        }
+//
+//                        allowFrameSend = true;
+//
+//                    }
+//                };
+//                Looper.loop();
+//            }
+//        });
+//        frameThread.setName("Frame-Thread");
+//        frameThread.start();
         return this;
     }
 
@@ -115,7 +150,13 @@ public class CamStreamResponse extends CameraWorker {
 
     public synchronized void stop() {
         releaseCamera();
-        Util.close(worker);
+
+
+        if (worker != null) {
+            worker.interrupt();
+            Util.close(worker);
+        }
+
     }
 
 
