@@ -1,6 +1,8 @@
 package com.arise.core.tools;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
@@ -419,6 +421,19 @@ public class Mole {
     private static class SysOutDelegate extends Delegate {
 
         private String name;
+
+        private StringUtil.JoinIterator<Object> joinIterator = new StringUtil.JoinIterator<Object>() {
+            @Override
+            public String toString(Object o) {
+                if (o instanceof Throwable){
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    ((Throwable) o).printStackTrace(pw);
+                    return sw.toString(); // stack trace as a string
+                }
+                return "" + o;
+            }
+        };
         public SysOutDelegate(Object arg) throws Exception {
             super(arg);
             name = getName(arg);

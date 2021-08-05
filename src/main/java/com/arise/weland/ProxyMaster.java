@@ -48,6 +48,11 @@ public class ProxyMaster {
             @Override
             protected void handle(Socket acceptedSocket) {
                 try {
+                    acceptedSocket.setKeepAlive(true);
+                } catch (SocketException e) {
+                    log.error("Failed to keep alive socket", e);
+                }
+                try {
                     httpRequestBuilder.readInputStream(acceptedSocket.getInputStream(), new CompleteHandler<HttpRequest>() {
                         @Override
                         public void onComplete(HttpRequest data) {
