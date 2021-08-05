@@ -117,7 +117,7 @@ public class ProxyMaster {
                             try {
                                 in = client.getInputStream();
                             } catch (IOException e) {
-                                log.error("Failed to get client inputStream");
+                                log.error("Failed to get client inputStream", e);
                                 Util.close(client);
                                 Util.close(acceptedSocket);
                                 return;
@@ -146,10 +146,10 @@ public class ProxyMaster {
                                     }
                                 } catch (Exception ex){
                                     log.error("Failed to write bytes to client", ex);
-//                                    Util.close(in);
-//                                    Util.close(client);
-//                                    Util.close(acceptedSocket);
-//                                    return;
+                                    Util.close(in);
+                                    Util.close(client);
+                                    Util.close(acceptedSocket);
+                                    return;
                                 }
                             }//exit while
 
