@@ -440,7 +440,7 @@ public class Mole {
         }
 
         private boolean log(String level, Object ... args){
-            System.out.println( level + "| " + name + ": " + StringUtil.join(args, " "));
+            System.out.println( level + "| " + name + ": " + StringUtil.join(args, " ", joinIterator));
             return true;
         }
 
