@@ -134,19 +134,20 @@ public class ProxyMaster {
                                 }
                                 try {
                                     out.write(buf, 0, length);
-                                }catch (Exception ex){
+                                    try {
+                                        out.flush();
+                                    } catch (IOException e) {
+                                        log.error("Failed to flush ", e);
+                                    }
+                                } catch (Exception ex){
                                     log.error("Failed to write bytes to client", ex);
-                                    Util.close(in);
-                                    Util.close(client);
-                                    Util.close(acceptedSocket);
-                                    return;
+//                                    Util.close(in);
+//                                    Util.close(client);
+//                                    Util.close(acceptedSocket);
+//                                    return;
                                 }
-                            }
-                            try {
-                                out.flush();
-                            } catch (IOException e) {
-                                log.error("Failed to flush");
-                            }
+                            }//exit while
+
 
                             Util.close(client);
                             Util.close(in);
