@@ -117,12 +117,16 @@ public class ProxyMaster {
                                 Util.close(acceptedSocket);
                                 return;
                             }
-                            log.info("start read at " + new java.util.Date());
+
+                            long start = System.currentTimeMillis();
+
                             while (true) {
                                 try {
                                     if (!((length = in.read(buf)) > 0)) break;
                                 } catch (IOException e) {
-                                    log.error("Failed to read client at " + new java.util.Date(), e);
+                                    long end = System.currentTimeMillis();
+                                    long diff = (end - start);
+                                    log.error("Failed to read client for request" + data + "after " + diff + " miliseconds" , e);
                                     Util.close(in);
                                     Util.close(client);
                                     Util.close(acceptedSocket);
