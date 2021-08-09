@@ -360,6 +360,11 @@ public class DesktopFileHandler extends ContentHandler {
         }, 1000);
     }
 
+    @Override
+    public void onPlaylistPlay(String name) {
+        System.out.println("TO DO");
+    }
+
     private void execute(String args[]){
         log.info(StringUtil.join(args, " "));
         exes.add(new File(args[0]).getName());

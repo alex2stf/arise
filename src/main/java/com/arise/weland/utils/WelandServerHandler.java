@@ -20,6 +20,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.CompleteHandler;
+import com.arise.weland.PlaylistWorker;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
@@ -39,14 +40,26 @@ import java.util.UUID;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
-  private Mole log = Mole.getInstance(WelandServerHandler.class);
-
   public static final DeviceStat deviceStat = DeviceStat.getInstance();
-
-
   MJPEGResponse liveMjpegStream;
   JPEGOfferResponse liveJpeg;
   SingletonHttpResponse liveWav;
+  ContentInfoProvider contentInfoProvider;
+  Handler<HttpRequest> liveMjpegHandler;
+  Handler<HttpRequest> liveJpegHandler;
+  Handler<HttpRequest> liveWavHandler;
+  Handler<HttpRequest> deviceControlsUpdate;
+//  Handler<String> playlistWorkerHandler;
+  ContentHandler contentHandler;
+  IDeviceController iDeviceController;
+  Whisker whisker = new Whisker();
+  String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
+  private Mole log = Mole.getInstance(WelandServerHandler.class);
+  public WelandServerHandler() {
+
+  }
+
+
 
   public WelandServerHandler setLiveMjpegStream(MJPEGResponse liveMjpegStream) {
     this.liveMjpegStream = liveMjpegStream;
@@ -63,19 +76,10 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-
-
-  public WelandServerHandler() {
-
-  }
-
-
-
   @Override
   public boolean validate(ServerRequest request) {
     return true;
   }
-
 
   public WelandServerHandler setContentProvider(ContentInfoProvider contentProvider){
     this.contentInfoProvider = contentProvider;
@@ -84,17 +88,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
     return this;
   }
-
-  ContentInfoProvider contentInfoProvider;
-
-
-  Handler<HttpRequest> liveMjpegHandler;
-  Handler<HttpRequest> liveJpegHandler;
-  Handler<HttpRequest> liveWavHandler;
-  Handler<HttpRequest> deviceControlsUpdate;
-  ContentHandler contentHandler;
-
-  IDeviceController iDeviceController;
 
   public WelandServerHandler setDeviceController(IDeviceController iDeviceController) {
     this.iDeviceController = iDeviceController;
@@ -108,10 +101,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
     return this;
   }
-
-
-
-
 
   public WelandServerHandler beforeLiveWAV(Handler<HttpRequest> liveWavHandler) {
     this.liveWavHandler = liveWavHandler;
@@ -133,20 +122,12 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-
-
-
   public <I> HttpResponse dispatch(Handler<I> handler, I data){
     if (handler != null){
       return handler.handle(data);
     }
     return HttpResponse.oK();
   }
-
-
-  Whisker whisker = new Whisker();
-  String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
-
 
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
@@ -198,7 +179,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    //used by android app for audio streaming services
+    //used mainly for audio streaming services
     if ("/frame".equalsIgnoreCase(request.path())){
       Map<String, String> args = new HashMap<>();
       args.put("src", request.getQueryParam("src"));
@@ -209,26 +190,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     //basic get status
     if ("/device/stat".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
       return DeviceStat.getInstance().toHttp(request);
-    }
-
-    //test connection
-    if (request.pathsStartsWith("connections")){
-      String name = request.getQueryParam("name");
-      String host = request.getQueryParam("host");
-
-      Map<String, String> hosts = AppSettings.getSavedConnections();;
-
-      if (StringUtil.hasText(name) && StringUtil.hasText(host)) {
-        try {
-          URL url = new URL(host);
-          hosts = AppSettings.storeHost(name, url.toString());
-        } catch (MalformedURLException e) {
-          e.printStackTrace();
-          hosts = AppSettings.getSavedConnections();
-        }
-      }
-
-      return HttpResponse.json(Groot.toJson(hosts)).allowAnyOrigin();
     }
 
     //fetch thumbnail
@@ -284,7 +245,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if(request.pathsStartsWith("transfer")){
-      //file may be already copied
       return HttpResponse.plainText("copied");
     }
 
@@ -383,22 +343,43 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-//    if (request.pathsStartsWith("games")){
-//      String id = request.getPathAt(1);
-//      File main = contentInfoProvider.getGame(id);
-//
-//      try {
-//        return HttpResponse.html(FileUtil.read(main));
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
-//    }
+    if (request.pathsStartsWith("playlist")){
+
+      Map<String, String> data = (Map<String, String>) Groot.decodeBytes(request.getBodyBytes());
+
+      String action = data.get("action");
+      switch (action){
+        case "create":
+          PlaylistWorker.createPlaylist(data.get("name"));
+          break;
+        case "drop":
+          PlaylistWorker.dropPlaylist(data.get("name"));
+          break;
+        case "add":
+          PlaylistWorker.add(data.get("name"), data.get("path"));
+          break;
+        case "play":
+          PlaylistWorker.setRunningPlaylist(data.get("name"));
+          contentHandler.onPlaylistPlay(data.get("name"));
+          break;
+        case "get":
+          return HttpResponse.json(PlaylistWorker.getPlaylist(data.get("name")));
+      }
+
+
+
+
+      return HttpResponse.json(PlaylistWorker.listPlaylists());
+    }
+
+
+
     return super.getHTTPResponse(request, server).allowAnyOrigin();
   }
 
 
   @Override
-  public void onDuplexConnect(AbstractServer ioHttp, ServerRequest request, DuplexDraft.Connection connection) {
+  public void onDuplexConnect(AbstractServer ioHttp, ServerRequest request,  DuplexDraft.Connection connection) {
       duplexConnections.add(connection);
   }
 
@@ -412,14 +393,14 @@ public class WelandServerHandler extends HTTPServerHandler {
     duplexConnections.remove(c);
   }
 
-  public interface Handler<T> {
-    HttpResponse handle(T data);
-  }
-
-
   @Override
   public ServerResponse getDefaultResponse(AbstractServer server) {
     return HttpResponse.plainText("bad request");
+  }
+
+
+  public interface Handler<T> {
+    HttpResponse handle(T data);
   }
 
 

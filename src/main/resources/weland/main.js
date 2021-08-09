@@ -1,4 +1,4 @@
-console.log("post script init");
+
 function playYoutubeVideo(){
 	var playBtn = document.getElementsByClassName('ytp-play-button ytp-button');
 	if(playBtn){

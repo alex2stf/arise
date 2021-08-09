@@ -367,49 +367,49 @@ public class ContentInfoProvider {
         return infos;
     }
 
-    void quickSort(List<ContentInfo> arr, int start, int end) {
-        int partition = partition(arr, start, end);
+//    void quickSort(List<ContentInfo> arr, int start, int end) {
+//        int partition = partition(arr, start, end);
+//
+//        if(partition-1>start) {
+//            quickSort(arr, start, partition - 1);
+//        }
+//        if(partition+1<end) {
+//            quickSort(arr, partition + 1, end);
+//        }
+//    }
 
-        if(partition-1>start) {
-            quickSort(arr, start, partition - 1);
-        }
-        if(partition+1<end) {
-            quickSort(arr, partition + 1, end);
-        }
-    }
+//    int compare(ContentInfo a, ContentInfo b){
+//        return Integer.compare(a.getVisited(), b.getVisited());
+//    }
 
-    int compare(ContentInfo a, ContentInfo b){
-        return Integer.compare(a.getVisited(), b.getVisited());
-    }
+//    private int partition(List<ContentInfo> infos, int start, int end) {
+//        ContentInfo pivot = infos.get(end);
+//        if (pivot.getVisited() > 99){
+//            pivot.setVisited(0);
+//        }
+//
+//        for(int i= start; i < end; i++){
+//            int compare = compare(infos.get(i), pivot);
+//            if (compare < 0  || (compare == 0 && rd.nextBoolean() )){
+//                ContentInfo temp = infos.get(start);
+//                infos.set(start, infos.get(i));
+//                infos.set(i, temp);
+//                start++;
+//            }
+//        }
+//
+//        ContentInfo temp = infos.get(start);
+//        infos.set(start, pivot);
+//        infos.set(end, temp);
+//        return start;
+//    }
 
-    private int partition(List<ContentInfo> infos, int start, int end) {
-        ContentInfo pivot = infos.get(end);
-        if (pivot.getVisited() > 99){
-            pivot.setVisited(0);
-        }
-
-        for(int i= start; i < end; i++){
-            int compare = compare(infos.get(i), pivot);
-            if (compare < 0  || (compare == 0 && rd.nextBoolean() )){
-                ContentInfo temp = infos.get(start);
-                infos.set(start, infos.get(i));
-                infos.set(i, temp);
-                start++;
-            }
-        }
-
-        ContentInfo temp = infos.get(start);
-        infos.set(start, pivot);
-        infos.set(end, temp);
-        return start;
-    }
-
-    private void shuffle(List<ContentInfo> infos){
-        if (CollectionUtil.isEmpty(infos) || infos.size() < 4){
-            return;
-        }
-        quickSort(infos, 0, infos.size() - 1);
-    }
+//    private void shuffle(List<ContentInfo> infos){
+//        if (CollectionUtil.isEmpty(infos) || infos.size() < 4){
+//            return;
+//        }
+//        quickSort(infos, 0, infos.size() - 1);
+//    }
 
     public  List<ContentInfo> getSafePersistedPlaylist(Playlist playlist){
         List<ContentInfo> infos = getNullablePersistedPlaylist(playlist);
@@ -419,50 +419,49 @@ public class ContentInfoProvider {
         return infos;
     }
 
-    @SuppressWarnings("unused")
-    public ContentInfo nextFile(Playlist playlist){
-        List<ContentInfo> infos = getSafePersistedPlaylist(playlist);
-
-        if(CollectionUtil.isEmpty(infos)){
-            return null;
-        }
-
-        if (infos.size() == 1){
-            return infos.get(0);
-        }
-        String indexKey = "INDX"+ playlist.name();
-
-        int index = AppCache.getInt(indexKey, 0);
-
-        if (index > infos.size() - 1){
-            index = 0;
-
-            if (!scanning){
-                shuffle(infos);
-                persistPlaylist(playlist, infos);
-            }
-        }
-
-        ContentInfo current = infos.get(index);
-
-        File f = new File(current.getPath());
-        if (!f.exists()){
-            infos.remove(index);
-            if (!scanning){
-                persistPlaylist(playlist, infos);
-            }
-
-            AppCache.putInt(indexKey, ++index);
-            return nextFile(playlist);
-        }
-
-        AppCache.putInt(indexKey, ++index);
-        current.incrementVisit();
-        if (!scanning) {
-            persistPlaylist(playlist, infos);
-        }
-        return current;
-    }
+//    public ContentInfo nextFile(Playlist playlist){
+//        List<ContentInfo> infos = getSafePersistedPlaylist(playlist);
+//
+//        if(CollectionUtil.isEmpty(infos)){
+//            return null;
+//        }
+//
+//        if (infos.size() == 1){
+//            return infos.get(0);
+//        }
+//        String indexKey = "INDX"+ playlist.name();
+//
+//        int index = AppCache.getInt(indexKey, 0);
+//
+//        if (index > infos.size() - 1){
+//            index = 0;
+//
+//            if (!scanning){
+//                shuffle(infos);
+//                persistPlaylist(playlist, infos);
+//            }
+//        }
+//
+//        ContentInfo current = infos.get(index);
+//
+//        File f = new File(current.getPath());
+//        if (!f.exists()){
+//            infos.remove(index);
+//            if (!scanning){
+//                persistPlaylist(playlist, infos);
+//            }
+//
+//            AppCache.putInt(indexKey, ++index);
+//            return nextFile(playlist);
+//        }
+//
+//        AppCache.putInt(indexKey, ++index);
+//        current.incrementVisit();
+//        if (!scanning) {
+//            persistPlaylist(playlist, infos);
+//        }
+//        return current;
+//    }
 
     public ContentInfo findByPath(String path) {
         if (!scannedOnce){
@@ -475,16 +474,6 @@ public class ContentInfoProvider {
         if (info == null){
             info = findByPathInList(getSafePersistedPlaylist(Playlist.VIDEOS), path);
         }
-//        if (info == null){
-//            info = findByPathInList(music, path);
-//        }
-//        if (info == null){
-//            info = findByPathInList(games, path);
-//        }
-//        if (info == null){
-//            info = findByPathInList(presentations, path);
-//        }
-//        return info;
         return info;
     }
 

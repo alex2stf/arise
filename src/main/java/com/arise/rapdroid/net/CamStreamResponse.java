@@ -29,7 +29,6 @@ public class CamStreamResponse extends CameraWorker {
     private volatile boolean lightOn = false;
     private Thread worker;
     private android.os.Handler handler;
-    private Thread frameThread;
     private volatile boolean allowFrameSend = true;
     private int frameWidth = 0;
     private int frameHeight = 0;
@@ -53,11 +52,15 @@ public class CamStreamResponse extends CameraWorker {
      *
      *
      */
+
+    
     public synchronized CamStreamResponse startStream() {
         stop();
+        //TODO tb o pause
         worker = ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
+
                 if (prepare()) {
                     recording = true;
                     Looper.prepare();
@@ -97,50 +100,13 @@ public class CamStreamResponse extends CameraWorker {
                     Looper.loop();
                 } else {
                     stop();
+                    log.info("Camera prepare failed, please try again later...");
                 }
             }
         }, "CamStartStream");
 
 
-//        frameThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Looper.prepare();
-//                handler = new Handler(){
-//                    @Override
-//                    public void handleMessage(Message msg) {
-//                        byte[] data = (byte[]) msg.obj;
-//                        System.out.println("Still working....");
-//
-//                        allowFrameSend = false;
-//                        try {
-//                            if(frameFormat == ImageFormat.JPEG){
-//                                mjpegResponse.pushJPEGFrame(data);
-//                                jpegOfferResponse.offerJPEG(data);
-//                            }
-//                            else {
-//
-//                                image = new YuvImage(data, frameFormat, frameWidth, frameHeight, null);
-//                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//
-//                                image.compressToJpeg(rectangle, 20, stream);
-//                                byte[] imgBytes = stream.toByteArray();
-//                                mjpegResponse.pushJPEGFrame(imgBytes);
-//                                jpegOfferResponse.offerJPEG(imgBytes);
-//                            }
-//                        } catch (Exception ex){
-//                            ex.printStackTrace();
-//                        }
-//
-//                        allowFrameSend = true;
-//
-//                    }
-//                };
-//                Looper.loop();
-//            }
-//        });
-//        frameThread.setName("Frame-Thread");
-//        frameThread.start();
+
         return this;
     }
 
@@ -180,7 +146,8 @@ public class CamStreamResponse extends CameraWorker {
             mainCamera.setParameters(parameters);
         }catch (Exception ex){
             ex.printStackTrace();
-            log.warn(ex);
+            log.error("setParameters failed with", ex);
+            return false;
         }
 
 
@@ -188,7 +155,8 @@ public class CamStreamResponse extends CameraWorker {
             try {
                 mainCamera.setPreviewTexture(mPreview.getSurfaceTexture());
             } catch (Exception ex){
-                ex.printStackTrace();
+                log.error("setPreviewTexture failed ", ex);
+                return false;
             }
         }
 
@@ -197,6 +165,8 @@ public class CamStreamResponse extends CameraWorker {
                 mainCamera.setPreviewTexture(surfaceTexture);
             } catch (IOException e) {
                 e.printStackTrace();
+                log.error("setPreviewTexture failed ", e);
+                return false;
             }
         }
 

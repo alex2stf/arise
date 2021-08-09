@@ -41,8 +41,28 @@ public class HttpRequest extends ServerRequest {
         return this;
     }
 
+    public byte[] getBodyBytes(){
+        return bytes;
+    }
+
     public byte[] getBytes() {
-        return toString().getBytes();
+        int bodySize = 0;
+        if (bytes != null && bytes.length > 0){
+            bodySize = bytes.length;
+        }
+        String headerLine = headerLine();
+
+        byte [] buff = new byte[bodySize + headerLine.length() ];
+        int i;
+        for (i = 0; i < headerLine.length(); i++){
+            buff[i] = (byte) headerLine.charAt(i);
+        }
+        if(bytes != null && bytes.length > 0){
+            for(int j = 0; j < bytes.length; j++){
+                buff[i + j] = bytes[j];
+            }
+        }
+        return buff;
     }
 
     public boolean containsHeader(String header){

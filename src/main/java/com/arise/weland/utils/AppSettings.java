@@ -119,90 +119,42 @@ public class AppSettings {
 
 
 
-    public static void setVideosAutoplay(boolean h){
-        if (h){
-            AppCache.putString("autoplay", Playlist.VIDEOS.name());
-        }else {
-            AppCache.putString("autoplay", "---");
-        }
-    }
 
 
-    public static void setMusicAutoplay(boolean h){
-        if (h){
-            AppCache.putString("autoplay", Playlist.MUSIC.name());
-        }else {
-            AppCache.putString("autoplay", "---");
-        }
-    }
-
-    public static Playlist getAutoPlaylist(){
-        String val = AppCache.getString("autoplay", "MUSIC");
-        Playlist playlist = Playlist.find(val);
-        return playlist;
-    }
+//    public static Map<String, String> storeHost(String name, String host) {
+//        savedConnections.put(name, host);
+//        FileUtil.serializableSave(savedConnections, new File(FileUtil.findAppDir(), "connections.txt"));
+//        return savedConnections;
+//    }
 
 
 
-    public static void setAutoplayGroup(String groupName) {
-        AppCache.putString("autoplay", "GR:" + groupName);
-    }
+//    public static String[] getSavedConnectionsNames(){
+//        Map<String, String> c = getSavedConnections();
+//        if (CollectionUtil.isEmpty(c)){
+//            return new String[]{};
+//        }
+//        String[]s = new String[c.size()];
+//        int i = 0;
+//        for (Map.Entry<String, String> e: c.entrySet()){
+//            s[i] = e.getKey();
+//            i++;
+//        }
+//
+//        return s;
+//    }
 
-    public static void setAutoplayPlaylist(Playlist playlist) {
-        AppCache.putString("autoplay", playlist.name());
-    }
+//    public static Map<String, String> getSavedConnections(){
+//        if (CollectionUtil.isEmpty(savedConnections)){
+//            HashMap<String, String> tmp = FileUtil.serializableRead(new File( FileUtil.findAppDir(), "connections.txt"));
+//            if (tmp != null){
+//                savedConnections =  tmp;
+//            }
+//        }
+//        return savedConnections;
+//    }
 
-
-    public static boolean isAutoplayVideos() {
-        return Playlist.VIDEOS.equals(getAutoPlaylist());
-    }
-
-    public static boolean isAutoplayMusic() {
-        return Playlist.MUSIC.equals(getAutoPlaylist());
-    }
-
-    //TODO thread safe
-    private static HashMap<String, String> savedConnections = new HashMap<>();
-
-
-
-    public static Map<String, String> storeHost(String name, String host) {
-        savedConnections.put(name, host);
-        FileUtil.serializableSave(savedConnections, new File(FileUtil.findAppDir(), "connections.txt"));
-        return savedConnections;
-    }
-
-
-    /**
-     * Android usage
-     * @return
-     */
-    public static String[] getSavedConnectionsNames(){
-        Map<String, String> c = getSavedConnections();
-        if (CollectionUtil.isEmpty(c)){
-            return new String[]{};
-        }
-        String[]s = new String[c.size()];
-        int i = 0;
-        for (Map.Entry<String, String> e: c.entrySet()){
-            s[i] = e.getKey();
-            i++;
-        }
-
-        return s;
-    }
-
-    public static Map<String, String> getSavedConnections(){
-        if (CollectionUtil.isEmpty(savedConnections)){
-            HashMap<String, String> tmp = FileUtil.serializableRead(new File( FileUtil.findAppDir(), "connections.txt"));
-            if (tmp != null){
-                savedConnections =  tmp;
-            }
-        }
-        return savedConnections;
-    }
-
-    public static String getSavedConnectionUri(String name) {
-        return getSavedConnections().get(name);
-    }
+//    public static String getSavedConnectionUri(String name) {
+//        return getSavedConnections().get(name);
+//    }
 }

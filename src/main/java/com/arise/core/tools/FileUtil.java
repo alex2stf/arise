@@ -24,7 +24,10 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -346,6 +349,26 @@ public class FileUtil {
             destination.close();
         }
 
+    }
+
+    public static List<String> readLinesFromFile(File f){
+        try {
+            String c = read(f);
+            String[] p = c.split("\n");
+            if (p == null || p.length == 0){
+                return Collections.emptyList();
+            }
+            List<String> n = new ArrayList<>();
+            for (int i = 0; i < p.length; i++){
+                if(StringUtil.hasText(p[i])){
+                    n.add(p[i].trim());
+                }
+            }
+            return n;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
 

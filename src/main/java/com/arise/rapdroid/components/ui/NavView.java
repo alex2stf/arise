@@ -2,18 +2,12 @@ package com.arise.rapdroid.components.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Layout;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-
-import com.arise.rapdroid.media.server.appviews.ContentInfoDisplayer;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;

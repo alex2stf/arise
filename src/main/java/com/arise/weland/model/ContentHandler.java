@@ -65,4 +65,5 @@ public abstract  class ContentHandler {
     public abstract void onMessageReceived(Message message);
 
 
+    public abstract void onPlaylistPlay(String name);
 }

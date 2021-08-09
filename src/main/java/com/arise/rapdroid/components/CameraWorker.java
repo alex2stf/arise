@@ -2,6 +2,8 @@ package com.arise.rapdroid.components;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.TextureView;
 
 import com.arise.core.tools.Mole;
@@ -37,6 +39,50 @@ public abstract class CameraWorker {
         }
         return null;
     }
+
+
+//    private static class CameraHandlerThread extends HandlerThread {
+//        Handler mHandler = null;
+//
+//        CameraHandlerThread() {
+//            super("CameraHandlerThread");
+//            start();
+//            mHandler = new Handler(getLooper());
+//        }
+//
+//        synchronized void notifyCameraOpened() {
+//            notify();
+//        }
+//
+//        void openCamera(int index) {
+//            mHandler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    getCameraInstance(index)
+//                    notifyCameraOpened();
+//                }
+//            });
+//
+//            try {
+//                wait();
+//            }
+//            catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    private CameraHandlerThread mThread = null;
+//    private void newOpenCamera(int index) {
+//        if (mThread == null) {
+//            mThread = new CameraHandlerThread();
+//        }
+//
+//        synchronized (mThread) {
+//            mThread.openCamera(index);
+//        }
+//    }
+
 
     public static Camera getCameraInstance(int index) {
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -79,9 +125,11 @@ public abstract class CameraWorker {
 
     public void releaseCamera(){
         if (mainCamera != null){
-            mainCamera.setPreviewCallback(null);
             mainCamera.stopPreview();
+            mainCamera.setPreviewCallback(null);
             mainCamera.release();
+//            mainCamera.unlock();
+//            mainCamera.lock();
             mainCamera = null;
             recording = false;
         }

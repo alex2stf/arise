@@ -143,7 +143,6 @@ public class Main {
 
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
 
-        AppSettings.getAutoPlaylist();
 
 
         ThreadUtil.fireAndForget(new Runnable() {
