@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.persistence.Transient;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,18 @@ public class GrootTest {
     testToDoubleFromBytes(in, 0, in.length(), expect);
   }
 
+
+  @Test
+  public void testMapSerialization(){
+    Map map = new HashMap();
+    map.put("1", "1");
+    map.put("text", "true");
+    map.put("false", false);
+    map.put("num", 23);
+    map.put(false, 23);
+    String txt = Groot.toJson(map);
+    System.out.println(Groot.toJson(false));
+  }
 
   @Test
   public void testNumericSequence(){

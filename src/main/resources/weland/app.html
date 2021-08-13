@@ -118,7 +118,11 @@
 
 
 <script>
-
+    var host = '{{host}}',
+        rotations =  ['90', '180', '270', '0'],
+        currentRotationIndex = 0,
+        cameraMode = 'jpeg'
+        rtimeout = -1;
 
     function _h() {
         $('.page').hide();
@@ -131,13 +135,73 @@
     function showCameraOptions() {
         $('.page').hide();
         $('#cam-preview').show();
-        startStream();
         $('body').css('background', 'black');
         $('.nvbar').css('background', 'black');
         $('.nbt').css('background', '#c5c5c5');
         $('.nbt').css('border-right', '1px solid white');
         $('#nvcnt').css('background', '#c5c5c5');
         $('#cm-opt').css('background', 'black');
+        updateFromDeviceDetails();
+    }
+
+
+    function sendDeviceUpdate(p, c) {
+        var a = 0, t = ''
+        for(var i in p){
+            if (a > 0){
+                t+='&';
+            }
+            t += i + '=' + p[i];
+            a++;
+        }
+
+        $.get(host + '/device/update?' + t, function (data) {
+            console.log(data);
+            if(c){
+                c(data);
+            }
+        });
+
+
+    }
+
+    function updateFromDeviceDetails() {
+        $.get(host + '/device/details', function (data) {
+            console.log("read device status details", data);
+            var camIds = data["CV1"];
+            var flashIds = data["FMV1"];
+
+
+            _g('cameraIndex').innerHTML = '';
+            var txt = '';
+            for(var i = 0; i < camIds.length; i++){
+                txt += '<option value="'+camIds[i].i+'">'+camIds[i].n+'</option>'
+            }
+            _g('cameraIndex').innerHTML = txt;
+
+            _g('lightMode').innerHTML = '';
+            var txt = '';
+            for(var i = 0; i < flashIds.length; i++){
+                txt += '<option value="'+flashIds[i].i+'">'+flashIds[i].n+'</option>'
+            }
+            _g('lightMode').innerHTML = txt;
+
+            var cC = data['ECAMV1'];
+            if (cC){
+                _g('cameraIndex').value = cC.i;
+
+                var cameraEnabled = ("true" == cC.n);
+                if (cameraEnabled){
+                    showCamStopBtn();
+                    showStream();
+                } else {
+                    showCamPlayBtn();
+
+                }
+            }
+
+            console.log(data);
+        });
     }
 
 

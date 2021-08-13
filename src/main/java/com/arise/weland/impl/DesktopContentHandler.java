@@ -1,5 +1,7 @@
 package com.arise.weland.impl;
 
+import com.arise.astox.net.models.SingletonHttpResponse;
+import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
@@ -9,32 +11,35 @@ import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.Detail;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
-import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.ContentHandler;
-import com.arise.weland.utils.URLBeautifier;
 import com.arise.weland.wrappers.VLCWrapper;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class DesktopFileHandler extends ContentHandler {
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
-    private static final Mole log = Mole.getInstance(DesktopFileHandler.class);
+public class DesktopContentHandler extends ContentHandler {
+
+    private static final Mole log = Mole.getInstance(DesktopContentHandler.class);
     private static final String CURRENT_RUNNING = "cbin";
     static boolean nwjsEnabled = !"false".equalsIgnoreCase(System.getProperty("nwjs.enabled"));
     private static File nwjsExe;
@@ -66,9 +71,10 @@ public class DesktopFileHandler extends ContentHandler {
     JLabel label = null;
     ThreadUtil.TimerResult result;
     Set<String> exes = new HashSet<>();
+    private DesktopCamStream desktopCamStream;
 
 
-    public DesktopFileHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
+    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
         this.contentInfoProvider = contentInfoProvider;
         this.registry = registry;
         setupArgs();
@@ -77,7 +83,7 @@ public class DesktopFileHandler extends ContentHandler {
     public static void main(String[] args) {
         Message message = new Message();
         message.setText("some text");
-        DesktopFileHandler f = new DesktopFileHandler(null, null);
+        DesktopContentHandler f = new DesktopContentHandler(null, null);
                 f.onMessageReceived(message);
         message.setText("some text2");
                 f.onMessageReceived(message);
@@ -105,7 +111,7 @@ public class DesktopFileHandler extends ContentHandler {
 
     public HttpResponse openPath(final String path) {
         ThreadUtil.closeTimer(timerResult);
-//        stop("-");
+//        stopPreviews("-");
         return openString(path);
 
     }
@@ -118,7 +124,7 @@ public class DesktopFileHandler extends ContentHandler {
         return HttpResponse.oK();
     }
 
-    //TODO fa stop mai destept
+    //TODO fa stopPreviews mai destept
     private HttpResponse openString(final String path){
             log.info("OPEN " + path);
            DeviceStat deviceStat = DeviceStat.getInstance();
@@ -277,7 +283,7 @@ public class DesktopFileHandler extends ContentHandler {
 
         //pause vlc http instance
         if (VLCWrapper.isHttpOpened()){
-            log.info("vlc stop " + x);
+            log.info("vlc stopPreviews " + x);
             VLCWrapper.stopHttp();
         }
         closeSpawnedProcesses();
@@ -365,6 +371,53 @@ public class DesktopFileHandler extends ContentHandler {
         System.out.println("TO DO");
     }
 
+    @Override
+    public List<Detail> getCameraIdsV1() {
+        return Arrays.asList(new Detail("0", "Cam 1"), new Detail("1", "Cam 2"));
+    }
+
+    @Override
+    public List<Detail> getFlashModesV1() {
+        return Arrays.asList(new Detail("0", "OFF"), new Detail("0", "ON"));
+    }
+
+
+
+    private void solveCameraStream(HttpRequest request){
+        boolean shouldStop = "false".equalsIgnoreCase(
+                request.getQueryParamString("camEnabled", "false")
+        );
+        if (shouldStop){
+            desktopCamStream.stop();
+        }
+        else {
+            desktopCamStream.start();
+        }
+    }
+
+    @Override
+    public <T extends SingletonHttpResponse> T getLiveWav() {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public void beforeLiveWav(HttpRequest request) {
+
+    }
+
+    @Override
+    public Map<String, String> onDeviceUpdate(Map<String, List<String>>  params) {
+        Map<String, String> r = new HashMap<>();
+        r.put("x", "y");
+        return r;
+    }
+
+    @Override
+    public Detail getEnabledCameraV1() {
+        return new Detail("0", "Cam 1");
+    }
+
     private void execute(String args[]){
         log.info(StringUtil.join(args, " "));
         exes.add(new File(args[0]).getName());
@@ -376,5 +429,7 @@ public class DesktopFileHandler extends ContentHandler {
     }
 
 
-
+    public void setCameraStream(DesktopCamStream desktopCamStream) {
+        this.desktopCamStream = desktopCamStream;
+    }
 }

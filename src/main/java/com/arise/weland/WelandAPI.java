@@ -14,6 +14,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+
+//TODO separate client api
+@Deprecated
 public class WelandAPI {
 
     private static final Mole log = Mole.getInstance(WelandAPI.class);

@@ -1,17 +1,27 @@
 package com.arise.weland.model;
 
 import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.Detail;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.utils.JPEGOfferResponse;
+import com.arise.weland.utils.MJPEGResponse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
+
+    MJPEGResponse mjpegResponse = new MJPEGResponse();
+    JPEGOfferResponse jpegOfferResponse = new JPEGOfferResponse();
 
 
 
@@ -64,6 +74,27 @@ public abstract  class ContentHandler {
 
     public abstract void onMessageReceived(Message message);
 
-
     public abstract void onPlaylistPlay(String name);
+
+    public abstract List<Detail> getCameraIdsV1();
+
+    public abstract List<Detail> getFlashModesV1();
+
+    public final MJPEGResponse getLiveMjpegStream(){
+        return mjpegResponse;
+    };
+
+    public final JPEGOfferResponse getLiveJpeg() {
+        return jpegOfferResponse;
+    }
+
+    public abstract <T extends SingletonHttpResponse> T getLiveWav();
+
+    @Deprecated
+    public abstract void beforeLiveWav(HttpRequest request);
+
+    public abstract Map<String, String> onDeviceUpdate(Map<String, List<String>> params);
+
+
+    public abstract Detail getEnabledCameraV1();
 }

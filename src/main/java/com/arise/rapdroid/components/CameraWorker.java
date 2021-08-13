@@ -6,19 +6,24 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.TextureView;
 
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.Mole;
 
 public abstract class CameraWorker {
 
     protected static final Mole log = Mole.getInstance(CameraWorker.class);
 
-    protected static volatile Camera mainCamera;
+//    protected static volatile Camera mainCamera;
 
     protected TextureView mPreview;
     protected SurfaceTexture surfaceTexture;
 
     protected volatile boolean recording = false;
-    protected int cameraIndex;
+    protected volatile int cameraIndex;
+
+    public int getCameraIndex() {
+        return cameraIndex;
+    }
 
     public static Camera getDefaultCameraInstance() {
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -123,21 +128,22 @@ public abstract class CameraWorker {
         return this;
     }
 
-    public void releaseCamera(){
-        if (mainCamera != null){
-            mainCamera.stopPreview();
-            mainCamera.setPreviewCallback(null);
-            mainCamera.release();
-//            mainCamera.unlock();
-//            mainCamera.lock();
-            mainCamera = null;
-            recording = false;
+    public void releaseCamera(Camera camera){
+        recording = false;
+        if (camera != null){
+            camera.stopPreview();
+            camera.setPreviewCallback(null);
+            camera.release();
         }
     }
 
-    protected abstract boolean prepare();
 
-    public void setCameraIndex(int cameraIndex) {
-        this.cameraIndex = cameraIndex;
+
+    public synchronized boolean updateCameraIndex(int newIndex) {
+        boolean upd = newIndex != cameraIndex;
+        if (upd){
+            this.cameraIndex = newIndex;
+        }
+        return upd;
     }
 }

@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import java.util.UUID;
 
 public class MirceaFateCaLucrezi {
 
@@ -46,7 +47,7 @@ public class MirceaFateCaLucrezi {
 
 
         System.out.println(
-                new String(unhash(290269593).getBytes())
+                UUID.randomUUID().toString()
         );
 
 

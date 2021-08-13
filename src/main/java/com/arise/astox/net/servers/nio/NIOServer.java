@@ -43,9 +43,9 @@ import static com.arise.astox.net.servers.nio.NioSslPeer.handleEndOfStream;
  * compatible with the protocol it applies.
  * <p/>
  * After initialization {@link NIOServer#start()} should be called so the server starts to listen to
- * new connection requests. At this point, start is blocking, so, in order to be able to gracefully stop
+ * new connection requests. At this point, start is blocking, so, in order to be able to gracefully stopPreviews
  * the server, a {@link Runnable} containing a server object should be created. This runnable should 
- * start the server in its run method and also provide a stop method, which will call {@link NIOServer#stop()}.
+ * start the server in its run method and also provide a stopPreviews method, which will call {@link NIOServer#stop()}.
  * </p>
  * NIOServer makes use of Java NIO, and specifically listens to new connection requests with a {@link ServerSocketChannel}, which will
  * create new {@link SocketChannel}s and a {@link Selector} which serves all the connections in one thread.
@@ -84,7 +84,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
 
     /**
      * Should be called in order the server to start listening to new connections.
-     * This method will run in a loop as long as the server is active. In order to stop the server
+     * This method will run in a loop as long as the server is active. In order to stopPreviews the server
      * you should use {@link NIOServer#stop()} which will set it to inactive state
      * and also wake up the listener, which may be in blocking select() state.
      *

@@ -15,6 +15,7 @@ import static com.arise.core.tools.StringUtil.hasContent;
 import static com.arise.core.tools.StringUtil.urlDecode;
 
 public class AppCache {
+    //TODO thread safe
     public static final Map<String, String> stringsCache = new HashMap<>();
 
     public static final Map<String, URL> urlsMap = new HashMap<>();

@@ -32,6 +32,10 @@ public class JPEGOfferResponse extends HttpResponse {
 //        byte[] body = img;
 //        assigning = false;
         byte[] body = getFromImgBuffer();
+        if (body == null){
+            return new byte[]{0}; //TODO constant
+        }
+
         int bodyLength = body.length;
 
         byte[] result = new byte[headBytes.length + bodyLength];
@@ -69,7 +73,6 @@ public class JPEGOfferResponse extends HttpResponse {
             }
         }
         imgBuffer[offerCount] = bytes;
-
     }
 
     public synchronized void offerJPEG2(byte[] bytes) {

@@ -3,7 +3,6 @@ package com.arise.weland.utils;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
@@ -25,6 +24,7 @@ import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
+import com.arise.weland.dto.Detail;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
@@ -32,24 +32,21 @@ import com.arise.weland.model.FileTransfer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringBufferInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.arise.core.tools.StringUtil.jsonVal;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
   public static final DeviceStat deviceStat = DeviceStat.getInstance();
-  MJPEGResponse liveMjpegStream;
-  JPEGOfferResponse liveJpeg;
-  SingletonHttpResponse liveWav;
   ContentInfoProvider contentInfoProvider;
-  Handler<HttpRequest> liveMjpegHandler;
-  Handler<HttpRequest> liveJpegHandler;
-  Handler<HttpRequest> liveWavHandler;
   Handler<HttpRequest> deviceControlsUpdate;
-//  Handler<String> playlistWorkerHandler;
   ContentHandler contentHandler;
   IDeviceController iDeviceController;
   Whisker whisker = new Whisker();
@@ -61,20 +58,9 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-  public WelandServerHandler setLiveMjpegStream(MJPEGResponse liveMjpegStream) {
-    this.liveMjpegStream = liveMjpegStream;
-    return this;
-  }
 
-  public WelandServerHandler setLiveJpeg(JPEGOfferResponse liveJpeg) {
-    this.liveJpeg = liveJpeg;
-    return this;
-  }
 
-  public WelandServerHandler setLiveWav(SingletonHttpResponse liveWav) {
-    this.liveWav = liveWav;
-    return this;
-  }
+
 
   @Override
   public boolean validate(ServerRequest request) {
@@ -102,26 +88,18 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-  public WelandServerHandler beforeLiveWAV(Handler<HttpRequest> liveWavHandler) {
-    this.liveWavHandler = liveWavHandler;
-    return this;
-  }
 
-  public WelandServerHandler beforeLiveMJPEG(Handler<HttpRequest> liveMjpegRequest) {
-    this.liveMjpegHandler = liveMjpegRequest;
-    return this;
-  }
 
-  public WelandServerHandler beforeLiveJPEG(Handler<HttpRequest> liveJpegHandler) {
-    this.liveJpegHandler = liveJpegHandler;
-    return this;
-  }
+
+
+
 
   public WelandServerHandler onDeviceControlsUpdate(Handler<HttpRequest> deviceControlsUpdate) {
     this.deviceControlsUpdate = deviceControlsUpdate;
     return this;
   }
 
+  @Deprecated
   public <I> HttpResponse dispatch(Handler<I> handler, I data){
     if (handler != null){
       return handler.handle(data);
@@ -131,6 +109,11 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
+
+    if("OPTIONS".equalsIgnoreCase(request.method())){
+        return HttpResponse.oK().allowAnyOrigin();
+    }
+
 
     String correlationId = "";
     if (StringUtil.hasText(request.getHeaderParam("Correlation-Id"))){
@@ -149,24 +132,23 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.json(deviceStat.toJson()).allowAnyOrigin();
     }
 
+
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
       dispatch(deviceControlsUpdate, request);
       return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
     }
 
     if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
-      dispatch(liveWavHandler, request);
-      return liveWav;
+      contentHandler.beforeLiveWav(request);
+      return contentHandler.getLiveWav();
     }
 
     if ("/device/live/mjpeg".equalsIgnoreCase(request.path())){
-      dispatch(liveMjpegHandler, request);
-      return liveMjpegStream;
+      return contentHandler.getLiveMjpegStream();
     }
 
     if ("/device/live/jpeg".equalsIgnoreCase(request.path())){
-      dispatch(liveJpegHandler, request);
-      return liveJpeg;
+      return contentHandler.getLiveJpeg();
     }
 
     //main html rendering
@@ -187,7 +169,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.html(whisker.compile(frameContent, args));
     }
 
-    //basic get status
+    //generic platform agnostic information
     if ("/device/stat".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
       return DeviceStat.getInstance().toHttp(request);
     }
@@ -206,6 +188,26 @@ public class WelandServerHandler extends HTTPServerHandler {
       ContentPage page = contentInfoProvider.getPage(playlist, index);
       return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();
     }
+
+    //platform specific details
+    if("/device/details".equalsIgnoreCase(request.path())){
+      StringBuilder sb = new StringBuilder().append("{");
+      sb.append("\"CV1\":").append(Detail.toJson(contentHandler.getCameraIdsV1()));
+      sb.append(",\"FMV1\":").append(Detail.toJson(contentHandler.getFlashModesV1()));
+      sb.append(",\"ECAMV1\":").append(contentHandler.getEnabledCameraV1().toString());
+      sb.append("}");
+      return HttpResponse.json(
+              sb.toString()
+      ).addCorelationId(correlationId).allowAnyOrigin();
+    }
+
+
+
+    if ("/device/update".equalsIgnoreCase(request.path())){
+      Map<String, String> response = contentHandler.onDeviceUpdate(request.getQueryParams());
+      return HttpResponse.json(Groot.toJson(response)).allowAnyOrigin();
+    }
+
 
     //open given path
     if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
@@ -275,7 +277,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    //close || stop
+    //close || stopPreviews
     if (request.pathsStartsWith("files", "close")){
       contentHandler.stop(request);
       return DeviceStat.getInstance().toHttp(request);
@@ -333,7 +335,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       args.put("ipv4Addrs", StringUtil.join(DeviceStat.getInstance().getIpv4Addrs(), ",", new StringUtil.JoinIterator<String>() {
         @Override
         public String toString(String value) {
-          return StringUtil.jsonVal(value);
+          return jsonVal(value);
         }
       }));
       args.put("port", server.getPort());
@@ -345,31 +347,33 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if (request.pathsStartsWith("playlist")){
 
-      Map<String, String> data = (Map<String, String>) Groot.decodeBytes(request.getBodyBytes());
+      Map<String, List<String>> data = request.getQueryParams();
 
-      String action = data.get("action");
+      String action = request.getQueryParamString("action", "xx");
+      String name = request.getQueryParamString("name", null);
+      String path = request.getQueryParamString("path", null);
       switch (action){
         case "create":
-          PlaylistWorker.createPlaylist(data.get("name"));
+          PlaylistWorker.createPlaylist(name);
           break;
         case "drop":
-          PlaylistWorker.dropPlaylist(data.get("name"));
+          PlaylistWorker.dropPlaylist(name);
           break;
         case "add":
-          PlaylistWorker.add(data.get("name"), data.get("path"));
+          PlaylistWorker.add(name, path);
           break;
         case "play":
-          PlaylistWorker.setRunningPlaylist(data.get("name"));
-          contentHandler.onPlaylistPlay(data.get("name"));
+          PlaylistWorker.setRunningPlaylist(name);
+          contentHandler.onPlaylistPlay(name);
           break;
         case "get":
-          return HttpResponse.json(PlaylistWorker.getPlaylist(data.get("name")));
+          return HttpResponse.json(PlaylistWorker.getPlaylist(name)).allowAnyOrigin();
       }
 
 
 
 
-      return HttpResponse.json(PlaylistWorker.listPlaylists());
+      return HttpResponse.json(PlaylistWorker.listPlaylists()).allowAnyOrigin();
     }
 
 
@@ -399,6 +403,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
 
+  @Deprecated
   public interface Handler<T> {
     HttpResponse handle(T data);
   }

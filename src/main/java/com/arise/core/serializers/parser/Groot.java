@@ -25,6 +25,7 @@ import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.TypeUtil.isNumber;
 import static com.arise.core.tools.TypeUtil.isNumericSequence;
 import static com.arise.core.tools.TypeUtil.toNumber;
+import static java.lang.String.valueOf;
 
 public class Groot {
 
@@ -112,8 +113,12 @@ public class Groot {
       gRiter.writeNumber(obj);
     }
 
-    else if ("true".equals(obj.toString()) || "false".equals(obj.toString())){
-      gRiter.writeBoolean(obj);
+    else if ("true".equals(valueOf(obj)) ){
+      gRiter.writeBoolean(true);
+    }
+
+    else if ("false".equals(valueOf(obj)) ){
+      gRiter.writeBoolean(false);
     }
 
     else if (obj instanceof CharSequence){
@@ -145,7 +150,7 @@ public class Groot {
             toJson(value, gRiter);
           } else {
             gRiter.write("\"")
-                    .write(StringUtil.jsonEscape(String.valueOf(key)))
+                    .write(StringUtil.jsonEscape(valueOf(key)))
                     .write("\":");
             toJson(value, gRiter);
           }

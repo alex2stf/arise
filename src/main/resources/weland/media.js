@@ -16,8 +16,6 @@ function startFetch(playlist) {
         gData[playlist] = {};
     }
     $.get( host + "/media/list/" + playlist + "?index=" + mindex[playlist], function( data ) {
-          //console.log("media type " + playlist + " fecthed index " + mindex[playlist] + " response " + decodeURIComponent(JSON.stringify(data)));
-
         for(var i = 0; i < data.d.length; i++){
             var ob = data.d[i];
             gData[playlist][ob.P] = ob;
@@ -163,46 +161,7 @@ function playlistView(p) {
 
 
 
-function getPlaylists(call) {
-    $.ajax({
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "action": "xx"
-        }),
-        dataType: 'json',
-        success: function(data){
-            call(data);
-        },
-        error: function(s){
-            $('.modal').hide();
-        },
-        processData: false,
-        type: 'POST',
-        url: host + '/playlist'
-    });
-}
 
-function pushToPlaylist(x, y) {
-    console.log("x = ", x, "y = ", y);
-    $.ajax({
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "action": "add",
-            name: y,
-            path: x
-        }),
-        dataType: 'json',
-        success: function(data){
-            console.log(data);
-        },
-        error: function(s){
-            $('.modal').hide();
-        },
-        processData: false,
-        type: 'POST',
-        url: host + '/playlist'
-    });
-}
 
 function pauseFile(x) {
     $.get( host + "/media/pause?path=" + x, function( data ) {
@@ -266,43 +225,31 @@ function mediaSearch(p) {
 
 }
 
+
+function getPlaylists(c) {
+    $.get(host + "/playlist", function (data) {
+        c(data);
+    });
+}
+
+function pushToPlaylist(x, y) {
+    console.log("x = ", x, "y = ", y);
+    $.get(host + "/playlist?action=add&name=" + y + "&path=" + x, function (data) {
+
+    });
+}
+
+
 function createPlaylist() {
     var name = prompt("enter playlist name");
-    $.ajax({
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "action": "create",
-            "name": name
-        }),
-        dataType: 'json',
-        success: function(data){
-            console.log("device control succeeded", data);
-        },
-        error: function(s){
-            console.log("error", s);
-        },
-        processData: false,
-        type: 'POST',
-        url: host + '/playlist'
+
+    $.get(host + "/playlist?action=create&name="+ name, function (data) {
+        console.log("device control succeeded", data);
     });
 }
 
 function playPlaylist(name) {
-    $.ajax({
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "action": "play",
-            "name": name
-        }),
-        dataType: 'json',
-        success: function(data){
-            console.log("device control succeeded", data);
-        },
-        error: function(s){
-            console.log("error", s);
-        },
-        processData: false,
-        type: 'POST',
-        url: host + '/playlist'
+    $.get(host + "/playlist?action=play&name="+ name, function (data) {
+        console.log("device control succeeded", data);
     });
 }

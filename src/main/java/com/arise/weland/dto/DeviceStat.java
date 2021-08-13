@@ -36,6 +36,11 @@ public class DeviceStat {
     private String displayName;
     private String serverUUID;
     private String conversationId;
+
+    /**
+     * TODO use device details
+     */
+    @Deprecated
     private Map<String, String> props = new HashMap<>();
 
 
@@ -258,10 +263,12 @@ public class DeviceStat {
         return this;
     }
 
+    @Deprecated
     public HttpResponse toHttp() {
         return HttpResponse.json(toJson()).allowAnyOrigin();
     }
 
+    @Deprecated
     public HttpResponse toHttp(HttpRequest request) {
         return HttpResponse.json(toJson()).allowAnyOrigin();
     }

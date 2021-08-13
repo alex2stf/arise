@@ -604,4 +604,5 @@ public class ContentInfoProvider {
         paths.add(path);
         return this;
     }
+
 }

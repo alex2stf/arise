@@ -56,7 +56,7 @@ public class PlaylistWorker {
             }
         });
         if (files == null || files.length == 0){
-            return "{}";
+            return "[]";
         }
 
         return "[" + StringUtil.join(files, ",",  new StringUtil.JoinIterator<File>() {

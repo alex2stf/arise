@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.arise.core.tools.CollectionUtil.isEmpty;
+
 public class MapUtil {
     public static Set getSet(Map map, String key){
         if (map.containsKey(key) && map.get(key) instanceof Set){
@@ -67,8 +69,25 @@ public class MapUtil {
     }
 
 
+
+
     public static <K, V>  MapBuilder<K, V> newMap(K key, V value) {
         return new MapBuilder<K, V>(new HashMap<K, V>()).put(key, value);
+    }
+
+    public static String findQueryParamString(Map map, String key) {
+        if (!map.containsKey(key)){
+            return null;
+        }
+        if (map.get(key) instanceof List){
+            List ak = (List) map.get(key);
+            if (isEmpty(ak)){
+                return null;
+            }
+            return ak.get(0) + "";
+        }
+
+        return getString(map, null);
     }
 
 
@@ -87,6 +106,8 @@ public class MapUtil {
             x.put(ky, vl);
             return this;
         }
+
+
     }
 
 }

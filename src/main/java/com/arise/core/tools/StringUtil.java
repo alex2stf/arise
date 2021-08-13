@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.valueOf;
+
 
 public class StringUtil {
 
@@ -384,12 +386,12 @@ public class StringUtil {
 
         if (o instanceof Socket){
             Socket c = (Socket) o;
-            return String.valueOf(c.getLocalAddress() + ":" + c.getLocalPort()
+            return valueOf(c.getLocalAddress() + ":" + c.getLocalPort()
                     + "|" + c.getRemoteSocketAddress());
         }
 
 
-        return String.valueOf(o);
+        return valueOf(o);
     }
 
     public static Set<String> smallestString(Set<String> in) {
@@ -570,7 +572,7 @@ public class StringUtil {
     public static final JoinIterator DEFAULT_ITERATOR = new JoinIterator() {
         @Override
         public String toString(Object value) {
-            return String.valueOf(value);
+            return valueOf(value);
         }
     };
 
@@ -705,7 +707,7 @@ public class StringUtil {
             } else {
                 vr = map.get(key);
             }
-            value = value.replaceAll(Pattern.quote(s), String.valueOf(vr));
+            value = value.replaceAll(Pattern.quote(s), valueOf(vr));
         }
         return value;
     }
@@ -713,17 +715,18 @@ public class StringUtil {
 
     public static String jsonEscape(String s){
         StringBuffer sb = new StringBuffer();
-        StringUtil.jsonEscape(String.valueOf(s), sb);
+        StringUtil.jsonEscape(valueOf(s), sb);
         return sb.toString();
     }
 
     public static String jsonVal(Object s){
        if (s == null){
-           return null;
+           return "null";
        }
        if (s instanceof CharSequence){
-           return "\"" + jsonEscape(String.valueOf(s)) + "\"";
+           return "\"" + jsonEscape(valueOf(s)) + "\"";
        }
+
        return s.toString();
     }
 

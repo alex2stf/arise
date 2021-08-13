@@ -104,7 +104,6 @@ public class WavRecorderResponse extends SingletonHttpResponse {
 
                 recording = true;
                 byte data[] = new byte[bufferSize];
-//                while (recordr.read(data, 0, bufferSize) > -1) {
                 while (recorder.read(data, 0, bufferSize) != AudioRecord.ERROR_INVALID_OPERATION) {
                     try {
                         send(data);

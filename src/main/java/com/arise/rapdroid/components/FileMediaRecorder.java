@@ -28,33 +28,29 @@ public class FileMediaRecorder extends com.arise.rapdroid.components.CameraWorke
         return this;
     }
 
-    @Override
-    public boolean prepare() {
-        return false;
-    }
 
 
     public void startCapture(){
         if (recording) {
             // BEGIN_INCLUDE(stop_release_media_recorder)
 
-            // stop recording and release camera
+            // stopPreviews recording and release camera
             try {
-                mMediaRecorder.stop();  // stop the recording
+                mMediaRecorder.stop();  // stopPreviews the recording
             } catch (RuntimeException e) {
-                // RuntimeException is thrown when stop() is called immediately after start().
+                // RuntimeException is thrown when stopPreviews() is called immediately after start().
                 // In this case the output file is not properly constructed ans should be deleted.
-                log.d("RuntimeException: stop() is called immediately after start()");
+                log.d("RuntimeException: stopPreviews() is called immediately after start()");
                 //noinspection ResultOfMethodCallIgnored
                 mOutputFile.delete();
             }
             releaseMediaRecorder(); // release the MediaRecorder object
-            mainCamera.lock();         // take camera access back from MediaRecorder
+//            mainCamera.lock();         // take camera access back from MediaRecorder
 
             // inform the user that recording has stopped
 
             recording = false;
-            releaseCamera();
+//            releaseCamera();
             // END_INCLUDE(stop_release_media_recorder)
 
         } else {
@@ -72,7 +68,7 @@ public class FileMediaRecorder extends com.arise.rapdroid.components.CameraWorke
         // if we are using MediaRecorder, release it first
         releaseMediaRecorder();
         // release the camera immediately on pause event
-        releaseCamera();
+//        releaseCamera();
     }
 
     private void releaseMediaRecorder(){
@@ -84,7 +80,7 @@ public class FileMediaRecorder extends com.arise.rapdroid.components.CameraWorke
             mMediaRecorder = null;
             // Lock camera for later use i.e taking it back from MediaRecorder.
             // MediaRecorder doesn't need it anymore and we will release it if the activity pauses.
-            mainCamera.lock();
+//            mainCamera.lock();
         }
     }
 
@@ -141,54 +137,54 @@ public class FileMediaRecorder extends com.arise.rapdroid.components.CameraWorke
     private boolean prepareVideoRecorder(){
 
         // BEGIN_INCLUDE (configure_preview)
-        mainCamera = getDefaultCameraInstance();
+//        mainCamera = getDefaultCameraInstance();
 
-        // We need to make sure that our preview and recording video size are supported by the
-        // camera. Query camera to find all the sizes and choose the optimal size given the
-        // dimensions of our preview surface.
-        Camera.Parameters parameters = mainCamera.getParameters();
-        List<Camera.Size> mSupportedPreviewSizes = parameters.getSupportedPreviewSizes();
-        List<Camera.Size> mSupportedVideoSizes = parameters.getSupportedVideoSizes();
-        Camera.Size optimalSize = getOptimalVideoSize(mSupportedVideoSizes,
-                mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
-
-        // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
-        profile.videoFrameWidth = optimalSize.width;
-        profile.videoFrameHeight = optimalSize.height;
-
-        // likewise for the camera object itself.
-        parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-        mainCamera.setParameters(parameters);
-        try {
-            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
-            // with {@link SurfaceView}
-            mainCamera.setPreviewTexture(mPreview.getSurfaceTexture());
-
-        } catch (IOException e) {
-            log.e("Surface texture is unavailable or unsuitable", e);
-            return false;
-        }
+//        // We need to make sure that our preview and recording video size are supported by the
+//        // camera. Query camera to find all the sizes and choose the optimal size given the
+//        // dimensions of our preview surface.
+//        Camera.Parameters parameters = mainCamera.getParameters();
+//        List<Camera.Size> mSupportedPreviewSizes = parameters.getSupportedPreviewSizes();
+//        List<Camera.Size> mSupportedVideoSizes = parameters.getSupportedVideoSizes();
+//        Camera.Size optimalSize = getOptimalVideoSize(mSupportedVideoSizes,
+//                mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
+//
+//        // Use the same size for recording profile.
+//        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+//        profile.videoFrameWidth = optimalSize.width;
+//        profile.videoFrameHeight = optimalSize.height;
+//
+//        // likewise for the camera object itself.
+//        parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+//        mainCamera.setParameters(parameters);
+//        try {
+//            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
+//            // with {@link SurfaceView}
+////            mainCamera.setPreviewTexture(mPreview.getSurfaceTexture());
+//
+//        } catch (IOException e) {
+//            log.e("Surface texture is unavailable or unsuitable", e);
+//            return false;
+//        }
         // END_INCLUDE (configure_preview)
 
 
         // BEGIN_INCLUDE (configure_media_recorder)
-        mMediaRecorder = new MediaRecorder();
-
-        // Step 1: Unlock and set camera to MediaRecorder
-        mainCamera.unlock();
-        mMediaRecorder.setCamera(mainCamera);
-
-        // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT );
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediaRecorder.setProfile(profile);
-
-        if (captureRate != null){
-            mMediaRecorder.setCaptureRate(captureRate); //la 2fps e fast forward recording
-        }
+//        mMediaRecorder = new MediaRecorder();
+//
+//        // Step 1: Unlock and set camera to MediaRecorder
+//        mainCamera.unlock();
+//        mMediaRecorder.setCamera(mainCamera);
+//
+//        // Step 2: Set sources
+//        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT );
+//        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+//
+//        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+//        mMediaRecorder.setProfile(profile);
+//
+//        if (captureRate != null){
+//            mMediaRecorder.setCaptureRate(captureRate); //la 2fps e fast forward recording
+//        }
 
 
         // Step 4: Set output file

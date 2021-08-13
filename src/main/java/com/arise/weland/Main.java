@@ -17,15 +17,13 @@ import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopCamStream;
-import com.arise.weland.impl.DesktopFileHandler;
+import com.arise.weland.impl.DesktopContentHandler;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.utils.AppSettings;
-import com.arise.weland.utils.JPEGOfferResponse;
-import com.arise.weland.utils.MJPEGResponse;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -111,35 +109,26 @@ public class Main {
 
 
 
-        MJPEGResponse mjpegResponse = new MJPEGResponse();
-        JPEGOfferResponse jpegOfferResponse = new JPEGOfferResponse();
-        DesktopCamStream desktopCamStream = new DesktopCamStream(mjpegResponse, jpegOfferResponse);
-        WelandServerHandler.Handler<HttpRequest> cameraStreamHandler = new WelandServerHandler.Handler<HttpRequest>() {
-            @Override
-            public HttpResponse handle(HttpRequest request) {
-                boolean shouldStop = "false".equalsIgnoreCase(
-                        request.getQueryParamString("camEnabled", "false")
-                );
-                if (shouldStop){
-                    desktopCamStream.stop();
-                }
-                else {
-                    desktopCamStream.start();
-                }
-                return null;
-            }
-        };
+
+
+
+
+        DesktopContentHandler desktopContentHandler = new DesktopContentHandler(contentInfoProvider,  registry);
+
+        DesktopCamStream desktopCamStream = new DesktopCamStream(
+                desktopContentHandler.getLiveMjpegStream(),
+                desktopContentHandler.getLiveJpeg()
+        );
+
+        desktopContentHandler.setCameraStream(desktopCamStream);
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
-                .setLiveMjpegStream(mjpegResponse)
-                .setLiveJpeg(jpegOfferResponse)
-                .beforeLiveJPEG(cameraStreamHandler)
-                .beforeLiveMJPEG(cameraStreamHandler)
-                .setContentProvider(contentInfoProvider);
+                .setContentProvider(contentInfoProvider)
+                .setContentHandler(desktopContentHandler)
+                .setDeviceController(deviceController);
 
-        DesktopFileHandler desktopFileHandler = new DesktopFileHandler(contentInfoProvider,  registry);
-        welandServerHandler.setContentHandler(desktopFileHandler);
-        welandServerHandler.setDeviceController(deviceController);
+
+
 
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
 

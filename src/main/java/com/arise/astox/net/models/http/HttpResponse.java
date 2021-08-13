@@ -240,6 +240,8 @@ public class HttpResponse extends ServerResponse {
     }
 
     public HttpResponse allowAnyOrigin() {
-        return addHeader("Access-Control-Allow-Origin", "*");
+        return addHeader("Access-Control-Allow-Origin", "*")
+                .addHeader("Access-Control-Allow-Credentials", "true")
+                .addHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
     }
 }
