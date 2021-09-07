@@ -7,6 +7,7 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.http.HttpResponseBuilder;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
@@ -22,9 +23,11 @@ public class FileTransfer  {
 
     public static class FileRequest extends ServerRequest {
         final File file;
+        final String fileName;
 
-        public FileRequest(File file) {
+        public FileRequest(File file, String fileName) {
             this.file = file;
+            this.fileName = StringUtil.hasText(fileName) ? fileName : file.getName();
         }
     }
 
@@ -38,11 +41,9 @@ public class FileTransfer  {
 
             try {
                 ContentType contentType = ContentType.search(request.file);
-//                String header = ("POST HTTP/1.0 /transfer?name="+request.file.getName()+"\r\n" +
-//                        "Content-Type: "+ contentType +"; \r\n\r\n" );
 
                 HttpRequest httpRequest = new HttpRequest();
-                httpRequest.setUri("/transfer?name=" + request.file.getName());
+                httpRequest.setUri("/transfer?name=" + request.fileName);
                 httpRequest.addHeader("Content-Type", contentType.toString());
 
                 socket.getOutputStream().write(httpRequest.getBytes());
@@ -57,25 +58,7 @@ public class FileTransfer  {
                 while ((count = in.read(bytes)) > 0) {
                     out.write(bytes, 0, count);
                 }
-
-//                try {
-//                    Thread.sleep(4000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
-
-//                HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder();
-//                httpResponseBuilder.readInputStream(socket.getInputStream(), new CompleteHandler<HttpResponse>() {
-//                    @Override
-//                    public void onComplete(HttpResponse data) {
-//                        System.out.println("server responded with" + data);
-//                    }
-//                });
-//                Util.close(in);
                 Util.close(out);
-//                Util.close(socket);
-//                StreamUtil.transfer(fileInputStream, socket.getOutputStream());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

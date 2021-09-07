@@ -4,19 +4,15 @@ import com.arise.core.tools.AppCache;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.dto.ContentInfo;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
 
 import static com.arise.core.tools.FileUtil.readLinesFromFile;
+
 
 public class PlaylistWorker {
 
@@ -133,6 +129,9 @@ public class PlaylistWorker {
 
     public static String getNextFromCurrentPlaylist() {
         File cp = getCurrentPlaylist();
+        if (null == cp){
+            return null;
+        }
         try {
             List<String> lines = readLinesFromFile(cp);
             if (!CollectionUtil.isEmpty(lines)){

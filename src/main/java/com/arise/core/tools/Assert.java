@@ -10,6 +10,14 @@ public class Assert {
         }
     }
 
+    public static void assertEquals(int s1, int s2){
+        try {
+            assert s1 == s2;
+        } catch (Exception e){
+            throw new AssertException(s1, s2, e);
+        }
+    }
+
     public static final class AssertException extends RuntimeException {
 
         public AssertException(Object expect, Object given, Throwable cause){

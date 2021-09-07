@@ -2,7 +2,7 @@ package com.arise.weland.dto;
 
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.core.tools.CollectionUtil;
+import com.arise.core.models.Tuple2;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.ReflectUtil;
@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.arise.core.tools.CollectionUtil.*;
@@ -35,13 +34,9 @@ public class DeviceStat {
     private String serverStatus;
     private String displayName;
     private String serverUUID;
-    private String conversationId;
 
-    /**
-     * TODO use device details
-     */
-    @Deprecated
-    private Map<String, String> props = new HashMap<>();
+
+    private Map<String, Object> props = new HashMap<>();
 
 
     public static final DeviceStat INSTANCE = new DeviceStat(true).scanIPV4();
@@ -52,7 +47,6 @@ public class DeviceStat {
 
 
     private DeviceStat(boolean scan){
-        conversationId = sanitize(SYSUtils.getDeviceId());
         if (!scan){
             return;
         }
@@ -80,46 +74,19 @@ public class DeviceStat {
         }
     }
 
-    @Deprecated
-    public static DeviceStat fromMap(Map obj) {
-        DeviceStat deviceStat = new DeviceStat(false);
-        deviceStat.batteryScale = MapUtil.getInt(obj,"B1", 0);
-        deviceStat.batteryLevel = MapUtil.getInt(obj, "B2", 0);
-        deviceStat.deviceName =  decodeString(obj, "N");
-        deviceStat.serverStatus =  decodeString(obj, "P");
-        deviceStat.displayName = decodeString(obj, "D");
-        deviceStat.serverUUID = decodeString(obj, "U");
-        deviceStat.conversationId = decodeString(obj, "C");
 
 
-        List ipv4Addrs = MapUtil.getList(obj, "I4");
-        if (!isEmpty(ipv4Addrs)){
-            for (Object s: ipv4Addrs){
-                if (s != null) {
-                    deviceStat.ipv4Addrs.add(String.valueOf(s));
-                }
+    private String t2j(Tuple2<String, String> t){
+        return "{\"i\":" + jsonVal(t.first()) + ",\"n\":" + jsonVal(t.second()) + "}";
+    }
+
+    private String t2jl(List<Tuple2<String, String>> l){
+        return "[" + StringUtil.join(l, ",", new StringUtil.JoinIterator<Tuple2<String, String>>() {
+            @Override
+            public String toString(Tuple2<String, String> v) {
+                return t2j(v);
             }
-        }
-
-
-        List screensList = MapUtil.getList(obj, "S");
-        if (screensList != null){
-            for (Object o: screensList){
-                if (o instanceof Map){
-                    Map scr = (Map) o;
-                    int width = MapUtil.getInt(scr, "W", -1);
-                    int height = MapUtil.getInt(scr, "H", -1);
-                    deviceStat.screens.add(new Screen(width, height));
-                }
-            }
-        }
-
-        String name = decodeString(obj, "x");
-        String version = decodeString(obj, "v");
-        String arch = decodeString(obj, "a");
-        deviceStat.os = new SYSUtils.OS(name, version, arch);
-
-        return deviceStat;
+        }) + "]";
     }
 
     public String toJson() {
@@ -129,7 +96,6 @@ public class DeviceStat {
         addVal(sb, "P", serverStatus);
         addVal(sb, "D", displayName);
         addVal(sb, "U", serverUUID);
-        addVal(sb, "C", conversationId);
         if (!isEmpty(screens)){
             sb.append("\"S\":").append(jsonVal(screens)).append(",");
         }
@@ -141,11 +107,23 @@ public class DeviceStat {
         if (!isEmpty(props)){
             sb.append("\"pP\": {");
             int cxx = 0;
-            for (Map.Entry<String, String> e: props.entrySet()){
+            for (Map.Entry<String, Object> e: props.entrySet()){
                 if (cxx > 0){
                     sb.append(",");
                 }
-                sb.append(jsonVal(e.getKey())).append(":").append(jsonVal(e.getValue()));
+                if (e.getValue() instanceof String) {
+                    sb.append(jsonVal(e.getKey())).append(":").append(jsonVal(e.getValue()));
+                }
+                else if(e.getValue() instanceof Tuple2){
+                    sb.append(jsonVal(e.getKey())).append(":").append(
+                            t2j((Tuple2<String, String>) e.getValue())
+                    );
+                }
+                else if (e.getValue() instanceof List){
+                    sb.append(jsonVal(e.getKey())).append(":").append(
+                            t2jl((List<Tuple2<String, String>>) e.getValue())
+                    );
+                }
                 cxx++;
             }
             sb.append("},");
@@ -178,9 +156,7 @@ public class DeviceStat {
         return sb.toString();
     }
 
-    public String getConversationId() {
-        return conversationId;
-    }
+
 
     public String getServerUUID() {
         return serverUUID;
@@ -263,6 +239,16 @@ public class DeviceStat {
         return this;
     }
 
+    public DeviceStat setProp(String key, Tuple2<String, String> val) {
+        props.put(key, val);
+        return this;
+    }
+
+    public DeviceStat setProp(String key, List<Tuple2<String, String>> val) {
+        props.put(key, val);
+        return this;
+    }
+
     @Deprecated
     public HttpResponse toHttp() {
         return HttpResponse.json(toJson()).allowAnyOrigin();
@@ -272,6 +258,8 @@ public class DeviceStat {
     public HttpResponse toHttp(HttpRequest request) {
         return HttpResponse.json(toJson()).allowAnyOrigin();
     }
+
+
 
     public static class Screen {
         private final Integer width;

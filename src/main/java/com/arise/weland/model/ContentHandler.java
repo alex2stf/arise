@@ -4,8 +4,10 @@ import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.tools.MapUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Detail;
+import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.utils.JPEGOfferResponse;
@@ -32,19 +34,11 @@ public abstract  class ContentHandler {
 
     public final HttpResponse openRequest(HttpRequest request){
         String path = request.getQueryParam("path");
-        //if (!isHttpPath(path)) {
-         //   ContentInfo info = contentInfoProvider.findByPath(path);
-          //  if (info != null) {
-            //    return openInfo(info);
-            //}
-        //}
-        
-        
         return openPath(ContentInfo.decodePath(path));
     }
 
     protected abstract HttpResponse openInfo(ContentInfo info);
-    protected abstract HttpResponse openPath(String path);
+    public abstract HttpResponse openPath(String path);
     protected abstract HttpResponse pause(String path);
 
     public  HttpResponse pauseRequest(HttpRequest request){
@@ -76,9 +70,9 @@ public abstract  class ContentHandler {
 
     public abstract void onPlaylistPlay(String name);
 
-    public abstract List<Detail> getCameraIdsV1();
-
-    public abstract List<Detail> getFlashModesV1();
+//    public abstract List<Detail> getCameraIdsV1();
+//
+//    public abstract List<Detail> getFlashModesV1();
 
     public final MJPEGResponse getLiveMjpegStream(){
         return mjpegResponse;
@@ -90,11 +84,8 @@ public abstract  class ContentHandler {
 
     public abstract <T extends SingletonHttpResponse> T getLiveWav();
 
-    @Deprecated
-    public abstract void beforeLiveWav(HttpRequest request);
 
-    public abstract Map<String, String> onDeviceUpdate(Map<String, List<String>> params);
+    public abstract DeviceStat onDeviceUpdate(Map<String, List<String>> params);
 
-
-    public abstract Detail getEnabledCameraV1();
+    public abstract DeviceStat getDeviceStat();
 }

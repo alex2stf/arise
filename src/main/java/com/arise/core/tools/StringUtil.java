@@ -140,6 +140,12 @@ public class StringUtil {
     }
 
 
+    public static Map<String, List<String>> decodeQueryParams(String in){
+        Map<String, List<String>> buf = new HashMap<>();
+        decodeQuery(in, buf);
+        return buf;
+    }
+
     public static void decodeQuery(String in, Map<String, List<String>> buffer){
         if (in == null){
             return;
@@ -667,6 +673,7 @@ public class StringUtil {
         return sb.toString();
     }
 
+    @Deprecated
     public interface JoinIterator<T> {
         String toString(T value);
     }

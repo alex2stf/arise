@@ -21,7 +21,6 @@ import com.arise.rapdroid.SmartWebView;
 import com.arise.rapdroid.media.server.AppUtil;
 import com.arise.rapdroid.media.server.MainActivity;
 import com.arise.rapdroid.media.server.R;
-import com.arise.weland.WelandClient;
 import com.arise.rapdroid.media.server.appviews.ContentInfoDisplayer;
 import com.arise.rapdroid.media.server.Icons;
 import com.arise.rapdroid.media.server.appviews.TouchPadView;

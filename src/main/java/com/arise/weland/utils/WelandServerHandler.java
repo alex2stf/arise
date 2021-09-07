@@ -10,6 +10,7 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
@@ -18,13 +19,14 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
 import com.arise.weland.PlaylistWorker;
+import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
-import com.arise.weland.dto.Detail;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
@@ -32,19 +34,29 @@ import com.arise.weland.model.FileTransfer;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
-  public static final DeviceStat deviceStat = DeviceStat.getInstance();
+
+
   ContentInfoProvider contentInfoProvider;
   Handler<HttpRequest> deviceControlsUpdate;
   ContentHandler contentHandler;
@@ -52,8 +64,22 @@ public class WelandServerHandler extends HTTPServerHandler {
   Whisker whisker = new Whisker();
   String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
   private Mole log = Mole.getInstance(WelandServerHandler.class);
+
+  Properties clientProps = new Properties();
+  ThreadUtil.TimerResult syncPlayTimer;
+
+
+  public static File getClientPropsFile(){
+    return new File(FileUtil.findDocumentsDir(), "weland-client-props");
+  }
+
   public WelandServerHandler() {
 
+    try {
+      clientProps = FileUtil.loadProps(getClientPropsFile());
+    } catch (IOException e) {
+      clientProps = new Properties();
+    }
   }
 
 
@@ -120,26 +146,25 @@ public class WelandServerHandler extends HTTPServerHandler {
         correlationId = request.getHeaderParam("Correlation-Id");
     }
 
-    deviceStat.setServerUUID(server.getUuid());
-    deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
-    deviceStat.setProp("ks", "false");
+//    deviceStat.setServerUUID(server.getUuid());
+//    deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
+//    deviceStat.setProp("ks", "false");
 
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
-      deviceStat.setServerStatus(MSG_RECEIVE_OK);
+//      deviceStat.setServerStatus(MSG_RECEIVE_OK);
       MapObj mapObj = (MapObj) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
-      return HttpResponse.json(deviceStat.toJson()).allowAnyOrigin();
+      return contentHandler.getDeviceStat().toHttp();
     }
 
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
       dispatch(deviceControlsUpdate, request);
-      return HttpResponse.json(deviceStat.toJson()).addCorelationId(correlationId);
+      return contentHandler.getDeviceStat().toHttp();
     }
 
     if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
-      contentHandler.beforeLiveWav(request);
       return contentHandler.getLiveWav();
     }
 
@@ -171,13 +196,38 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     //generic platform agnostic information
     if ("/device/stat".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
-      return DeviceStat.getInstance().toHttp(request);
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+      simpleDateFormat.setTimeZone(TimeZone.getDefault());
+      return contentHandler.getDeviceStat()
+              .setProp("JT", simpleDateFormat.format(new Date()))
+              .toHttp();
+    }
+
+    if ("/device/update".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
+      return contentHandler.onDeviceUpdate(request.getQueryParams()).toHttp();
+    }
+
+
+
+
+    if("/props/get".equals(request.path())){
+      String key = request.getQueryParam("key");
+      return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
+    }
+
+    if("/props/set".equals(request.path())){
+      String key = request.getQueryParam("key");
+      String value = request.getQueryParam("value");
+      clientProps.put(key, value);
+      FileUtil.saveProps(clientProps, getClientPropsFile(), "");
+      return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
     }
 
     //fetch thumbnail
     if (request.pathsStartsWith("thumbnail")){
       String id = request.getQueryParam("id");
-      return contentInfoProvider.getMediaPreview(id).addCorelationId(correlationId).allowAnyOrigin();
+      return contentInfoProvider.getMediaPreview(id)
+              .addCorelationId(correlationId).allowAnyOrigin();
     }
 
     //list media based on type
@@ -189,31 +239,12 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();
     }
 
-    //platform specific details
-    if("/device/details".equalsIgnoreCase(request.path())){
-      StringBuilder sb = new StringBuilder().append("{");
-      sb.append("\"CV1\":").append(Detail.toJson(contentHandler.getCameraIdsV1()));
-      sb.append(",\"FMV1\":").append(Detail.toJson(contentHandler.getFlashModesV1()));
-      sb.append(",\"ECAMV1\":").append(contentHandler.getEnabledCameraV1().toString());
-      sb.append("}");
-      return HttpResponse.json(
-              sb.toString()
-      ).addCorelationId(correlationId).allowAnyOrigin();
-    }
 
-
-
-    if ("/device/update".equalsIgnoreCase(request.path())){
-      Map<String, String> response = contentHandler.onDeviceUpdate(request.getQueryParams());
-      return HttpResponse.json(Groot.toJson(response)).allowAnyOrigin();
-    }
 
 
     //open given path
     if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
-      System.out.println(request);
       HttpResponse response = contentHandler.openRequest(request);
-      
       if (response != null){
         return response.allowAnyOrigin();
       }
@@ -250,9 +281,24 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.plainText("copied");
     }
 
+    if ("/upload/stat".equalsIgnoreCase(request.path())){
+      String fileToCheck = request.getQueryParam("name");
+      File f = new File(FileUtil.getUploadDir(), fileToCheck);
+      if (!f.exists()){
+        return HttpResponse.json("{\"exists\": false}").allowAnyOrigin();
+      }
+
+      return HttpResponse
+              .json("{\"exists\": true, \"len\": "+f.length()+", \"path\": "+StringUtil.jsonVal(ContentInfo.encodePath(f.getAbsolutePath()))+"}")
+              .allowAnyOrigin();
+    }
+
     if ("/upload".equalsIgnoreCase(request.path())){
       String path = request.getQueryParam("file");
-      File f = new File(path);
+      String name = request.getQueryParam("name");
+
+
+      File f = ContentInfo.fileFromPath(path);
       if (!f.exists()){
         return HttpResponse.plainText("file does not exist");
       }
@@ -261,18 +307,27 @@ public class WelandServerHandler extends HTTPServerHandler {
       try {
         url = new URL(request.getQueryParam("destination"));
       } catch (MalformedURLException e) {
+        e.printStackTrace();
         return HttpResponse.plainText("invalid destination");
       }
-      FileTransfer.Client client = new FileTransfer.Client();
-      client.setHost(url.getHost());
-      client.setPort(url.getPort());
-      client.sendAndReceive(new FileTransfer.FileRequest(f), new CompleteHandler<HttpResponse>() {
+      ThreadUtil.fireAndForget(new Runnable() {
         @Override
-        public void onComplete(HttpResponse data) {
-//          System.out.println(data);
+        public void run() {
+          FileTransfer.Client client = new FileTransfer.Client();
+          client.setHost(url.getHost());
+          client.setPort(url.getPort());
+          client.sendAndReceive(new FileTransfer.FileRequest(f, name), new CompleteHandler<HttpResponse>() {
+            @Override
+            public void onComplete(HttpResponse data) {
+              System.out.println(data);
+            }
+          });
         }
       });
-      return HttpResponse.plainText(f.getAbsolutePath());
+
+      return HttpResponse
+              .json("{\"len\":" + f.length() + ", \"name\": "+StringUtil.jsonVal(name)+"}")
+              .allowAnyOrigin();
     }
 
 
@@ -280,7 +335,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     //close || stopPreviews
     if (request.pathsStartsWith("files", "close")){
       contentHandler.stop(request);
-      return DeviceStat.getInstance().toHttp(request);
+      return contentHandler.getDeviceStat().toHttp(request);
     }
 
      //PAUSE

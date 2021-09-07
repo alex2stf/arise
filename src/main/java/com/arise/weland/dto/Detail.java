@@ -1,13 +1,16 @@
 package com.arise.weland.dto;
 
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StringUtil;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
 
+@Deprecated
 public class Detail {
     private final String id;
     private final String name;

@@ -1,5 +1,6 @@
 package com.arise.rapdroid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -33,17 +34,22 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
 import com.arise.rapdroid.components.ui.Layouts;
 import com.arise.rapdroid.components.ui.adapters.URLAutocomplete;
 import com.arise.rapdroid.components.ui.views.SmartLayout;
 import com.arise.rapdroid.media.server.R;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +68,8 @@ public class SmartWebView extends LinearLayout {
     private Mole log = Mole.getInstance(SmartWebView.class);
     private String uri;
     private static URLAutocomplete urls;
-
+    private List<String> blocked;
+    private String jsSnip;
 
 
     public SmartWebView(Context context, Resources resources) {
@@ -73,8 +80,6 @@ public class SmartWebView extends LinearLayout {
             this.resources = resources;
         }
         decorateWebViewMinimal();
-
-
     }
 
     public SmartWebView(Context context, @Nullable AttributeSet attrs) {
@@ -91,66 +96,87 @@ public class SmartWebView extends LinearLayout {
         decorateWebViewMinimal();
     }
 
+    private WebResourceResponse getTextWebResource(InputStream data) {
+        return new WebResourceResponse("application/javascript", "UTF-8", data);
+    }
 
+
+    private boolean isBlockedDomain(String s){
+
+        if (s.endsWith(".ttf")){
+            return false;
+        }
+
+        if (s.indexOf("youtube") > -1 && s.indexOf("api/stats") > -1 ){
+            return true;
+        }
+
+        //player???ad.js
+        //ASTA incetineste player-ul
+
+        //https://m.youtube.com/s/player/f5eab513/player-plasma-ias-phone-ro_RO.vflset/ad.js
+        if (s.indexOf("youtube") > -1 && s.indexOf("player") > -1 && s.indexOf("ad") > -1){
+            return true;
+        }
+
+//        https://m.youtube.com/s/player/f5eab513/player-plasma-ias-phone-ro_RO.vflset/ad.js
+        if (s.indexOf("youtube.com/generate_204") > -1){
+            return false;
+        }
+
+        if (CollectionUtil.isEmpty(blocked)){
+            return false;
+        }
+        for (String d: blocked){
+            if (s.indexOf(d) > -1){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void decorateWebViewMinimal(){
         setOrientation(VERTICAL);
 
         webView.setWebViewClient(new WebViewClient() {
 
-//            @Override
-//            public void onLoadResource(WebView view, String url) {
-//                System.out.println("webview onLoadResource " + url);
-//                super.onLoadResource(view, url);
-//            }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+            }
 
-
-//            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-//                System.out.println("webview shouldInterceptRequest " + url);
-//                return super.shouldInterceptRequest(view, url);
-//            }
 
             //https://www.hidroh.com/2016/05/19/hacking-up-ad-blocker-android/
             @Nullable
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String uri;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    System.out.println("Intercept request " + request.getUrl());
+                    uri = request.getUrl().toString();
+                } else {
+                    uri = request.toString();
                 }
-//                System.out.println("Intercept request " + request.toString());
+
+                if (isBlockedDomain(uri)) {
+                    String text = "console.log('skip " + StringUtil.jsonEscape(uri) + " ');";
+                    InputStream textStream = new ByteArrayInputStream(text.getBytes());
+                    return getTextWebResource(textStream);
+                } else {
+                    log.info("Accept load uri " + uri);
+
+                }
                 return super.shouldInterceptRequest(view, request);
             }
 
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                log.i("Processing webview url click... " + url);
-//                uri = url;
-//                if (urls != null){
-//                    urls.add(url);
-//                }
-//                if (searchBar != null){
-//                    searchBar.setText(url);
-//                }
-//
-//
-//
-//                return super.shouldOverrideUrlLoading(view, url);
-//            }
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                log.i("Processing webview url click... " + url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
 
-//            @Override
-//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                uri = url;
-//                super.onPageStarted(view, url, favicon);
-//            }
 
             public void onPageFinished(WebView view, String url) {
                 log.i("Finished loading URL: " + url);
-//                uri = url;
-//                if (searchBar != null){
-//                    searchBar.setText(webView.getUrl());
-//                }
-//                InputStream inputStream = FileUtil.findStream("scripts/webview_postfix.js");
-//                String script = StreamUtil.toString(inputStream);
-//                webView.loadUrl("javascript:(function() { " + script + " \n postfix('"+url+"') })()");
+                updateSearchBar();
                 super.onPageFinished(view, url);
             }
 
@@ -212,6 +238,24 @@ public class SmartWebView extends LinearLayout {
 
         youtubeSetup();
         hideZoomControls();
+    }
+
+    private void updateSearchBar() {
+        if (searchBar == null){
+            return;
+        }
+        if (ctx instanceof Activity){
+            ((Activity) ctx).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (searchBar.getText().equals(webView.getUrl())){
+                        return;
+                    }
+                    searchBar.setText(webView.getUrl());
+                    webView.loadUrl("javascript:(function(){"+jsSnip+"})();");
+                }
+            });
+        }
     }
 
     private void hideZoomControls() {
@@ -316,6 +360,7 @@ public class SmartWebView extends LinearLayout {
         }
     }
 
+    @Deprecated
     public String url(){
         return webView.getUrl();
     }
@@ -344,6 +389,20 @@ public class SmartWebView extends LinearLayout {
         if (webView.canGoBack()) {
             webView.goBack();
         }
+    }
+
+    public WebView getWebView() {
+        return webView;
+    }
+
+    public SmartWebView setBlockedDomains(List<String> blocked) {
+        this.blocked = blocked;
+        return this;
+    }
+
+    public SmartWebView setJavascriptSnipping(String jsSnip) {
+        this.jsSnip = jsSnip.replaceAll("\\s+"," ");
+        return this;
     }
 
 //    public void hideWebview() {

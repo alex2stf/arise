@@ -39,6 +39,14 @@ public class ContentInfo implements Serializable {
     private String playlistId;
     private String groupId;
 
+    public static File fileFromPath(String path) {
+        File f = new File(path);
+        if (!f.exists()){
+            f = new File(decodePath(path));
+        }
+        return f;
+    }
+
     public String getGroupId() {
         return groupId;
     }

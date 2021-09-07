@@ -47,7 +47,7 @@ public class MirceaFateCaLucrezi {
 
 
         System.out.println(
-                UUID.randomUUID().toString()
+               new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
         );
 
 

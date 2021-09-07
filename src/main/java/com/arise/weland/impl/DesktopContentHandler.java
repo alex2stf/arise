@@ -6,6 +6,7 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
@@ -371,51 +372,33 @@ public class DesktopContentHandler extends ContentHandler {
         System.out.println("TO DO");
     }
 
-    @Override
-    public List<Detail> getCameraIdsV1() {
-        return Arrays.asList(new Detail("0", "Cam 1"), new Detail("1", "Cam 2"));
-    }
-
-    @Override
-    public List<Detail> getFlashModesV1() {
-        return Arrays.asList(new Detail("0", "OFF"), new Detail("0", "ON"));
-    }
 
 
 
-    private void solveCameraStream(HttpRequest request){
-        boolean shouldStop = "false".equalsIgnoreCase(
-                request.getQueryParamString("camEnabled", "false")
-        );
-        if (shouldStop){
-            desktopCamStream.stop();
-        }
-        else {
-            desktopCamStream.start();
-        }
-    }
+
 
     @Override
     public <T extends SingletonHttpResponse> T getLiveWav() {
         return null;
     }
 
-    @Override
-    @Deprecated
-    public void beforeLiveWav(HttpRequest request) {
 
+
+    @Override
+    public DeviceStat onDeviceUpdate(Map<String, List<String>> params) {
+
+        return DeviceStat.getInstance();
     }
 
-    @Override
-    public Map<String, String> onDeviceUpdate(Map<String, List<String>>  params) {
-        Map<String, String> r = new HashMap<>();
-        r.put("x", "y");
-        return r;
-    }
+
 
     @Override
-    public Detail getEnabledCameraV1() {
-        return new Detail("0", "Cam 1");
+    public DeviceStat getDeviceStat() {
+        DeviceStat deviceStat = DeviceStat.getInstance();
+        deviceStat.setProp("ECV1", new Tuple2<>("0", "Cam 1"));
+        deviceStat.setProp("FMV1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
+        deviceStat.setProp("CV1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
+        return deviceStat;
     }
 
     private void execute(String args[]){

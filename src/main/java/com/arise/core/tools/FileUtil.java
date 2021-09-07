@@ -1,5 +1,8 @@
 package com.arise.core.tools;
 
+import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.tools.models.FoundHandler;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,11 +14,14 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -30,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+
+import static com.arise.core.tools.Util.close;
 
 public class FileUtil {
 
@@ -371,9 +379,35 @@ public class FileUtil {
         return Collections.emptyList();
     }
 
+    public static List<String> readLines(InputStream i) throws IOException {
+        return readLines(new InputStreamReader(i));
+    }
 
-    public static String read(java.io.File file) throws IOException {
-//        BufferedReader reader = new BufferedReader(new InputStreamReader (new FileInputStream(file)));
+    public static List<String> readLines(Reader r) throws IOException {
+        List<String> ls = new ArrayList<>();
+        readLineByLine(r, new FoundHandler<String>() {
+            @Override
+            public void onFound(String d) {
+                ls.add(d);
+            }
+        });
+        return ls;
+    }
+
+    public static void readLineByLine(Reader r, FoundHandler<String> fh) throws IOException {
+        BufferedReader c  = new BufferedReader(r);
+        while (c.ready()){
+            String s = (c.readLine());
+            if (s == null){
+                break;
+            }
+            fh.onFound(s);
+        }
+        close(c);
+    }
+
+    @Deprecated
+    public static String read(File file) throws IOException {
 
         //modified with @Adri
         BufferedReader reader = new BufferedReader(new FileReader((file)));
@@ -560,8 +594,8 @@ public class FileUtil {
         } catch (Exception ex) {
            ;;
         }
-        Util.close(objectIn);
-        Util.close(fileIn);
+        close(objectIn);
+        close(fileIn);
         return r;
     }
 
@@ -579,8 +613,8 @@ public class FileUtil {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Util.close(fileOut);
-        Util.close(objectOut);
+        close(fileOut);
+        close(objectOut);
     }
 
 
@@ -730,6 +764,9 @@ public class FileUtil {
     }
 
 
+
+
+    @Deprecated
     public abstract static class FileFoundHandler {
         public abstract void foundFile(File file);
         public boolean acceptDir(File file){

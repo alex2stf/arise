@@ -474,6 +474,9 @@ public class ContentInfoProvider {
         if (info == null){
             info = findByPathInList(getSafePersistedPlaylist(Playlist.VIDEOS), path);
         }
+        if (info == null){
+            info = findByPathInList(getSafePersistedPlaylist(Playlist.STREAMS), path);
+        }
         return info;
     }
 

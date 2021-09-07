@@ -208,6 +208,7 @@ public class NetworkUtil {
     }
 
 
+    @Deprecated
     public interface AddressIterator {
         void onIterate(InetAddress inetAddress, NetworkInterface networkInterface);
         void onComplete(Iterable<InetAddress> inetAddresses);
