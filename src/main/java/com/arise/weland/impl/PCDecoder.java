@@ -51,7 +51,7 @@ public class PCDecoder extends ContentInfoDecoder {
 
         }
 
-        System.out.println("Skip suggestion service for desktop because of proxy");
+//        System.out.println("Skip suggestion service for desktop because of proxy");
         if (false){
             suggestionService.searchIcons(file.getName(), new SuggestionService.Manager() {
                 @Override

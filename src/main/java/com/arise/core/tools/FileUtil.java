@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -394,6 +395,10 @@ public class FileUtil {
         return ls;
     }
 
+    public static void readLineByLine(File f, FoundHandler<String> fh) throws IOException {
+        readLineByLine(new FileReader(f), fh);
+    }
+
     public static void readLineByLine(Reader r, FoundHandler<String> fh) throws IOException {
         BufferedReader c  = new BufferedReader(r);
         while (c.ready()){
@@ -749,7 +754,13 @@ public class FileUtil {
         }
     }
 
-
+    public static void appendNewLineToFile(String x, File f) throws IOException {
+        FileWriter fw = new FileWriter(f, true);
+        PrintWriter bw = new PrintWriter(fw);
+        bw.printf("%s\n", x);
+        close(fw);
+        close(bw);
+    }
 
 
     @Deprecated

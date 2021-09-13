@@ -336,6 +336,15 @@ public class StringUtil {
     }
 
 
+    public static int toInt(String s, int d){
+        Integer x = toInt(s);
+        if (null == x){
+            return d;
+        }
+        return x;
+    }
+
+
 
 
 

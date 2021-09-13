@@ -47,6 +47,8 @@ public class ContentInfo implements Serializable {
         return f;
     }
 
+
+
     public String getGroupId() {
         return groupId;
     }
@@ -259,6 +261,9 @@ public class ContentInfo implements Serializable {
         return new StringBuilder().append("[").append(join(infos, ",")).append("]").toString();
     }
 
+
+
+
     public static List<ContentInfo> deserializeCollection(String content){
         List<ContentInfo> res = new ArrayList<>();
         Arr arr = (Arr) Groot.decodeBytes(content.getBytes());
@@ -386,5 +391,106 @@ public class ContentInfo implements Serializable {
     }
 
 
+    private static final String separator = ",";
 
+    public static ContentInfo fromCsv(String data) {
+        int line = 0;
+        ContentInfo contentInfo = new ContentInfo();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < data.length(); i++){
+            char c = data.charAt(i);
+            char p = i > 0 ? data.charAt(i-1) : '\0';
+            if (c == ',' && p != '\\'){
+                setField(contentInfo, line, sb.toString().replaceAll("\\\\,", ","));
+                sb.setLength(0);
+                line++;
+            }  else {
+                sb.append(c);
+            }
+        }
+        setField(contentInfo, line, sb.toString().replaceAll("\\\\,", ","));
+
+        return contentInfo;
+    }
+
+
+    public static void setField(ContentInfo i, int index, String in){
+        String value = csvDecode(in);
+        switch (index){
+            case 0:
+                i.setPath(value);
+                break;
+            case 1:
+                i.setAlbumName(value);
+                break;
+            case 2:
+                i.setArtist(value);
+                break;
+            case 3:
+                i.setComposer(value);
+            case 4:
+                i.setTitle(value);
+                break;
+            case 5:
+                i.setVisited(toInt(value, 0));
+                break;
+            case 6:
+                i.setThumbnailId(value);
+                break;
+            case 7:
+                i.playlistId = value;
+                break;
+            case 8:
+                i.width = toInt(value, 0);
+                break;
+            case 9:
+                i.height = toInt(value, 0);
+                break;
+            case 10:
+                i.position = toInt(value, 0);
+                break;
+            case 11:
+                i.duration = toInt(value, 0);
+                break;
+            case 12:
+                i.groupId = value;
+                break;
+            case 13:
+                i.contentType = ContentType.search(value);
+                break;
+        }
+    }
+
+
+    private static String csvDecode(String in){
+        return !in.equals("_") ? in : null;
+    }
+
+
+    public String toCsv() {
+        return csvEncode(path) + separator
+                + csvEncode(albumName) + separator
+                + csvEncode(artist) + separator
+                + csvEncode(composer) + separator
+                + csvEncode(title) + separator
+                + csvEncode(visited + "") + separator
+                + csvEncode(thumbnailId) + separator
+                + csvEncode(playlistId) + separator
+                + csvEncode(width + "") + separator
+                + csvEncode(height + "") + separator
+                + csvEncode(position + "") + separator
+                + csvEncode(duration + "") + separator
+                + csvEncode(groupId) + separator
+                + csvEncode(contentType != null ? contentType.name() : "");
+    }
+
+    public static String csvEncode(String field){
+        if (!StringUtil.hasText(field)) {
+            return "_";
+        }
+        if (field.indexOf(separator) > -1){
+           field = field.replaceAll(",", "\\\\,");
+        }
+        return field;
+    }
 }

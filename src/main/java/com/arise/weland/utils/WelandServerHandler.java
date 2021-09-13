@@ -10,13 +10,11 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
-import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
@@ -37,18 +35,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
@@ -274,7 +266,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if(request.pathsStartsWith("info", "persisted", "playlist", "music")){
-      return HttpResponse.plainText(contentInfoProvider.getPersistedPlaylistContent(Playlist.MUSIC));
+      return HttpResponse.plainText(contentInfoProvider.getPlaylistFileContent(Playlist.MUSIC));
     }
 
     if(request.pathsStartsWith("transfer")){
