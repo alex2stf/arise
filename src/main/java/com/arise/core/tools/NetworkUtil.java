@@ -28,7 +28,7 @@ public class NetworkUtil {
         }
     }
 
-    private static AddressIterator newIPV4Iterator(IPIterator iter){
+    private static AddressIterator newIPV4Iterator(final IPIterator iter){
         final Set<String> ips = new HashSet<>();
         return new AddressIterator() {
              @Override
@@ -63,7 +63,7 @@ public class NetworkUtil {
             ga = "127.0.0.1";
         }
         
-        String fga = ga;
+        final String fga = ga;
         final String[] act = new String[]{ ga };
         inetAdressesSync(newIPV4Iterator(new IPIterator() {
             @Override

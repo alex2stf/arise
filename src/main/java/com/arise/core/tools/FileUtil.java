@@ -385,7 +385,7 @@ public class FileUtil {
     }
 
     public static List<String> readLines(Reader r) throws IOException {
-        List<String> ls = new ArrayList<>();
+        final List<String> ls = new ArrayList<>();
         readLineByLine(r, new FoundHandler<String>() {
             @Override
             public void onFound(String d) {

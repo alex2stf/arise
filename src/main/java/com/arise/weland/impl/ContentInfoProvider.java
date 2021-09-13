@@ -145,7 +145,7 @@ public class ContentInfoProvider {
 
         for (String path: paths){
             log.info("Loading static content from path " + path );
-            String content = StreamUtil.toString(FileUtil.findStream(path));
+            String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
             List<ContentInfo> contentInfos = ContentInfo.deserializeCollection(content);
 
             for (ContentInfo i: contentInfos){
@@ -158,14 +158,19 @@ public class ContentInfoProvider {
             scanRoot(root);
         }
         scanning = true;
+        log.info("SCAN COMPLETE: " + fcnt + " files.");
     }
 
+    private int lsc = 0;
+
     private void scanRoot(File root){
+
 
         File [] innerFiles = root.listFiles();
         if (innerFiles == null || innerFiles.length == 0){
             return;
         }
+        //System.out.println("scan root " + root.getAbsolutePath());
         List<File> dirs = new ArrayList<>();
         for (File f: innerFiles){
             if (f.getName().startsWith(".")){
@@ -178,8 +183,12 @@ public class ContentInfoProvider {
             }
         }
 
-        System.out.println("Total scanned files: " + fcnt);
+//        System.out.println(root.getAbsolutePath() + " has " + innerFiles.length + " files fh " + dirs.size());
         if (!CollectionUtil.isEmpty(dirs)){
+            if (fcnt > lsc){
+                log.info(fcnt + " scanned files...");
+                lsc = fcnt;
+            }
             for (File f: dirs){
                 scanRoot(f);
             }
@@ -220,7 +229,7 @@ public class ContentInfoProvider {
         }
         try {
             FileUtil.appendNewLineToFile(line, playlistFile);
-            log.trace("Register " + contentInfo.getPath());
+//            log.trace("Register " + contentInfo.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -473,7 +482,7 @@ public class ContentInfoProvider {
     }
 
     List<ContentInfo> getNullablePersistedPlaylist(Playlist playlist){
-        List<ContentInfo> contentInfos = new ArrayList<>();
+        final List<ContentInfo> contentInfos = new ArrayList<>();
         File f = getPlaylistFile(playlist);
         if (!f.exists()){
             return Collections.emptyList();

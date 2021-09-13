@@ -105,6 +105,19 @@ public class AppSettings {
             else if ("downloads".equalsIgnoreCase(s) || "download".equalsIgnoreCase(s)){
                 r.add(FileUtil.findDownloadDir());
             }
+            else if(s.endsWith(":")){
+                File d = getDrive(s);
+                if (d != null && d.exists()){
+                    r.add(d);
+                }
+                else {
+                    File f = new File(s);
+                    if (f.exists()){
+                        r.add(f);
+                    }
+                }
+
+            }
             else {
                 File f = new File(s);
                 if (f.exists()){
@@ -116,6 +129,16 @@ public class AppSettings {
         return r;
     }
 
+
+    private static File getDrive(String s){
+        File drives[] = File.listRoots();
+        for (File d: drives){
+            if (d.getAbsolutePath().startsWith(s)){
+                return d;
+            }
+        }
+        return null;
+    }
 
 
 

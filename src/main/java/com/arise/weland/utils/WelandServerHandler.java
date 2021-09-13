@@ -288,15 +288,15 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if ("/upload".equalsIgnoreCase(request.path())){
       String path = request.getQueryParam("file");
-      String name = request.getQueryParam("name");
+      final String name = request.getQueryParam("name");
 
 
-      File f = ContentInfo.fileFromPath(path);
+      final File f = ContentInfo.fileFromPath(path);
       if (!f.exists()){
         return HttpResponse.plainText("file does not exist");
       }
 
-      URL url;
+      final URL url;
       try {
         url = new URL(request.getQueryParam("destination"));
       } catch (MalformedURLException e) {

@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
+//import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
@@ -251,14 +251,14 @@ public class ReflectUtil {
         return method.getParameterTypes().length;
     }
 
-    public static Object getAnnotation(Parameter parameter, String name){
-        Class annotation = getClassByName(name);
-        if (annotation != null){
-            //org.springframework.core.annotation.AnnotationUtils.findAnnotation()
-            return parameter.getAnnotation(annotation);
-        }
-        return null;
-    }
+//    public static Object getAnnotation(Parameter parameter, String name){
+//        Class annotation = getClassByName(name);
+//        if (annotation != null){
+//            //org.springframework.core.annotation.AnnotationUtils.findAnnotation()
+//            return parameter.getAnnotation(annotation);
+//        }
+//        return null;
+//    }
 
     public static Object getAnnotation(Method xxx, String name){
         Class annotation = getClassByName(name);

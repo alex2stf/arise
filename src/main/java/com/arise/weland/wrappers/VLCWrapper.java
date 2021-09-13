@@ -40,7 +40,7 @@ public class VLCWrapper {
 
     public static File open(String[] args) {
         String executablePath = args[0];
-        File executable = new File(executablePath);
+        final File executable = new File(executablePath);
         if (!executable.exists()){
             return null;
         }
@@ -52,7 +52,7 @@ public class VLCWrapper {
             return null;
         }
 
-        File source = new File(args[1]);
+        final File source = new File(args[1]);
 
 
         Status vlcStatus = getStatus();
@@ -115,7 +115,7 @@ public class VLCWrapper {
     }
 
     static Status getStatus(){
-        return getStatusRequest(Collections.emptyMap());
+        return getStatusRequest(Collections.<String, String>emptyMap());
     }
 
 
@@ -139,7 +139,7 @@ public class VLCWrapper {
 
 
 
-        Status status = new Status();
+        final Status status = new Status();
 
         jHttpClient.sendAndReceiveSync(request, new CompleteHandler<HttpResponse>() {
             @Override

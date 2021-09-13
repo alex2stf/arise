@@ -92,7 +92,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
-    public void sendAndReceiveSync(HttpRequest request, CompleteHandler<HttpResponse> httpResponseCompleteHandler){
+    public void sendAndReceiveSync(HttpRequest request, final CompleteHandler<HttpResponse> httpResponseCompleteHandler){
         connectSync(request, new CompleteHandler<HttpURLConnection>() {
             @Override
             public void onComplete(HttpURLConnection data) {

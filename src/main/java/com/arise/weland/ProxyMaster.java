@@ -40,13 +40,13 @@ public class ProxyMaster {
         log.info("Weland proxy started on port: " + proxyPort);
 
 
-        HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder();
+        final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder();
 
 
         IOServer ioServer = new IOServer(){
 
             @Override
-            protected void handle(Socket acceptedSocket) {
+            protected void handle(final Socket acceptedSocket) {
                 try {
                     acceptedSocket.setKeepAlive(true);
                 } catch (SocketException e) {
