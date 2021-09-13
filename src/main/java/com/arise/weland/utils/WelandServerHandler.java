@@ -289,7 +289,8 @@ public class WelandServerHandler extends HTTPServerHandler {
       }
 
       return HttpResponse
-              .json("{\"exists\": true, \"len\": "+f.length()+", \"path\": "+StringUtil.jsonVal(ContentInfo.encodePath(f.getAbsolutePath()))+"}")
+              .json("{\"exists\": true, \"len\": "+f.length()+", \"path\": " + StringUtil.jsonVal(ContentInfo.encodePath(f.getAbsolutePath()))
+                      + ",\"dStat\":" +contentHandler.getDeviceStat().toJson() +"}")
               .allowAnyOrigin();
     }
 

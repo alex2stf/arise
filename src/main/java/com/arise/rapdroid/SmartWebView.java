@@ -58,7 +58,7 @@ import static com.arise.core.tools.CollectionUtil.isEmpty;
 public class SmartWebView extends LinearLayout {
     public static final Resources DEFAULT = new Resources();
     private final WebView webView;
-    WebView soundThread;
+//    WebView soundThread;
     private final Context ctx;
     private Resources resources = DEFAULT;
 
@@ -187,16 +187,13 @@ public class SmartWebView extends LinearLayout {
             }
         });
 
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                log.info("WEBVIEW_MSG: " + consoleMessage.messageLevel() + "] (" + consoleMessage.lineNumber() + ") " + consoleMessage.message());
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-
-
-        });
+//        webView.setWebChromeClient(new WebChromeClient() {
+//            @Override
+//            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+//                log.info("WEBVIEW_MSG: " + consoleMessage.messageLevel() + "] (" + consoleMessage.lineNumber() + ") " + consoleMessage.message());
+//                return super.onConsoleMessage(consoleMessage);
+//            }
+//        });
 
         webView.setPadding(0, 0, 0, 0);
 

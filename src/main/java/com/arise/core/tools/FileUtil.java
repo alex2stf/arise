@@ -432,23 +432,23 @@ public class FileUtil {
 
 
 
-    public static void linearScan(File directory, final FileFoundHandler fileFoundHandler){
-        if (!fileExists(directory)){
-            return;
-        }
-
-        recursiveScan(directory, new FileFoundHandler() {
-            @Override
-            public void foundFile(File file) {
-                fileFoundHandler.foundFile(file);
-            }
-
-            @Override
-            public boolean acceptDir(File file) {
-                return false;
-            }
-        });
-    }
+//    public static void linearScan(File directory, final FileFoundHandler fileFoundHandler){
+//        if (!fileExists(directory)){
+//            return;
+//        }
+//
+//        recursiveScan(directory, new FileFoundHandler() {
+//            @Override
+//            public void foundFile(File file) {
+//                fileFoundHandler.foundFile(file);
+//            }
+//
+//            @Override
+//            public boolean acceptDir(File file) {
+//                return false;
+//            }
+//        });
+//    }
 
 
     private static boolean fileExists(File f){
@@ -499,21 +499,7 @@ public class FileUtil {
             if (c.isDirectory()
                  && c.canRead()
                  && fileFoundHandler != null
-                 && fileFoundHandler.acceptDir(c)
             ){
-
-//                try {
-//                    try {
-//                        System.out.println("\n\n\n\n\nsleep " + files.length + "\n\n\n\n\n");
-//                        Thread.sleep(files.length);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    walkTree(c, fileFoundHandler);
-//                } catch (IOException e) {
-//                    log.warn("walkTree failed for " + c.getAbsolutePath());
-//                    recursiveScan(c, fileFoundHandler);
-//                }
                 recursiveScan(c, fileFoundHandler, filenameFilter);
             } else if (c.isFile() && fileFoundHandler != null){
 //                System.out.println("found " + c.getAbsolutePath());
@@ -522,19 +508,19 @@ public class FileUtil {
         }
     }
 
-    public static void walkTree( File directory,  final FileFoundHandler fileFoundHandler) throws IOException {
-            Files.walkFileTree(Paths.get(directory.getAbsolutePath()), new SimpleFileVisitor<Path>(){
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (attrs.isDirectory() && !attrs.isSymbolicLink()){
-                        recursiveScan(file.toFile(), fileFoundHandler);
-                    } else {
-                        fileFoundHandler.foundFile(file.toFile());
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-    }
+//    public static void walkTree( File directory,  final FileFoundHandler fileFoundHandler) throws IOException {
+//            Files.walkFileTree(Paths.get(directory.getAbsolutePath()), new SimpleFileVisitor<Path>(){
+//                @Override
+//                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+//                    if (attrs.isDirectory() && !attrs.isSymbolicLink()){
+//                        recursiveScan(file.toFile(), fileFoundHandler);
+//                    } else {
+//                        fileFoundHandler.foundFile(file.toFile());
+//                    }
+//                    return FileVisitResult.CONTINUE;
+//                }
+//            });
+//    }
 
 
     public static void saveProps(Properties props, File f, String comment) {

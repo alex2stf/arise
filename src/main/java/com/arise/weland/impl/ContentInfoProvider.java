@@ -142,8 +142,11 @@ public class ContentInfoProvider {
                     FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
                         @Override
                         public void foundFile(File file) {
+
+
                             if (!file.getName().startsWith(".")) {
                                 if (isMusic(file)) {
+                                    System.out.println("MUSIC  " + file.getAbsolutePath());
                                     fcnt++;
                                     music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
                                 } else if (isVideo(file)) {
@@ -162,6 +165,9 @@ public class ContentInfoProvider {
                                         }
                                     }
                                 }
+                                else {
+                                    System.out.println("SKIP " + file.getAbsolutePath());
+                                }
                             }
                         }
                     }, new FilenameFilter() {
@@ -172,6 +178,7 @@ public class ContentInfoProvider {
                     });
                 }
 
+                System.out.println("RECURSIVE SCAN COMPLETE");
 
 
                 merge(Playlist.MUSIC, music);

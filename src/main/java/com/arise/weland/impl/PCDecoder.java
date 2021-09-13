@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.Util.close;
 
 
 public class PCDecoder extends ContentInfoDecoder {
@@ -50,7 +51,8 @@ public class PCDecoder extends ContentInfoDecoder {
 
         }
 
-        if (!StringUtil.hasText(info.getThumbnailId())){
+        System.out.println("Skip suggestion service for desktop because of proxy");
+        if (false){
             suggestionService.searchIcons(file.getName(), new SuggestionService.Manager() {
                 @Override
                 public boolean manage(String id, String path, URL url) {
@@ -115,7 +117,7 @@ public class PCDecoder extends ContentInfoDecoder {
             System.out.println("Failed to fetch " + url);
         }
         finally {
-            Util.close(inputStream);
+            close(inputStream);
         }
 
         if (bytes != null){
@@ -127,7 +129,7 @@ public class PCDecoder extends ContentInfoDecoder {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Util.close(fileOutputStream);
+            close(fileOutputStream);
         }
 
         if (id != null && bytes != null){
@@ -228,7 +230,7 @@ public class PCDecoder extends ContentInfoDecoder {
             }
         }
         info.setThumbnailId(id);
-        Util.close(os);
+        close(os);
 
     }
 
@@ -279,7 +281,7 @@ public class PCDecoder extends ContentInfoDecoder {
         } catch (Exception e){
 
         }
-        Util.close(fileOutputStream);
+        close(fileOutputStream);
     }
 
     @Override

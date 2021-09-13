@@ -155,23 +155,24 @@ public class Main {
             }
         });
 
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-                bluecoveServer = new BluecoveServer();
-                bluecoveServer.setDeviceController(deviceController);
-                bluecoveServer.setStateObserver(welandServerHandler)
-                        .setRequestBuilder(requestBuilder)
-                        .setRequestHandler(welandServerHandler)
-                        .setName("CB_" + SYSUtils.getDeviceName());
-
-                try {
-                    bluecoveServer.start();
-                } catch (Exception e) {
-                    log.error("Failed to start bluetooth server because", e);
-                }
-            }
-        });
+        //DO NOT DELETE BluecoveServer
+//        ThreadUtil.fireAndForget(new Runnable() {
+//            @Override
+//            public void run() {
+//                bluecoveServer = new BluecoveServer();
+//                bluecoveServer.setDeviceController(deviceController);
+//                bluecoveServer.setStateObserver(welandServerHandler)
+//                        .setRequestBuilder(requestBuilder)
+//                        .setRequestHandler(welandServerHandler)
+//                        .setName("CB_" + SYSUtils.getDeviceName());
+//
+//                try {
+//                    bluecoveServer.start();
+//                } catch (Exception e) {
+//                    log.error("Failed to start bluetooth server because", e);
+//                }
+//            }
+//        });
 
 
     }
