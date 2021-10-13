@@ -4,14 +4,17 @@ import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.Dependency;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.IDGen;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.PCDecoder;
+import com.arise.weland.impl.SuggestionService;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -27,21 +30,33 @@ public class MediaInfoSolver {
 
 //    private static final Mole log = Mole.getInstance(MediaInfoSolver.class);
 
-    public static void solve(final  ContentInfo info){
+    public static SuggestionService.Data solve(final  ContentInfo info){
         solveInfo(info);
-        solveThumbnail(info);
+        return solveThumbnail(info);
     }
 
-    private static void solveThumbnail(final ContentInfo info) {
+    private static SuggestionService.Data solveThumbnail(final ContentInfo info) {
         if (mntResolution == null){
-            return;
+            return null;
         }
+        String id = "mnt" + StringEncoder.encodeShiftSHA(info.getPath(), "yy") + ".jpg";
 
         File mntExe = new File(mntResolution.uncompressed(), "mtn.exe");
         File outDir = PCDecoder.thumbnailsDirectory();
         if (!outDir.exists()){
             outDir.mkdirs();
         }
+
+        File th = new File(outDir, id);
+        if (th.exists()){
+            return new SuggestionService.Data(
+                    id,
+                    null,
+                    ContentType.IMAGE_JPEG
+            );
+        }
+
+
         String suffix = "-arise-app-gen.jpg";
 
 
@@ -72,47 +87,52 @@ public class MediaInfoSolver {
                 true, false
         );
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
-        File generated[] = outDir.listFiles(new FilenameFilter() {
+       File[] generated = outDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.startsWith(info.getName());
             }
         });
         if (CollectionUtil.isEmpty(generated)){
-            return;
+            return null;
         }
-        if (generated.length == 1){
-            assignFile(info, generated[0]);
-            return;
+        if (generated.length < 1){
+            return null;
         }
+
         File selected = null;
+
         for (int i = 0; i < generated.length; i++){
             File f = generated[i];
 
             if (f.getName().endsWith(suffix)){
                 f.delete();
-            } else if (selected == null){
+            } else if (selected == null && f.exists()){
                 selected = generated[i];
             }
-            else {
+            else if (selected != null) {
                 generated[i].delete();
             }
         }
-        File dest = new File(
-                selected.getParentFile(),
-                IDGen.parsePath(selected.getName())
+
+        selected.renameTo(th);
+        return new SuggestionService.Data(
+                th.getName(),
+                null,
+                ContentType.IMAGE_JPEG
         );
-
-
-        selected.renameTo(dest);
-        assignFile(info, dest);
     }
 
-    private static void assignFile(ContentInfo info, File file) {
-        info.setThumbnailId(file.getName());
-    }
+//    private static void assignFile(ContentInfo info, File file) {
+//        info.setThumbnailId(file.getName());
+//    }
 
 
     /**

@@ -51,7 +51,7 @@ persistable public class FolderEntity alias ent_folder
 
 
 persistable public class FileEntity alias ent_file
-    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=file_sequence sequenceGenerator=file_seq_gen allocationSize=1
+    private var id long primaryKey attributes: cacheStrategy=SEQUENCE sequenceName=file_sequence sequenceGenerator=file_seq_gen allocationSize=1
     private var name string
     private var size long
     private var mimeType string
@@ -66,13 +66,13 @@ persistable public class FileEntity alias ent_file
 
 
 persistable public class Property alias store_props
-    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=folder_sequence sequenceGenerator=fldr_seq_gen allocationSize=1
+    private var id long primaryKey attributes: cacheStrategy=SEQUENCE sequenceName=folder_sequence sequenceGenerator=fldr_seq_gen allocationSize=1
     private var key string alias p_key
     private var values string alias p_val
 
 
 persistable public class Tag alias store_tags
-    private var id long primaryKey attributes: strategy=SEQUENCE sequenceName=storage_tag_sequence sequenceGenerator=stag_seq_gen allocationSize=1
+    private var id long primaryKey attributes: cacheStrategy=SEQUENCE sequenceName=storage_tag_sequence sequenceGenerator=stag_seq_gen allocationSize=1
     private var value string attributes: naturalid
     private var fileTags set<FileTag> attributes: relation=one_to_many mapped_by=tag cascade=ALL orphanRemoval=true
     private var folderTags set<FolderTag> attributes: relation=one_to_many mapped_by=tag cascade=ALL orphanRemoval=true

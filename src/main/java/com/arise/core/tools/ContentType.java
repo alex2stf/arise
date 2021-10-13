@@ -11,6 +11,8 @@ import com.arise.core.serializers.parser.Groot;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,15 +83,15 @@ public enum ContentType  {
     public static void loadDefinitions(){
         InputStream inputStream = FileUtil.findStream("content-types.json");
         String text = StreamUtil.toString(inputStream).replaceAll("\\s+", " ");
-        Arr data = (Arr) Groot.decodeBytes(text);
+        List data = (List) Groot.decodeBytes(text);
 
         for (Object o : data){
-            MapObj obj = (MapObj) o;
-            Arr keys = (Arr) obj.get("keys");
+            Map obj = (Map) o;
+            List keys = (List) obj.get("keys");
             for (Object key: keys){
                 ContentType contentType = search((String) key);
                 if (contentType != null){
-                    Arr processes = (Arr) obj.get("processes");
+                    List processes = (List) obj.get("processes");
                     for (Object process: processes){
                         String path = (String) process;
                         File f = new File(path);
@@ -127,6 +129,15 @@ public enum ContentType  {
         this.ext = ext;
     }
 
+    public static boolean isUrl(String str) {
+        try {
+            URL url = new URL(str);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
+
 
     public Location location() {
         return loc;
@@ -137,7 +148,8 @@ public enum ContentType  {
     }
 
     public String mainExtension(){
-        return extensions()[0];
+        String[] ext = extensions();
+        return ext.length > 0 ? ext[0] : "" ;
     }
 
     public String alias(){

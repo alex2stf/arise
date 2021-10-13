@@ -110,14 +110,14 @@ public class Registry extends GenericTypeWorker {
     public Registry loadJsonResource(String s) {
         InputStream inputStream = FileUtil.findStream(s);
         String content = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
-        Arr arr = (Arr) Groot.decodeBytes(content);
+        List arr = (List) Groot.decodeBytes(content);
         for (Object obj: arr){
-            importJsonObject((MapObj) obj);
+            importJsonObject((Map) obj);
         }
         return this;
     }
 
-    private void importJsonObject(MapObj obj) {
+    private void importJsonObject(Map obj) {
         String parentType = (String) obj.get("parent");
 
         final Command parentCmd = getCommand(parentType);
@@ -141,13 +141,13 @@ public class Registry extends GenericTypeWorker {
             }
         };
 
-        Arr arr = (Arr) obj.get("arguments");
+        List arr = (List) obj.get("arguments");
         String args[] = new String[arr.size()];
         for (int i = 0; i < arr.size(); i++){
             args[i] = String.valueOf(arr.get(i));
         }
         nextCmd.setArgumentNames(args);
-        MapObj props = (MapObj) obj.get("properties");
+        Map<String, Object> props = (Map<String, Object>) obj.get("properties");
 
 
         Map<String, Object> properties = new HashMap<>();

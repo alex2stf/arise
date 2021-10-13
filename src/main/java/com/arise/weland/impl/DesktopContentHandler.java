@@ -8,6 +8,7 @@ import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
@@ -66,7 +67,7 @@ public class DesktopContentHandler extends ContentHandler {
     private final ContentInfoProvider contentInfoProvider;
     private final Registry registry;
     boolean fullScreenNwjs = "true".equalsIgnoreCase(System.getProperty("nwjs.fullscreen"));
-    MapObj commands;
+    Map commands;
     volatile boolean clearing = false;
     JFrame nf = null;
     JLabel label = null;
@@ -95,7 +96,7 @@ public class DesktopContentHandler extends ContentHandler {
                 FileUtil.findStream("weland/config/commons/executables.json")
         ).replaceAll("\\s+", " ");
 
-        commands = (MapObj) Groot.decodeBytes(s);
+        commands = (Map) Groot.decodeBytes(s);
     }
 
 
@@ -248,7 +249,7 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
     private String[] getCommands(String rname, String arg){
-        Arr arr = commands.getArray(rname);
+        List arr = MapUtil.getList(commands, rname);
 
         for (int i = 0; i < arr.size(); i++){
             List<String> act = (List<String>) arr.get(i);
@@ -386,8 +387,34 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public DeviceStat onDeviceUpdate(Map<String, List<String>> params) {
+        if (desktopCamStream == null){
+            return getDeviceStat();
+        }
 
-        return DeviceStat.getInstance();
+        int now = (int) System.currentTimeMillis();
+        int lastUpdate = AppCache.getInt("crmfx", 0);
+        int diff = now - lastUpdate;
+        if (diff < 3000) {
+            log.info("Need to wait more than " + (3000 - diff) + " miliseconds");
+            return getDeviceStat();
+        }
+
+        AppCache.putInt("crmfx", (int) System.currentTimeMillis());
+
+
+        String camId = MapUtil.findQueryParamString(params, "camId");
+        boolean shouldStop = "false".equalsIgnoreCase(MapUtil.findQueryParamString(params, "camEnabled"));
+
+        if (shouldStop){
+            desktopCamStream.stop();
+        } else {
+            if (!desktopCamStream.isRunning()) {
+                desktopCamStream.start();
+            }
+        }
+
+
+        return getDeviceStat();
     }
 
 
@@ -395,7 +422,10 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public DeviceStat getDeviceStat() {
         DeviceStat deviceStat = DeviceStat.getInstance();
-        deviceStat.setProp("ECV1", new Tuple2<>("0", "Cam 1"));
+        deviceStat.setProp("ECV1", Tuple2.str(
+                 "0",
+                desktopCamStream.isRunning() + ""
+        ));
         deviceStat.setProp("FMV1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
         deviceStat.setProp("CV1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
         return deviceStat;

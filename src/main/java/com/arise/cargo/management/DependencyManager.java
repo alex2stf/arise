@@ -1,10 +1,15 @@
 package com.arise.cargo.management;
 
+import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -13,7 +18,9 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DependencyManager {
 
@@ -22,6 +29,31 @@ public class DependencyManager {
     }
 
 
+    private static final Map<String, Dependency> dependencyMap = new HashMap<>();
+
+    public static void importDependencyRules(String in) throws IOException {
+        InputStream inps = FileUtil.findStream(in);
+        String x = StreamUtil.toString(inps);
+        Map<Object, Object> data = (Map) Groot.decodeBytes(x);
+
+
+        for (Map.Entry<Object, Object> e: data.entrySet()){
+            String name = (String) e.getKey();
+
+            Map args = (Map) e.getValue();
+            String type = MapUtil.getString(args, "type");
+            if ("wrapper".equals(type) || "indev".equals(type)){
+                System.out.println("in dev dependency " + name);
+                continue;
+            }
+
+            System.out.println("import dependency" + name);
+            Dependency dependency = new Dependency();
+            dependency.setName(name);
+            Dependency.decorate(dependency, args);
+            dependencyMap.put(name, dependency);
+        }
+    }
 
 
     public static HttpURLConnection getConnection(URL url) throws IOException {
@@ -73,7 +105,7 @@ public class DependencyManager {
         int contentLength = connection.getContentLength();
         int responseCode = connection.getResponseCode();
         if (responseCode != 200){
-            throw new RuntimeException("wget " + responseCode + " " + url);
+            throw new RuntimeException("wget " + responseCode + " " + url + " in " + out.getAbsolutePath());
         }
 
         RandomAccessFile file = new RandomAccessFile(out.getAbsolutePath(), "rw");
@@ -134,7 +166,7 @@ public class DependencyManager {
                 }
             }
         }
-        System.out.print(" OK\n");
+        System.out.print(" OK "+ out.getAbsolutePath() +"\n");
         Util.close(stream);
         Util.close(file);
 
@@ -163,8 +195,9 @@ public class DependencyManager {
 
     public static final List<Unarchiver> unarchivers = new ArrayList<>();
 
+    private static Zip zipper = new Zip();
     static {
-        unarchivers.add(new Zip());
+        unarchivers.add(zipper);
     }
 
     static String getExt(File f){
@@ -206,6 +239,46 @@ public class DependencyManager {
         }
     }
 
+    public static Resolution solve(Dependency dependency, File out) throws IOException {
+        Rule systemRule = download(dependency, new File(out, "src"));
+        if (systemRule == null){
+            return null;
+        }
+        File currentPath = uncompress(dependency, systemRule, new File(out, "out") );
+        return new Resolution(systemRule, currentPath, dependency);
+    }
+
+    public static Resolution solveWithPlatform(Dependency dependency,
+                                               Dependency.Version version,
+                                               File outputDir,
+                                               Mole logger) throws IOException {
+       for(String url: version.urls) {
+           if (url.startsWith("internal://")) {
+               String id = url.substring("internal://".length());
+               InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
+
+               String outName = (dependency.getName() + "_" + version.getName()).toLowerCase();
+               File libsDir = new File(outputDir, "libs");
+               if (!libsDir.exists()) {
+                   libsDir.mkdirs();
+               }
+               File outZip = new File(libsDir, outName + ".zip");
+               FileOutputStream fileOutputStream = new FileOutputStream(outZip);
+               logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
+
+               StreamUtil.transfer(inputStream, fileOutputStream, 1024);
+               File outUnzipped = new File(libsDir, outName);
+               zipper.extract(outZip, outUnzipped);
+
+               return new Resolution(outUnzipped, dependency, version);
+           }
+       }
+
+        return null;
+    }
+
+
+
     public static Resolution solve(Dependency dependency) throws IOException {
         File out = getRoot();
         Rule systemRule = download(dependency, new File(out, "src"));
@@ -216,15 +289,33 @@ public class DependencyManager {
         return new Resolution(systemRule, currentPath, dependency);
     }
 
+
+
+    public static Dependency getDependency(String name) {
+        return dependencyMap.get(name);
+    }
+
     public static class Resolution{
         private final Rule  _r;
         private final File  _u;
         private final Dependency _s;
+        private Dependency.Version _cp;
 
         public Resolution(Rule _r, File _u, Dependency _s) {
             this._r = _r;
             this._u = _u;
             this._s = _s;
+        }
+
+        public Resolution(File _u, Dependency _s, Dependency.Version _cp) {
+            this._cp = _cp;
+            this._r = null;
+            this._u = _u;
+            this._s = _s;
+        }
+
+        public Dependency.Version selectedPlatform(){
+            return _cp;
         }
 
         public Rule rule() {

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Deprecated
 public class Dependencies {
     public static final Dependency VLC_2_1_0 = new Dependency()
             .setName("vlc_2_1_0").setWindowsSource("https://get.videolan.org/vlc/2.1.0/win32/vlc-2.1.0-win32.zip");
@@ -26,6 +27,7 @@ public class Dependencies {
 
     public static final Dependency MINGW_PORTABLE = new Dependency().setName("mingw-portable")
             .setWindowsSource("https://github.com/jonasstrandstedt/MinGW/archive/master.zip");
+
 
 
 

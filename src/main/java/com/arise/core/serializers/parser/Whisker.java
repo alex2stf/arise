@@ -8,6 +8,7 @@ import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -459,7 +460,12 @@ public class Whisker extends GenericTypeWorker {
     return this;
   }
 
+  public String findAndCompileStream(String s, Object context) throws IOException {
+    InputStream inputStream = FileUtil.findStream(s);
+    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
+    return compile(inputStreamReader, context);
+  }
 
 
   private class DigestResult {

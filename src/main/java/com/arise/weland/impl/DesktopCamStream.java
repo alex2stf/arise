@@ -49,10 +49,17 @@ public class DesktopCamStream {
 
    private static ThreadUtil.TimerResult timerResult;
 
+
+
+    public boolean isRunning() {
+        return webcam != null ? webcam.isOpen() : false;
+    }
+
     public synchronized void start() {
         if (webcam == null){
             webcam = Webcam.getDefault();
         }
+
         if (!webcam.isOpen()){
             webcam.open();
         }

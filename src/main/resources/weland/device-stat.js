@@ -1,5 +1,5 @@
 
-function $do_request(url, c) {
+function $do_request(url, c, e) {
 
     console.log('DO REQUEST', url)
 
@@ -16,7 +16,16 @@ function $do_request(url, c) {
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            console.log(url + ' error\n', xhr, ajaxOptions, thrownError);
+            if (e){
+                e({
+                    xhr: xhr,
+                    options: ajaxOptions,
+                    error: thrownError,
+                    url: url
+                });
+            } else  {
+                console.log(url + ' error\n', xhr, ajaxOptions, thrownError);
+            }
         }
     })
 

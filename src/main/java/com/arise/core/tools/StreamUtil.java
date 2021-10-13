@@ -96,6 +96,16 @@ public class StreamUtil {
         return buf.toString();
     }
 
+
+    public static void transfer(InputStream in, OutputStream out, int bufferSize) throws IOException {
+        byte[] buffer = new byte[bufferSize];
+        int len = in.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+        }
+    }
+
     public static void transfer(InputStream bis, OutputStream buf){
         int result = 0;
         try {

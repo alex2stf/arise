@@ -22,7 +22,7 @@ function place_friend_ips(div, title, extra1, extra2){
                 g_friends[rhost] = {};
             }
             var name = g_friends[rhost].name || rhost;
-            t+='<div id="'+extract_id(rhost) + '_' + uniqeId +'">';
+            t+='<div id="'+extract_id(rhost) + '_' + uniqeId +'" class="rhost '+extract_id(rhost)+'">';
             t+='<span class="hn'+extract_id(rhost)+'">'+name+'</span>';
 
             if(extra1){
@@ -66,7 +66,7 @@ place_friend_ips(_g('ips-container'), 'Friend apps:');
 
 
 
-function ping_host(rHost) {
+function ping_host(rHost, s) {
 
     $do_request(rHost + '/device/stat', function (d) {
         console.log(d, d.N);
@@ -84,7 +84,15 @@ function ping_host(rHost) {
                 nodes[i].innerHTML = d.N;
             }
         }
-        alert('Host '+rHost+' is still running')
+
+        if (s){
+            s(rHost)
+        } else {
+            alert('Host '+rHost+' is still running');
+        }
+    }, function (e) {
+        console.log('Host '+rHost+' not running anymore')
+        $('.' + extract_id(rHost)).hide();
     });
 }
 

@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+
+@Deprecated
 public class MapObj extends LinkedHashMap<String, Object> {
     public String getString(String name) {
         if (containsKey(name)){

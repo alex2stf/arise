@@ -110,11 +110,11 @@
 
         <dependency>
             <groupId>org.vlcj</groupId>
-            <artifactId>platform</artifactId>
+            <artifactId>version</artifactId>
             <version>3.5.2</version>
             <type>jar</type>
             <scope>system</scope>
-            <systemPath>${basedir}/libs/platform-3.5.2.jar</systemPath>
+            <systemPath>${basedir}/libs/version-3.5.2.jar</systemPath>
         </dependency>
 
 

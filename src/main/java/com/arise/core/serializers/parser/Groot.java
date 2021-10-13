@@ -1,5 +1,6 @@
 package com.arise.core.serializers.parser;
 
+import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
@@ -17,6 +18,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.TypeUtil.isBoolean;
@@ -29,53 +31,44 @@ import static java.lang.String.valueOf;
 
 public class Groot {
 
-  public static Object decodeBytes(byte[] in, int firstIndex, int offset, Syntax s){
+  public static Object decodeBytes(byte[] in, int firstIndex, int lastIndex, Syntax s){
     //TODO improve this
 
-//    System.out.println(new String(in, firstIndex, offset));
-//    debug("IN", in, firstIndex, offset);
+
+
+
 
     while (s.isWhitespace(in[firstIndex])){
       firstIndex++;
     }
 
-    while (s.isWhitespace(in[offset - 1])){
-      offset--;
+    while (s.isWhitespace(in[lastIndex])){
+      lastIndex--;
     }
 
-    if (isMatch(in, firstIndex, offset, s.vtrue())){
+
+
+
+    if (isMatch(in, firstIndex, lastIndex + 1, s.vtrue())){
       return true;
     }
 
 
-    if (isMatch(in, firstIndex, offset, s.vnull())){
+    if (isMatch(in, firstIndex, lastIndex + 1, s.vnull())){
       return null;
     }
 
 
 
-    if (isMatch(in, firstIndex, offset, s.vfalse())){
+    if (isMatch(in, firstIndex, lastIndex + 1, s.vfalse())){
       return false;
     }
 
 
-    if (isNumericSequence(in, firstIndex, offset, s.nd(), s.ng())){
-      return toNumber(in, firstIndex, offset, s.nd(), s.ng());
+    if (isNumericSequence(in, firstIndex, lastIndex + 1, s.nd(), s.ng())){
+      return toNumber(in, firstIndex, lastIndex  + 1, s.nd(), s.ng());
     }
 
-
-
-    int lastIndex = offset -1;
-    int prevFrom = (firstIndex > 0) ? firstIndex -1 : firstIndex;
-    int prevLast = (lastIndex > 0) ? lastIndex -1 : lastIndex;
-
-    if ((char)in[firstIndex] == s.o1() && prevFrom != s.es() && prevLast != s.es() && (char)in[lastIndex] == s.o2()){
-      return decodeObject(in, firstIndex + 1, lastIndex, s);
-    }
-
-    if (in[firstIndex] == s.a1() && prevFrom != s.es() && prevLast != s.es() && in[lastIndex] == s.a2()){
-      return decodeArray(in, firstIndex + 1, lastIndex, s);
-    }
 
     for (char c: s.quotes()){
       //TODO check quotes are not escaped
@@ -84,12 +77,32 @@ public class Groot {
       }
     }
 
-    debug("FAILED FOR", in, firstIndex, lastIndex);
+
+    int prevFrom = (firstIndex > 0) ? firstIndex -1 : firstIndex;
+    int prevLast = (lastIndex > 0) ? lastIndex -1 : lastIndex;
+    char prevF = (char) in[prevFrom];
+    char prevL = (char) in[prevLast];
+    char firstC = (char) in[firstIndex];
+    char lastC = (char) in[lastIndex];
+
+//    if ((char)in[firstIndex] == s.o1() && prevFrom != s.es() && prevLast != s.es() && (char)in[lastIndex] == s.o2()){
+    if (firstC == s.o1() && lastC == s.o2()){
+      return decodeObject(in, firstIndex + 1, lastIndex  - 1, s);
+    }
+
+    if (firstC == s.a1() && lastC == s.a2()){
+      return decodeArray(in, firstIndex + 1, lastIndex - 1, s);
+    }
 
 
 
 
-    return null;
+//    debug("FAILED FOR", in, firstIndex, lastIndex);
+
+    throw new RuntimeException("WTF???");
+
+
+//    return null;
   }
 
 
@@ -298,7 +311,8 @@ public class Groot {
       }
       x++;
     }
-    return true;
+
+    return x == match.length();
   }
 
   private static String decodeString(byte[] in, int from, int to){
@@ -311,7 +325,7 @@ public class Groot {
 
   private static Object decodeArray(byte[] in, int from, int to, Syntax s) {
 
-    Arr response = new Arr();
+    List response = new ArrayList();
 
     BufHelper helper = new BufHelper(s);
     int cursor = from;
@@ -321,7 +335,7 @@ public class Groot {
       helper.track(c);
 
       if (helper.isSafe() && c == s.vd()){
-        Object object = decodeBytes(in, cursor, i , s);
+        Object object = decodeBytes(in, cursor, i - 1 , s);
         response.add(object);
         cursor = i + 1;
       }
@@ -339,7 +353,9 @@ public class Groot {
 
 
   private static Object decodeObject(byte[] in, int from, int to, Syntax s) {
-    MapObj response = new MapObj();
+
+
+    Map response = new HashMap();
 
 
     int cursor = from;
@@ -353,22 +369,20 @@ public class Groot {
 
       if (helper.isSafe()){
           if (c == s.kd()){
-            key = createKey(in, cursor, i, s);
+            key = (String) decodeBytes(in, cursor, i - 1, s);
             cursor = i + 1;
           }
           else if (c == s.vd()){
-            Object obj = decodeBytes(in, cursor, i, s);
+            Object obj = decodeBytes(in, cursor, i - 1, s);
             response.put(key, obj);
             cursor = i + 1;
-
-            //handle key + value generation
           }
       }
     }
 
 
     if (key != null) {
-      Object obj = decodeBytes(in, cursor, to, s);
+      Object obj = decodeBytes(in, cursor, to , s);
       response.put(key, obj);
     }
     return response;
@@ -381,6 +395,7 @@ public class Groot {
     for (int i = from; i < to; i++){
       sb.append((char)bytes[i]);
     }
+
 //    System.out.println(" FULL " + new String(bytes));
     System.out.println(prefix + "  (" + from + " to " + to + ")=" + sb.toString());
     return sb.toString();
@@ -389,28 +404,8 @@ public class Groot {
 
 
 
-  /**
-   * TODO improve this
-   * @param in
-   * @param from
-   * @param to
-   * @param s
-   * @return
-   */
-  private static String createKey(byte[] in, int from, int to, Syntax s){
-    while (s.isWhitespace(in[from])){
-      from++;
-    }
-
-    while (s.isWhitespace(in[to])){
-      to--;
-    }
-    String key = decodeString(in, from, to);
-    return  key.substring(1, key.length() - 1);
-  }
-
   public static Object decodeBytes(String in){
-   return decodeBytes(in.getBytes(), 0, in.getBytes().length, Syntax.STANDARD);
+   return decodeBytes(in.getBytes(), 0, in.getBytes().length - 1, Syntax.STANDARD);
   }
 
   public static Object decodeFile(File in) throws IOException {
@@ -420,7 +415,7 @@ public class Groot {
   }
 
   public static Object decodeBytes(byte in[]){
-    return decodeBytes(in, 0, in.length, Syntax.STANDARD);
+    return decodeBytes(in, 0, in.length - 1, Syntax.STANDARD);
   }
 
 //  public static class Obj extends LinkedHashMap<String, Object> {
@@ -549,7 +544,7 @@ public class Groot {
 
     @Override
     public boolean isWhitespace(byte c) {
-      return c == '\n' || c == '\t' || c == ' ';
+      return c == '\n' || c == '\t' || c == ' ' || c == '\r';
     }
 
 

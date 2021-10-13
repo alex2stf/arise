@@ -200,6 +200,7 @@ function show_send_options(url) {
 }
 
 function airPlayShowOptions(path) {
+    _g('modal-status').removeAttribute('onclick');
     setTimeout(function () {
         $('#modal-status').show();
         place_friend_ips(_g('modal-status'), 'Air play ' + getFileNameFromStr(path),
@@ -214,21 +215,43 @@ function airPlayShowOptions(path) {
     }, 1000)
 }
 
+var distHosts = {};
 
 function air_play_distribute(rPath) {
-
+    distHosts = {};
     _g('modal-status').innerHTML = '';
     $('#modal-status').show();
     _g('modal-status').removeAttribute('onclick');
 
+    _g('modal-status').innerHTML += '<button onclick="distributed_play(\''+rPath+'\')"> DISTRIBUTE PLAY </button>';
 
     AppSettings.getFriendIps(function (x) {
         console.log("friend ips: ", x);
         for(var t = 0; t < x.length; t++){
             var rhost = x[t];
-            air_play(rhost, rPath);
+            ping_host(rhost, function (remHost) {
+                upload_to_friend_ips(remHost, rPath, function (f) {
+                    console.log("Upload init to" + remHost);
+                    var elemId = extract_id(remHost) + '-upl-stat';
+                    if (!_g(elemId)){
+                        _g('modal-status').innerHTML += '<div id="'+elemId+'"></div>';
+                    }
+                    air_play_check(f.host, f.len, f.name, function (p) {
+                        console.log('check complete', p);
+                        distHosts[f.host] = f;
+                    },  _g(elemId));
+                })
+            })
         }
+
+
     })
+}
+
+function  distributed_play(rPath) {
+    for (var i in distHosts){
+        open_to_remote(distHosts[i].host, decodeURIComponent(rPath));
+    }
 }
 
 
@@ -236,7 +259,7 @@ function open_to_remote(rHost, rPath) {
     var url = rHost + '/files/open?path=' + encodeURI(rPath);
     console.log(url);
     $do_request(url, function () {
-        // _mh();
+        _mh();
     });
 }
 
@@ -250,32 +273,32 @@ function air_play(rHost, path) {
         _g('modal-status').innerHTML += '<div style="color: red">' + f.host + ': upload init, expect '+f.len+'</div>'
         _g('modal-status').setAttribute('onclick', '_mh()');
         air_play_check(f.host, f.len, f.name, function (p) {
-            // open_to_remote(p.host, p.path);
-        });
+            open_to_remote(p.host, p.path);
+        },  _g('modal-status'));
     })
 }
 
-function air_play_check(rHost, len, name, ch) {
+function air_play_check(rHost, len, name, ch, div) {
     $do_request(rHost + '/upload/stat?name=' + name, function (d) {
         console.log('upload stat = ', d);
-
         if(!d.exists){
-            _g('modal-status').innerHTML += '<div style="color: red">'+rHost+'waiting upload...</div>'
+            div.innerHTML += '<div style="color: red">' + rHost + 'waiting upload...</div>'
             setTimeout(function () {
-                air_play_check(rHost, len, name, ch);
+                air_play_check(rHost, len, name, ch, div);
             }, 1000)
             return;
         }
 
         if(d.len < len){
-            _g('modal-status').innerHTML += '<div style="color: red">'+rHost+'uploaded '+d.len + ' from ' + len +'</div>'
+            div.innerHTML += '<div style="color: red">'+rHost+'uploaded '+d.len + ' from ' + len +'</div>'
             setTimeout(function () {
-                air_play_check(rHost, len, name, ch);
+                air_play_check(rHost, len, name, ch, div);
             }, 1000)
             return;
         }
-        _g('modal-status').innerHTML += '<div style="color: red">'+rHost+'upload complete</div>';
+        div.innerHTML += '<div style="color: red">'+rHost+'upload complete</div>';
         d.host = rHost;
+        d.el = div;
         ch(d);
     })
 }

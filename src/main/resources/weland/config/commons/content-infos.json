@@ -1,50 +1,43 @@
 [
   {
-    "P": "https://live.rockfm.ro:8443/rockfm.aacp",
-    "F": "S",
-    "T": "Rock FM",
-    "Q": "https://cdn-radiotime-logos.tunein.com/s87949g.png"
+    "path": "https://live.rockfm.ro:8443/rockfm.aacp",
+    "playlist": "STREAMS",
+    "title": "Rock FM",
+    "thumbnail": "https://cdn-radiotime-logos.tunein.com/s87949g.png"
   },
 
   {
-    "P": "http://edge76.rdsnet.ro:84/digifm/digifm.mp3",
-    "F": "S",
-    "T": "Digi FM",
-    "Q": "https://media.obiectiv.info/image/201403/w620/digi-24_68314800.png"
+    "path": "http://edge76.rdsnet.ro:84/digifm/digifm.mp3",
+    "playlist": "STREAMS",
+    "title": "Digi FM",
+    "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Logo_Digi_24_%282012%29.svg/1200px-Logo_Digi_24_%282012%29.svg.png"
   },
   {
-    "P": "https://www.facebook.com/",
-    "F": "S",
-    "T": "Facebook",
-    "Q": "https://i0.wp.com/appslova.com/wp-content/uploads/2016/06/icontexto-inside-facebook.png?fit=256%2C256&ssl=1"
-  },
-
-
-  {
-    "P": "https://www.youtube.com/",
-    "F": "S",
-    "T": "Youtube",
-    "Q": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSty4HMDrIDjedwdbbcxursNcKNCGfe5CziScju09sDxDI8lop7"
-  },
-  {
-    "P": "https://stream.srg-ssr.ch/m/rsj/mp3_128",
-    "F": "S",
-    "T": "Radio Swiss Jazz",
-    "Q": "https://www.radio.net/images/broadcasts/c9/15/1904/c300.png"
+    "path": "https://www.facebook.com/",
+    "playlist": "STREAMS",
+    "title": "Facebook",
+    "thumbnail": "https://i0.wp.com/appslova.com/wp-content/uploads/2016/06/icontexto-inside-facebook.png?fit=256%2C256&ssl=1"
   },
 
 
   {
-    "P": "https://9gag.com/",
-    "F": "S",
-    "T": "9gag",
-    "Q": "https://www.iconninja.com/files/416/662/448/social-gag-media-set-blot-icon.png"
-  }
+    "path": "https://www.youtube.com/",
+    "playlist": "STREAMS",
+    "title": "Youtube",
+    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSty4HMDrIDjedwdbbcxursNcKNCGfe5CziScju09sDxDI8lop7"
+  },
+  {
+    "path": "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+    "playlist": "STREAMS",
+    "title": "Radio Swiss Jazz",
+    "thumbnail": "data:image/png;base64,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"
+  },
 
-  ,{
-    "P": "https://9gag.com/",
-    "F": "G",
-    "T": "Game",
-    "Q": "https://www.iconninja.com/files/416/662/448/social-gag-media-set-blot-icon.png"
+
+  {
+    "path": "https://9gag.com/",
+    "playlist": "GAMES",
+    "title": "Game",
+    "thumbnail": "https://www.iconninja.com/files/416/662/448/social-gag-media-set-blot-icon.png"
   }
 ]

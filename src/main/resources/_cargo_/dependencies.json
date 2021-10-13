@@ -1,0 +1,32 @@
+{
+
+  "CURL": {
+    "type": "sources",
+    "versions": [
+      {
+        "id": "curl_7-sources",
+        "platform-match": "*",
+        "urls": ["https://curl.se/download/curl-7.79.1.zip"]
+      }
+    ]
+  },
+
+
+  "ORACLE_CLIENT" : {
+    "type": "library",
+    "versions": [
+      {
+        "id": "ora_client_19_x64",
+        "platform-match": "WIN64",
+        "urls": ["internal://oracle_instantclient_win64_19_12.zip"],
+        "lib-paths": ["sdk/lib/msvc"],
+        "dynamic-libs": ["oci.lib"],
+        "static-libs": ["oci.dll", "oraocci19.dll", "oraocci19d.dll", "oraociei19.dll", "oraons.dll", "orasql19.dll"],
+        "includes": ["sdk/include"]
+      }
+    ]
+
+
+
+  }
+}

@@ -682,7 +682,7 @@ public class StringUtil {
         return sb.toString();
     }
 
-    @Deprecated
+
     public interface JoinIterator<T> {
         String toString(T value);
     }

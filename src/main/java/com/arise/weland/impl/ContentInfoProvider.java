@@ -146,14 +146,25 @@ public class ContentInfoProvider {
         for (String path: paths){
             log.info("Loading static content from path " + path );
             String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
-            List<ContentInfo> contentInfos = ContentInfo.deserializeCollection(content);
+            List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
 
-            for (ContentInfo i: contentInfos){
-                if(i.getPlaylist().equals(Playlist.STREAMS)){
-                    mergeContent(i, Playlist.STREAMS);
+            for (Map<Object, Object> map: contentInfos){
+                ContentInfo contentInfo = new ContentInfo();
+                String thumbnailId = MapUtil.getString(map, "thumbnail");
+                if (thumbnailId != null){
+                    SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
+                    if (d != null){
+                        contentInfo.setThumbnailId(d.getId());
+                    }
                 }
+                contentInfo.setPath(MapUtil.getString(map, "path"));
+                contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+                contentInfo.setTitle(MapUtil.getString(map, "title"));
+                mergeContent(contentInfo, contentInfo.getPlaylist());
+
             }
         }
+
         for (final File root: roots){
             scanRoot(root);
         }
@@ -164,8 +175,6 @@ public class ContentInfoProvider {
     private int lsc = 0;
 
     private void scanRoot(File root){
-
-
         File [] innerFiles = root.listFiles();
         if (innerFiles == null || innerFiles.length == 0){
             return;
@@ -258,68 +267,7 @@ public class ContentInfoProvider {
             }
         });
 
-//        fireAndForget(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                for (final File root: roots){
-//                    log.info("start recursive read root " + root.getAbsolutePath() + " size " + root.length());
-//
-//                    scanning = true;
-//                    FileUtil.recursiveScan(root, new FileUtil.FileFoundHandler() {
-//                        @Override
-//                        public void foundFile(File file) {
-//
-//
-//                            if (!file.getName().startsWith(".")) {
-//                                if (isMusic(file)) {
-//                                    System.out.println("MUSIC  " + file.getAbsolutePath());
-//                                    fcnt++;
-//                                    music.add(decoder.decode(file).setPlaylist(Playlist.MUSIC));
-//                                } else if (isVideo(file)) {
-//                                    fcnt++;
-//                                    videos.add(decoder.decode(file).setPlaylist(Playlist.VIDEOS));
-//                                }
-//                                else if(isPackageInfo(file)) {
-//                                    fcnt++;
-//                                    Object[] args = decodePackageInfo(file);
-//                                    if (args != null){
-//                                        Playlist p = (Playlist) args[1];
-//                                        switch (p){
-//                                            case GAMES:
-//                                                games.add((ContentInfo) args[0]);
-//                                                break;
-//                                        }
-//                                    }
-//                                }
-//                                else {
-//                                    System.out.println("SKIP " + file.getAbsolutePath());
-//                                }
-//                            }
-//                        }
-//                    }, new FilenameFilter() {
-//                        @Override
-//                        public boolean accept(File dir, String name) {
-//                            return acceptFilename(name);
-//                        }
-//                    });
-//                }
-//
-//                System.out.println("RECURSIVE SCAN COMPLETE");
-//
-//
-//                merge(Playlist.MUSIC, music);
-//                merge(Playlist.VIDEOS, videos);
-//                merge(Playlist.GAMES, games);
-//
-//                scannedOnce = true;
-//
-//                log.trace("\n\nRECURSIVE SCAN COMPLETE\n\n");
-//
-//                decoder.onScanComplete();
-//                scanning = false;
-//            }
-//        });
+
     }
 
     private boolean isPackageInfo(File file) {

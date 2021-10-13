@@ -1,9 +1,11 @@
 package com.arise.weland.impl;
 
+import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.Arr;
 import com.arise.core.tools.B64;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapObj;
@@ -11,22 +13,40 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.IDGen;
+import com.arise.core.tools.models.Convertor;
+import com.arise.weland.dto.ContentInfo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.TypeUtil.isNull;
+import static com.arise.core.tools.Util.close;
 
 public class SuggestionService {
     MapObj root = new MapObj();
+    private CacheStrategy cacheStrategy;
+    private List<Convertor<Data, ContentInfo>> convertors;
+
+    public SuggestionService addConvertor(Convertor<Data, ContentInfo> convertor){
+        if (convertors == null){
+            convertors = new ArrayList<>();
+        }
+        convertors.add(convertor);
+        return this;
+    }
+
+
+
 
 
     public SuggestionService load(String path){
@@ -66,12 +86,34 @@ public class SuggestionService {
     }
 
 
+    public Data solveThumbnail(ContentInfo contentInfo){
 
-    public SuggestionService searchIcons(String filename, Manager manager) {
+        Data response = null;
+        if (StringUtil.hasText( contentInfo.getThumbnailId() )){
+            response = solveUrlOrBase64(contentInfo.getThumbnailId());
+        }
+        if (response == null){
+            response = searchIcons(contentInfo.getPath());
+        }
+
+
+        if (response == null && !CollectionUtil.isEmpty(convertors)){
+            for (Convertor<Data, ContentInfo> c: convertors){
+                response = c.convert(contentInfo);
+                if (response != null){
+                    return response;
+                }
+            }
+        }
+        return response;
+    }
+
+
+    public Data searchIcons(String filename) {
 
 
         if (!StringUtil.hasContent(filename)){
-            return this;
+            return null;
         }
         String parts[] = filename.split("\\\\");
         String next = parts[parts.length - 1];
@@ -101,57 +143,133 @@ public class SuggestionService {
             if (x != null){
                 List<String> icons = MapUtil.getList(x, "icons");
                 if (!isEmpty(icons)){
-                    for (String ic: icons){
-                        if (validUrl(ic, manager, filename)){
-                            return this;
+
+                    for(String icon: icons){
+                        Data d = solveUrlOrBase64(icon);
+                        if (d != null){
+                            return d;
                         }
                     }
                 }
+
             }
+
         }
 
+        return null;
+    }
 
 
+
+
+
+
+
+
+    public SuggestionService setCacheStrategy(CacheStrategy cacheStrategy) {
+        this.cacheStrategy = cacheStrategy;
         return this;
     }
 
-    private Map<String, byte[]> b64encods= new ConcurrentHashMap<>();
-    private Map<String, ContentType> b64Ctypes= new ConcurrentHashMap<>();
+    public Data solveUrlOrBase64(String input){
+        String id = StringEncoder.encodeShiftSHA(input + "", "xx");
+        if (cacheStrategy.contains(id)){
+           return (cacheStrategy.get(id));
+        }
 
-
-
-    private boolean validUrl(String url, Manager manager, String path){
-        String id = StringEncoder.encodeShiftSHA(url);
-
-        if (url.startsWith("data:")){
-
-            if (b64encods.containsKey(id)){
-                return manager.manageBytes(id, b64encods.get(id), b64Ctypes.get(id));
-            }
-
+        if (input.startsWith("data:")){
             try {
-                Tuple2<byte[], ContentType> res = decodeBase64Image(url);
-                if (res.first() != null){
-                    b64encods.put(id, res.first());
-                    b64Ctypes.put(id, res.second());
-                }
-                return manager.manageBytes(id, res.first(), res.second());
+                Tuple2<byte[], ContentType> res = decodeBase64Image(input);
+                id = id + "." + res.second().mainExtension();
+                Data data = new Data(id, res.first(), res.second());
+                cacheStrategy.put(id, data);
+                return data;
             } catch (Exception e) {
-                return false;
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        else if (input.startsWith("http") && input.indexOf("/") > -1){
+            URL uri;
+            try {
+                uri = new URL(input);
+                String exts[] = uri.getPath().split("\\.");
+                ContentType contentType = ContentType.search(exts[exts.length - 1]);
+                if (contentType.equals(ContentType.TEXT_PLAIN)){
+                    contentType = ContentType.IMAGE_JPEG;
+                }
+                try {
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    do_get(uri, byteArrayOutputStream);
+                    id = id + "." + contentType.mainExtension();
+                    Data data = new Data(id , byteArrayOutputStream.toByteArray(), contentType);
+                    cacheStrategy.put(id, data);
+                    return data;
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+    public void do_get(URL url, OutputStream out){
+        HttpURLConnection connection = null;
+        try {
+            connection = DependencyManager.getConnection(url);
+        } catch (IOException e) {
+            close(connection);
+            throw new RuntimeException("Failed to obtain connection to " + url, e);
+        }
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+        InputStream in = null;
+        try {
+            in = connection.getInputStream();
+        } catch (IOException e) {
+            close(in);
+            close(connection);
+            throw new RuntimeException("Failed to obtain stream from " + url, e);
+        }
+        byte[] buf = new byte[8192];
+        int length = 0;
+
+
+
+        while (true){
+            try {
+                if (!((length = in.read(buf)) > 0)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                close(in);
+                close(connection);
+                throw new RuntimeException("Failed to read stream from " + url, e);
+            }
+            try {
+                out.write(buf, 0, length);
+
+                try {
+                    out.flush();
+                }catch (IOException e){
+                    close(in);
+                    close(connection);
+                    close(out);
+                    throw new RuntimeException("Failed to flush file stream", e);
+                }
+            } catch (IOException e) {
+                close(in);
+                close(connection);
+                close(out);
+                throw new RuntimeException("Failed to write stream ", e);
             }
 
-
         }
-
-        URL uri;
-        try {
-            uri = new URL(url);
-            id = IDGen.fromURL(uri);
-        } catch (Exception e) {
-            return false;
-        }
-
-        return manager.manage(id, path, uri);
     }
 
 
@@ -161,14 +279,11 @@ public class SuggestionService {
         String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
         ContentType contentType = ContentType.search(ctype);
         String content = input.substring(sepIndex + 1);
-        byte bytes[] = B64.decodeToByteArray(content);
+        byte[] bytes =   B64.decodeToByteArray(content);;
         return new Tuple2<>(bytes, contentType);
     }
 
-    public interface Manager {
-        boolean manage(String id, String path, URL url);
-        boolean manageBytes(String id, byte[] bytes, ContentType contentType);
-    }
+
 
 
     char disallowed[] = new char[]{'~', '-'};
@@ -213,8 +328,36 @@ public class SuggestionService {
         return r;
     }
 
+    public abstract static class CacheStrategy {
+        public abstract boolean contains(String id);
+        public abstract Data get(String id);
+        public abstract void put(String id, Data data);
+    }
+
+    public static class Data {
+        public final String id;
+        public final byte[] bytes;
+        public final ContentType contentType;
+
+        public Data(String id, byte[] bytes, ContentType contentType) {
+            this.id = id;
+            this.bytes = bytes;
+            this.contentType = contentType;
+        }
 
 
+        public String getId() {
+            return id;
+        }
+
+        public byte[] getBytes() {
+            return bytes;
+        }
+
+        public ContentType getContentType() {
+            return contentType;
+        }
+    }
 
 
 }

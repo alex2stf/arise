@@ -17,6 +17,65 @@ import java.util.Map;
 public class GrootTest {
 
 
+  private static void assertTest(Object expect, String in){
+    com.arise.core.tools.Assert.assertEquals(
+            Groot.decodeBytes(in), expect
+    );
+  }
+
+  public static void main(String[] args) {
+
+    Map map;
+
+    map = (Map) Groot.decodeBytes("{\"a\": {\"b\": [1, true, false, 56, {\"x\": 2, \"y\": 3}, [true, {\"z\": 45}] ]}}");
+
+
+    System.out.println(map);
+
+
+    map = (Map) Groot.decodeBytes("{\"a\": {\"b\": 1}}");
+    com.arise.core.tools.Assert.assertEquals(1, ((Map)map.get("a")).get("b"));
+
+
+
+    map = (Map) Groot.decodeBytes("{\"a\": true}");
+    com.arise.core.tools.Assert.assertEquals(true, map.get("a"));
+
+
+
+    assertTest("ORACLE_CLIENT", "\"ORACLE_CLIENT\" ");
+    assertTest("xxx", "\"xxx\"");
+    assertTest("xxx", "\"xxx\"   \n");
+    assertTest("xxx", "   \t \"xxx\"   \n");
+
+    GrootTest grootTest = new GrootTest();
+    grootTest.jsonTest1();
+
+    assertTest(43, " 43 ");
+    assertTest(224, " 224 \n\n\n\n\n\n\n\n\n");
+    assertTest(3456, " \t       \n \n\t 3456 \n\n\n\n\n\n\n\n\n\t");
+    assertTest(98, "98");
+
+
+    assertTest(false, " false ");
+    assertTest(false, " false \n\n\n\n\n\n\n\n\n");
+    assertTest(false, " \t       \n \n\t false \n\n\n\n\n\n\n\n\n\t");
+    assertTest(false, "false");
+
+
+    com.arise.core.tools.Assert.assertNull(Groot.decodeBytes("null"));
+    com.arise.core.tools.Assert.assertNull(Groot.decodeBytes("   null    "));
+    com.arise.core.tools.Assert.assertNull(Groot.decodeBytes("   null    \n\t"));
+    com.arise.core.tools.Assert.assertNull(Groot.decodeBytes("   null"));
+
+
+    assertTest(true, " true ");
+    assertTest(true, " true \n\n\n\n\n\n\n\n\n");
+    assertTest(true, " \t       \n \n\t true \n\n\n\n\n\n\n\n\n\t");
+    assertTest(true, "true");
+
+  }
+
 
   private void testToDoubleFromBytes(String in, int from, int to, double expect){
     Assert.assertEquals(expect, TypeUtil.toDouble(in.getBytes(), from, to).doubleValue(), 0);
@@ -65,16 +124,16 @@ public class GrootTest {
 
   @Test
   public void jsonTest1(){
-    MapObj obj = (MapObj) Groot.decodeBytes("{}");
+    Map obj =  (Map) Groot.decodeBytes("{}");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
-    obj = (MapObj) Groot.decodeBytes("{ }");
+    obj = (Map) Groot.decodeBytes("{ }");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
 
-    obj = (MapObj) Groot.decodeBytes(" { } ");
+    obj = (Map) Groot.decodeBytes(" { } ");
     Assert.assertNotNull(obj);
     Assert.assertTrue(obj.isEmpty());
 
@@ -82,11 +141,11 @@ public class GrootTest {
     Assert.assertFalse((boolean) Groot.decodeBytes("false"));
     Assert.assertEquals(false, Groot.decodeBytes("false"));
 
-    Arr arr = (Arr) Groot.decodeBytes("[]");
+    List arr = (List) Groot.decodeBytes("[]");
     Assert.assertNotNull(arr);
     Assert.assertTrue(arr.isEmpty());
 
-    Integer intg = (Integer) Groot.decodeBytes("123".getBytes(), 0, "123".length(), Syntax.STANDARD);
+    Integer intg = (Integer) Groot.decodeBytes("123".getBytes(), 0, "123".length() - 1, Syntax.STANDARD);
     Assert.assertEquals(123, intg.intValue());
 
 

@@ -2,6 +2,8 @@ package com.arise.cargo.management;
 
 import java.io.File;
 
+
+@Deprecated
 public abstract class Rule  {
     private File zipped;
 

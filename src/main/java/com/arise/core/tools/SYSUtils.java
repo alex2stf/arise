@@ -245,9 +245,7 @@ public class SYSUtils {
 
 
     public static boolean isWindows() {
-
         return (osName().toLowerCase().indexOf("win") >= 0);
-
     }
 
     public static boolean isMac() {

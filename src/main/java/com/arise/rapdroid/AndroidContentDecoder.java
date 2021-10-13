@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
@@ -36,17 +37,10 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
 {
 
-    public final SuggestionService suggestionService = new SuggestionService()
-            .load("weland/config/commons/suggestions.json");
 
 
     Map<String, Bitmap> bitmapCache = new ConcurrentHashMap<>();
 
-
-
-    public AndroidContentDecoder(){
-
-    }
 
     @Override
     public ContentInfo decode(File file) {
@@ -67,26 +61,7 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         return f;
     }
 
-    @Override
-    public byte[] getThumbnail(String id) {
-        if (bytesCache.containsKey(id)){
-            return bytesCache.get(id);
-        }
-        if (id.startsWith("data:")){
-            try {
-                return SuggestionService.decodeBase64Image(id).first();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new byte[]{0,0};
-            }
-        }
-        return new byte[]{0,0};
-    }
 
-    @Override
-    public ContentType getThumbnailContentType(String id) {
-        return ContentType.IMAGE_JPEG;
-    }
 
 
     public ContentInfo fromFile(File file){
@@ -96,9 +71,11 @@ public class AndroidContentDecoder extends ContentInfoDecoder
         }
 
         ContentInfo mediaInfo = new ContentInfo(file);
+        String thumbnailId = StringEncoder.encodeShiftSHA(file.getName());
+
         int width = 0;
         int height = 0;
-        byte[] imageBytes = null;
+        byte[] thumbnailBytes = null;
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
 
@@ -110,77 +87,66 @@ public class AndroidContentDecoder extends ContentInfoDecoder
 
         if (mmr != null){
 
+            //getThumbnail for music
             try {
-                imageBytes = mmr.getEmbeddedPicture();
+                thumbnailBytes = mmr.getEmbeddedPicture();
             } catch (Throwable t){
-                imageBytes = null;
+                thumbnailBytes = null;
             }
 
-            try {
-                width = Integer.valueOf(
-                        mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                );
-            }catch (Exception e){
-                width = 0;
-            }
-
-
-            try {
-                height = Integer.valueOf(
-                        mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                );
-            }catch (Exception e){
-                height = 0;
-            }
-
-            Bitmap thumbnail = null;
-            String binaryId = IDGen.fromFile(file);
-            Bitmap bmp = null;
             if (ContentType.isVideo(file)) {
                 try {
-                    thumbnail = mmr.getFrameAtTime();
-                } catch (Exception e) {
-                    thumbnail = null;
+                    width = Integer.valueOf(
+                            mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                    );
+                }catch (Exception e){
+                    width = 0;
                 }
-                if (thumbnail == null) {
+
+
+                try {
+                    height = Integer.valueOf(
+                            mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                    );
+                }catch (Exception e){
+                    height = 0;
+                }
+
+
+                if (thumbnailBytes == null){
+                    Bitmap thumbnailBitmap = null;
+                    Bitmap bmp = null;
+
                     try {
-                        thumbnail = ThumbnailUtils.createVideoThumbnail(file.getPath(),
-                                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
-                    }catch (Exception e){
-                        thumbnail = null;
+                        thumbnailBitmap = mmr.getFrameAtTime();
+                    } catch (Exception e) {
+                        thumbnailBitmap = null;
                     }
-                }
-            }
 
+                    if (thumbnailBitmap == null) {
+                        try {
+                            thumbnailBitmap = ThumbnailUtils.createVideoThumbnail(file.getPath(),
+                                    MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+                        }catch (Exception e){
+                            thumbnailBitmap = null;
+                        }
+                    }
 
-
-            if (thumbnail != null){
-                if (width == 0 || height == 0) {
-                    width = thumbnail.getWidth();
-                    height = thumbnail.getHeight();
-                }
-                if (imageBytes == null){
-                    bmp = getMinifiedVersion(binaryId, thumbnail);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    imageBytes = stream.toByteArray();
-                }
-
-            }
-
-            if (imageBytes == null){
-                searchInSuggestions(mediaInfo);
-            }
-            else {
-                bytesCache.put(binaryId, imageBytes);
-                if (bmp != null){
-                    bitmapCache.put(binaryId, bmp);
-                }
-                else {
-                   getMinifiedBitmap(binaryId, imageBytes);
-                }
-                mediaInfo.setThumbnailId(binaryId);
-            }
+                    if (thumbnailBitmap != null){
+                        //daca nu a luat dimensiunile din video le ia din thumbnail, ca e facut FULL_SCREEN
+                        if (width == 0 || height == 0) {
+                            width = thumbnailBitmap.getWidth();
+                            height = thumbnailBitmap.getHeight();
+                        }
+                        if (thumbnailBytes == null){
+                            bmp = getMinifiedVersion(thumbnailId, thumbnailBitmap);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            thumbnailBytes = stream.toByteArray();
+                        }
+                    }
+                } //exit logica de video cu bitmap daca nu a mers getEmbeddedPicture
+            }//exit thumbnail logic for videos
 
             int duration = 0;
             try {
@@ -195,14 +161,27 @@ public class AndroidContentDecoder extends ContentInfoDecoder
                     .setAlbumName(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM))
                     .setArtist(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST))
                     .setComposer(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER))
-                    .setDuration(duration)
-            ;
+                    .setDuration(duration);
 
 
             mmr.release();
+        } //exit mmr
+
+        if (thumbnailBytes != null){
+
+            dataCache.put(thumbnailId, new SuggestionService.Data(
+                    thumbnailId,
+                    thumbnailBytes,
+                    ContentType.IMAGE_JPEG)
+            );
+            mediaInfo.setThumbnailId(thumbnailId);
+        }
+        else {
+            fixThumbnails(mediaInfo);
         }
 
-        mediaInfo.setWidth(width).setHeight(height);
+        mediaInfo.setWidth(width)
+                .setHeight(height);
         contentCache.put(file.getAbsolutePath(), mediaInfo);
 
         return mediaInfo;
@@ -222,152 +201,66 @@ public class AndroidContentDecoder extends ContentInfoDecoder
     }
 
 
-    private void searchInSuggestions(ContentInfo mediaInfo) {
-        suggestionService.searchIcons(mediaInfo.getPath(), new SuggestionService.Manager() {
-            @Override
-            public boolean manage(String id, String path, URL url) {
-                try {
-                    byte[] bytes = get(id, url, getImgDir());
-                    mediaInfo.setThumbnailId(id);
-                    bytesCache.put(id, bytes);
-                    return true;
-                }catch (Exception e){
-                    return false;
-                }
-
-            }
-
-            @Override
-            public boolean manageBytes(String id, byte[] bytes, ContentType contentType) {
-                if (bytes != null){
-                    mediaInfo.setThumbnailId(id);
-                    bytesCache.put(id, bytes);
-                    return true;
-                }
-                return false;
-            }
-
-
-        });
-    }
 
 
 
 
 
 
-    public byte[] get(String id, URL url, File cacheDir){
-        if (bytesCache.containsKey(id)){
-            return bytesCache.get(id);
-        }
-        byte[] bytes = readLocalIfExists(cacheDir, id);
-        if (bytes != null){
-            bytesCache.put(id, bytes);
-            return bytes;
-        }
 
+//    public byte[] get(String id, URL url, File cacheDir){
+//        if (bytesCache.containsKey(id)){
+//            return bytesCache.get(id);
+//        }
+//        byte[] bytes = readLocalIfExists(cacheDir, id);
+//        if (bytes != null){
+//            bytesCache.put(id, bytes);
+//            return bytes;
+//        }
+//
+//
+//        InputStream inputStream = null;
+//        try {
+//            inputStream = url.openStream();
+//            bytes = StreamUtil.toBytes(inputStream);
+//        } catch (IOException e) {
+//            System.out.println("Failed to fetch " + url);
+//        }
+//        finally {
+//            Util.close(inputStream);
+//        }
+//
+//        if (bytes != null){
+//            Bitmap minified = getMinifiedBitmap(id, bytes);
+//            File f = new File(cacheDir + File.separator + id);
+//            FileOutputStream fileOutputStream = null;
+//            try {
+//                fileOutputStream = new FileOutputStream(f);
+//                //TODO:::AICI e logica de compress
+//                minified.compress(getCompressFormat(f.getName()), 100, fileOutputStream);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            Util.close(fileOutputStream);
+//        }
+//
+//        if (id != null && bytes != null){
+//            bytesCache.put(id, bytes);
+//        }
+//        return bytes;
+//    }
 
-        InputStream inputStream = null;
-        try {
-            inputStream = url.openStream();
-            bytes = StreamUtil.toBytes(inputStream);
-        } catch (IOException e) {
-            System.out.println("Failed to fetch " + url);
-        }
-        finally {
-            Util.close(inputStream);
-        }
-
-        if (bytes != null){
-            Bitmap minified = getMinifiedBitmap(id, bytes);
-            File f = new File(cacheDir + File.separator + id);
-            FileOutputStream fileOutputStream = null;
-            try {
-                fileOutputStream = new FileOutputStream(f);
-                minified.compress(getCompressFormat(f.getName()), 100, fileOutputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Util.close(fileOutputStream);
-        }
-
-        if (id != null && bytes != null){
-            bytesCache.put(id, bytes);
-        }
-        return bytes;
-    }
-
-    Bitmap.CompressFormat getCompressFormat(String in){
-        if (in.endsWith(".png")){
-            return Bitmap.CompressFormat.PNG;
-        }
-        return Bitmap.CompressFormat.JPEG;
-    }
-
-
-
-
-    public void getPreview(ContentInfo contentInfo, CompleteHandler<Bitmap> completeHandler){
-        String binaryId = contentInfo.getThumbnailId();
-        if (!StringUtil.hasContent(binaryId)){
-            //TODO default behaviour
-            return;
-        }
-
-
-        if (bitmapCache.containsKey(binaryId)){
-            completeHandler.onComplete(bitmapCache.get(binaryId));
-            return;
-        }
-
-        byte[] bytes = null;
-        if (bytesCache.containsKey(binaryId)){
-            bytes = bytesCache.get(binaryId);
-        }
+//    Bitmap.CompressFormat getCompressFormat(String in){
+//        if (in.endsWith(".png")){
+//            return Bitmap.CompressFormat.PNG;
+//        }
+//        return Bitmap.CompressFormat.JPEG;
+//    }
 
 
 
-        if (bytes != null && bytes.length > 1){
-            completeHandler.onComplete(getMinifiedBitmap(binaryId, bytes));
-            return;
-        }
-
-        if (binaryId.startsWith("http")) {
-            URL uri;
-            try {
-                uri = new URL(binaryId);
-            } catch (MalformedURLException e) {
-                uri = null;
-                return;
-            }
-            if (uri == null){
-                completeHandler.onComplete(null);
-                return;
-            }
-
-            String actualBinaryId = IDGen.parsePath(binaryId);
-            URL finalUri = uri;
-            ThreadUtil.fireAndForget(new Runnable() {
-                @Override
-                public void run() {
-                    byte localBytes[] = get(actualBinaryId, finalUri, getStateDirectory());
-                    if (localBytes != null){
-                        completeHandler.onComplete(getMinifiedBitmap(actualBinaryId, localBytes));
-                    }
-                    else {
-                        completeHandler.onComplete(null);
-                    }
-                }
-            });
 
 
-        }
-        else {
-            completeHandler.onComplete(null);
-        }
-
-
-    }
 
 
 
@@ -395,19 +288,19 @@ public class AndroidContentDecoder extends ContentInfoDecoder
     }
 
 
-    public Bitmap getBitmapById(String thumbnailId){
-        if (bitmapCache.containsKey(thumbnailId)) {
-            return bitmapCache.get(thumbnailId);
-        }
-        byte [] bytes = readLocalIfExists(getImgDir(), thumbnailId);
-        if (bytes != null){
-            bytesCache.put(thumbnailId, bytes);
-
-            return getMinifiedBitmap(thumbnailId, bytes);
-
-        }
-        return null;
-    }
+//    public Bitmap getBitmapById(String thumbnailId){
+//        if (bitmapCache.containsKey(thumbnailId)) {
+//            return bitmapCache.get(thumbnailId);
+//        }
+//        byte [] bytes = readLocalIfExists(getImgDir(), thumbnailId);
+//        if (bytes != null){
+//            bytesCache.put(thumbnailId, bytes);
+//
+//            return getMinifiedBitmap(thumbnailId, bytes);
+//
+//        }
+//        return null;
+//    }
 
 
 }
