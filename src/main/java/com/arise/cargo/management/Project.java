@@ -71,7 +71,7 @@ public class Project {
         }
 
         for (DependencyManager.Resolution resolution: resolutions){
-            Dependency.Version version = resolution.selectedPlatform();
+            Dependency.Version version = resolution.selectedVersion();
             String includes = StringUtil.join(version.includes, ";", new StringUtil.JoinIterator<String>() {
                 @Override
                 public String toString(String value) {

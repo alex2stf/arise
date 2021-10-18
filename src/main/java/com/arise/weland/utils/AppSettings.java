@@ -141,6 +141,22 @@ public class AppSettings {
     }
 
 
+    public static String getProperty(Keys key){
+        return applicationProperties.getProperty(key.s);
+    }
+
+
+    public enum Keys {
+        PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"});
+
+        final String s;
+        private final String[] variants;
+
+        Keys(String s, String[] variants) {
+            this.s = s;
+            this.variants = variants;
+        }
+    }
 
 
 

@@ -2,6 +2,7 @@ package com.arise.core.tools;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,9 +16,9 @@ public class MapObj extends LinkedHashMap<String, Object> {
         return null;
     }
 
-    public Arr getArray(String key) {
+    public List getArray(String key) {
         if (containsKey(key)) {
-            return (Arr) get(key);
+            return (List) get(key);
         }
         return null;
     }

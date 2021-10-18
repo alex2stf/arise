@@ -13,6 +13,7 @@ public class Dependency {
     private String name;
 
     String type;
+
     Map<String, Version> versions = new HashMap<>();
 
 
@@ -26,12 +27,13 @@ public class Dependency {
         for (Map m: versions){
             Version version = new Version();
             version.id = MapUtil.getString(m, "id");
-            version.name = MapUtil.getString(m, "platform-match");
+            version.platformMatch = MapUtil.getString(m, "platform-match");
             version.urls = MapUtil.getList(m, "urls");
             version.libPaths = MapUtil.getList(m, "lib-paths");
             version.dynamicLibs = MapUtil.getList(m, "dynamic-libs");
             version.staticLibs = MapUtil.getList(m, "static-libs");
             version.includes = MapUtil.getList(m, "includes");
+            version.executable = MapUtil.getString(m, "executable");
             dependency.versions.put(version.id, version);
         }
     }
@@ -71,14 +73,26 @@ public class Dependency {
         return name;
     }
 
+    public Version getLatestVersion(){
+       for (Version v: versions.values()){
+           if (v != null){
+               return v;
+           }
+       }
+       return null;
+    }
+
+
+
+
     public Version getVersion(String in) {
         for (Version v: this.versions.values()){
-            if (v.getName().equals(in) || v.id.equals(in) || "*".equals(in)){
+            if (in.equals(v.platformMatch) || in.equals(v.id) || "*".equals(in)){
                 return v;
             }
         }
 
-        return null;
+        return getLatestVersion();
     }
 
 
@@ -88,17 +102,24 @@ public class Dependency {
         List<String> includes;
         List<String> dynamicLibs;
         List<String> staticLibs;
-        String name;
+        String platformMatch;
         String id;
+        String executable;
 
 
-
-        public String getName() {
-            return name;
+        public String getExecutable() {
+            if (SYSUtils.isWindows() && !executable.endsWith(".exe")){
+                return executable + ".exe";
+            }
+            return executable;
         }
 
-        public Version setName(String name) {
-            this.name = name;
+        public String getPlatformMatch() {
+            return platformMatch;
+        }
+
+        public Version setPlatformMatch(String platformMatch) {
+            this.platformMatch = platformMatch;
             return this;
         }
     }

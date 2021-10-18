@@ -1,7 +1,6 @@
 package com.arise.weland.impl;
 
 import com.arise.astox.net.models.SingletonHttpResponse;
-import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
@@ -9,35 +8,36 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.AppCache;
-import com.arise.core.tools.Arr;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.dto.ContentInfo;
-import com.arise.weland.dto.Detail;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.utils.AppSettings;
 import com.arise.weland.wrappers.VLCWrapper;
+//import org.openqa.selenium.WebDriver;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import static com.arise.weland.utils.AppSettings.Keys.PREFERRED_BROWSER;
 
 public class DesktopContentHandler extends ContentHandler {
 
@@ -82,14 +82,7 @@ public class DesktopContentHandler extends ContentHandler {
         setupArgs();
     }
 
-    public static void main(String[] args) {
-        Message message = new Message();
-        message.setText("some text");
-        DesktopContentHandler f = new DesktopContentHandler(null, null);
-                f.onMessageReceived(message);
-        message.setText("some text2");
-                f.onMessageReceived(message);
-    }
+
 
     private void setupArgs() {
         String s = StreamUtil.toString(
@@ -128,7 +121,7 @@ public class DesktopContentHandler extends ContentHandler {
 
     //TODO fa stopPreviews mai destept
     private HttpResponse openString(final String path){
-            log.info("OPEN " + path);
+           log.info("OPEN " + path);
            DeviceStat deviceStat = DeviceStat.getInstance();
            deviceStat.setProp("ks", "false");
 
@@ -272,8 +265,46 @@ public class DesktopContentHandler extends ContentHandler {
         return null;
     }
 
+
+    Object seleniumDriver = null;
     private void openInStandardBrowser(String path){
-        execute(getCommands("browser", path));
+        //TODO use selenium for same instance
+
+        if("selenium".equals(AppSettings.getProperty(PREFERRED_BROWSER))){
+            Object  currentUrl = ReflectUtil.getMethod(seleniumDriver, "getCurrentUrl").call();
+
+            if (currentUrl == null){
+                List<DependencyManager.Resolution> resolutions = null;
+                try {
+                    resolutions = DependencyManager.withDependencies(new String[]{
+                            "SELENIUM_JAR", "CHROME_DRIVER"
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                DependencyManager.Resolution chromeDriver = DependencyManager.findResolution(resolutions, "CHROME_DRIVER");
+                System.setProperty("webdriver.chrome.driver", new File(chromeDriver.uncompressed(), chromeDriver.selectedVersion().getExecutable()).getAbsolutePath());
+                try {
+                    seleniumDriver = ReflectUtil.getClassByName("org.openqa.selenium.chrome.ChromeDriver").newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+//
+//            WebDriver webDriver;
+//            webDriver.close();
+
+            ReflectUtil.getMethod(seleniumDriver, "get", String.class).call(path);
+
+
+        }
+
+        else {
+            execute(getCommands("browser", path));
+        }
+
     }
 
 
@@ -283,6 +314,8 @@ public class DesktopContentHandler extends ContentHandler {
         log.info("STOP " + x);
         ThreadUtil.closeTimer(timerResult);
 
+
+        Util.close(seleniumDriver);
         //pause vlc http instance
         if (VLCWrapper.isHttpOpened()){
             log.info("vlc stopPreviews " + x);

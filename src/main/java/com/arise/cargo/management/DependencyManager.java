@@ -4,6 +4,7 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
@@ -17,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +49,7 @@ public class DependencyManager {
                 continue;
             }
 
-            System.out.println("import dependency" + name);
+            System.out.println("import dependency " + name);
             Dependency dependency = new Dependency();
             dependency.setName(name);
             Dependency.decorate(dependency, args);
@@ -175,6 +177,7 @@ public class DependencyManager {
 
 
 
+    @Deprecated
     public static Rule download(Dependency dependency, File outputDir) throws IOException {
 
         if (!outputDir.exists()){
@@ -205,6 +208,8 @@ public class DependencyManager {
         return p[p.length -1];
     }
 
+
+    @Deprecated
     public static File uncompress(Dependency dependency, Rule rule, File rootDir){
         File unarchived = new File(rootDir, dependency.getName() + "_" + rule.getName());
         if (!FileUtil.hasFiles(unarchived)){
@@ -228,6 +233,22 @@ public class DependencyManager {
     public static File getRoot(){
         File out = FileUtil.findAppDir();
         return new File(out, "dpmngmt");
+    }
+
+    public static File getSrc(){
+        File src = new File(getRoot(), "src");
+        if (!src.exists()){
+            src.mkdirs();
+        }
+        return src;
+    }
+
+    public static File getLibs(){
+        File libs = new File(getRoot(), "libs");
+        if (!libs.exists()){
+            libs.mkdirs();
+        }
+        return libs;
     }
 
     public static Resolution solveSilent(Dependency dependency){
@@ -257,7 +278,7 @@ public class DependencyManager {
                String id = url.substring("internal://".length());
                InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
 
-               String outName = (dependency.getName() + "_" + version.getName()).toLowerCase();
+               String outName = (dependency.getName() + "_" + version.getPlatformMatch()).toLowerCase();
                File libsDir = new File(outputDir, "libs");
                if (!libsDir.exists()) {
                    libsDir.mkdirs();
@@ -295,6 +316,105 @@ public class DependencyManager {
         return dependencyMap.get(name);
     }
 
+
+
+
+    public static File fetchOneOfUrls(List<String> urls, File out, String name){
+        for (String url: urls){
+            File fetched = null;
+            try {
+                String actualName = name;
+                if (url.endsWith(".jar")){
+                    actualName += ".jar";
+                }
+                else if (url.endsWith(".zip")){
+                    actualName += ".zip";
+                }
+                fetched = download(url, out, actualName);
+                if (fetched.exists()){
+                    return fetched;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
+    public static String getDestination(Dependency dependency){
+        if ("binary".equalsIgnoreCase(dependency.type)){
+            return "bin";
+        }
+        return "libs";
+    }
+
+
+    private static boolean requiresUncompressed(File downloaded){
+        String name = downloaded.getAbsolutePath();
+        return name.endsWith(".zip");
+    }
+
+
+    public static List<Resolution> withDependencies(String [] names) throws Exception {
+        List<Resolution> resolutions = new ArrayList<>();
+        File root = getRoot();
+        File downloadLocation = new File(root, "downloads");
+        if (!downloadLocation.exists()){
+            downloadLocation.mkdirs();
+        }
+        for (String name: names) {
+            Dependency dependency = dependencyMap.get(name);
+            Dependency.Version version = dependency.getVersion("WINDOWS");
+            File downloaded = fetchOneOfUrls(version.urls, downloadLocation, version.id );
+            File outDir = new File(getRoot(), getDestination(dependency));
+            if (!outDir.exists()){
+                outDir.mkdirs();
+            }
+            Resolution resolution;
+
+            if (requiresUncompressed(downloaded)){
+
+                File unzipped = new File(outDir, version.id);
+
+                if (!unzipped.exists()) {
+                    System.out.println("Transfer " + downloaded.getAbsolutePath() + " into " + unzipped.getAbsolutePath());
+                    zipper.extract(downloaded, unzipped);
+                }
+                resolution = new Resolution(unzipped, dependency, version);
+            } else {
+                File moved = new File(outDir, downloaded.getName());
+                if (!moved.exists()) {
+                    Files.copy(downloaded.toPath(), new File(outDir, downloaded.getName()).toPath());
+                }
+                resolution = new Resolution(moved, dependency, version);
+            }
+
+
+
+            if ("jar".equalsIgnoreCase(dependency.type)) {
+                try {
+                    ReflectUtil.loadLibrary(downloaded);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            resolutions.add(resolution);
+        }
+        return resolutions;
+    }
+
+    public static Resolution findResolution(List<Resolution> resolutions, String name) {
+            for (Resolution s: resolutions){
+                if (name.equalsIgnoreCase(s.source().getName())){
+                    return s;
+                }
+            }
+            return null;
+    }
+
+
     public static class Resolution{
         private final Rule  _r;
         private final File  _u;
@@ -314,7 +434,7 @@ public class DependencyManager {
             this._s = _s;
         }
 
-        public Dependency.Version selectedPlatform(){
+        public Dependency.Version selectedVersion(){
             return _cp;
         }
 

@@ -6,6 +6,7 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Registry;
+import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
@@ -28,6 +29,7 @@ import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
@@ -65,7 +67,8 @@ public class Main {
     static BluecoveServer bluecoveServer;
     static AbstractServer ioServer;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        DependencyManager.importDependencyRules("_cargo_/dependencies.json");
         MediaInfoSolver.load();
 
 
@@ -106,10 +109,6 @@ public class Main {
         }
 
         contentInfoProvider.get();
-
-
-
-
 
 
 

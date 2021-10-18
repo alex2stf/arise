@@ -68,7 +68,7 @@ public class SuggestionService {
     }
 
     private Map getSuggestion(String  val){
-        Arr suggestions = root.getArray("suggestions");
+        List suggestions = root.getArray("suggestions");
         if (suggestions == null){
             return null;
         }

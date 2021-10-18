@@ -1,15 +1,13 @@
 package com.arise.core.serializers.parser;
 
 import com.arise.core.serializers.parser.Groot.Syntax;
-import com.arise.core.tools.Arr;
-import com.arise.core.tools.MapObj;
 import com.arise.core.tools.TypeUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.persistence.Transient;
+//import javax.persistence.Transient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,16 +255,16 @@ public class GrootTest {
   class TestClass{
     String packageString;
 
-    @JsonProperty(value = "property_name", required = true)
+//    @JsonProperty(value = "property_name", required = true)
     String customNamed;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String neverShowed;
 
 
-    @Transient
+//    @Transient
     public String transientMarked = "transientMarket";
-    @JsonIgnore
+//    @JsonIgnore
     public String getFieldJsonIgnore(){ return "ignored_json_field"; }
     public String getName(){
       return "WTF";

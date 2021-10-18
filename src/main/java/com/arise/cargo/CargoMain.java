@@ -1,15 +1,10 @@
 package com.arise.cargo;
 
 import com.arise.cargo.management.DependencyManager;
-import com.arise.cargo.management.Project;
-import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.ReflectUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
+import java.util.List;
 
 public class CargoMain {
 
@@ -17,18 +12,28 @@ public class CargoMain {
 
     public static void main(String[] args) throws Exception {
 //        String mode = args[0];
-
-        Double.compare(1, 2);
-
-
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
-        File inputFile = new File("C:\\Users\\alexandru2.stefan\\Documents\\om-automated-test\\c-tests\\c-tests.json");
 
-        Map data = (Map) Groot.decodeFile(inputFile);
+        List<DependencyManager.Resolution> resolutions = DependencyManager.withDependencies(new String[]{
+                "SELENIUM_JAR", "CHROME_DRIVER"
+        });
 
-        Project project = Project.fromMap(data);
+        DependencyManager.Resolution chromeDriver = DependencyManager.findResolution(resolutions, "CHROME_DRIVER");
 
-        project.outputTo(inputFile.getParentFile());
-        System.out.println(project);
+
+       System.setProperty("webdriver.chrome.driver", new File(chromeDriver.uncompressed(), chromeDriver.selectedVersion().getExecutable()).getAbsolutePath());
+       Object driver = ReflectUtil.getClassByName("org.openqa.selenium.chrome.ChromeDriver").newInstance();
+       ReflectUtil.getMethod(driver, "get", String.class).call("https://chromedriver.storage.googleapis.com/index.html?path=93.0.4577.63/");
+
+
+
+//        File inputFile = new File("C:\\Users\\alexandru2.stefan\\Documents\\om-automated-test\\c-tests\\c-tests.json");
+//
+//        Map data = (Map) Groot.decodeFile(inputFile);
+//
+//        Project project = Project.fromMap(data);
+//
+//        project.outputTo(inputFile.getParentFile());
+//        System.out.println(project);
     }
 }
