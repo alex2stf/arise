@@ -31,9 +31,10 @@ public class ReflectUtil {
 //                return;
 //            }
 //        }
-        java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{java.net.URL.class});
-        method.setAccessible(true); /*promote the method to public access*/
-        method.invoke(loader, new Object[]{url});
+
+        Method m = searchMethodInClass(loader.getClass(), "addURL", new Class[]{java.net.URL.class});
+        m.setAccessible(true); /*promote the method to public access*/
+        m.invoke(loader, new Object[]{url});
     }
 
 
@@ -107,16 +108,21 @@ public class ReflectUtil {
 
 
 
-    @Deprecated
-    public static Method getMethod(String className, String methodName, Class<?>[] parameterTypes) {
-        try
-        {
-            return Class.forName(className).getMethod(methodName, parameterTypes);
+    public static Method searchMethodInClass(Class clz, String mn, Class<?>[] pt) {
+        Method m;
+        try {
+            m = clz.getMethod(mn, pt);
+        } catch (NoSuchMethodException e) {
+            try {
+                m = clz.getDeclaredMethod(mn, pt);
+            } catch (NoSuchMethodException ex) {
+                m = null;
+            }
         }
-        catch (Exception e)
-        {
-            return null;
+        if (m == null && !clz.getSuperclass().equals(Object.class)){
+            return searchMethodInClass(clz.getSuperclass(), mn, pt);
         }
+        return m;
     }
 
     public static boolean classExists(String classname){
@@ -183,17 +189,17 @@ public class ReflectUtil {
     }
 
 
-    public static InvokeHelper getMethodWithClassNames(Object object, String methodName, String... parameterTypes) {
-        try {
-            Class classes[] = new Class[parameterTypes.length];
-            for (int i = 0; i < parameterTypes.length; i++){
-                classes[i] = getClassByName(parameterTypes[i]);
-            }
-            return new InvokeHelper(object.getClass().getMethod(methodName, classes), object);
-        } catch (NoSuchMethodException e) {
-            return InvokeHelper.NULL;
-        }
-    }
+//    public static InvokeHelper getMethodWithClassNames(Object object, String methodName, String... parameterTypes) {
+//        try {
+//            Class classes[] = new Class[parameterTypes.length];
+//            for (int i = 0; i < parameterTypes.length; i++){
+//                classes[i] = getClassByName(parameterTypes[i]);
+//            }
+//            return new InvokeHelper(object.getClass().getMethod(methodName, classes), object);
+//        } catch (NoSuchMethodException e) {
+//            return InvokeHelper.NULL;
+//        }
+//    }
 
 
     public static InvokeHelper getStaticMethod(String clazzName, String methodName, Class... parameterTypes) {
@@ -217,16 +223,15 @@ public class ReflectUtil {
         }
     }
 
-    public static InvokeHelper getMethod(Class clazz, Object object, String methodName, Class... parameterTypes) {
-
-        if (object == null || clazz == null){
+    public static InvokeHelper getMethod(Class clz, Object o, String mn, Class... pt) {
+        if (o == null || clz == null){
             return InvokeHelper.NULL;
         }
-        try {
-            return new InvokeHelper(clazz.getMethod(methodName, parameterTypes), object);
-        } catch (NoSuchMethodException e) {
-            return InvokeHelper.NULL;
+        Method m = searchMethodInClass(clz, mn, pt);
+        if (m != null){
+            return new InvokeHelper(m, o);
         }
+        return InvokeHelper.NULL;
     }
 
     public static InvokeHelper findGetter(Object object, String name){
