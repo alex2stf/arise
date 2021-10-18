@@ -124,7 +124,7 @@ public class Builder {
                     .jarLib("libs/slf4j-simple-1.7.2.jar" )
                     .jarLib("libs/webcam-capture-0.3.12.jar" )
                     .jarLib("libs/bridj-0.7.0.jar" )
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland")
+                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland", RES_ROOT + "_cargo_")
                     .resourceFiles(RES_ROOT + "content-types.json")
                     .mainClass("com.arise.weland.Main")
                     .named("weland")

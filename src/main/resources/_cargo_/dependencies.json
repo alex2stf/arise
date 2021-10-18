@@ -9,6 +9,14 @@
         "urls": [
           "https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_win32.zip"
         ]
+      },
+      {
+        "id":"chrome-driver-86.0.4240.22",
+        "platform-match": "LINUX",
+        "executable": "chromedriver",
+          "urls" : [
+            "https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip"
+          ]
       }
     ]
   },

@@ -35,6 +35,9 @@ public class DependencyManager {
 
     public static void importDependencyRules(String in) throws IOException {
         InputStream inps = FileUtil.findStream(in);
+        if(inps == null){
+                System.out.println(in + " NOT FOUND ");
+        }
         String x = StreamUtil.toString(inps);
         Map<Object, Object> data = (Map) Groot.decodeBytes(x);
 
@@ -366,7 +369,7 @@ public class DependencyManager {
         }
         for (String name: names) {
             Dependency dependency = dependencyMap.get(name);
-            Dependency.Version version = dependency.getVersion("WINDOWS");
+            Dependency.Version version = dependency.getVersion("LINUX");
             File downloaded = fetchOneOfUrls(version.urls, downloadLocation, version.id );
             File outDir = new File(getRoot(), getDestination(dependency));
             if (!outDir.exists()){

@@ -21,7 +21,7 @@ public class ReflectUtil {
 
     public static synchronized void loadLibrary(java.io.File jar) throws Exception {
         /*We are using reflection here to circumvent encapsulation; addURL is not public*/
-        java.net.URLClassLoader loader = (java.net.URLClassLoader)ClassLoader.getSystemClassLoader();
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
         java.net.URL url = jar.toURI().toURL();
         /*Disallow if already loaded*/
         for (java.net.URL it : java.util.Arrays.asList(loader.getURLs())){
