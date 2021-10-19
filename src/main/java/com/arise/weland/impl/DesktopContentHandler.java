@@ -291,7 +291,7 @@ public class DesktopContentHandler extends ContentHandler {
                 System.setProperty("webdriver.chrome.driver", new File(chromeDriver.uncompressed(), chromeDriver.selectedVersion().getExecutable()).getAbsolutePath());
 
                 try {
-                    seleniumDriver = Class.forName("org.openqa.selenium.chrome.ChromeDriver", true , res.second());
+                    seleniumDriver = Class.forName("org.openqa.selenium.chrome.ChromeDriver", true , res.second()).newInstance();
 
 //                            ReflectUtil.getClassByName("org.openqa.selenium.chrome.ChromeDriver").newInstance();
                 } catch (Exception e) {
