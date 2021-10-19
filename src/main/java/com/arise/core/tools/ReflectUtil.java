@@ -3,6 +3,7 @@ package com.arise.core.tools;
 
 
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,12 +13,32 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 //import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 public class ReflectUtil {
 
+
+    public static synchronized URLClassLoader loadJars(List<File> jars){
+
+        URL[] urls = new URL[jars.size()];
+        for (int i = 0; i < jars.size(); i++) {
+            try {
+                urls[i] = jars.get(i).toURI().toURL();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+//        Note! If your loaded libraries uses some resources like properties or something else, you need to provide context class loader:
+
+
+//        Thread.currentThread().setContextClassLoader(childClassLoader);
+        return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
+    }
 
     public static synchronized void loadLibrary(java.io.File jar) throws Exception {
         /*We are using reflection here to circumvent encapsulation; addURL is not public*/
@@ -25,12 +46,7 @@ public class ReflectUtil {
 
         //java.net.URLClassLoader
         java.net.URL url = jar.toURI().toURL();
-        /*Disallow if already loaded*/
-//        for (java.net.URL it : java.util.Arrays.asList(loader.getURLs())){
-//            if (it.equals(url)){
-//                return;
-//            }
-//        }
+
 
         Method m = searchMethodInClass(loader.getClass(), "addURL", new Class[]{java.net.URL.class});
         m.setAccessible(true); /*promote the method to public access*/

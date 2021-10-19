@@ -235,7 +235,7 @@ public class SuggestionService {
         } catch (IOException e) {
             close(in);
             close(connection);
-            throw new RuntimeException("Failed to obtain stream from " + url, e);
+//            throw new RuntimeException("Failed to obtain stream from " + url, e);
         }
         byte[] buf = new byte[8192];
         int length = 0;
@@ -245,11 +245,11 @@ public class SuggestionService {
         while (true){
             try {
                 if (!((length = in.read(buf)) > 0)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+//                e.printStackTrace();
                 close(in);
                 close(connection);
-                throw new RuntimeException("Failed to read stream from " + url, e);
+//                throw new RuntimeException("Failed to read stream from " + url, e);
             }
             try {
                 out.write(buf, 0, length);

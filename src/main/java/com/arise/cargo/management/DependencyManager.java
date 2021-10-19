@@ -1,5 +1,6 @@
 package com.arise.cargo.management;
 
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
@@ -18,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -360,13 +362,14 @@ public class DependencyManager {
     }
 
 
-    public static List<Resolution> withDependencies(String [] names) throws Exception {
+    public static Tuple2<List<Resolution>, URLClassLoader> withDependencies(String [] names) throws Exception {
         List<Resolution> resolutions = new ArrayList<>();
         File root = getRoot();
         File downloadLocation = new File(root, "downloads");
         if (!downloadLocation.exists()){
             downloadLocation.mkdirs();
         }
+        List<File> jars = new ArrayList<>();
         for (String name: names) {
             Dependency dependency = dependencyMap.get(name);
             Dependency.Version version = dependency.getVersion("LINUX");
@@ -398,14 +401,15 @@ public class DependencyManager {
 
             if ("jar".equalsIgnoreCase(dependency.type)) {
                 try {
-                    ReflectUtil.loadLibrary(downloaded);
+                    jars.add(downloaded);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             resolutions.add(resolution);
         }
-        return resolutions;
+        return new Tuple2<>(resolutions, ReflectUtil.loadJars(jars));
     }
 
     public static Resolution findResolution(List<Resolution> resolutions, String name) {

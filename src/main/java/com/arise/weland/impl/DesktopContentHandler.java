@@ -31,6 +31,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -275,21 +276,28 @@ public class DesktopContentHandler extends ContentHandler {
 
             if (currentUrl == null){
                 List<DependencyManager.Resolution> resolutions = null;
+                Tuple2<List<DependencyManager.Resolution> , URLClassLoader> res = null;
                 try {
-                    resolutions = DependencyManager.withDependencies(new String[]{
+                    res = DependencyManager.withDependencies(new String[]{
                             "SELENIUM_JAR", "CHROME_DRIVER"
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+                resolutions = res.first();
+
                 DependencyManager.Resolution chromeDriver = DependencyManager.findResolution(resolutions, "CHROME_DRIVER");
                 System.setProperty("webdriver.chrome.driver", new File(chromeDriver.uncompressed(), chromeDriver.selectedVersion().getExecutable()).getAbsolutePath());
+
                 try {
-                    seleniumDriver = ReflectUtil.getClassByName("org.openqa.selenium.chrome.ChromeDriver").newInstance();
+                    seleniumDriver = Class.forName("org.openqa.selenium.chrome.ChromeDriver", true , res.second());
+
+//                            ReflectUtil.getClassByName("org.openqa.selenium.chrome.ChromeDriver").newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
 
 //
