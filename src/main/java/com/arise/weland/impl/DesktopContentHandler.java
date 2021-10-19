@@ -353,8 +353,13 @@ public class DesktopContentHandler extends ContentHandler {
                         log.info(StringUtil.join(args, " "));
                         Runtime.getRuntime().exec(args);
                     }
+                    else if(SYSUtils.isRaspberryPI()){
+                        String args[] = new String[]{"killall", "chromium-browse"};
+                        log.info(StringUtil.join(args, " "));
+                        Runtime.getRuntime().exec(args);
+                    }
 
-                    if (SYSUtils.isLinux()){
+                    else if (SYSUtils.isLinux()){
                         String args[] = new String[]{"pkill", "-9", s};
                         log.info(StringUtil.join(args, " "));
                         Runtime.getRuntime().exec(args);

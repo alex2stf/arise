@@ -68,8 +68,14 @@ public class Main {
     static AbstractServer ioServer;
 
     public static void main(String[] args) throws IOException {
+
+        log.info("init weland server");
+        log.info("SYSUtils.isLinux() " + SYSUtils.isLinux());
+        SYSUtils.getLinuxDetails();
+
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
         MediaInfoSolver.load();
+
 
 
         AppCache.setWorker(new StandardCacheWorker());

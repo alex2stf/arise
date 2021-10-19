@@ -10,11 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.arise.core.tools.StreamUtil.readLineByLine;
 import static com.arise.core.tools.StringUtil.isMailFormat;
@@ -264,9 +260,45 @@ public class SYSUtils {
     }
 
 
+    public static boolean isRaspberryPI(){
+        Properties p = getLinuxDetails();
+        if(p == null){
+            return false;
+        }
+        Enumeration<String> enums = (Enumeration<String>) p.propertyNames();
+        while (enums.hasMoreElements()) {
+            String key = enums.nextElement();
+            String value = p.getProperty(key);
+            if(value.indexOf("raspbian") > -1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+
+
+
 
     public static boolean isLinux() {
         return "linux".equalsIgnoreCase(System.getProperty("os.name"));
+    }
+
+
+    public static Properties getLinuxDetails(){
+        File f = new File("/etc/os-release");
+        if(f.exists()) {
+            try {
+                return FileUtil.loadProps(f);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 
 
