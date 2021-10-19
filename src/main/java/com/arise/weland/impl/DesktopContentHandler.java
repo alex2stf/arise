@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.arise.weland.utils.AppSettings.Keys.PREFERRED_BROWSER;
+import static com.arise.weland.utils.AppSettings.Keys.SINGLE_INSTANCES;
 
 public class DesktopContentHandler extends ContentHandler {
 
@@ -300,9 +301,6 @@ public class DesktopContentHandler extends ContentHandler {
 
             }
 
-//
-//            WebDriver webDriver;
-//            webDriver.close();
 
             ReflectUtil.getMethod(seleniumDriver, "get", String.class).call(path);
 
@@ -310,6 +308,10 @@ public class DesktopContentHandler extends ContentHandler {
         }
 
         else {
+
+            if (AppSettings.isTrue(SINGLE_INSTANCES)){
+                closeSpawnedProcesses();
+            }
             execute(getCommands("browser", path));
         }
 
@@ -334,7 +336,7 @@ public class DesktopContentHandler extends ContentHandler {
         return DeviceStat.getInstance().setProp(CURRENT_RUNNING, "").toHttp();
     }
 
-    private void closeSpawnedProcesses(){
+    private synchronized void closeSpawnedProcesses(){
         if (clearing || exes.isEmpty()) {
             return;
         }

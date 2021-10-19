@@ -145,9 +145,18 @@ public class AppSettings {
         return applicationProperties.getProperty(key.s);
     }
 
+    public static boolean isTrue(Keys key){
+        if (applicationProperties.containsKey(key.s)){
+            return "true".equalsIgnoreCase(applicationProperties.getProperty(key.s));
+        }
+        return false;
+    }
+
 
     public enum Keys {
-        PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"});
+        PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
+        SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"});
+
 
         final String s;
         private final String[] variants;
