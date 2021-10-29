@@ -27,8 +27,13 @@ button {
     background-color: #c5c5c5;
 }
 
-#ips-container button {
+button {
     background-color: #063c05;
+}
+
+.line {
+    color: white;
+    margin-bottom: 12px;
 }
 
 .nvcnt a {
@@ -451,4 +456,21 @@ body {
 .kontrols tr {
     border: 1px solid black;
     padding: 0;
+}
+
+.host-name {
+    color: white;
+}
+
+.rhost {
+    margin-bottom: 4px;
+    margin-top: 4px;
+    border: 1px solid white;
+    -webkit-border-radius: 24px;
+    -moz-border-radius: 24px;
+    border-radius: 24px;
+}
+.host-name {
+    display: block;
+    font-style: italic;
 }

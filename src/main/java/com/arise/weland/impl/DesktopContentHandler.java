@@ -479,6 +479,11 @@ public class DesktopContentHandler extends ContentHandler {
         return deviceStat;
     }
 
+    @Override
+    public void onCloseRequested() {
+        System.exit(0);
+    }
+
     private void execute(String args[]){
         log.info(StringUtil.join(args, " "));
         exes.add(new File(args[0]).getName());

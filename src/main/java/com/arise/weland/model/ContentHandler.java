@@ -88,4 +88,6 @@ public abstract  class ContentHandler {
     public abstract DeviceStat onDeviceUpdate(Map<String, List<String>> params);
 
     public abstract DeviceStat getDeviceStat();
+
+    public abstract void onCloseRequested();
 }

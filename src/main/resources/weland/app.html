@@ -264,23 +264,33 @@
         },
 
 
-        getFriendIps: function(c){
-            $get("/props/get?key=friend-ips", function (txt) {
-                var arr = [];
-                if(txt){
-                    try {
-                        arr = JSON.parse(txt);
-                    }catch (e) {
-                        arr = [];
-                    }
-                }
-                console.log("parsed", arr);
-                c(arr);
-            })
-        },
+        // getFriendIps: function(c){
+        //     function testIp(ip){
+        //         ping_host(ip, c, function(){
+        //             console.log('ignore ' + ip + ' because does not respons')
+        //         })
+        //     }
+        //
+        //     $get("/props/get?key=friend-ips", function (data) {
+        //         console.log(data);
+        //         // c(data);
+        //         for(var i = 0; i < data.length; i++){
+        //             if(!g_friends[data[i]]){
+        //                 g_friends[data[i]] = {};
+        //             }
+        //         }
+        //
+        //
+        //     })
+        // },
 
         addFriendIp : function (ip) {
             $get("/props/get?key=friend-ips", function (txt) {
+
+                var exists = false;
+                for(var k in g_friends){
+                    var host = k;
+                }
                 var arr = [];
                 if(txt){
                     try {

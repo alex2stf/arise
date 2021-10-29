@@ -192,26 +192,14 @@ function openFile(x) {
 function show_send_options(url) {
     _g('modal-status').innerHTML = '';
     $('#modal-status').show();
-    place_friend_ips(_g('modal-status'),
-        url,
-    function (ip) {
-        return 'open_to_remote(\''+encodeURI(ip)+'\', \''+encodeURI(url)+'\')';
-    })
+    place_friend_ips_for_air_play('modal-status', url, 'air-url-open');
+
 }
 
 function airPlayShowOptions(path) {
-    _g('modal-status').removeAttribute('onclick');
     setTimeout(function () {
         $('#modal-status').show();
-        place_friend_ips(_g('modal-status'), 'Air play ' + getFileNameFromStr(path),
-  function (ip) {
-            return 'air_play(\''+encodeURI(ip)+'\', \''+path+'\')'
-        },
-        function (ips) {
-           return 'air_play_distribute(\''+encodeURI(path)+'\')';
-        });
-
-
+        place_friend_ips_for_air_play('modal-status', path, 'air-play-send');
     }, 1000)
 }
 
@@ -225,27 +213,28 @@ function air_play_distribute(rPath) {
 
     _g('modal-status').innerHTML += '<button onclick="distributed_play(\''+rPath+'\')"> DISTRIBUTE PLAY </button>';
 
-    AppSettings.getFriendIps(function (x) {
-        console.log("friend ips: ", x);
-        for(var t = 0; t < x.length; t++){
-            var rhost = x[t];
-            ping_host(rhost, function (remHost) {
-                upload_to_friend_ips(remHost, rPath, function (f) {
-                    console.log("Upload init to" + remHost);
-                    var elemId = extract_id(remHost) + '-upl-stat';
-                    if (!_g(elemId)){
-                        _g('modal-status').innerHTML += '<div id="'+elemId+'"></div>';
-                    }
-                    air_play_check(f.host, f.len, f.name, function (p) {
-                        console.log('check complete', p);
-                        distHosts[f.host] = f;
-                    },  _g(elemId));
-                })
-            })
-        }
-
-
-    })
+    alert('TODO airplay')
+    // AppSettings.getFriendIps(function (x) {
+    //     console.log("friend ips: ", x);
+    //     for(var t = 0; t < x.length; t++){
+    //         var rhost = x[t];
+    //         ping_host(rhost, function (remHost) {
+    //             upload_to_friend_ips(remHost, rPath, function (f) {
+    //                 console.log("Upload init to" + remHost);
+    //                 var elemId = extract_id(remHost) + '-upl-stat';
+    //                 if (!_g(elemId)){
+    //                     _g('modal-status').innerHTML += '<div id="'+elemId+'"></div>';
+    //                 }
+    //                 air_play_check(f.host, f.len, f.name, function (p) {
+    //                     console.log('check complete', p);
+    //                     distHosts[f.host] = f;
+    //                 },  _g(elemId));
+    //             })
+    //         })
+    //     }
+    //
+    //
+    // })
 }
 
 function  distributed_play(rPath) {

@@ -421,9 +421,22 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
+
+
+
       return HttpResponse.json(PlaylistWorker.listPlaylists()).allowAnyOrigin();
     }
 
+
+    if ("/close-app".equals(request.path())){
+//      Intent intent = new Intent(Activity.this, MyBackgroundService.class);
+//      stopService(intent);
+//
+//      System.exit(0);
+      contentHandler.onCloseRequested();
+      return contentHandler.getDeviceStat()
+              .toHttp();
+    }
 
 
     return super.getHTTPResponse(request, server).allowAnyOrigin();

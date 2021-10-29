@@ -1,33 +1,109 @@
 
-function $do_request(url, c, e) {
+function http_request(request_method, request_url, request_data, success_callback, failure_callback, request_headers) {
+    var x;
+    if(typeof window != 'undefined' && window.XMLHttpRequest) {
+        x = new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+        try {
+            x = new ActiveXObject('Msxml2.XMLHTTP');
+        } catch (err) {
+            try {
+                x = new ActiveXObject('Microsoft.XMLHTTP');
+            } catch (err) {
+                x = false;
+                console.log('xmlhttp failed to init');
+                if (failure_callback) {
+                    failure_callback(err);
+                }
+                return {};
+            }
+        }
+    }
+
+    x.onreadystatechange = function() {
+        if (x.readyState == 4 && x.status == 200) {
+            if (success_callback){
+                success_callback(x, (x.responseText || x.response));
+            }
+        }
+    };
+
+    x.onerror = function(e) {
+        if (failure_callback) {
+            failure_callback(e);
+        }
+    };
+
+
+    try {
+        x.open(request_method, request_url, true);
+        for(var i in request_headers){
+            x.setRequestHeader(i, request_headers[i]);
+        }
+
+        if (request_data) {
+            x.send(request_data);
+        } else {
+            x.send();
+        }
+
+    } catch (e){
+        if (failure_callback) {
+            failure_callback(e);
+        }
+    }
+}
+
+
+
+function $do_request(url, c, f) {
 
     console.log('DO REQUEST', url)
 
-    $.ajax({
-        type: 'GET',
-        url: url,
-        success: function (d) {
-            console.log(d);
+    http_request("GET", url, {}, function (a1, a2) {
+            var data = a2;
+            try {
+                data = JSON.parse(a2);
+            }catch (e) {
+                console.log("Invalid json " + a2, e);
+            }
+
             if(c){
-                c(d);
+                c(data);
             }
-            else {
-                console.log("No handler found for " + url, d)
+    }, function (e) {
+            if(f){
+                f(e);
+            } else {
+                console.log('[' + url + '] ajax err  ', e);
             }
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            if (e){
-                e({
-                    xhr: xhr,
-                    options: ajaxOptions,
-                    error: thrownError,
-                    url: url
-                });
-            } else  {
-                console.log(url + ' error\n', xhr, ajaxOptions, thrownError);
-            }
-        }
-    })
+    }, {});
+    //
+    // $.ajax({
+    //     type: 'GET',
+    //     url: url,
+    //     success: function (d) {
+    //         console.log(d);
+    //         if(c){
+    //             c(d);
+    //         }
+    //         else {
+    //             console.log("No handler found for " + url, d)
+    //         }
+    //     },
+    //     error: function (xhr, ajaxOptions, thrownError) {
+    //         if (e){
+    //             e({
+    //                 xhr: xhr,
+    //                 options: ajaxOptions,
+    //                 error: thrownError,
+    //                 url: url
+    //             });
+    //         } else  {
+    //             console.log(url + ' error\n', xhr, ajaxOptions, thrownError);
+    //         }
+    //     }
+    // })
 
 
 }
@@ -63,69 +139,13 @@ function get_device_stat(){
     })
 }
 
-function add_friend_host(){
-    var txt =  prompt("Enter host name");
-    var hh = 'http://' + txt + ':8221';
-    var th = hh + '/device/stat';
-    console.log('add_friend_host' + th);
-    $do_request(th, function (d) {
-        if (confirm('Add ' + hh + ' as friend?')){
-            AppSettings.addFriendIp(hh);
-        }
-    });
-
-}
-
-// function check_friend_apps(ips) {
-//     if (checking_hosts){
-//         return;
-//     }
-//     var hosts = [];
-//     for(var i = 0; i < ips.length; i++){
-//         var ip = ips[0];
-//         console.log(ip);
-//         var parts = ip.split('.');
-//         // console.log("parts", parts);
-//
-//         for (var j = 0; j < 256; j++){
-//             for (var k = 0; k < 256; k++){
-//                 var remIp = parts[0] + '.' + parts[1] + '.' + j + '.' + k;
-//                 hosts.push(remIp)
-//             }
-//         }
-//     }
-//
-//     checking_hosts = true;
-//     start_domain_check(hosts, 0);
-// }
 
 
-// function start_domain_check(hosts, index){
-//     if (index > hosts.length){
-//         checking_hosts = false;
-//     }
-//     var rh = hosts[index];
-//     var th = 'http://' + rh + ':8221/device/stat';
-//     //console.log(th);
-//
-//     $.ajax({
-//         type: 'GET',
-//         url: th,
-//         success: function (d) {
-//             console.log('remote ' + rh + ' = ' + d);
-//         },
-//         error: function (xhr, ajaxOptions, thrownError) {
-//             console.log(thrownError);
-//         }
-//     })
-//
-//     setTimeout(function () {
-//         start_domain_check(hosts, index + 1);
-//     }, 1000);
-// }
 
 
 function update_ui_with_device_stat(d) {
+    _g('curl').innerHTML = window ? window.location : 'xxx';
+
     if(!d){
         return;
     }
