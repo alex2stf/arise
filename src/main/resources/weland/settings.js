@@ -25,6 +25,10 @@ function recursive_test(arr, i){
 
 function read_ips_from_cache(){
     $get("/props/get?key=friend-ips", function (data) {
+
+        if(!data){
+            return;
+        }
         console.log(data);
         if(data.length > 0){
             recursive_test(data, 0);
@@ -279,7 +283,7 @@ function add_friend_host(){
             AppSettings.addFriendIp(host);
         }
     }, function (x) {
-        // alert("invalid host for " + x);
+//         alert("invalid host for " + x);
     })
 
 

@@ -20,15 +20,43 @@ function http_request(request_method, request_url, request_data, success_callbac
         }
     }
 
+    var ferr = false;
+    var fsucc = false;
+    var data = {
+        url: request_url,
+        responses: []
+    }
+    var expire = setTimeout(function(){
+        if(!fsucc && !ferr && data.length > 0){
+            console.log('enter expire request for ' + request_url)
+            clearTimeout(expire);
+            ferr = true;
+            if(failure_callback){
+                failure_callback(data);
+            }
+        }
+
+    }, 10 * 1000);
+
     x.onreadystatechange = function() {
         if (x.readyState == 4 && x.status == 200) {
+            fsucc = true;
+            clearTimeout(expire);
             if (success_callback){
                 success_callback(x, (x.responseText || x.response));
             }
         }
+        else {
+            data.responses.push({
+                state: x.readyState,
+                status: x.status
+            });
+        }
     };
 
     x.onerror = function(e) {
+        ferr = true;
+        clearTimeout(expire);
         if (failure_callback) {
             failure_callback(e);
         }
@@ -48,6 +76,7 @@ function http_request(request_method, request_url, request_data, success_callbac
         }
 
     } catch (e){
+        ferr = true;
         if (failure_callback) {
             failure_callback(e);
         }
@@ -65,7 +94,7 @@ function $do_request(url, c, f) {
             try {
                 data = JSON.parse(a2);
             }catch (e) {
-                console.log("Invalid json " + a2, e);
+                console.log("Invalid json response [" + a2 + ']' + ' from [' + url + ']');
             }
 
             if(c){
