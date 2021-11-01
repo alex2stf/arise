@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class VLCWrapper {
 
@@ -72,12 +73,12 @@ public class VLCWrapper {
 
 //        String vlcHost = NetworkUtil.getCurrentIPV4AddressSync();
         DeviceStat.getInstance().setProp("vlc-host", VLC_HTTP_HOST + ":" + VLC_HTTP_PORT + "/mobile.html");
-        ThreadUtil.fireAndForget(new Runnable() {
+        ThreadUtil.startDaemon(new Runnable() {
             @Override
             public void run() {
                 startVlcInstance(executable, source);
             }
-        });
+        }, "VLCWrapper#startInstance" + UUID.randomUUID().toString());
         return executable;
     }
 

@@ -3,19 +3,19 @@ package com.arise.weland.impl;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.Arr;
 import com.arise.core.tools.B64;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.Convertor;
 import com.arise.weland.dto.ContentInfo;
 
+import javax.management.MalformedObjectNameException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +34,11 @@ import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.Util.close;
 
 public class SuggestionService {
-    MapObj root = new MapObj();
+    Map root = new HashMap();
     private CacheStrategy cacheStrategy;
     private List<Convertor<Data, ContentInfo>> convertors;
+
+    private static final Mole log = Mole.getInstance(SuggestionService.class);
 
     public SuggestionService addConvertor(Convertor<Data, ContentInfo> convertor){
         if (convertors == null){
@@ -68,7 +71,7 @@ public class SuggestionService {
     }
 
     private Map getSuggestion(String  val){
-        List suggestions = root.getArray("suggestions");
+        List suggestions = MapUtil.getList(root,"suggestions");
         if (suggestions == null){
             return null;
         }
@@ -171,11 +174,17 @@ public class SuggestionService {
         return this;
     }
 
+    private static final String images_extension[] = new String[]{"png", "jpeg", "jpg"};
+
     public Data solveUrlOrBase64(String input){
         String id = StringEncoder.encodeShiftSHA(input + "", "xx");
-        if (cacheStrategy.contains(id)){
-           return (cacheStrategy.get(id));
+        for (String ext: images_extension){
+            String p = id + "." + ext;
+            if (cacheStrategy.contains(p)){
+                return cacheStrategy.get(p);
+            }
         }
+
 
         if (input.startsWith("data:")){
             try {
@@ -206,7 +215,12 @@ public class SuggestionService {
                     Data data = new Data(id , byteArrayOutputStream.toByteArray(), contentType);
                     cacheStrategy.put(id, data);
                     return data;
-                } catch (Exception e){
+                }
+                catch (SuggestionFetchException e){
+                    log.error("Failed to solve suggestion for " + uri);
+                    return null;
+                }
+                catch (Exception e){
                     e.printStackTrace();
                     return null;
                 }
@@ -225,8 +239,10 @@ public class SuggestionService {
             connection = DependencyManager.getConnection(url);
         } catch (IOException e) {
             close(connection);
-            throw new RuntimeException("Failed to obtain connection to " + url, e);
+            throw new SuggestionFetchException("Failed to obtain connection to " + url, e);
         }
+
+        log.info("GET " + url);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         InputStream in = null;
@@ -235,38 +251,34 @@ public class SuggestionService {
         } catch (IOException e) {
             close(in);
             close(connection);
-//            throw new RuntimeException("Failed to obtain stream from " + url, e);
+            throw new SuggestionFetchException("Failed to obtain stream from " + url, e);
         }
         byte[] buf = new byte[8192];
         int length = 0;
-
-
 
         while (true){
             try {
                 if (!((length = in.read(buf)) > 0)) break;
             } catch (Exception e) {
-//                e.printStackTrace();
                 close(in);
                 close(connection);
-//                throw new RuntimeException("Failed to read stream from " + url, e);
+                throw new SuggestionFetchException("Failed to read stream from " + url, e);
             }
             try {
                 out.write(buf, 0, length);
-
                 try {
                     out.flush();
                 }catch (IOException e){
                     close(in);
                     close(connection);
                     close(out);
-                    throw new RuntimeException("Failed to flush file stream", e);
+                    throw new SuggestionFetchException("Failed to flush file stream", e);
                 }
             } catch (IOException e) {
                 close(in);
                 close(connection);
                 close(out);
-                throw new RuntimeException("Failed to write stream ", e);
+                throw new SuggestionFetchException("Failed to write stream ", e);
             }
 
         }
@@ -359,5 +371,19 @@ public class SuggestionService {
         }
     }
 
+
+    public static class SuggestionFetchException extends RuntimeException {
+
+        private final String m;
+        private final Throwable c;
+
+        public SuggestionFetchException(String m, Throwable c){
+            super(m, c);
+            this.m = m;
+            this.c = c;
+        }
+
+
+    }
 
 }

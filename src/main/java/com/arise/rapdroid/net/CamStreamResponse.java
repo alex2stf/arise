@@ -11,6 +11,7 @@ import android.os.Message;
 import android.view.SurfaceHolder;
 
 import com.arise.core.tools.Provider;
+import com.arise.core.tools.models.CompleteHandler;
 import com.arise.rapdroid.media.server.MainActivity;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
@@ -44,7 +45,9 @@ public class CamStreamResponse extends CameraWorker {
 
     private Handler mainHandler;
 
-    private Provider<SurfaceHolder> surfaceProvider;
+//    private Provider<SurfaceHolder> surfaceProvider;
+
+    private SurfaceSolver surfaceSolver;
 
     public CamStreamResponse(final MJPEGResponse mjpegResponse, final JPEGOfferResponse jpegOfferResponse) {
         this.mjpegResponse = mjpegResponse;
@@ -158,12 +161,23 @@ public class CamStreamResponse extends CameraWorker {
                     }
                 }
             });
-            try {
-                newCamera.setPreviewDisplay(surfaceProvider.get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            startPreview(newCamera);
+
+
+            this.surfaceSolver.completeHandler = new CompleteHandler<SurfaceHolder>() {
+                @Override
+                public void onComplete(SurfaceHolder data) {
+                    try {
+                        newCamera.setPreviewDisplay(data);
+                        startPreview(newCamera);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            this.surfaceSolver.solve();
+
+
+
 
         } else {
             startPreview(cams.get(cameraIndex));
@@ -292,6 +306,8 @@ public class CamStreamResponse extends CameraWorker {
 
     public synchronized void restart() {
         recording = false;
+
+
         startStream();
     }
 
@@ -302,12 +318,21 @@ public class CamStreamResponse extends CameraWorker {
     }
 
 
-    public Provider<SurfaceHolder> getSurfaceProvider() {
-        return surfaceProvider;
+
+
+    public CamStreamResponse setSurfaceSolver(SurfaceSolver surfaceSolver) {
+        this.surfaceSolver = surfaceSolver;
+
+        return this;
     }
 
-    public CamStreamResponse setSurfaceProvider(Provider<SurfaceHolder> surfaceProvider) {
-        this.surfaceProvider = surfaceProvider;
-        return this;
+    public abstract static class SurfaceSolver {
+
+        public abstract void solve();
+
+        CompleteHandler<SurfaceHolder> completeHandler;
+        public final void onFound(SurfaceHolder surfaceHolder){
+            completeHandler.onComplete(surfaceHolder);
+        }
     }
 }

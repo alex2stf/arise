@@ -27,6 +27,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -109,7 +110,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
             public void run() {
                connectSync(request, completionHandler);
             }
-        });
+        }, "JHttpClient#onnect-" + UUID.randomUUID().toString());
     }
 
 

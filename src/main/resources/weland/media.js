@@ -15,7 +15,8 @@ function startFetch(playlist) {
     if(!gData[playlist]){
         gData[playlist] = {};
     }
-    $.get( host + "/media/list/" + playlist + "?index=" + mindex[playlist], function( data ) {
+    var url = host + "/media/list/" + playlist + "?index=" + mindex[playlist];
+    $do_request( url, function( data ) {
         for(var i = 0; i < data.d.length; i++){
             var ob = data.d[i];
             gData[playlist][ob.P] = ob;
@@ -26,7 +27,7 @@ function startFetch(playlist) {
                 console.log("skip place for " + playlist + " in search mode")
             }
         }
-
+        // console.log(data, new Date())
         if (data.i > 0){
             mindex[playlist] = data.i;
             setTimeout(function () {
@@ -116,8 +117,11 @@ function showOptions(path) {
     $('#play-btn').attr('onclick', 'openFile(\''+path+'\')');
     $('#play-btn').show();
 
-    $('#air-play').attr('onclick', 'airPlayShowOptions(\''+path+'\')');
+    $('#air-play').attr('onclick', 'start_distribute_path(\''+path+'\')');
     $('#air-play').show();
+
+    $('#send-to-device').attr('onclick', 'sendToDevice(\''+path+'\')');
+    $('#send-to-device').show();
 
     $('#stop-btn').attr('onclick', 'closeFile(\''+path+'\')');
     $('#stop-btn').show();
@@ -193,53 +197,61 @@ function show_send_options(url) {
     _g('modal-status').innerHTML = '';
     $('#modal-status').show();
     place_friend_ips_for_air_play('modal-status', url, 'air-url-open');
-
 }
 
-function airPlayShowOptions(path) {
-    setTimeout(function () {
-        $('#modal-status').show();
-        place_friend_ips_for_air_play('modal-status', path, 'air-play-send');
-    }, 1000)
-}
-
-var distHosts = {};
-
-function air_play_distribute(rPath) {
-    distHosts = {};
+var dist_hosts = {};
+function start_distribute_path(path) {
+    dist_hosts = {};
+    if(is_empty(g_friends)){
+        alert('No friend ips detected');
+        return;
+    }
     _g('modal-status').innerHTML = '';
     $('#modal-status').show();
-    _g('modal-status').removeAttribute('onclick');
+    _g('modal-status').innerHTML += '<button onclick="distributed_play()"> DISTRIBUTE PLAY </button>';
 
-    _g('modal-status').innerHTML += '<button onclick="distributed_play(\''+rPath+'\')"> DISTRIBUTE PLAY </button>';
+    for(var i in g_friends){
+        console.log('upload try to ' + i);
+        upload_to_remote_and_check(i, path);
 
-    alert('TODO airplay')
-    // AppSettings.getFriendIps(function (x) {
-    //     console.log("friend ips: ", x);
-    //     for(var t = 0; t < x.length; t++){
-    //         var rhost = x[t];
-    //         ping_host(rhost, function (remHost) {
-    //             upload_to_friend_ips(remHost, rPath, function (f) {
-    //                 console.log("Upload init to" + remHost);
-    //                 var elemId = extract_id(remHost) + '-upl-stat';
-    //                 if (!_g(elemId)){
-    //                     _g('modal-status').innerHTML += '<div id="'+elemId+'"></div>';
-    //                 }
-    //                 air_play_check(f.host, f.len, f.name, function (p) {
-    //                     console.log('check complete', p);
-    //                     distHosts[f.host] = f;
-    //                 },  _g(elemId));
-    //             })
-    //         })
-    //     }
-    //
-    //
-    // })
+    }
+
+    setTimeout(function () {
+        $('#modal-status').show();
+    }, 1000)
+
 }
 
-function  distributed_play(rPath) {
-    for (var i in distHosts){
-        open_to_remote(distHosts[i].host, decodeURIComponent(rPath));
+function upload_to_remote_and_check(i, path) {
+    upload_to_friend_ips(i, path, function (f) {
+        var rhost = f.host;
+        var elemId = extract_id(rhost) + '-upl-stat';
+        var g_element = g_friends[rhost];
+        var g_name = g_friends[rhost].name != 'undefined' ?  g_friends[rhost].name : rhost;
+
+        if (!_g(elemId)) {
+            _g('modal-status').innerHTML += '<div id="' + elemId + '" style="color:' + g_element.color + ';"> <div>' + g_name + '</div></div>';
+        }
+
+        air_play_check(f.host, f.len, f.name, function (p) {
+            dist_hosts[f.host] = f;
+            dist_hosts[f.host].path = p.path;
+        },  elemId, g_name);
+
+    }, function (err) {
+        console.log('failed to upload to ' + i);
+    })
+}
+
+function sendToDevice(path) {
+    _g('modal-status').innerHTML = '';
+    $('#modal-status').show();
+}
+
+
+function  distributed_play() {
+    for (var i in dist_hosts){
+        open_to_remote(dist_hosts[i].host, decodeURIComponent(dist_hosts[i].path));
     }
 }
 
@@ -267,41 +279,45 @@ function air_play(rHost, path) {
     })
 }
 
-function air_play_check(rHost, len, name, ch, div) {
-    $do_request(rHost + '/upload/stat?name=' + name, function (d) {
-        console.log('upload stat = ', d);
+function air_play_check(rHost, len, name, ch, divId, device_name) {
+    var div = _g(divId);
+    var url = rHost + '/upload/stat?name=' + name;
+    div.innerHTML = '<div>' + device_name + ' check init at ' + url + '</div>';
+    $do_request(url, function (d) {
         if(!d.exists){
-            div.innerHTML += '<div style="color: red">' + rHost + 'waiting upload...</div>'
+            div.innerHTML = '<div>' + device_name + 'waiting upload...</div>'
             setTimeout(function () {
-                air_play_check(rHost, len, name, ch, div);
+                air_play_check(rHost, len, name, ch, divId, device_name);
             }, 1000)
             return;
         }
 
         if(d.len < len){
-            div.innerHTML += '<div style="color: red">'+rHost+'uploaded '+d.len + ' from ' + len +'</div>'
+            div.innerHTML = '<div>' + device_name + ': uploaded ' + d.len + ' from ' + len +'</div>'
             setTimeout(function () {
-                air_play_check(rHost, len, name, ch, div);
+                air_play_check(rHost, len, name, ch, divId, device_name);
             }, 1000)
             return;
         }
-        div.innerHTML += '<div style="color: red">'+rHost+'upload complete</div>';
+        div.innerHTML = '<div>' + device_name + ': upload complete</div>';
         d.host = rHost;
         d.el = div;
         ch(d);
+    }, function (err) {
+        div.innerHTML = '<div>' + device_name + ': check request failed </div>';
     })
 }
 
 
 
-function upload_to_friend_ips(remHost, path, upc) {
+function upload_to_friend_ips(W, path, call, err) {
     var exts = path.split('.');
     var ext = exts[exts.length -1];
-    var url = host + '/upload?file=' + path + '&name=sync-media.'+ext+'&destination=' + remHost ;
+    var url = host + '/upload?file=' + path + '&name=sync-media.'+ext+'&destination=' + W ;
     $do_request(url, function (d) {
-        d.host = remHost;
-        upc(d);
-    });
+        d.host = W;
+        call(d);
+    }, err);
 }
 
 function closeFile(x) {
@@ -310,6 +326,8 @@ function closeFile(x) {
         update_ui_with_device_stat(data);
     });
 }
+
+
 
 
 function isMatch(e, txt) {
@@ -377,7 +395,6 @@ function createPlaylist() {
             console.log("device control succeeded", data);
         });
     }
-
 }
 
 function playPlaylist(name) {

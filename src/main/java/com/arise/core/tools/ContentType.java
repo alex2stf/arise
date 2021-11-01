@@ -70,7 +70,7 @@ public enum ContentType  {
     VIDEO_AVI("video/avi", MOVIES, "avi");
 
 
-    private static ContentType searchInArr(Arr arr){
+    private static ContentType searchInArr(List arr){
         for (Object o: arr){
             ContentType contentType = ContentType.search((String) o);
             if (contentType != null){

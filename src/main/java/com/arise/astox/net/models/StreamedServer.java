@@ -8,7 +8,9 @@ import com.arise.core.tools.models.CompleteHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.net.SocketException;
+import java.util.UUID;
 
 import static com.arise.core.tools.Util.close;
 
@@ -64,17 +66,26 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
             } finally {
                 if (connection != null) {
                     final CONNECTION finalConnection = connection;
-                    ThreadUtil.fireAndForget(new Runnable() {
+                    final String id = getRemoteAddr(finalConnection);
+                    ThreadUtil.startDaemon(new Runnable() {
                         @Override
                         public void run() {
                             handle(finalConnection);
                         }
-                    });
+                    }, "StreamedServer#handleConnection-" + id);
                 }
             }
 
         }
         close(provider);
+    }
+
+    protected String getRemoteAddr(CONNECTION connection){
+        if (connection instanceof Socket){
+            Socket s = (Socket) connection;
+            return s.getRemoteSocketAddress().toString();
+        }
+        return UUID.randomUUID().toString();
     }
 
 

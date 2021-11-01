@@ -6,10 +6,30 @@ import java.util.UUID;
 
 public class ThreadUtil {
 
-    public static Thread fireAndForget(Runnable action, String name){
 
-        Thread t = new Thread(action);
-        t.setDaemon(false);
+    public static Thread startDaemon(Runnable action, String name){
+        return fireAndForget(action, name, true);
+    }
+
+
+    public static Thread fireAndForget(Runnable action, String name){
+        return fireAndForget(action, name, false);
+    }
+
+    public static Thread fireAndForget(Runnable action, String name, boolean daemon){
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                action.run();
+                try {
+                    Thread.currentThread().interrupt();
+                }catch (Exception e){
+                    ;;
+                }
+            }
+        });
+        t.setDaemon(daemon); //WTF is this?
         if (name != null){
             t.setName(name);
         }
@@ -23,6 +43,7 @@ public class ThreadUtil {
         return t;
     }
 
+    @Deprecated
     public static Thread fireAndForget(Runnable action){
         return fireAndForget(action, "FireAndForget" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
     }

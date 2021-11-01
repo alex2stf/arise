@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.StringUtil.jsonVal;
@@ -36,7 +37,7 @@ public class DeviceStat {
     private String serverUUID;
 
 
-    private Map<String, Object> props = new HashMap<>();
+    private Map<String, Object> props = new ConcurrentHashMap<>();
 
 
     public static final DeviceStat INSTANCE = new DeviceStat(true).scanIPV4();

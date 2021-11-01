@@ -9,6 +9,7 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.FoundHandler;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
@@ -22,11 +23,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
+import java.util.UUID;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 import static com.arise.weland.dto.Playlist.MUSIC;
@@ -97,7 +99,7 @@ public class ContentInfoProvider {
     }
 
     private void integrityCheck(Playlist playlist){
-        List<ContentInfo> infos = getPlaylist(playlist);
+        List<ContentInfo> infos = getPlaylistFromFile(playlist);
         if(CollectionUtil.isEmpty(infos)){
             return;
         }
@@ -107,7 +109,7 @@ public class ContentInfoProvider {
             ContentInfo ci = it.next();
             File f = ContentInfo.fileFromPath(ci.getPath());
             if (!f.exists()){
-                log.warn("File " + f.getAbsolutePath() + " NOT FOUND");
+                log.warn("File " + f.getAbsolutePath() + " NOT FOUND. Resave required.");
                 it.remove();
                 shouldResave = true;
             }
@@ -137,49 +139,60 @@ public class ContentInfoProvider {
 
     private void syncScan(){
         if (scanning){
+            scanning = true;
             return;
         }
         integrityCheck(MUSIC);
         integrityCheck(VIDEOS);
         fcnt = 0;
 
-        for (String path: paths){
-            log.info("Loading static content from path " + path );
-            String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
-            List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
+        try {
+            for (String path: paths){
+                log.info("Loading static content from path " + path );
+                String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
+                List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
 
-            for (Map<Object, Object> map: contentInfos){
-                ContentInfo contentInfo = new ContentInfo();
-                String thumbnailId = MapUtil.getString(map, "thumbnail");
-                if (thumbnailId != null){
-                    SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
-                    if (d != null){
-                        contentInfo.setThumbnailId(d.getId());
+                for (Map<Object, Object> map: contentInfos){
+                    ContentInfo contentInfo = new ContentInfo();
+                    String thumbnailId = MapUtil.getString(map, "thumbnail");
+                    if (thumbnailId != null){
+                        //this is intensive blocking
+                        try {
+                            SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
+                            if (d != null){
+                                contentInfo.setThumbnailId(d.getId());
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
+                    contentInfo.setPath(MapUtil.getString(map, "path"));
+                    contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+                    contentInfo.setTitle(MapUtil.getString(map, "title"));
+                    mergeContent(contentInfo, contentInfo.getPlaylist());
                 }
-                contentInfo.setPath(MapUtil.getString(map, "path"));
-                contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
-                contentInfo.setTitle(MapUtil.getString(map, "title"));
-                mergeContent(contentInfo, contentInfo.getPlaylist());
-
             }
-        }
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         for (final File root: roots){
             scanRoot(root);
         }
-        scanning = true;
-        log.info("SCAN COMPLETE: " + fcnt + " files.");
+        scanning = false;
+        scannedOnce = true;
+        log.info("SCAN COMPLETE: " + fcnt + " files found, scanning = " + scanning);
     }
 
     private int lsc = 0;
 
     private void scanRoot(File root){
+        log.trace("scan root " + root.getAbsolutePath());
         File [] innerFiles = root.listFiles();
         if (innerFiles == null || innerFiles.length == 0){
             return;
         }
-        //System.out.println("scan root " + root.getAbsolutePath());
+
         List<File> dirs = new ArrayList<>();
         for (File f: innerFiles){
             if (f.getName().startsWith(".")){
@@ -233,7 +246,7 @@ public class ContentInfoProvider {
         String existingContent = getPlaylistFileContent(playlist);
         String encodedPath = ContentInfo.csvEncode(contentInfo.getPath());
         if (existingContent.indexOf(encodedPath) > -1){
-//            log.trace("Skip already registered " + contentInfo.getPath() );
+            log.trace("Skip already registered " + contentInfo.getPath() );
             return;
         }
         try {
@@ -245,29 +258,12 @@ public class ContentInfoProvider {
     }
 
     private void asyncScan(){
-
-
-//        final List<ContentInfo> music = new ArrayList<>();
-//        final List<ContentInfo> videos = new ArrayList<>();
-//        final List<ContentInfo> games = new ArrayList<>();
-//        final List<ContentInfo> streams = new ArrayList<>();
-
-
-
-
-
-//        //scaneaza continutul static si fa merge
-
-
-
-        fireAndForget(new Runnable() {
+        ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
                 syncScan();
             }
-        });
-
-
+        }, "ContentInfoProvider#asyncScan-" + UUID.randomUUID().toString());
     }
 
     private boolean isPackageInfo(File file) {
@@ -283,25 +279,7 @@ public class ContentInfoProvider {
         return -1;
     }
 
-//    private void merge(Playlist playlist, List<ContentInfo> scannedSource){
-//        if (CollectionUtil.isEmpty(scannedSource)){
-//            return;
-//        }
-//        List<ContentInfo> saved = getNullablePersistedPlaylist(playlist);
-//        if (CollectionUtil.isEmpty(saved)){
-//            persistPlaylist(playlist, scannedSource);
-//            return;
-//        }
-//        for (int i = 0; i < scannedSource.size(); i++){
-//            int matchIndex = getMatchIndex(saved, scannedSource.get(i));
-//            if (matchIndex > -1 ){
-//                scannedSource.get(i).setVisited(
-//                       saved.get(matchIndex).getVisited()
-//                );
-//            }
-//        }
-//        persistPlaylist(playlist, scannedSource);
-//    }
+
 
     /**
      * used by android for same check thread mechanism
@@ -334,10 +312,12 @@ public class ContentInfoProvider {
         return this;
     }
 
-    private List<ContentInfo> getPlaylist(Playlist playlist){
-        return getSafePersistedPlaylist(playlist);
-    }
 
+
+    @Deprecated
+    /**
+     * asta nu e bine
+     */
     public ContentPage getPage(Playlist playlist, Integer index) {
         int rIndex = 0;
         int pageSize = 10;
@@ -345,7 +325,7 @@ public class ContentInfoProvider {
             rIndex = index;
         }
 
-        List<ContentInfo> source = getPlaylist(playlist);
+        List<ContentInfo> source = getPlaylistFromFile(playlist);
         int sourceSize = source.size();
 
         if (sourceSize == 0){
@@ -361,14 +341,16 @@ public class ContentInfoProvider {
 
         int limit = rIndex + pageSize;
 
-        if (limit > sourceSize){
+        if (limit >= sourceSize){
             limit = sourceSize;
         }
 
 
         log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scannedOnce){
+            log.info("Fetch complete " + playlist.name() + "  at " + new Date());
             return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
+
         }
         for (int i = rIndex; i < limit; i++){
             info.add(source.get(i));
@@ -429,12 +411,20 @@ public class ContentInfoProvider {
         return StreamUtil.toString(inputStream);
     }
 
-    List<ContentInfo> getNullablePersistedPlaylist(Playlist playlist){
-        final List<ContentInfo> contentInfos = new ArrayList<>();
+
+    List<ContentInfo> persistPlaylist(Playlist playlist, List<ContentInfo> infos){
+        File out = getPlaylistFile(playlist);
+        FileUtil.writeStringToFile(out, ContentInfo.serializeCollection(infos));
+        return infos;
+    }
+
+
+    public synchronized List<ContentInfo> getPlaylistFromFile(Playlist playlist){
         File f = getPlaylistFile(playlist);
         if (!f.exists()){
             return Collections.emptyList();
         }
+        final List<ContentInfo> contentInfos = new ArrayList<>();
         try {
             FileUtil.readLineByLine(getPlaylistFile(playlist), new FoundHandler<String>() {
                 @Override
@@ -446,125 +436,11 @@ public class ContentInfoProvider {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        return contentInfos;
-
-//        String cnt = getPlaylistFileContent(playlist);
-//        if (!StringUtil.hasContent(cnt)){
-//            return null;
-//        }
-//         cnt = cnt.replaceAll("\r\n", " ");
-//        try {
-//            //TODO verifica daca fisierul mai exista???
-//            //TODO al tip de deserializare
-//            return  ContentInfo.deserializeCollection(cnt);
-//        }catch (Exception e){
-//            return null;
-//        }
-    }
-
-    List<ContentInfo> persistPlaylist(Playlist playlist, List<ContentInfo> infos){
-        File out = getPlaylistFile(playlist);
-        FileUtil.writeStringToFile(out, ContentInfo.serializeCollection(infos));
-        return infos;
-    }
-
-//    void quickSort(List<ContentInfo> arr, int start, int end) {
-//        int partition = partition(arr, start, end);
-//
-//        if(partition-1>start) {
-//            quickSort(arr, start, partition - 1);
-//        }
-//        if(partition+1<end) {
-//            quickSort(arr, partition + 1, end);
-//        }
-//    }
-
-//    int compare(ContentInfo a, ContentInfo b){
-//        return Integer.compare(a.getVisited(), b.getVisited());
-//    }
-
-//    private int partition(List<ContentInfo> infos, int start, int end) {
-//        ContentInfo pivot = infos.get(end);
-//        if (pivot.getVisited() > 99){
-//            pivot.setVisited(0);
-//        }
-//
-//        for(int i= start; i < end; i++){
-//            int compare = compare(infos.get(i), pivot);
-//            if (compare < 0  || (compare == 0 && rd.nextBoolean() )){
-//                ContentInfo temp = infos.get(start);
-//                infos.set(start, infos.get(i));
-//                infos.set(i, temp);
-//                start++;
-//            }
-//        }
-//
-//        ContentInfo temp = infos.get(start);
-//        infos.set(start, pivot);
-//        infos.set(end, temp);
-//        return start;
-//    }
-
-//    private void shuffle(List<ContentInfo> infos){
-//        if (CollectionUtil.isEmpty(infos) || infos.size() < 4){
-//            return;
-//        }
-//        quickSort(infos, 0, infos.size() - 1);
-//    }
-
-    public  List<ContentInfo> getSafePersistedPlaylist(Playlist playlist){
-        List<ContentInfo> infos = getNullablePersistedPlaylist(playlist);
-        if (infos == null){
             return Collections.emptyList();
         }
-        return infos;
+        return contentInfos;
     }
 
-//    public ContentInfo nextFile(Playlist playlist){
-//        List<ContentInfo> infos = getSafePersistedPlaylist(playlist);
-//
-//        if(CollectionUtil.isEmpty(infos)){
-//            return null;
-//        }
-//
-//        if (infos.size() == 1){
-//            return infos.get(0);
-//        }
-//        String indexKey = "INDX"+ playlist.name();
-//
-//        int index = AppCache.getInt(indexKey, 0);
-//
-//        if (index > infos.size() - 1){
-//            index = 0;
-//
-//            if (!scanning){
-//                shuffle(infos);
-//                persistPlaylist(playlist, infos);
-//            }
-//        }
-//
-//        ContentInfo current = infos.get(index);
-//
-//        File f = new File(current.getPath());
-//        if (!f.exists()){
-//            infos.remove(index);
-//            if (!scanning){
-//                persistPlaylist(playlist, infos);
-//            }
-//
-//            AppCache.putInt(indexKey, ++index);
-//            return nextFile(playlist);
-//        }
-//
-//        AppCache.putInt(indexKey, ++index);
-//        current.incrementVisit();
-//        if (!scanning) {
-//            persistPlaylist(playlist, infos);
-//        }
-//        return current;
-//    }
 
     public ContentInfo findByPath(String path) {
         if (!scannedOnce){
@@ -573,45 +449,20 @@ public class ContentInfoProvider {
             //TODO fix this
             return decoder.decode(new File(path));
         }
-        ContentInfo info = findByPathInList(getSafePersistedPlaylist(MUSIC), path);
+        ContentInfo info = findByPathInList(getPlaylistFromFile(MUSIC), path);
         if (info == null){
-            info = findByPathInList(getSafePersistedPlaylist(Playlist.VIDEOS), path);
+            info = findByPathInList(getPlaylistFromFile(Playlist.VIDEOS), path);
         }
         if (info == null){
-            info = findByPathInList(getSafePersistedPlaylist(Playlist.STREAMS), path);
+            info = findByPathInList(getPlaylistFromFile(Playlist.STREAMS), path);
         }
         return info;
     }
 
 
-//    public List<ContentInfo> getWebStreams() {
-////        List<ContentInfo> res = new ArrayList<>();
-////        int size = streams.size();
-////        for (int i = 0; i < size; i++){
-////            ContentInfo info = streams.get(i);
-////            if (info.isWebPage()){
-////                res.add(info);
-////            }
-////        }
-//        return Collections.emptyList();
-//    }
 
 
 
-//    public File getGame(String id) {
-//        File root = getGamesDirectory();
-//        File gameDir = new File(root, id);
-//        File json = new File(gameDir, "package-info.json");
-//
-//        MapObj mapObj = null;
-//        try {
-//            mapObj = (MapObj) Groot.decodeFile(json);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return new File(gameDir, mapObj.getString("main"));
-//    }
 
     private ContentInfo findByPathInList(List<ContentInfo> contentInfos, String path){
         for (ContentInfo info: contentInfos){
@@ -622,14 +473,7 @@ public class ContentInfoProvider {
         return null;
     }
 
-//    //TODO support android
-//    private File getImportDirectory(){
-//        return new File("webapp");
-//    }
-//
-//    private File getGamesDirectory(){
-//        return new File(getImportDirectory(), "games");
-//    }
+
 
     /**
      * used in android
@@ -668,7 +512,7 @@ public class ContentInfoProvider {
 
         List<ContentInfo> found = new ArrayList<>();
         for (String s: alls){
-            for (ContentInfo info: getPlaylist(MUSIC)){
+            for (ContentInfo info: getPlaylistFromFile(MUSIC)){
                 if (info.getPath().toLowerCase().indexOf(s) > -1){
                     found.add(info);
                 }
@@ -693,7 +537,7 @@ public class ContentInfoProvider {
     }
 
     private void incrementAndPersistVisitFor(String path, Playlist playlist) {
-        List<ContentInfo> infos  = getSafePersistedPlaylist(playlist);
+        List<ContentInfo> infos  = getPlaylistFromFile(playlist);
         for (int i = 0; i < infos.size(); i++){
             ContentInfo x = infos.get(i);
             if (x.getPath().equals(path)){

@@ -1,3 +1,11 @@
+function is_empty(d) {
+    var c = 0;
+    for(var i in d){
+        c++;
+    }
+    return c == 0;
+}
+
 
 function http_request(request_method, request_url, request_data, success_callback, failure_callback, request_headers) {
     var x;
@@ -87,14 +95,15 @@ function http_request(request_method, request_url, request_data, success_callbac
 
 function $do_request(url, c, f) {
 
-    console.log('DO REQUEST', url)
+
 
     http_request("GET", url, {}, function (a1, a2) {
             var data = a2;
             try {
                 data = JSON.parse(a2);
             }catch (e) {
-                console.log("Invalid json response [" + a2 + ']' + ' from [' + url + ']');
+                console.log("Invalid json response [" + a2 + ']' + ' from [' + url + ']', e);
+                data = a2;
             }
 
             if(c){
@@ -139,6 +148,7 @@ function $do_request(url, c, f) {
 
 
 function $get(u, c) {
+    console.log("request ", host + u)
     $do_request(host + u, c);
 }
 
@@ -171,8 +181,10 @@ function get_device_stat(){
 
 
 
+var latest_data = {};
 
 function update_ui_with_device_stat(d) {
+    latest_data = d;
     _g('curl').innerHTML = window ? window.location : 'xxx';
 
     if(!d){
@@ -182,6 +194,9 @@ function update_ui_with_device_stat(d) {
         _g('sips').innerHTML = d.I4.join(' | ');
     }
 
+    if(!d.pP){
+        return;
+    }
     var camIds = d.pP["CV1"];
     var flashIds = d.pP["FMV1"];
     var cC = d.pP['ECV1'];

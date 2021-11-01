@@ -12,7 +12,6 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.MapObj;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
@@ -57,7 +56,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-  Properties clientProps = new Properties();
+//  Properties clientProps = new Properties();
   ThreadUtil.TimerResult syncPlayTimer;
 
 
@@ -67,11 +66,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   public WelandServerHandler() {
 
-    try {
-      clientProps = FileUtil.loadProps(getClientPropsFile());
-    } catch (IOException e) {
-      clientProps = new Properties();
-    }
+
   }
 
 
@@ -144,7 +139,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
 //      deviceStat.setServerStatus(MSG_RECEIVE_OK);
-      MapObj mapObj = (MapObj) Groot.decodeBytes(request.payload());
+      Map mapObj = (Map) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
       return contentHandler.getDeviceStat().toHttp();
@@ -204,15 +199,39 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if("/props/get".equals(request.path())){
       String key = request.getQueryParam("key");
-      return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
+
+      try {
+        Properties clientProps = FileUtil.loadProps(getClientPropsFile());
+        if (clientProps.containsKey(key)){
+          return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
+        }
+      } catch (Exception e) {
+        log.error("Failed to get property" + key);
+      }
+      return HttpResponse.plainText("").allowAnyOrigin();
     }
 
     if("/props/set".equals(request.path())){
       String key = request.getQueryParam("key");
       String value = request.getQueryParam("value");
-      clientProps.put(key, value);
-      FileUtil.saveProps(clientProps, getClientPropsFile(), "");
-      return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
+
+
+      try {
+        File propsFile = getClientPropsFile();
+        Properties clientProps;
+        if (!propsFile.exists()){
+          clientProps = new Properties();
+        } else {
+          clientProps = FileUtil.loadProps(getClientPropsFile());
+        }
+        clientProps.put(key, value);
+        FileUtil.saveProps(clientProps, getClientPropsFile(), "");
+        return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
+      } catch (Exception e) {
+        log.error(e);
+        return HttpResponse.plainText(e.getMessage()).allowAnyOrigin();
+      }
+
     }
 
     //fetch thumbnail
@@ -316,7 +335,7 @@ public class WelandServerHandler extends HTTPServerHandler {
             }
           });
         }
-      });
+      }, "WelandServerHandler#uploadHandle-" + UUID.randomUUID().toString() );
 
       return HttpResponse
               .json("{\"len\":" + f.length() + ", \"name\": "+StringUtil.jsonVal(name)+"}")

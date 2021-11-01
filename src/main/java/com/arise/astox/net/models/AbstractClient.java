@@ -4,6 +4,8 @@ import com.arise.astox.net.clients.JHttpClient;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
 
+import java.util.UUID;
+
 
 public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
 
@@ -21,7 +23,7 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
                     e.printStackTrace();
                 }
             }
-        });
+        }, "AbstractClient#Connect-" + UUID.randomUUID().toString());
     }
 
 

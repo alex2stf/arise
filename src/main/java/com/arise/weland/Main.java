@@ -158,7 +158,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-        });
+        }, "Main#startServer" + UUID.randomUUID().toString());
 
         //DO NOT DELETE BluecoveServer
 //        ThreadUtil.fireAndForget(new Runnable() {

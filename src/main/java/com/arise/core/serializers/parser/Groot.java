@@ -1,10 +1,6 @@
 package com.arise.core.serializers.parser;
 
-import com.arise.core.exceptions.SyntaxException;
-import com.arise.core.tools.Arr;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.MapObj;
-import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
@@ -13,16 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.TypeUtil.isBoolean;
-import static com.arise.core.tools.TypeUtil.isBooleanTrue;
 import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.TypeUtil.isNumber;
 import static com.arise.core.tools.TypeUtil.isNumericSequence;

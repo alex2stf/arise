@@ -2,7 +2,6 @@ package com.arise.weland.dto;
 
 
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.Arr;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.MapUtil;
@@ -18,7 +17,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.StringUtil.*;
+import static com.arise.core.tools.StringUtil.hasContent;
+import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.StringUtil.join;
+import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.StringUtil.toInt;
 import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class ContentInfo implements Serializable {
@@ -266,7 +269,7 @@ public class ContentInfo implements Serializable {
 
     public static List<ContentInfo> deserializeCollection(String content){
         List<ContentInfo> res = new ArrayList<>();
-        Arr arr = (Arr) Groot.decodeBytes(content.getBytes());
+        List arr = (List) Groot.decodeBytes(content.getBytes());
         return deserializeList(arr);
     }
 

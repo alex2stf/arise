@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,12 +105,12 @@ public class NetworkUtil {
 
 
     public static void inetAddresses(final AddressIterator c){
-        ThreadUtil.fireAndForget(new Runnable() {
+        ThreadUtil.startDaemon(new Runnable() {
             @Override
             public void run() {
                 inetAdressesSync(c);
             }
-        });
+        }, "NetworkUtil#inetAddresses-" + UUID.randomUUID().toString());
     }
 
 

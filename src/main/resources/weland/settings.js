@@ -39,20 +39,10 @@ function read_ips_from_cache(){
 read_ips_from_cache();
 
 function place_friend_ips_for_air_play(divid, path, mode){
-
-    // function (ip) {
-    //     return 'air_play(\''+encodeURI(ip)+'\', \''+path+'\')'
-    // },
-    // function (ips) {
-    //     return 'air_play_distribute(\''+encodeURI(path)+'\')';
-    // }
-    // function (ip) {
-    //     return
-    // }
     for(var i in g_friends){
+        console.log(divid, i, mode, path);
         place_ip(divid, i, mode, path);
     }
-
 }
 
 
@@ -65,7 +55,6 @@ function place_ip(divId, rHost, mode, path) {
     var nodeId = ipid + divId;
     var hname = rHost;
     if(g_friends[rHost]){
-        console.log("<<<<<<<<<<<<< ", g_friends, rHost)
         hname = g_friends[rHost].name;
     }
 
@@ -124,6 +113,8 @@ function place_ip(divId, rHost, mode, path) {
     item.innerHTML = t;
 
 }
+var g_colors = ['red', 'blue', 'white', 'yellow'];
+var g_color_index = 0;
 
 function ping_host(rHost, s, _n) {
 
@@ -131,9 +122,17 @@ function ping_host(rHost, s, _n) {
         console.log(d, d.N);
         if(d && d.N){
             if(!g_friends[rHost]){
-                g_friends[rHost] = {
-                    name: d.N
+                g_color_index++;
+                if (g_color_index > g_colors.length - 1){
+                    g_color_index = 0;
                 }
+                var g_color = g_colors[g_color_index];
+
+                g_friends[rHost] = {
+                    name: d.N,
+                    color: g_color
+                }
+
             } else {
                 g_friends[rHost].name = d.N;
             }
@@ -280,10 +279,15 @@ function prompt_for_valid_host(s, e) {
 function add_friend_host(){
     prompt_for_valid_host(function (host) {
         if (confirm('Add ' + host + ' as friend?')){
+            try {
+                place_ip('ips-container', host, 'panel');
+            }catch (e) {
+                alert(e);
+            }
             AppSettings.addFriendIp(host);
         }
     }, function (x) {
-//         alert("invalid host for " + x);
+        console.log("invalid host for " + x);
     })
 
 
@@ -305,7 +309,8 @@ function reconnect() {
 
 
 function loadUrl(xurl) {
-    if(typeof quixot != "undefined" && quixot.loadUrl){
+
+    if( (typeof quixot != 'undefined') && ( typeof quixot.loadUrl != 'undefined')){
         quixot.loadUrl(xurl);
     } else {
         window.location = xurl;
