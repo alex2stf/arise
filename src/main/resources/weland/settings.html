@@ -39,24 +39,25 @@
         </div>
 
 
-        <div class="d-info">
-            <span class="dev-lbl">Battery scale:</span>
-            <span id="d-bscale">-</span>
+        <div class="d-info" id="c-battery">
+            <span class="dev-lbl">Battery:</span>
+            <span id="d-battery">-</span>
         </div>
 
         <div class="d-info">
-            <span class="dev-lbl">Battery level:</span>
-            <span id="d-blevel">-</span>
+            <div>Sensors data:</div>
+            <table id="sensors-data" class="d-info table">
+                <tr>
+                    <td scope="col">Name</td>
+                    <td scope="col">Info</td>
+                    <td scope="col">Data (values)</td>
+                </tr>
+            </table>
         </div>
 
-        <div>Sensors data:</div>
-        <table id="sensors-data" class="d-info table">
-            <tr>
-                <td scope="col">Name</td>
-                <td scope="col">Info</td>
-                <td scope="col">Data (values)</td>
-            </tr>
-        </table>
+
+
+
 
     <div class="footer">
         <button onclick="reconnect()">

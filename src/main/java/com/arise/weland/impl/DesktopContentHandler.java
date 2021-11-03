@@ -470,12 +470,14 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public DeviceStat getDeviceStat() {
         DeviceStat deviceStat = DeviceStat.getInstance();
-        deviceStat.setProp("ECV1", Tuple2.str(
-                 "0",
-                desktopCamStream.isRunning() + ""
-        ));
-        deviceStat.setProp("FMV1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
-        deviceStat.setProp("CV1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
+
+        deviceStat.setProp("cams.active.v", "v1");
+        deviceStat.setProp("cams.active.id", "0");
+        deviceStat.setProp("cams.active.run", desktopCamStream.isRunning()  + "" );
+        deviceStat.setProp("flash.modes.active", "off" );
+
+        deviceStat.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
+        deviceStat.setProp("cams.v1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
         return deviceStat;
     }
 

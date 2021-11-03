@@ -2,8 +2,10 @@ package com.arise.weland.utils;
 
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
+import com.arise.core.tools.FileUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 public class MJPEGResponse extends SingletonHttpResponse {
@@ -49,6 +51,7 @@ public class MJPEGResponse extends SingletonHttpResponse {
                             "\r\n").getBytes());
 
             b.write(bytes);
+
             b.write(("\r\n--" + boundary + "\r\n").getBytes());
             return b.toByteArray();
         } catch (IOException e) {

@@ -183,6 +183,8 @@ function get_device_stat(){
 
 var latest_data = {};
 
+
+
 function update_ui_with_device_stat(d) {
     latest_data = d;
     _g('curl').innerHTML = window ? window.location : 'xxx';
@@ -194,39 +196,61 @@ function update_ui_with_device_stat(d) {
         _g('sips').innerHTML = d.I4.join(' | ');
     }
 
+    _g('d-name').innerHTML = d.N;
+
+    if (+d.B1 && +d.B2){
+        _g('d-battery').innerHTML = Math.round(d.B1 / d.B2) + '%';
+        $('#c-battery').show();
+    } else {
+        $('#c-battery').hide();
+    }
+
     if(!d.pP){
         return;
     }
-    var camIds = d.pP["CV1"];
-    var flashIds = d.pP["FMV1"];
-    var cC = d.pP['ECV1'];
+    var flash_modes = d.pP["flash.modes.v1"];
+    var cam_ids = d.pP['cams.v1'];
+    var txt = ''; var selected = '';
 
-    _g('cameraIndex').innerHTML = '';
-    var txt = '';
-    for(var i = 0; i < camIds.length; i++){
-        txt += '<option value="'+camIds[i].i+'">'+camIds[i].n+'</option>'
-    }
-    _g('cameraIndex').innerHTML = txt;
-
-    _g('lightMode').innerHTML = '';
-    var txt = '';
-    for(var i = 0; i < flashIds.length; i++){
-        txt += '<option value="'+flashIds[i].i+'">'+flashIds[i].n+'</option>'
-    }
-    _g('lightMode').innerHTML = txt;
-
-
-    if (cC){
-        _g('cameraIndex').value = cC.i;
-
-        var cameraEnabled = ("true" == cC.n);
-        if (cameraEnabled){
-            showCamStopBtn();
-            showStream();
-        } else {
-            showCamPlayBtn();
+    if(flash_modes && flash_modes.length > 0){
+        _g('lightMode').innerHTML = '';
+        selected = d.pP['flash.modes.active'];
+        txt = '';
+        for(var i = 0; i < flash_modes.length; i++){
+            if (flash_modes[i].k === selected){
+                txt += '<option selected value="'+flash_modes[i].k+'">'+flash_modes[i].v+'</option>'
+            } else {
+                txt += '<option value="'+flash_modes[i].k+'">'+flash_modes[i].v+'</option>'
+            }
         }
+        _g('lightMode').innerHTML = txt;
     }
+
+    if(cam_ids && cam_ids.length > 0){
+        selected = d.pP['cams.active.id'];
+
+        _g('cameraIndex').innerHTML = '';
+        txt = '';
+        for(var i = 0; i < cam_ids.length; i++){
+            if (cam_ids[i].k === selected){
+                txt += '<option selected value="'+cam_ids[i].k+'">'+cam_ids[i].v+'</option>'
+            } else {
+                txt += '<option value="' + cam_ids[i].k + '">' + cam_ids[i].v + '</option>'
+            }
+        }
+        _g('cameraIndex').innerHTML = txt;
+    }
+
+    var camera_enabled = 'true' == d.pP['cams.active.run'];
+
+
+    if (camera_enabled){
+        showCamStopBtn();
+        showStream();
+    } else {
+        showCamPlayBtn();
+    }
+
 }
 
 

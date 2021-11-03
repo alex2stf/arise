@@ -161,9 +161,6 @@ public class SmartWebView extends LinearLayout {
                     String text = "console.log('skip " + StringUtil.jsonEscape(uri) + " ');";
                     InputStream textStream = new ByteArrayInputStream(text.getBytes());
                     return getTextWebResource(textStream);
-                } else {
-                    log.info("Accept load uri " + uri);
-
                 }
                 return super.shouldInterceptRequest(view, request);
             }
@@ -414,7 +411,7 @@ public class SmartWebView extends LinearLayout {
 //        webView.onPause();
 //    }
 //
-//    public void resume(){
+//    public void releaseAndSetCameraFromCache(){
 //        webView.onResume();
 //    }
 

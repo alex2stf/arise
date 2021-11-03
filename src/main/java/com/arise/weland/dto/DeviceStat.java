@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.StringUtil.toNumber;
 import static com.arise.weland.dto.ContentInfo.addVal;
 import static com.arise.weland.dto.ContentInfo.decodeString;
 import static com.arise.weland.dto.DTOUtil.sanitize;
@@ -77,14 +78,14 @@ public class DeviceStat {
 
 
 
-    private String t2j(Tuple2<String, String> t){
-        return "{\"i\":" + jsonVal(t.first()) + ",\"n\":" + jsonVal(t.second()) + "}";
+    private String t2j(Tuple2 t){
+        return "{\"k\":"+jsonVal(t.first())+", \"v\":"+jsonVal(t.second())+"}";
     }
 
-    private String t2jl(List<Tuple2<String, String>> l){
-        return "[" + StringUtil.join(l, ",", new StringUtil.JoinIterator<Tuple2<String, String>>() {
+    private String t2jl(List<Tuple2> l){
+        return "[" + StringUtil.join(l, ",", new StringUtil.JoinIterator<Tuple2>() {
             @Override
-            public String toString(Tuple2<String, String> v) {
+            public String toString(Tuple2 v) {
                 return t2j(v);
             }
         }) + "]";
@@ -117,12 +118,12 @@ public class DeviceStat {
                 }
                 else if(e.getValue() instanceof Tuple2){
                     sb.append(jsonVal(e.getKey())).append(":").append(
-                            t2j((Tuple2<String, String>) e.getValue())
+                            t2j((Tuple2) e.getValue())
                     );
                 }
                 else if (e.getValue() instanceof List){
                     sb.append(jsonVal(e.getKey())).append(":").append(
-                            t2jl((List<Tuple2<String, String>>) e.getValue())
+                            t2jl((List<Tuple2>) e.getValue())
                     );
                 }
                 cxx++;
@@ -245,6 +246,8 @@ public class DeviceStat {
         return this;
     }
 
+
+
     public DeviceStat setProp(String key, List<Tuple2<String, String>> val) {
         props.put(key, val);
         return this;
@@ -288,7 +291,6 @@ public class DeviceStat {
                     "\"}";
         }
     }
-
 
 
 }

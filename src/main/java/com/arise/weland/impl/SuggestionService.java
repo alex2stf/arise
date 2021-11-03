@@ -15,7 +15,6 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.models.Convertor;
 import com.arise.weland.dto.ContentInfo;
 
-import javax.management.MalformedObjectNameException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

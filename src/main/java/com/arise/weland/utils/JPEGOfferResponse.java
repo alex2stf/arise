@@ -60,7 +60,7 @@ public class JPEGOfferResponse extends HttpResponse {
             if (getCount > imgBuffer.length - 1) {
                 getCount = 0;
             }
-            System.out.println("IM_GET " + getCount);
+//            System.out.println("IM_GET " + getCount);
         }
         return imgBuffer[getCount];
     }

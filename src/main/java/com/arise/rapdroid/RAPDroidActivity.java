@@ -69,6 +69,8 @@ import java.util.Set;
 /**
  * basic helper activity
  */
+
+@Deprecated
 public abstract class RAPDroidActivity extends AppCompatActivity {
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;

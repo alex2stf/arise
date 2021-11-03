@@ -735,7 +735,7 @@ public class StringUtil {
         return sb.toString();
     }
 
-    public static String jsonVal(Object s){
+    public static String  jsonVal(Object s){
        if (s == null){
            return "null";
        }
