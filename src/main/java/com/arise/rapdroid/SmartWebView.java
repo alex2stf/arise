@@ -2,54 +2,39 @@ package com.arise.rapdroid;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.InputType;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.rapdroid.components.ui.Layouts;
 import com.arise.rapdroid.components.ui.adapters.URLAutocomplete;
 import com.arise.rapdroid.components.ui.views.SmartLayout;
-import com.arise.rapdroid.media.server.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +51,7 @@ public class SmartWebView extends LinearLayout {
     private SmartLayout top;
     private List<Button> actionButtons = new ArrayList<>();
     private Mole log = Mole.getInstance(SmartWebView.class);
-    private String uri;
+//    private String uri;
     private static URLAutocomplete urls;
     private List<String> blocked;
     private String jsSnip;
@@ -219,7 +204,8 @@ public class SmartWebView extends LinearLayout {
         }
 
 
-        webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; SM-A530F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
+//        webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; SM-A530F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
+        webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; Apple) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setDomStorageEnabled(true);
@@ -229,6 +215,7 @@ public class SmartWebView extends LinearLayout {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
+//        webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.117 Safari/537.36");
 
         youtubeSetup();
         hideZoomControls();
@@ -334,10 +321,10 @@ public class SmartWebView extends LinearLayout {
     private void youtubeSetup(){
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.setInitialScale(1);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
+//        webView.getSettings().setAppCacheEnabled(true);
+//        webView.setInitialScale(1);
+//        webView.getSettings().setLoadWithOverviewMode(true);
+//        webView.getSettings().setUseWideViewPort(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
@@ -346,7 +333,7 @@ public class SmartWebView extends LinearLayout {
 
     public void loadUrl(String uri) {
         log.info("load uri " + uri);
-        this.uri = uri;
+//        this.uri = uri;
         webView.loadUrl(uri);
 
         if (searchBar != null){
@@ -397,6 +384,16 @@ public class SmartWebView extends LinearLayout {
     public SmartWebView setJavascriptSnipping(String jsSnip) {
         this.jsSnip = jsSnip.replaceAll("\\s+"," ");
         return this;
+    }
+
+    public void stop() {
+        if (webView != null){
+//            webView.loadUrl("javascript:document.open();document.close();");
+            webView.loadUrl("about:blank");
+            webView.clearHistory();
+            webView.clearCache(true);
+
+        }
     }
 
 //    public void hideWebview() {

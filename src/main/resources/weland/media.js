@@ -196,6 +196,13 @@ function openFile(x) {
 function show_send_options(url) {
     _g('modal-status').innerHTML = '';
     $('#modal-status').show();
+
+    if(is_empty(g_friends) && window.location && window.location.origin){
+        g_friends[window.location.origin] = {
+            name: 'current device'
+        }
+    }
+
     place_friend_ips_for_air_play('modal-status', url, 'air-url-open');
 }
 
