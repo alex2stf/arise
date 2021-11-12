@@ -175,6 +175,7 @@ public class SuggestionService {
 
     private static final String images_extension[] = new String[]{"png", "jpeg", "jpg"};
 
+    //TODO unde e base64 se poate trimite direct in UI
     public Data solveUrlOrBase64(String input){
         String id = StringEncoder.encodeShiftSHA(input + "", "xx");
         for (String ext: images_extension){

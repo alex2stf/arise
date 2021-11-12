@@ -75,7 +75,7 @@ function place_ip(divId, rHost, mode, path) {
 
     if('air-url-open' == mode){
         hname = (decodeString(path)) + ' @' + hname;
-        airAction = 'open_to_remote(\''+encodeURI(rHost)+'\', \''+encodeURI(path)+'\')';
+        airAction = 'open_to_remote(\''+encodeURI(rHost)+'\', \'' + encodeURIComponent(path) + '\')';
     }
     var t = '<span class="host-name">'+hname+'</span>';
 
@@ -351,4 +351,43 @@ function get_host_from_text(x, c, e) {
              }
         }
     )
+}
+
+var oldval = -10;
+
+function updateMusicVolume() {
+    var val = _g('volume').value;
+    if (!+val){
+        return
+    }
+    var num = +val;
+    if(num != oldval){
+        oldval = num;
+
+        send_device_update({
+            musicVolume: num,
+            camEnabled: false
+        });
+    }
+}
+
+
+
+function check_local_network(){
+
+    var rootIp = "192.168.1.4";
+    var parts = rootIp.split(".");
+    console.log(parts);
+
+    for( var i = 0; i < 10; i++){
+        var th = 'http://' + parts[0] + '.'  + parts[1] + '.' + parts[2] + '.' + i +  ':8221/device/stat';
+        // console.log(th);
+        $do_request(th, function (d) {
+            if (d && d.I4){
+                alert('OK ' + d.I4);
+            }
+        }, function (e) {
+            console.log(th + ' failed');
+        });
+    }
 }

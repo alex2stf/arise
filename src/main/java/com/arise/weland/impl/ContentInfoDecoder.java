@@ -153,23 +153,6 @@ public abstract class ContentInfoDecoder {
         this.provider = contentInfoProvider;
     }
 
-    public void onScanComplete() {
-
-
-    }
-
-    protected byte[] readLocalIfExists( File cacheDir, String id){
-        byte[] bytes = null;
-        File f = new File(cacheDir + File.separator + id);
-        if (f.exists()){
-            try {
-                bytes = StreamUtil.fullyReadFileToBytes(f);
-            } catch (IOException e) {
-                bytes = null;
-            }
-        }
-        return bytes;
-    }
 
     public void clearState() {
         FileUtil.writeStringToFile(getCache(), "{}");

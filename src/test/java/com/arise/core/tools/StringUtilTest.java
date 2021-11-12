@@ -98,9 +98,18 @@ public class StringUtilTest {
 
     @Test
     public void testDecode(){
-        StringUtil.URLDecodeResult result = StringUtil.urlDecode("/commands/exec/browserOpen?url=https://www.youtube.com/watch?v=hB3KJf9aXcM");
+        StringUtil.URLDecodeResult result = StringUtil.urlDecode("http://192.168.1.4:8221/files/open?path=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DtBzfEceZtWI%26list%3DPL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC%26index%3D1%26t%3D4s");
 
         System.out.println(result);
+    }
+
+
+
+
+
+    public static void main(String[] args) {
+        StringUtilTest stringUtilTest = new StringUtilTest();
+        stringUtilTest.testDecode();
     }
 
     class TestClass {

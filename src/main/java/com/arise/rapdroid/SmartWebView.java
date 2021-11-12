@@ -336,6 +336,7 @@ public class SmartWebView extends LinearLayout {
 //        this.uri = uri;
         webView.loadUrl(uri);
 
+
         if (searchBar != null){
             searchBar.setText(uri);
         }
@@ -388,11 +389,9 @@ public class SmartWebView extends LinearLayout {
 
     public void stop() {
         if (webView != null){
-//            webView.loadUrl("javascript:document.open();document.close();");
             webView.loadUrl("about:blank");
             webView.clearHistory();
             webView.clearCache(true);
-
         }
     }
 

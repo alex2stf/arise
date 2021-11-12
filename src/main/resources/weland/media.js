@@ -73,6 +73,10 @@ function cThCss(o) {
     return o.F;
 }
 
+function is_url(x) {
+    return x && (x.indexOf('http://') == 0 || x.indexOf('https://') == 0)
+}
+
 function placeThumbnail(obj, playlist) {
     var id = (obj.P + '').replace(/\./g, '_')
         .replace(/%/g, '-')
@@ -83,6 +87,7 @@ function placeThumbnail(obj, playlist) {
     }
     var div = document.createElement('div');
     div.setAttribute('class', 'mb');
+
     div.setAttribute("onclick", "showOptions('" + obj.P + "')");
     div.id = id;
     var name = getFileNameFromObj(obj);
@@ -264,7 +269,7 @@ function  distributed_play() {
 
 
 function open_to_remote(rHost, rPath) {
-    var url = rHost + '/files/open?path=' + encodeURI(rPath);
+    var url = rHost + '/files/open?path=' + encodeURIComponent(rPath);
     console.log(url);
     $do_request(url, function () {
         _mh();

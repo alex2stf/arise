@@ -18,8 +18,6 @@ public class HttpRequest extends ServerRequest {
     private List<String> pathParams;
     private Map<String, List<String>> queryParams;
     private Map<String, String> headers;
-    private  String remoteIp;
-    private  String _host;
     private  String _method;
     private HttpProtocol protocol = HttpProtocol.V1_0;
 
@@ -141,13 +139,6 @@ public class HttpRequest extends ServerRequest {
         return headers;
     }
 
-    public String getRemoteIp() {
-        return remoteIp != null ? remoteIp : "";
-    }
-
-    public String host() {
-        return _host != null ? _host : "";
-    }
 
 
     public String getUri(){
