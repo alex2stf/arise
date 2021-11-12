@@ -3,10 +3,12 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.utils.AppSettings;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 
@@ -14,6 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
@@ -82,4 +86,35 @@ public abstract  class ContentHandler {
     public abstract DeviceStat getDeviceStat();
 
     public abstract void onCloseRequested();
+
+
+    private void append(StringBuilder sb, String key, String value){
+
+        sb.append(StringUtil.jsonVal(key)).append(":")
+                .append(StringUtil.jsonVal(value))
+                .append(",");
+    }
+
+
+    private void readProperties(StringBuilder sb, Properties p){
+        final Set<String> keys = p.stringPropertyNames();
+        for (final String key : keys) {
+            append(sb, key, p.getProperty(key));
+        }
+    }
+
+    public final String getDeviceInfoJson() {
+        final Properties sp = System.getProperties();
+
+        StringBuilder sb = new StringBuilder().append("{");
+
+
+
+        readProperties(sb, sp);
+        readProperties(sb, AppSettings.getApplicationProperties());
+        sb.append("\"___eof\"").append(":").append("0");
+        sb.append("}");
+
+        return sb.toString();
+    }
 }

@@ -127,15 +127,9 @@ public class StringUtil {
                 urlDecodeResult.paths.add(s);
             }
         }
+
         String qrs = in.substring(index + 1 );
-        try {
-            String dec  = URLDecoder.decode(qrs, "UTF-8");
-            qrs = dec;
-        } catch (Exception e){
-
-        }
         decodeQuery(qrs, urlDecodeResult.queryParams);
-
         return urlDecodeResult;
     }
 

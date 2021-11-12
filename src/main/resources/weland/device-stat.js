@@ -199,7 +199,7 @@ function update_ui_with_device_stat(d) {
     _g('d-name').innerHTML = d.N;
 
     if (+d.B1 && +d.B2){
-        _g('d-battery').innerHTML = Math.round(d.B1 / d.B2) + '%';
+        _g('d-battery').innerHTML = Math.round(d.B2 * 100 / d.B1) + '%';
         $('#c-battery').show();
     } else {
         $('#c-battery').hide();
@@ -208,6 +208,11 @@ function update_ui_with_device_stat(d) {
     if(!d.pP){
         return;
     }
+    var musicVolume = d.pP['audio.music.volume'];
+    if (+musicVolume){
+        _g('volume').value = +musicVolume;
+    }
+
     var flash_modes = d.pP["flash.modes.v1"];
     var cam_ids = d.pP['cams.v1'];
     var txt = ''; var selected = '';
@@ -242,14 +247,19 @@ function update_ui_with_device_stat(d) {
     }
 
     var camera_enabled = 'true' == d.pP['cams.active.run'];
-
-
     if (camera_enabled){
         showCamStopBtn();
         showStream();
     } else {
         showCamPlayBtn();
     }
+
+
+    update_sensor_data(d.pP);
+}
+
+
+function update_sensor_data(props) {
 
 }
 

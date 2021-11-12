@@ -89,6 +89,9 @@ public class AppSettings {
     }
 
 
+    public static Properties getApplicationProperties(){
+        return applicationProperties;
+    }
 
 
     public static List<File> getScannableLocations(){

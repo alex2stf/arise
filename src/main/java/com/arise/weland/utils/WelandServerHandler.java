@@ -145,6 +145,10 @@ public class WelandServerHandler extends HTTPServerHandler {
       return contentHandler.getDeviceStat().toHttp();
     }
 
+    if("/device/info".equalsIgnoreCase(request.path())){
+      return HttpResponse.json(contentHandler.getDeviceInfoJson()).allowAnyOrigin();
+    }
+
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
       dispatch(deviceControlsUpdate, request);

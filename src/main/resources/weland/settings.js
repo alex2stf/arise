@@ -75,7 +75,7 @@ function place_ip(divId, rHost, mode, path) {
 
     if('air-url-open' == mode){
         hname = (decodeString(path)) + ' @' + hname;
-        airAction = 'open_to_remote(\''+encodeURI(rHost)+'\', \''+encodeURI(path)+'\')';
+        airAction = 'open_to_remote(\''+encodeURI(rHost)+'\', \'' + encodeURIComponent(path) + '\')';
     }
     var t = '<span class="host-name">'+hname+'</span>';
 
@@ -351,4 +351,22 @@ function get_host_from_text(x, c, e) {
              }
         }
     )
+}
+
+var oldval = -10;
+
+function updateMusicVolume() {
+    var val = _g('volume').value;
+    if (!+val){
+        return
+    }
+    var num = +val;
+    if(num != oldval){
+        oldval = num;
+
+        send_device_update({
+            musicVolume: num,
+            camEnabled: false
+        });
+    }
 }

@@ -108,10 +108,6 @@ public class PCDecoder extends ContentInfoDecoder {
         return info;
     }
 
-    @Override
-    public void onScanComplete() {
-
-    }
 
 
 
