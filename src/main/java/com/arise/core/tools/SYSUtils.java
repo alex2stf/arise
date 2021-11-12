@@ -36,8 +36,15 @@ public class SYSUtils {
         return (os.qualifiedName() + getDeviceName()).replaceAll("\\s+","");
     }
 
-    public static String getDeviceName()
-    {
+    static  String _deviceName = null;
+
+
+    //TODO non duplicate keys
+    public static String getDeviceName() {
+
+        if(_deviceName != null){
+            return _deviceName;
+        }
         Map<String, String> env = System.getenv();
         StringBuilder sb = new StringBuilder();
 
@@ -81,6 +88,21 @@ public class SYSUtils {
             strings.add((manuf != null ? String.valueOf(manuf) : ""));
             strings.add((brand != null ? String.valueOf(brand) : ""));
             sb.append(StringUtil.join(strings, ""));
+        }
+
+        Properties p = SYSUtils.getLinuxDetails();
+        if(p!= null){
+            if(p.containsKey("ID")){
+                sb.append("-").append(p.getProperty("ID"));
+            }
+
+            if(p.containsKey("VERSION_CODENAME")){
+                sb.append("-").append(p.getProperty("VERSION_CODENAME"));
+            }
+
+            if(p.containsKey("VERSION")){
+                sb.append("-").append(p.getProperty("VERSION"));
+            }
         }
 
         return sb.toString();

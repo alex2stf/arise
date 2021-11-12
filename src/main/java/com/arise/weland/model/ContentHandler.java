@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.arise.core.tools.SYSUtils.getLinuxDetails;
+
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
 
@@ -96,25 +98,43 @@ public abstract  class ContentHandler {
     }
 
 
-    private void readProperties(StringBuilder sb, Properties p){
+    private void readProperties(String prefix, StringBuilder sb, Properties p){
         final Set<String> keys = p.stringPropertyNames();
         for (final String key : keys) {
-            append(sb, key, p.getProperty(key));
+            append(sb, prefix + key, p.getProperty(key));
         }
     }
 
+    static String deviceInfoJson = null;
+
     public final String getDeviceInfoJson() {
+        if(deviceInfoJson != null){
+            return deviceInfoJson;
+        }
         final Properties sp = System.getProperties();
 
         StringBuilder sb = new StringBuilder().append("{");
 
 
 
-        readProperties(sb, sp);
-        readProperties(sb, AppSettings.getApplicationProperties());
+        readProperties("_sys.", sb, sp);
+        readProperties("_app.", sb, AppSettings.getApplicationProperties());
+
+        Properties x = getLinuxDetails();
+        if(x != null){
+            readProperties("_lnx.", sb, x);
+        }
+
+        Map<String, String> env = System.getenv();
+
+        for(Map.Entry<String, String> e : env.entrySet()){
+            append(sb, "_env." + e.getKey(), e.getValue());
+        }
+
         sb.append("\"___eof\"").append(":").append("0");
         sb.append("}");
+        deviceInfoJson = sb.toString();
 
-        return sb.toString();
+        return deviceInfoJson;
     }
 }
