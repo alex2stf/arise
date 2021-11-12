@@ -102,7 +102,7 @@ function $do_request(url, c, f) {
             try {
                 data = JSON.parse(a2);
             }catch (e) {
-                console.log("Invalid json response [" + a2 + ']' + ' from [' + url + ']', e);
+                // console.log("Invalid json response [" + a2 + ']' + ' from [' + url + ']', e);
                 data = a2;
             }
 

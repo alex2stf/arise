@@ -1,23 +1,15 @@
 package com.arise.weland.utils;
 
-import com.arise.core.tools.AppCache;
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.weland.dto.ContentInfo;
-import com.arise.weland.dto.Playlist;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public class AppSettings {
@@ -172,40 +164,5 @@ public class AppSettings {
 
 
 
-//    public static Map<String, String> storeHost(String name, String host) {
-//        savedConnections.put(name, host);
-//        FileUtil.serializableSave(savedConnections, new File(FileUtil.findAppDir(), "connections.txt"));
-//        return savedConnections;
-//    }
 
-
-
-//    public static String[] getSavedConnectionsNames(){
-//        Map<String, String> c = getSavedConnections();
-//        if (CollectionUtil.isEmpty(c)){
-//            return new String[]{};
-//        }
-//        String[]s = new String[c.size()];
-//        int i = 0;
-//        for (Map.Entry<String, String> e: c.entrySet()){
-//            s[i] = e.getKey();
-//            i++;
-//        }
-//
-//        return s;
-//    }
-
-//    public static Map<String, String> getSavedConnections(){
-//        if (CollectionUtil.isEmpty(savedConnections)){
-//            HashMap<String, String> tmp = FileUtil.serializableRead(new File( FileUtil.findAppDir(), "connections.txt"));
-//            if (tmp != null){
-//                savedConnections =  tmp;
-//            }
-//        }
-//        return savedConnections;
-//    }
-
-//    public static String getSavedConnectionUri(String name) {
-//        return getSavedConnections().get(name);
-//    }
 }
