@@ -379,15 +379,13 @@ function check_local_network(){
     var parts = rootIp.split(".");
     console.log(parts);
 
-    for( var i = 0; i < 10; i++){
+    for( var i = 0; i < 30; i++){
         var th = 'http://' + parts[0] + '.'  + parts[1] + '.' + parts[2] + '.' + i +  ':8221/device/stat';
         // console.log(th);
         $do_request(th, function (d) {
             if (d && d.I4){
                 alert('OK ' + d.I4);
             }
-        }, function (e) {
-            console.log(th + ' failed');
         });
     }
 }

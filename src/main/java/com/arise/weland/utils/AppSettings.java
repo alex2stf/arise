@@ -3,6 +3,7 @@ package com.arise.weland.utils;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,11 @@ public class AppSettings {
             expect = new File(dir, "application.properties");
         }
         else {
-            expect = new File("application.properties");
+            String path = System.getProperty("config.location");
+            if(!StringUtil.hasText(path)){
+                path = "application.properties";
+            }
+            expect = new File(path);
         }
 
         Properties binProps = null;
