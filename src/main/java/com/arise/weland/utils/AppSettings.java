@@ -3,6 +3,7 @@ package com.arise.weland.utils;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
