@@ -41,7 +41,11 @@ public class AppSettings {
             expect = new File(dir, "application.properties");
         }
         else {
-            expect = new File("application.properties");
+            String path = System.getProperty("config.location");
+            if(!StringUtil.hasText(path)){
+                path = "application.properties";
+            }
+            expect = new File(path);
         }
 
         Properties binProps = null;
