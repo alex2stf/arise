@@ -3,7 +3,6 @@ package com.arise.astox.net.models;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;

@@ -1,25 +1,12 @@
 package com.arise.weland.impl;
 
-import com.arise.core.tools.*;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.models.Convertor;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.images.Artwork;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.Util.close;
+import java.io.File;
 
 
 public class PCDecoder extends ContentInfoDecoder {

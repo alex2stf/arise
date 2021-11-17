@@ -11,11 +11,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.arise.canter.Defaults.CMD_PRINT;
 

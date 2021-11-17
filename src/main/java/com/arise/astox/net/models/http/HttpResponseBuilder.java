@@ -1,8 +1,8 @@
 package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.ServerResponseBuilder;
-import com.arise.core.tools.models.CompleteHandler;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.InputStream;
 

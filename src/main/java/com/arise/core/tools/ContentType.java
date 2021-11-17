@@ -6,22 +6,17 @@
 package com.arise.core.tools;
 
 
-
 import com.arise.core.serializers.parser.Groot;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.ContentType.Location.DOCUMENTS;
-import static com.arise.core.tools.ContentType.Location.MOVIES;
-import static com.arise.core.tools.ContentType.Location.MUSIC;
-import static com.arise.core.tools.ContentType.Location.PICTURES;
+import static com.arise.core.tools.ContentType.Location.*;
 
 /**
  *

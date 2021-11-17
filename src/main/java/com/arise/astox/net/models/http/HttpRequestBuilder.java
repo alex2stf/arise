@@ -1,6 +1,5 @@
 package com.arise.astox.net.models.http;
 
-import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerRequestBuilder;
 import com.arise.core.tools.models.CompleteHandler;
 

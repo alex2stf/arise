@@ -9,13 +9,13 @@ sudo apt-get install qt5-default qtcreator qtdeclarative5-dev libqt5webenginewid
 cd /etc/systemd/system
 
 
-touch arise-app.service
+touch weland-app.service
 
 
-text:
+create file with the following content:
 
 [Unit]
-Description=Arise-App service 
+Description=Weland-App service
 After=multi-user.target
 
 [Service]
@@ -24,12 +24,12 @@ ExecStart=/usr/bin/java -Dconfig.location=/home/pi/Desktop/arise/application.pro
 
 [Install]
 WantedBy=multi-user.target
-Alias=arise-app.service
+Alias=weland-app.service
 
 
-sudo chmod 644 arise-app.service 
+sudo chmod 644 weland-app.service
 
 
 sudo systemctl daemon-reload
-sudo systemctl enable arise-app.service 
+sudo systemctl enable weland-app.service
 

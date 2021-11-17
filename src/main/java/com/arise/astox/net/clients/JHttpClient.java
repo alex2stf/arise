@@ -3,24 +3,15 @@ package com.arise.astox.net.clients;
 import com.arise.astox.net.models.AbstractClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.http.HttpResponseBuilder;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
 
+import javax.net.ssl.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
-import java.net.Socket;
-import java.net.URI;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -28,13 +19,6 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpURLConnection>  {
 

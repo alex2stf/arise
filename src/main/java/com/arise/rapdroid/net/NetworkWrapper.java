@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-
 import com.arise.core.tools.Mole;
 
 public class NetworkWrapper {

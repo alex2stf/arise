@@ -2,7 +2,6 @@ package com.arise.cargo.model;
 
 
 import com.arise.cargo.Context;
-import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

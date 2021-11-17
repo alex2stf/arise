@@ -1,14 +1,11 @@
 package com.arise.weland.model;
 
-import com.arise.astox.net.clients.HttpClient;
-import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
@@ -18,14 +15,10 @@ import com.arise.weland.utils.AppSettings;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -125,6 +118,14 @@ public abstract  class ContentHandler {
 
         StringBuilder sb = new StringBuilder().append("{");
 
+        append(sb, "_util.is_raspberry_pi", SYSUtils.isRaspberryPI() + "");
+        append(sb, "_util.is_android", SYSUtils.isAndroid() + "");
+        append(sb, "_util.is_windows", SYSUtils.isWindows()+ "");
+        append(sb, "_util.is_mac", SYSUtils.isMac()+ "");
+        append(sb, "_util.is_unix", SYSUtils.isUnix()+ "");
+        append(sb, "_util.is_32_bits", SYSUtils.is32Bits()+ "");
+        append(sb, "_util.device_name", SYSUtils.getDeviceName()+ "");
+        append(sb, "_util.device_id", SYSUtils.getDeviceId());
 
 
         readProperties("_sys.", sb, sp);
@@ -140,6 +141,8 @@ public abstract  class ContentHandler {
         for(Map.Entry<String, String> e : env.entrySet()){
             append(sb, "_env." + e.getKey(), e.getValue());
         }
+
+
 
         sb.append("\"___eof\"").append(":").append("0");
         sb.append("}");

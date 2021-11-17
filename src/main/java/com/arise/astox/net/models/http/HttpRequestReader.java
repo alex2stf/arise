@@ -2,10 +2,6 @@ package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.HttpProtocol;
 
-import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public abstract class HttpRequestReader extends HttpReader<HttpRequest> {

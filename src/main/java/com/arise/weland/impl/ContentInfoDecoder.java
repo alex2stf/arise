@@ -1,20 +1,15 @@
 package com.arise.weland.impl;
 
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.models.FoundHandler;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 import static com.arise.core.tools.StringUtil.hasContent;
 

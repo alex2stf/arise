@@ -1,12 +1,7 @@
 package com.arise.cargo;
 
 
-import com.arise.cargo.model.AccessType;
-import com.arise.cargo.model.CGClass;
-import com.arise.cargo.model.CGType;
-import com.arise.cargo.model.CGVar;
-import com.arise.cargo.model.ClassFlavour;
-import com.arise.cargo.model.ParseUtil;
+import com.arise.cargo.model.*;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.tools.CollectionUtil;

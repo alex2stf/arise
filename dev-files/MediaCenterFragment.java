@@ -29,7 +29,6 @@ import com.arise.rapdroid.media.server.views.MediaDisplayer;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Playlist;
-import com.arise.weland.dto.RemoteConnection;
 import com.arise.rapdroid.components.ContextFragment;
 import com.arise.rapdroid.components.ui.NavView;
 import com.arise.weland.utils.AutoplayOptions;

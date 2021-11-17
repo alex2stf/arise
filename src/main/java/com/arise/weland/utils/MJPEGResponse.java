@@ -1,11 +1,9 @@
 package com.arise.weland.utils;
 
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.ServerRequest;
-import com.arise.core.tools.FileUtil;
+import com.arise.astox.net.models.SingletonHttpResponse;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 public class MJPEGResponse extends SingletonHttpResponse {

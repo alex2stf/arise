@@ -2,7 +2,6 @@ package com.arise.rapdroid.components.ui.adapters;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
-
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;

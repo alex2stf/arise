@@ -1,17 +1,16 @@
 package com.arise.rapdroid.net;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import com.arise.astox.net.models.ServerRequest;
+import com.arise.astox.net.models.SingletonHttpResponse;
+import com.arise.core.tools.Mole;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-
-import com.arise.astox.net.models.SingletonHttpResponse;
-import com.arise.astox.net.models.ServerRequest;
-import com.arise.core.tools.Mole;
 
 
 public class WavRecorderResponse extends SingletonHttpResponse {

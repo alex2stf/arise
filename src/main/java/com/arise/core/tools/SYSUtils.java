@@ -1,19 +1,11 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.StreamUtil.LineIterator;
 import com.arise.core.tools.models.CompleteHandler;
+import com.arise.weland.dto.DTOUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
+import java.io.*;
 import java.util.*;
 
-import static com.arise.core.tools.StreamUtil.readLineByLine;
-import static com.arise.core.tools.StringUtil.isMailFormat;
 import static com.arise.core.tools.StringUtil.jsonEscape;
 import static com.arise.core.tools.StringUtil.jsonVal;
 
@@ -40,6 +32,18 @@ public class SYSUtils {
 
 
     //TODO non duplicate keys
+
+    private static void append(StringBuilder sb, String part){
+        String ext = sb.toString();
+        String parts[] = part.split(" ");
+        for (String s :parts){
+
+            if(ext.indexOf(s) < 0){
+                sb.append(s);
+            }
+        }
+    }
+
     public static String getDeviceName() {
 
         if(_deviceName != null){
@@ -93,19 +97,19 @@ public class SYSUtils {
         Properties p = SYSUtils.getLinuxDetails();
         if(p!= null){
             if(p.containsKey("ID")){
-                sb.append("-").append(p.getProperty("ID"));
+                append(sb, p.getProperty("ID"));
             }
 
             if(p.containsKey("VERSION_CODENAME")){
-                sb.append("-").append(p.getProperty("VERSION_CODENAME"));
+                append(sb, p.getProperty("VERSION_CODENAME"));
             }
 
             if(p.containsKey("VERSION")){
-                sb.append("-").append(p.getProperty("VERSION"));
+                append(sb, p.getProperty("VERSION"));
             }
         }
 
-        return sb.toString();
+        return DTOUtil.sanitize(sb.toString());
     }
 
 
@@ -339,9 +343,24 @@ public class SYSUtils {
         return false;
     }
 
+    private static volatile Boolean _is_32_bits = null;
 
+    public static boolean is32Bits() {
 
-
+        if(_is_32_bits != null){
+            return _is_32_bits;
+        }
+        if(FileUtil.exists("/lib/systemd/systemd") && isUnix()){
+            Result r = exec("file", "/lib/systemd/systemd");
+            if (StringUtil.hasText(r.stdout())){
+                boolean is32 = r.stdout().indexOf("32-bit") > -1;
+                if(is32) {
+                    _is_32_bits = is32;
+                }
+            }
+        }
+        return _is_32_bits;
+    }
 
 
     public static class Result {

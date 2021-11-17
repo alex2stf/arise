@@ -1,10 +1,5 @@
 package com.arise.weland;
 
-import com.arise.core.tools.StringEncoder;
-
-import java.io.File;
-import java.net.URL;
-
 public class IDGen {
 
 

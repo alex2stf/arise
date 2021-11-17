@@ -1,12 +1,6 @@
 package com.arise.astox.net.servers.nio;
 
-import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.models.ConnectionSolver;
-import com.arise.astox.net.models.DuplexDraft;
-import com.arise.astox.net.models.ServerMessage;
-import com.arise.astox.net.models.ServerRequest;
-import com.arise.astox.net.models.ServerRequestBuilder;
-import com.arise.astox.net.models.ServerResponse;
+import com.arise.astox.net.models.*;
 import com.arise.astox.net.servers.draft_6455.WebSocketException;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
@@ -20,22 +14,13 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 
 import static com.arise.astox.net.servers.nio.NIOChannelData.Type.CLOSEABLE;
 import static com.arise.astox.net.servers.nio.NIOChannelData.Type.DUPLEX;
-import static com.arise.astox.net.servers.nio.NioSslPeer.closeConnection;
-import static com.arise.astox.net.servers.nio.NioSslPeer.doHandshake;
-import static com.arise.astox.net.servers.nio.NioSslPeer.enlargeApplicationBuffer;
-import static com.arise.astox.net.servers.nio.NioSslPeer.enlargePacketBuffer;
-import static com.arise.astox.net.servers.nio.NioSslPeer.handleBufferUnderflow;
-import static com.arise.astox.net.servers.nio.NioSslPeer.handleEndOfStream;
+import static com.arise.astox.net.servers.nio.NioSslPeer.*;
 
 
 /**

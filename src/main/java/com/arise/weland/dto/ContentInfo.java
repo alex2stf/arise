@@ -17,11 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.StringUtil.hasContent;
-import static com.arise.core.tools.StringUtil.hasText;
-import static com.arise.core.tools.StringUtil.join;
-import static com.arise.core.tools.StringUtil.jsonVal;
-import static com.arise.core.tools.StringUtil.toInt;
+import static com.arise.core.tools.StringUtil.*;
 import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class ContentInfo implements Serializable {

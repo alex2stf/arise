@@ -1,13 +1,5 @@
 package com.arise.cargo.management;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 @Deprecated
 public class Dependencies {
     public static final Dependency VLC_2_1_0 = new Dependency()

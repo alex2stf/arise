@@ -5,7 +5,6 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 
 import javax.net.ssl.SSLContext;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;

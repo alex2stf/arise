@@ -1,16 +1,14 @@
 package com.arise.weland.impl;
 
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.tools.*;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class SelfUpdater {

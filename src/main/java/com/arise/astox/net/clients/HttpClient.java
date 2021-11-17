@@ -1,20 +1,16 @@
 package com.arise.astox.net.clients;
 
 
+import com.arise.astox.net.models.AbstractStreamedSocketClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.http.HttpResponseBuilder;
-import com.arise.astox.net.models.AbstractPeer;
-import com.arise.astox.net.models.AbstractStreamedSocketClient;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-
-import javax.net.ssl.SSLContext;
 
 public class HttpClient extends AbstractStreamedSocketClient<HttpRequest, HttpResponse> {
 

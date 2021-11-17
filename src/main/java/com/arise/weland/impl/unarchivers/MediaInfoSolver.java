@@ -1,24 +1,14 @@
 package com.arise.weland.impl.unarchivers;
 
 import com.arise.cargo.management.Dependencies;
-import com.arise.cargo.management.Dependency;
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringEncoder;
-import com.arise.core.tools.StringUtil;
-import com.arise.weland.IDGen;
+import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.SuggestionService;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;

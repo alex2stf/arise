@@ -5,9 +5,6 @@ import com.arise.core.tools.MapUtil;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.StringUtil.jsonVal;
-import static com.arise.core.tools.StringUtil.map;
-
 public class ContentPage {
     private Integer index;
     private List<ContentInfo> data;

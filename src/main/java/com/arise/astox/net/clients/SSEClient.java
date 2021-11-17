@@ -5,7 +5,6 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponseReader;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.IOException;

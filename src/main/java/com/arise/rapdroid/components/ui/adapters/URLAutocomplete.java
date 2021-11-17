@@ -1,9 +1,7 @@
 package com.arise.rapdroid.components.ui.adapters;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import com.arise.core.tools.AppCache;
 
 import java.net.MalformedURLException;

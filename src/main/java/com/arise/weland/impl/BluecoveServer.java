@@ -3,21 +3,18 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ServerMessage;
-import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.StreamedServer;
 import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequestReader;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
 import javax.bluetooth.LocalDevice;
 import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

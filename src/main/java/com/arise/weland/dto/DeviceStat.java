@@ -3,34 +3,17 @@ package com.arise.weland.dto;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Tuple2;
-import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.utils.AppSettings;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.arise.core.tools.CollectionUtil.*;
+import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.jsonVal;
-import static com.arise.core.tools.StringUtil.toNumber;
 import static com.arise.weland.dto.ContentInfo.addVal;
-import static com.arise.weland.dto.ContentInfo.decodeString;
-import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class DeviceStat {
 

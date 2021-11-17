@@ -2,8 +2,6 @@ package com.arise.cargo.model;
 
 import com.arise.core.tools.StringUtil;
 
-import java.util.Comparator;
-
 public class ParseUtil {
 
     public static Composition parse(String input){

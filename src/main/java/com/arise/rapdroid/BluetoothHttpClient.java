@@ -2,20 +2,14 @@ package com.arise.rapdroid;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.os.AsyncTask;
-
-
 import com.arise.astox.net.models.AbstractClient;
 import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.http.HttpResponseBuilder;
 import com.arise.astox.net.models.http.HttpResponseReader;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.Util;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

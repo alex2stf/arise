@@ -1,11 +1,6 @@
 package com.arise.cargo.contexts;
 
-import com.arise.cargo.model.AccessType;
-import com.arise.cargo.model.CGClass;
-import com.arise.cargo.model.CGMethod;
-import com.arise.cargo.model.CGType;
-import com.arise.cargo.model.CGVar;
-import com.arise.cargo.model.ClassFlavour;
+import com.arise.cargo.model.*;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.FileUtil;
@@ -13,11 +8,7 @@ import com.arise.core.tools.FilterCriteria;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.*;
 
 import static com.arise.core.tools.StringUtil.capFirst;

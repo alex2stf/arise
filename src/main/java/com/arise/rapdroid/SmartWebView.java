@@ -11,21 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.webkit.*;
+import android.widget.*;
 import androidx.annotation.Nullable;
-
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
@@ -37,8 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 public class SmartWebView extends LinearLayout {
     public static final Resources DEFAULT = new Resources();

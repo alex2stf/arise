@@ -1,19 +1,12 @@
 package com.arise.astox.net.models.http;
 
 
-import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,6 @@ package com.arise.rapdroid;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-
 import com.arise.astox.net.models.StreamedServer;
 import com.arise.core.tools.Mole;
 

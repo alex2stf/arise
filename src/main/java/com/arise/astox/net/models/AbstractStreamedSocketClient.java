@@ -1,15 +1,9 @@
 package com.arise.astox.net.models;
 
-import com.arise.astox.net.models.http.HttpRequest;
-import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.http.HttpResponseBuilder;
-import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 public abstract class AbstractStreamedSocketClient<I extends ServerRequest, O extends ServerResponse> extends AbstractClient<I, O, Socket> {

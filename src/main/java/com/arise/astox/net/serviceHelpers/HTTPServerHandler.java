@@ -1,11 +1,11 @@
 package com.arise.astox.net.serviceHelpers;
 
-import com.arise.astox.net.models.http.HttpRequest;
-import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.Mole;
 
 import java.util.ArrayList;

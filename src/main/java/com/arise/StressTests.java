@@ -5,12 +5,10 @@ import com.arise.astox.net.models.AbstractPeer;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Random;
 
 public class StressTests {
     public static final int MAX_Y = 400;

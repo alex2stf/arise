@@ -17,9 +17,6 @@
 package com.arise.astox.net.servers.draft_6455;
 
 
-import com.arise.astox.net.servers.draft_6455.WebSocketError;
-import com.arise.astox.net.servers.draft_6455.WebSocketException;
-
 public class InsufficientDataException extends WebSocketException
 {
     private static final long serialVersionUID = 1L;

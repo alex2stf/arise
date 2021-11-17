@@ -1,12 +1,8 @@
 package com.arise.astox.net.servers.draft_6455;
 
-import com.arise.astox.net.models.HttpProtocol;
+import com.arise.astox.net.models.*;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.models.DuplexDraft;
-import com.arise.astox.net.models.ServerRequest;
-import com.arise.astox.net.models.ServerResponse;
 import com.arise.core.tools.Base64;
 
 import java.io.ByteArrayInputStream;

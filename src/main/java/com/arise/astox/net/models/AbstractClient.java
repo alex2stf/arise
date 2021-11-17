@@ -1,6 +1,5 @@
 package com.arise.astox.net.models;
 
-import com.arise.astox.net.clients.JHttpClient;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
 

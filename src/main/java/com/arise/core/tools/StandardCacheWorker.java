@@ -2,7 +2,6 @@ package com.arise.core.tools;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 public class StandardCacheWorker {
     HashMap<String, String> map ;

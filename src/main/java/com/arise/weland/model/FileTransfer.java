@@ -4,19 +4,13 @@ import com.arise.astox.net.models.AbstractStreamedSocketClient;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.astox.net.models.http.HttpResponseBuilder;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 import com.arise.core.tools.models.CompleteHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class FileTransfer  {

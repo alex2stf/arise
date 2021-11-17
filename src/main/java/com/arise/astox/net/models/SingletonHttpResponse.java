@@ -1,12 +1,9 @@
 package com.arise.astox.net.models;
 
-import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.models.AbstractServer.WriteCompleteEvent;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.Mole;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
