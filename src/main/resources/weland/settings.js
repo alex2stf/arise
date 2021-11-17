@@ -1,9 +1,7 @@
 var g_friends = {};
 
 
-function extract_id(ip) {
-    return ip.replace(/\./g, '').replace(/\:/g, '').replace(/\//g, '').replace(/http/g, 'x')
-}
+
 
 
 function recursive_test(arr, i){
@@ -357,7 +355,7 @@ var oldval = -10;
 
 function updateMusicVolume() {
     var val = _g('volume').value;
-    if (!+val){
+    if (!+val){S
         return
     }
     var num = +val;
@@ -373,19 +371,3 @@ function updateMusicVolume() {
 
 
 
-function check_local_network(){
-
-    var rootIp = "192.168.1.4";
-    var parts = rootIp.split(".");
-    console.log(parts);
-
-    for( var i = 0; i < 30; i++){
-        var th = 'http://' + parts[0] + '.'  + parts[1] + '.' + parts[2] + '.' + i +  ':8221/device/stat';
-        // console.log(th);
-        $do_request(th, function (d) {
-            if (d && d.I4){
-                alert('OK ' + d.I4);
-            }
-        });
-    }
-}

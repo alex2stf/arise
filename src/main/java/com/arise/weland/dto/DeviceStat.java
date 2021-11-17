@@ -3,12 +3,19 @@ package com.arise.weland.dto;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Tuple2;
+import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.weland.utils.AppSettings;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -205,6 +212,9 @@ public class DeviceStat {
         return this;
 
     }
+
+
+
 
     public String getDeviceName() {
         return deviceName != null ? deviceName : "UNSET";

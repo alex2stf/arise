@@ -157,7 +157,6 @@ public class AppSettings {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"});
 
-
         final String s;
         private final String[] variants;
 

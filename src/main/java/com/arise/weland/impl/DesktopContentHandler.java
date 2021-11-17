@@ -486,6 +486,11 @@ public class DesktopContentHandler extends ContentHandler {
         System.exit(0);
     }
 
+    @Override
+    public void takeSnapshot() {
+
+    }
+
     private void execute(String args[]){
         log.info(StringUtil.join(args, " "));
         exes.add(new File(args[0]).getName());

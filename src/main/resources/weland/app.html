@@ -144,9 +144,6 @@
         $('.page').hide();
     }
 
-    function _g(x) {
-        return document.getElementById(x);
-    }
 
 
     var colors = {
@@ -245,55 +242,10 @@
         }
     }
 
-    function getStorage(){
-        return localStorage || sessionStorage;
-    }
-
-    var AppSettings = {
 
 
-        get: function(prop, def){
-           try {
-               var x = getStorage().getItem(prop);
-               if(x){
-                   return x;
-               }
-           }catch  (e) {
-               console.log("failed to set prop")
-           }
-            return def;
-        },
 
-        set: function(prop, value){
-            getStorage().setItem(prop, value);
-        },
-
-        addFriendIp : function (ip) {
-            $get("/props/get?key=friend-ips", function (arr) {
-                var actarr = [];
-                if(!arr || !arr.length){
-                    console.log('nothing saved in props');
-                    actarr = [];
-                }else {
-                    if(arr.indexOf(ip) > -1){
-                        console.log('ip ' + ip + 'already saved');
-                        return;
-                    }
-                    for(var i = 0; i < arr.length; i++){
-                        actarr[i] = arr[i];
-                    }
-                }
-                actarr.push(ip);
-                $get("/props/set?key=friend-ips&value=" + JSON.stringify(actarr), function (x) {
-                    // console.log(x)
-                })
-
-
-            });
-        }
-    }
-
-
+    {{> common-util.js}}
     {{> device-stat.js}}
     {{> cam.js}}
     {{> media.js}}

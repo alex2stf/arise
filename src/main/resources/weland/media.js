@@ -225,7 +225,6 @@ function start_distribute_path(path) {
     for(var i in g_friends){
         console.log('upload try to ' + i);
         upload_to_remote_and_check(i, path);
-
     }
 
     setTimeout(function () {
@@ -291,12 +290,20 @@ function air_play(rHost, path) {
     })
 }
 
+var cnt = 0;
+
 function air_play_check(rHost, len, name, ch, divId, device_name) {
     var div = _g(divId);
     var url = rHost + '/upload/stat?name=' + name;
-    div.innerHTML = '<div>' + device_name + ' check init at ' + url + '</div>';
+    div.innerHTML = '<div>' + cnt + ') ' + device_name + ' check init at ' + url + '</div>';
+
+    cnt++;
     $do_request(url, function (d) {
-        if(!d.exists){
+
+
+
+        if(d.exists == false){
+            console.log("I ", url, d, len)
             div.innerHTML = '<div>' + device_name + 'waiting upload...</div>'
             setTimeout(function () {
                 air_play_check(rHost, len, name, ch, divId, device_name);
@@ -305,17 +312,22 @@ function air_play_check(rHost, len, name, ch, divId, device_name) {
         }
 
         if(d.len < len){
+            console.log("II ", url, d, len)
             div.innerHTML = '<div>' + device_name + ': uploaded ' + d.len + ' from ' + len +'</div>'
             setTimeout(function () {
                 air_play_check(rHost, len, name, ch, divId, device_name);
             }, 1000)
             return;
         }
+
+        console.log("III ", url, d, len, device_name, rHost, div)
         div.innerHTML = '<div>' + device_name + ': upload complete</div>';
         d.host = rHost;
         d.el = div;
         ch(d);
+
     }, function (err) {
+
         div.innerHTML = '<div>' + device_name + ': check request failed </div>';
     })
 }

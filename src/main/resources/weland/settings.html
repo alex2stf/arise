@@ -1,10 +1,10 @@
 <div id="sting" class="page">
 
     <div class="line">
-       window location: <span id="curl" style="font-weight: bold"></span>
+       window location: <span class="window-location" style="font-weight: bold"></span>
     </div>
     <div class="line">
-        ipv4 config: <span id="sips" style="font-weight: bold"></span>
+        ipv4 config: <span class="sips" style="font-weight: bold"></span>
     </div>
     <div class="line">
         <div>Friend apps:</div>
@@ -20,12 +20,6 @@
     </div>
 
     <div class="d-info">
-
-
-
-
-
-
     </div>
 
 
@@ -33,15 +27,15 @@
 
 
 
-        <div class="d-info">
-            <span class="dev-lbl">Device name:</span>
-            <span id="d-name">-</span>
-        </div>
+    <div class="d-info">
+        <span class="dev-lbl">Device name:</span>
+        <span class="d-name">-</span>
+    </div>
 
 
         <div class="d-info" id="c-battery">
             <span class="dev-lbl">Battery:</span>
-            <span id="d-battery">-</span>
+            <span class="d-battery">-</span>
         </div>
 
         <div class="d-info">
@@ -69,6 +63,6 @@
         </button>
 
 
-        <input id="volume" type="number" value="0" onchange="updateMusicVolume()">
+        <input id="volume"  class="music-volume" type="number" value="0" onchange="updateMusicVolume()">
     </div>
 </div>

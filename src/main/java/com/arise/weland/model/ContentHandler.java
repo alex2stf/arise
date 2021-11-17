@@ -1,8 +1,14 @@
 package com.arise.weland.model;
 
+import com.arise.astox.net.clients.HttpClient;
+import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
@@ -12,8 +18,14 @@ import com.arise.weland.utils.AppSettings;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -26,8 +38,6 @@ public abstract  class ContentHandler {
 
     private static MJPEGResponse mjpegResponse = new MJPEGResponse();
     private static JPEGOfferResponse jpegOfferResponse = new JPEGOfferResponse();
-
-
 
     public ContentHandler setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;
@@ -137,4 +147,24 @@ public abstract  class ContentHandler {
 
         return deviceInfoJson;
     }
+
+
+
+    public HttpResponse getLatestSnapshot() {
+
+        HttpResponse response = new HttpResponse();
+        byte[] bytes;
+        try {
+            bytes = FileUtil.readBytes(new File(FileUtil.findAppDir(), "snapshot.jpeg"));
+        } catch (IOException e) {
+            bytes = new byte[0];
+        }
+        response.setBytes(bytes)
+                .setContentType(ContentType.IMAGE_JPEG);
+        return response;
+
+    }
+
+    public abstract void takeSnapshot();
+
 }

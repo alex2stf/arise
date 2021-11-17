@@ -84,7 +84,9 @@ public class MapUtil {
             if (isEmpty(ak)){
                 return null;
             }
-            return ak.get(0) + "";
+            if (ak.get(0) != null){
+                return ak.get(0) + "";
+            }
         }
 
         return getString(map, null);

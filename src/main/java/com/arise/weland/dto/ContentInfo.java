@@ -351,6 +351,7 @@ public class ContentInfo implements Serializable {
         if (s == null){
             return null;
         }
+        //TODO check if is encoded
         try {
             return URLDecoder.decode(s, "UTF-8");
         } catch (UnsupportedEncodingException e) {

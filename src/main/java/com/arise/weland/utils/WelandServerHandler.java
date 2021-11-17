@@ -29,11 +29,17 @@ import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.model.FileTransfer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +49,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.StringUtil.trim;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
@@ -133,12 +140,7 @@ public class WelandServerHandler extends HTTPServerHandler {
         correlationId = request.getHeaderParam("Correlation-Id");
     }
 
-//    deviceStat.setServerUUID(server.getUuid());
-//    deviceStat.setDisplayName(SYSUtils.getDeviceName().toUpperCase());
-//    deviceStat.setProp("ks", "false");
-
     if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
-//      deviceStat.setServerStatus(MSG_RECEIVE_OK);
       Map mapObj = (Map) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
@@ -177,13 +179,22 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    //used mainly for audio streaming services
-    if ("/frame".equalsIgnoreCase(request.path())){
+    if(request.path().equalsIgnoreCase("/orchestra")){
+      String orchContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/orchestra.html"));
       Map<String, String> args = new HashMap<>();
-      args.put("src", request.getQueryParam("src"));
-      String frameContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/frame.html"));
-      return HttpResponse.html(whisker.compile(frameContent, args));
+      args.put("host", request.getQueryParamString("host", ""));
+      whisker.setTemplatesRoot("src/main/resources#weland");
+      return HttpResponse.html(whisker.compile(orchContent, args));
     }
+
+    if(request.path().startsWith("/proxy/exec")){
+      String host = request.getQueryParam("host");
+      String port = request.getQueryParam("port");
+      String protocol = request.getQueryParam("protocol");
+      String path = request.getQueryParam("path");
+      return new ProxyHttpResponse(host, port, protocol, path);
+    }
+
 
     //generic platform agnostic information
     if ("/device/stat".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
@@ -198,6 +209,30 @@ public class WelandServerHandler extends HTTPServerHandler {
       return contentHandler.onDeviceUpdate(request.getQueryParams()).toHttp();
     }
 
+
+    if (request.pathsStartsWith("device-update")){
+      String what = request.getPathAt(1);
+      Map<String, List<String>> params = new HashMap<>();
+      String mode;
+
+      if ("lightMode".equalsIgnoreCase(what)){
+        mode = request.getPathAt(2);
+        params.put("lightMode", Arrays.asList(mode));
+      }
+      else if ("camId".equalsIgnoreCase(what)){
+        mode = request.getPathAt(2);
+        params.put("camId", Arrays.asList(mode));
+      }
+      else if ("musicVolume".equalsIgnoreCase(what)){
+        mode = request.getPathAt(2);
+        params.put("musicVolume", Arrays.asList(mode));
+      }
+      else if ("camEnabled".equalsIgnoreCase(what)){
+        mode = request.getPathAt(2);
+        params.put("camEnabled", Arrays.asList(mode));
+      }
+      return contentHandler.onDeviceUpdate(params).toHttp();
+    }
 
 
 
@@ -219,6 +254,12 @@ public class WelandServerHandler extends HTTPServerHandler {
       String key = request.getQueryParam("key");
       String value = request.getQueryParam("value");
 
+      //TODO intelege de ce asa
+      try {
+        value = URLDecoder.decode(value, "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        ;;
+      }
 
       try {
         File propsFile = getClientPropsFile();
@@ -243,6 +284,17 @@ public class WelandServerHandler extends HTTPServerHandler {
       String id = request.getQueryParam("id");
       return contentInfoProvider.getMediaPreview(id)
               .addCorelationId(correlationId).allowAnyOrigin();
+    }
+
+
+
+    if(request.pathsStartsWith("snapshot-get")){
+      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
+    }
+
+    if(request.pathsStartsWith("snapshot-make")){
+      contentHandler.takeSnapshot();
+      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
     }
 
     //list media based on type
@@ -348,11 +400,11 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    //close || stopPreviews
-    if (request.pathsStartsWith("files", "close")){
-      contentHandler.stop(request);
-      return contentHandler.getDeviceStat().toHttp(request);
-    }
+      //close || stopPreviews
+      if (request.pathsStartsWith("files", "close")){
+        contentHandler.stop(request);
+        return contentHandler.getDeviceStat().toHttp(request);
+      }
 
      //PAUSE
       if (request.pathsStartsWith("media", "pause")){
@@ -416,10 +468,9 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
+
     if (request.pathsStartsWith("playlist")){
-
       Map<String, List<String>> data = request.getQueryParams();
-
       String action = request.getQueryParamString("action", "xx");
       String name = request.getQueryParamString("name", null);
       String path = request.getQueryParamString("path", null);
@@ -441,24 +492,12 @@ public class WelandServerHandler extends HTTPServerHandler {
           return HttpResponse.json(PlaylistWorker.getPlaylist(name)).allowAnyOrigin();
       }
 
-
-
-
-
-
-
       return HttpResponse.json(PlaylistWorker.listPlaylists()).allowAnyOrigin();
     }
 
-
     if ("/close-app".equals(request.path())){
-//      Intent intent = new Intent(Activity.this, MyBackgroundService.class);
-//      stopService(intent);
-//
-//      System.exit(0);
       contentHandler.onCloseRequested();
-      return contentHandler.getDeviceStat()
-              .toHttp();
+      return contentHandler.getDeviceStat().toHttp();
     }
 
 

@@ -1,0 +1,211 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+       #o-navbar {
+           display: inline-block;
+            width: 9%;
+           background: greenyellow;
+       }
+        #o-pages {
+            display: inline-block;
+            width: 89%;
+        }
+
+        .snapshot {
+            width: 200px;
+            height: 200px;
+        }
+
+        .page {
+            width: 100%;
+            background: red;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div id="o-navbar"></div>
+<div id="o-pages"></div>
+
+</body>
+
+
+<script>
+    var host = '{{host}}',  global_data = {}, uid = 0;
+
+    {{> common-util.js}}
+
+
+    $get('/device/stat', function (d) {
+        if (d.I4 && d.I4.length > 0){
+
+            var sorted = d.I4.sort(function(a, b){
+                var c = +(a.split('.')[0]);
+                var d = +(b.split('.')[0]);
+                return d - c;
+            })
+
+            for(var i = 0; i < sorted.length; i++){
+                check_local_network(sorted[i], function (x) {
+                    if(x && x.N && x.I4 && x.I4.length) {
+                        place_data(x)
+                    }
+                })
+            }
+        }
+    });
+
+    function show_tab(item_id) {
+        $('.page').hide();
+        $('#' + item_id + '-p').show();
+    }
+
+
+    function get_ip(item_id, call) {
+        var item = global_data[item_id];
+        uid++;
+        if(!item){
+            alert('global data ['+item_id+'] not found')
+            return;
+        }
+        var ip = item.I4[0];
+        if (call){
+            call(item, item_id, ip, uid);
+        }
+    }
+
+    function take_snapshot(item_id) {
+        get_ip(item_id, function (item, id, ip, count) {
+            var url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/snapshot-make&uid=' + request_uid();
+            _g('snap-' + item_id).onload = function (ev) {
+                $get('/proxy/exec?host=' + ip + "&port=8221&protocol=http&path=/device/stat", function (x) {
+                    if(x.err && x.test){
+                        console.log('nothing for ' + x);
+                    } else if(c){
+                        place_data(x)
+                    }
+                })
+            }
+            _g('snap-' + item_id).src = url;
+        })
+    }
+
+
+
+
+
+    function select_light_mode(item_id) {
+        get_ip(item_id, function (item, id, ip, count) {
+            var div = _g('light-mode-' + id);
+            var selected = div.options[div.selectedIndex].value;
+            var url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/device-update/lightMode/'+selected+'&uid=' + request_uid();
+            perform_refresh(item_id);
+        })
+
+
+    }
+
+
+    function select_camera_index(item_id) {
+        get_ip(item_id, function (item, id, ip, count) {
+            var div = _g('cam-id-' + id);
+            var selected = div.options[div.selectedIndex].value;
+            var url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/device-update/camId/'+selected+'&uid=' + request_uid();
+            perform_refresh(item_id);
+        })
+    }
+
+    function get_device_id(data) {
+        var name = data.N;
+        var ips = data.I4.join('-');
+        return  extract_id(name + ips);
+    }
+
+    function showCamStopBtn(data) {
+        var itemId = get_device_id(data);
+        _g('cam-stat-' + itemId).innerHTML = '<button onclick="stop_cam(\'' + itemId + '\')">STOP CAM</button>';
+    }
+
+    function stop_cam(item_id) {
+        get_ip(item_id, function (item, id, ip, count) {
+            var url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/device-update/camEnabled/false&uid=' + request_uid();
+            perform_refresh(item_id);
+        })
+    }
+    
+    function showCamPlayBtn(data) {
+        var itemId = get_device_id(data);
+        _g('cam-stat-' + itemId).innerHTML = 'take snapshot to start cam'
+    }
+
+
+    function perform_refresh(item_id) {
+        setTimeout(function () {
+            var ip = global_data[item_id].I4[global_data[item_id].I4.length - 1];
+            $get('/proxy/exec?host=' + ip + "&port=8221&protocol=http&path=/device/stat", function (x) {
+                if(x.err && x.test){
+                    // console.log('nothing for ' + x);
+                } else {
+                    place_data(x)
+                }
+            })
+        }, 1000);
+    }
+
+    function place_data(data) {
+
+        var itemId = get_device_id(data);
+        console.log('received update ' + itemId, data);
+        global_data[itemId] = data;
+        global_data[itemId].__last_refresh = new Date();
+
+        var btnId = itemId + '-b';
+        var frameId = itemId + '-p';
+        var btnDiv = _g(btnId);
+        var frameDiv = _g(frameId);
+        var main = data.I4[0];
+
+        if(!frameDiv){
+            frameDiv = document.createElement('div');
+            frameDiv.setAttribute('class', 'page')
+            frameDiv.id = frameId;
+            _g('o-pages').appendChild(frameDiv);
+            var htm = '<div class="sips"></div>';
+            htm+='<div class="d-battery"></div>';
+            htm+='<div id="cam-stat-'+itemId+'"></div>';
+            htm+='<select id="light-mode-'+itemId+'" class="light-mode" onchange="select_light_mode(\''+itemId+'\')"></select>';
+            htm+='<select id="cam-id-'+itemId+'" class="camera-index" onchange="select_camera_index(\''+itemId+'\')"></select>';
+            htm+='<button onclick="take_snapshot(\''+itemId+'\')">Snapshot</button>';
+            htm+='<img id="snap-'+itemId+'" src="/proxy/exec?host='+main+'&port=8221&protocol=http&path=/snapshot-get&uid=rand__" class="snapshot"/>';
+            frameDiv.innerHTML = htm;
+            show_tab(itemId);
+        }
+
+        update_ui_with_device_stat_into_root(frameId, frameId, data);
+
+        if (!btnDiv){
+            btnDiv = document.createElement('div');
+            btnDiv.id = btnId;
+            btnDiv.innerHTML = '<button style="color: white" onclick="show_tab(\''+itemId+'\')"> '+data.N+'</button>';
+            _g('o-navbar').appendChild(btnDiv);
+        }
+
+    }
+
+
+</script>
+
+
+</html>
