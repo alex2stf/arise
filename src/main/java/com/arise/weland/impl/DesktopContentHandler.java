@@ -24,8 +24,7 @@ import java.net.URLClassLoader;
 import java.util.List;
 import java.util.*;
 
-import static com.arise.weland.utils.AppSettings.Keys.PREFERRED_BROWSER;
-import static com.arise.weland.utils.AppSettings.Keys.SINGLE_INSTANCES;
+import static com.arise.weland.utils.AppSettings.Keys.*;
 
 //import org.openqa.selenium.WebDriver;
 
@@ -476,6 +475,10 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public void takeSnapshot() {
+        if(AppSettings.isDefined(TAKE_SNAPSHOT_CMD)){
+            String cmd = AppSettings.getProperty(TAKE_SNAPSHOT_CMD);
+            SYSUtils.exec(cmd.split(" "));
+        }
 
     }
 

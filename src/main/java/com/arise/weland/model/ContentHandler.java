@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.arise.core.tools.SYSUtils.getLinuxDetails;
+import static com.arise.weland.utils.AppSettings.Keys.LATEST_SNAPSHOT_PATH;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
@@ -155,10 +156,19 @@ public abstract  class ContentHandler {
 
     public HttpResponse getLatestSnapshot() {
 
+        File file;
+
+        if(AppSettings.isDefined(LATEST_SNAPSHOT_PATH)){
+            file = new File(AppSettings.getProperty(LATEST_SNAPSHOT_PATH));
+        } else {
+            file = new File(FileUtil.findAppDir(), "snapshot.jpeg");
+        }
+
         HttpResponse response = new HttpResponse();
+
         byte[] bytes;
         try {
-            bytes = FileUtil.readBytes(new File(FileUtil.findAppDir(), "snapshot.jpeg"));
+            bytes = FileUtil.readBytes(file);
         } catch (IOException e) {
             bytes = new byte[0];
         }

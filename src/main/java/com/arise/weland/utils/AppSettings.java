@@ -142,7 +142,7 @@ public class AppSettings {
     }
 
     public static boolean isTrue(Keys key){
-        if (applicationProperties.containsKey(key.s)){
+        if (isDefined(key)){
             return "true".equalsIgnoreCase(applicationProperties.getProperty(key.s));
         }
         return false;
@@ -156,11 +156,17 @@ public class AppSettings {
         }
     }
 
+    public static boolean isDefined(Keys key) {
+        return applicationProperties.containsKey(key.s);
+    }
+
 
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
         SERVER_PORT("server.port", new String[]{"8221 default"}),
-        SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"});
+        SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"}),
+        LATEST_SNAPSHOT_PATH("paths.latest.snapshot", new String[]{"latest/snapshot.jpeg"}),
+        TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"});
 
         final String s;
         private final String[] variants;
