@@ -124,10 +124,13 @@ public class Main {
 
 
         ThreadUtil.fireAndForget(new Runnable() {
+
             @Override
             public void run() {
+
+                int port = AppSettings.getInt(AppSettings.Keys.SERVER_PORT, 8221);
                 ioServer = new IOServer()
-                        .setPort(8221)
+                        .setPort(port)
                         .setName("DR_" + SYSUtils.getDeviceName())
                         .setUuid(UUID.randomUUID().toString())
                         .setRequestBuilder(requestBuilder)
@@ -135,7 +138,7 @@ public class Main {
                         .setHost("localhost")
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);
-                log.info("SERVER STARTED at http://" + NetworkUtil.getCurrentIPV4AddressSync() + ":8221/app");
+                log.info("SERVER STARTED at http://" + NetworkUtil.getCurrentIPV4AddressSync() + ":"+port+"/app");
                 try {
                     ioServer.start();
                 } catch (Exception e) {

@@ -148,9 +148,18 @@ public class AppSettings {
         return false;
     }
 
+    public static int getInt(Keys key, int i) {
+        try {
+            return Integer.valueOf(getProperty(key));
+        } catch (Exception e) {
+            return i;
+        }
+    }
+
 
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
+        SERVER_PORT("server.port", new String[]{"8221 default"}),
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"});
 
         final String s;

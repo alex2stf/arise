@@ -33,3 +33,7 @@ sudo chmod 644 weland-app.service
 sudo systemctl daemon-reload
 sudo systemctl enable weland-app.service
 
+
+
+
+install fswebcam
