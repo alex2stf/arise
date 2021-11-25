@@ -125,6 +125,10 @@ public class AppCache {
         return "true".equalsIgnoreCase(getString(key, "false"));
     }
 
+    public static boolean getBoolean(String key, boolean defaultVal){
+        return "true".equalsIgnoreCase(getString(key, defaultVal + ""));
+    }
+
     public static int getInt(String key, int defaultVal) {
         return workerGetInt(key, defaultVal);
     }

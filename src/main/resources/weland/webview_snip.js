@@ -18,6 +18,7 @@ setTimeout(function (){
 }, 1000 * 3);
 
 
+
 function auto_click_elements(items){
         if(items && items.length){
             for(var i = 0; i < items.length; i++){
@@ -28,6 +29,8 @@ function auto_click_elements(items){
                    items[i].innerHTML.indexOf('da') > -1 ||
                    items[i].innerHTML.indexOf('i agree') > -1 ||
                    items[i].innerHTML.indexOf('I agree') > -1 ||
+                   items[i].innerHTML.indexOf('skip ad') > -1 ||
+                   items[i].innerHTML.indexOf('Skip Ad') > -1 ||
                    items[i].innerHTML.indexOf('yes') > -1){
                            items[i].click();
                 }

@@ -77,6 +77,35 @@
   },
 
   {
+    "path": "https://www.youtube.com/watch?v=SomenbXMomI&list=PL4zZspbjJ-iSRqygiwywsc-OWyWew_Sd4&t=1",
+    "playlist": "STREAMS",
+    "title": "Winter songs"
+
+  },
+
+  {
+    "path": "https://www.youtube.com/watch?v=HivQqTtiHVw&list=PL4zZspbjJ-iR80RuXqo9L9ANcKNEN1pFM?t=1",
+    "playlist": "STREAMS",
+    "title": "David Bowie - best of"
+  },
+
+  {
+    "path": "https://www.youtube.com/watch?v=w-gDNhG3K3w&list=PL4zZspbjJ-iQkwXk6sEbtpZhDaU1Dvshl&t=1",
+    "playlist": "STREAMS",
+    "title": "Licks and tricks"
+  },
+  {
+    "path": "https://www.youtube.com/watch?v=7cSAKlu0OlU&list=PL4zZspbjJ-iSdCyd2grOdfJidCznz2c8c&t=1",
+    "playlist": "STREAMS",
+    "title": "Inspiration (by dompacism)"
+  },
+  {
+    "path": "https://www.youtube.com/watch?v=2AMMb9CiScI&list=PL4zZspbjJ-iSCt7mrNwafc_r0hr-9YN-R&t=1",
+    "title": "Slow thoughts",
+    "playlist": "STREAMS"
+  },
+
+  {
     "path": "https://9gag.com/",
     "playlist": "GAMES",
     "title": "Game",

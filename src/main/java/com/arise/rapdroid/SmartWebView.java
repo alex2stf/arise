@@ -14,12 +14,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.*;
 import android.widget.*;
 import androidx.annotation.Nullable;
+
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.rapdroid.components.ui.Layouts;
 import com.arise.rapdroid.components.ui.adapters.URLAutocomplete;
 import com.arise.rapdroid.components.ui.views.SmartLayout;
+import com.arise.rapdroid.media.server.fragments.BrowserFragment;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +31,7 @@ import java.util.List;
 
 public class SmartWebView extends LinearLayout {
     public static final Resources DEFAULT = new Resources();
-    private final WebView webView;
+    private WebView webView;
 //    WebView soundThread;
     private final Context ctx;
     private Resources resources = DEFAULT;
@@ -41,6 +44,7 @@ public class SmartWebView extends LinearLayout {
     private static URLAutocomplete urls;
     private List<String> blocked;
     private String jsSnip;
+    private volatile boolean block_mode;
 
 
     public SmartWebView(Context context, Resources resources) {
@@ -73,6 +77,9 @@ public class SmartWebView extends LinearLayout {
 
 
     private boolean isBlockedDomain(String s){
+        if (!block_mode){
+            return false;
+        }
 
         if (s.endsWith(".ttf")){
             return false;
@@ -86,9 +93,9 @@ public class SmartWebView extends LinearLayout {
         //ASTA incetineste player-ul
 
         //https://m.youtube.com/s/player/f5eab513/player-plasma-ias-phone-ro_RO.vflset/ad.js
-        if (s.indexOf("youtube") > -1 && s.indexOf("player") > -1 && s.indexOf("ad") > -1){
-            return true;
-        }
+//        if (s.indexOf("youtube") > -1 && s.indexOf("player") > -1 && s.indexOf("ad") > -1){
+//            return true;
+//        }
 
 //        https://m.youtube.com/s/player/f5eab513/player-plasma-ias-phone-ro_RO.vflset/ad.js
         if (s.indexOf("youtube.com/generate_204") > -1){
@@ -133,6 +140,7 @@ public class SmartWebView extends LinearLayout {
                     InputStream textStream = new ByteArrayInputStream(text.getBytes());
                     return getTextWebResource(textStream);
                 }
+                updateSearchBar();
                 return super.shouldInterceptRequest(view, request);
             }
 
@@ -190,7 +198,6 @@ public class SmartWebView extends LinearLayout {
         }
 
 
-//        webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; SM-A530F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
         webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; Apple) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36");
         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -201,7 +208,6 @@ public class SmartWebView extends LinearLayout {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-//        webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.117 Safari/537.36");
 
         youtubeSetup();
         hideZoomControls();
@@ -215,15 +221,21 @@ public class SmartWebView extends LinearLayout {
             ((Activity) ctx).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (searchBar.getText().equals(webView.getUrl())){
+                    if (null == webView || null == searchBar){
                         return;
                     }
-                    searchBar.setText(webView.getUrl());
+                    if (searchBar.getText().equals(getCurrentUri())){
+                        return;
+                    }
                     webView.loadUrl("javascript:(function(){"+jsSnip+"})();");
+                    searchBar.setText(getCurrentUri());
+                    AppCache.putString(BrowserFragment.CURRENT_BROWSER_URL, getCurrentUri());
                 }
             });
         }
     }
+
+
 
     private void hideZoomControls() {
         webView.getSettings().setBuiltInZoomControls(false);
@@ -231,7 +243,15 @@ public class SmartWebView extends LinearLayout {
     }
 
     public String getCurrentUri(){
-        return webView.getUrl();
+        if(webView == null){
+            return "wtf??-null-webview";
+        }
+        String url = webView.getUrl();
+        if(!StringUtil.hasText(url)){
+            url = webView.getOriginalUrl();
+        }
+
+        return url;
     }
 
 
@@ -307,6 +327,7 @@ public class SmartWebView extends LinearLayout {
     private void youtubeSetup(){
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSupportMultipleWindows(false);
 //        webView.getSettings().setAppCacheEnabled(true);
 //        webView.setInitialScale(1);
 //        webView.getSettings().setLoadWithOverviewMode(true);
@@ -318,20 +339,20 @@ public class SmartWebView extends LinearLayout {
     }
 
     public void loadUrl(String uri) {
-        log.info("load uri " + uri);
-//        this.uri = uri;
-        webView.loadUrl(uri);
-
-
-        if (searchBar != null){
-            searchBar.setText(uri);
+        if(null == webView){
+            return;
         }
+        if (uri.equals(webView.getUrl())){
+            return;
+        }
+        log.info("load uri " + uri);
+        webView.loadUrl(uri);
+        if (searchBar != null){
+            searchBar.setText(getCurrentUri());
+        }
+        AppCache.putString(BrowserFragment.CURRENT_BROWSER_URL, getCurrentUri());
     }
 
-    @Deprecated
-    public String url(){
-        return webView.getUrl();
-    }
 
     public SmartWebView init() {
         if (top != null){
@@ -339,7 +360,7 @@ public class SmartWebView extends LinearLayout {
         }
         addView(webView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.3F));
 
-        if (!isEmpty(actionButtons)){
+        if (!CollectionUtil.isEmpty(actionButtons)){
             LinearLayout bottomButtons = new LinearLayout(ctx);
             bottomButtons.setOrientation(HORIZONTAL);
             for (Button btn: actionButtons){
@@ -373,36 +394,40 @@ public class SmartWebView extends LinearLayout {
         return this;
     }
 
-    public void stop() {
+    public void onDestroy(){
         if (webView != null){
-            webView.loadUrl("about:blank");
+            removeAllViews();
             webView.clearHistory();
             webView.clearCache(true);
+            webView.clearView();
+            webView.destroy();
+            webView =  null;
         }
     }
 
-//    public void hideWebview() {
-//        webView.setVisibility(INVISIBLE);
-//    }
-//
-//    public void showWebview() {
-//        webView.setVisibility(VISIBLE);
-//    }
-
-//    public void pause() {
-//        webView.onPause();
-//    }
-//
-//    public void releaseAndSetCameraFromCache(){
-//        webView.onResume();
-//    }
-
-
-
-    public interface OnClickListener {
-        void onClick(SmartWebView webView, View view);
+    public void onStop() {
+        if (webView != null){
+//            webView.onPause();
+            webView.stopLoading();
+            this.loadUrl("about:blank");
+        }
     }
 
+    public void setBlockMode(boolean block_mode) {
+        this.block_mode = block_mode;
+    }
+
+    public void onPause() {
+        if (webView != null) {
+            webView.onPause();
+        }
+    }
+
+    public void onResume() {
+        if (webView != null){
+            webView.onResume();
+        }
+    }
 
     public static class Resources {
         public Integer menuButtonImage;

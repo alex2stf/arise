@@ -5,12 +5,10 @@ sudo apt-get install qt5-default qtcreator qtdeclarative5-dev libqt5webenginewid
 
 
 
+Create raspberry Pi weland-app service
 
 cd /etc/systemd/system
-
-
 touch weland-app.service
-
 
 create file with the following content:
 
@@ -28,12 +26,19 @@ Alias=weland-app.service
 
 
 sudo chmod 644 weland-app.service
-
-
 sudo systemctl daemon-reload
 sudo systemctl enable weland-app.service
 
 
+raspberry pi install and configure motion
 
+install motion
+
+create storage directory:
+sudo mkdir motion-out
+sudo chgrp motion motion-out
+sudo chmod g+rwx motion-out
+sudo nano /etc/motion/motion.conf
+target_dir /motion-out
 
 install fswebcam

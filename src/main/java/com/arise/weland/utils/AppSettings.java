@@ -166,6 +166,7 @@ public class AppSettings {
         SERVER_PORT("server.port", new String[]{"8221 default"}),
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"}),
         LATEST_SNAPSHOT_PATH("paths.latest.snapshot", new String[]{"latest/snapshot.jpeg"}),
+        KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
         TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"});
 
         final String s;
