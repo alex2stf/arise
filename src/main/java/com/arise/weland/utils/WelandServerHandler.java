@@ -148,6 +148,14 @@ public class WelandServerHandler extends HTTPServerHandler {
       return contentHandler.getLiveJpeg();
     }
 
+    if("/alias-play/rockfm".equalsIgnoreCase(request.path())){
+      return contentHandler.openPath("https://live.rockfm.ro:8443/rockfm.aacp");
+    }
+
+    if("/alias-play/jazz".equalsIgnoreCase(request.path())){
+      return contentHandler.openPath("https://stream.srg-ssr.ch/m/rsj/mp3_128");
+    }
+
     //main html rendering
     if ("/app".equalsIgnoreCase(request.path()) || "/app.html".equalsIgnoreCase(request.path())){
       appContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/app.html"));

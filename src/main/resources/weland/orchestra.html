@@ -164,6 +164,37 @@
         }, 1000);
     }
 
+    function  play_alias(item_id, what) {
+
+        get_ip(item_id, function (item, id, ip, count) {
+            var url;
+            if ('jazz' === what){
+                url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/alias-play/jazz&uid=' + request_uid();
+            } else {
+                url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/alias-play/rockfm&uid=' + request_uid();
+            }
+            $get(url, function (x) {
+                perform_refresh(item_id);
+            })
+
+
+        })
+
+
+
+    }
+    
+    function stop(item_id) {
+        get_ip(item_id, function (item, id, ip, count) {
+            var url;
+            url = '/proxy/exec?host=' + ip + '&port=8221&protocol=http&path=/files/close&uid=' + request_uid();
+
+            $get(url, function (x) {
+                perform_refresh(item_id);
+            })
+        })
+    }
+
     function place_data(data) {
 
         var itemId = get_device_id(data);
@@ -188,6 +219,9 @@
             htm+='<select id="light-mode-'+itemId+'" class="light-mode" onchange="select_light_mode(\''+itemId+'\')"></select>';
             htm+='<select id="cam-id-'+itemId+'" class="camera-index" onchange="select_camera_index(\''+itemId+'\')"></select>';
             htm+='<button onclick="take_snapshot(\''+itemId+'\')">Snapshot</button>';
+            htm+='<button onclick="play_alias(\''+itemId+'\', \'rockFm\')">RockFm</button>';
+            htm+='<button onclick="play_alias(\''+itemId+'\', \'jazz\')">Jazz</button>';
+            htm+='<button onclick="stop(\''+itemId+'\')">stop</button>';
             htm+='<img id="snap-'+itemId+'" src="/proxy/exec?host='+main+'&port=8221&protocol=http&path=/snapshot-get&uid=rand__" class="snapshot"/>';
             frameDiv.innerHTML = htm;
             show_tab(itemId);

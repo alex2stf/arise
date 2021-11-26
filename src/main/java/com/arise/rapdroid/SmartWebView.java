@@ -23,6 +23,7 @@ import com.arise.rapdroid.components.ui.Layouts;
 import com.arise.rapdroid.components.ui.adapters.URLAutocomplete;
 import com.arise.rapdroid.components.ui.views.SmartLayout;
 import com.arise.rapdroid.media.server.fragments.BrowserFragment;
+import com.arise.weland.dto.DeviceStat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -230,6 +231,7 @@ public class SmartWebView extends LinearLayout {
                     webView.loadUrl("javascript:(function(){"+jsSnip+"})();");
                     searchBar.setText(getCurrentUri());
                     AppCache.putString(BrowserFragment.CURRENT_BROWSER_URL, getCurrentUri());
+                    DeviceStat.getInstance().setProp("browser-url", searchBar.getText() + "");
                 }
             });
         }
