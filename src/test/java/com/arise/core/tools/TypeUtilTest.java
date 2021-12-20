@@ -1,8 +1,6 @@
 package com.arise.core.tools;
 
 import com.arise.core.tools.TypeUtil.IteratorHandler;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +9,6 @@ import java.util.Map;
 
 public class TypeUtilTest {
 
-  @Test
   public void testDates(){
 
     Map<String, Object> map = TypeUtil.objectToMap(new Date());
@@ -19,7 +16,6 @@ public class TypeUtilTest {
   }
 
 
-  @Test
   public void testSimpleIterator(){
 
     int src[] = new int[]{0, 1, 2, 3, 4};
@@ -47,9 +43,8 @@ public class TypeUtilTest {
 
   }
 
-  @Test
   public void testIgnoreNulls(){
-    List<Entry> entryList = new ArrayList<>();
+    final List<Entry> entryList = new ArrayList<>();
     Integer nullables[] = new Integer[]{1, 2, 3, null, 4};
     TypeUtil.forEach(nullables, new IteratorHandler() {
       @Override
@@ -97,7 +92,6 @@ public class TypeUtilTest {
     Assert.assertEquals(4, entryList.size());
   }
 
-  @Test
   public void testObjectIterator(){
     Base base = new Base();
     base.baseStringPackageProtected = "baseStringPackageProtected_val";
@@ -106,7 +100,7 @@ public class TypeUtilTest {
     base.baseStringProtected = "baseStringProtected_v";
 
 
-    List<Entry> entries = new ArrayList<>();
+    final List<Entry> entries = new ArrayList<>();
 
     TypeUtil.forEach(base, new IteratorHandler() {
       @Override

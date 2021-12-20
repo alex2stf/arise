@@ -1,7 +1,8 @@
-package com.tests;
+package com.arise.tests;
 
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.Multipart;
+import com.arise.core.tools.Assert;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -34,9 +35,10 @@ public class HttpBoundaryTest {
                 "     --simple boundary-- \n" +
                 "     This is the epilogue.  It is also to be ignored.";
         List<byte[]> bytes = Multipart.splitBytesByBoundary(multipart.getBytes(), "simple boundary");
+        Assert.assertEquals(bytes.size(), 2);
 
-        for (byte[] b: bytes){
-            System.out.println("BLOCK\n" + new String(b) + "ENDBLOCK");
-        }
+//        for (byte[] b: bytes){
+//            System.out.println("BLOCK\n" + new String(b) + "ENDBLOCK");
+//        }
     }
 }

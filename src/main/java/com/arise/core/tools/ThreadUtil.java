@@ -16,7 +16,7 @@ public class ThreadUtil {
         return fireAndForget(action, name, false);
     }
 
-    public static Thread fireAndForget(Runnable action, String name, boolean daemon){
+    public static Thread fireAndForget(final Runnable action, String name, boolean daemon){
 
         Thread t = new Thread(new Runnable() {
             @Override

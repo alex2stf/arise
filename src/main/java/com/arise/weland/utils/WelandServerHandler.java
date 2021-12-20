@@ -35,14 +35,12 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
   ContentInfoProvider contentInfoProvider;
-  Handler<HttpRequest> deviceControlsUpdate;
   ContentHandler contentHandler;
   IDeviceController iDeviceController;
   Whisker whisker = new Whisker();
   String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-//  Properties clientProps = new Properties();
   ThreadUtil.TimerResult syncPlayTimer;
 
 
@@ -93,18 +91,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-  public WelandServerHandler onDeviceControlsUpdate(Handler<HttpRequest> deviceControlsUpdate) {
-    this.deviceControlsUpdate = deviceControlsUpdate;
-    return this;
-  }
 
-  @Deprecated
-  public <I> HttpResponse dispatch(Handler<I> handler, I data){
-    if (handler != null){
-      return handler.handle(data);
-    }
-    return HttpResponse.oK();
-  }
 
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
@@ -132,7 +119,6 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if ("/device/controls/set".equalsIgnoreCase(request.path())){
-      dispatch(deviceControlsUpdate, request);
       return contentHandler.getDeviceStat().toHttp();
     }
 
@@ -513,10 +499,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
 
-  @Deprecated
-  public interface Handler<T> {
-    HttpResponse handle(T data);
-  }
+
 
 
 }

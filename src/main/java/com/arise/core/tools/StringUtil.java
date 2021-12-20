@@ -221,6 +221,15 @@ public class StringUtil {
         return r;
     }
 
+    public static String join(String item, int count, String delimiter){
+        StringBuilder sb = new StringBuilder();
+        sb.append(item);
+        for (int i = 1; i < count; i++){
+            sb.append(delimiter).append(item);
+        }
+        return sb.toString();
+    }
+
     public static String join(int length, String repeatable, String delimiter){
         if (length == 0){
             return "";
@@ -388,29 +397,38 @@ public class StringUtil {
         return valueOf(o);
     }
 
-    public static Set<String> smallestString(Set<String> in) {
-        if (in.size() == 1){
-            return in;
+    public static String sanitizeAppId(String s){
+        if ("LAYNEE_WALL".equals(s)){
+            return s;
         }
-
-        Set<String> rs = new HashSet<String>();
-        String r = null;
-        int max = 0;
-        for (String s: in) {
-            if (s.length() > max){
-                max = s.length();
-            }
-        }
-
-        for (String s: in) {
-            if (s.length() < max){
-                max = s.length();
-                r = s;
-            }
-        }
-
-        rs.add(r);
-        return rs;
+        return  ("" + s).replaceAll("\\s+","")
+                .replaceAll("http:", "L")
+                .replaceAll("https:", "U")
+                .replaceAll(":", "Q")
+                .replaceAll("\\(", "_")
+                .replaceAll("\\)", "_")
+                .replaceAll("=", "v")
+                .replaceAll("\\?", "z")
+                .replaceAll("\\.", "d")
+                .replaceAll("\\+", "5")
+                .replaceAll("/", "")
+                .replaceAll("inux", "Xx")
+                .replaceAll("samsung", "sG")
+                .replaceAll("aarch", "yH")
+                .replaceAll("\"", "")
+                .replaceAll("\\\\", "")
+                .replaceAll("%2", "s")
+                .replaceAll("%28", "7")
+                .replaceAll("#", "_")
+                .replaceAll("%", "x")
+                .replaceAll("//", "g")
+                .replaceAll("storage", "y")
+                .replaceAll("ovies", "W")
+                .replaceAll("usic", "R")
+                .replaceAll("/", "7")
+                .replaceAll("mate", "M3")
+                .replaceAll("generic", "89")
+                .replaceAll("alex", "SAP");
     }
 
 

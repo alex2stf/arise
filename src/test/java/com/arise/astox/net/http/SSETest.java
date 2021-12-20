@@ -15,7 +15,7 @@ public class SSETest {
 
 
     public static void main(String[] args) throws Exception {
-        SSEClient sseClient = new SSEClient()
+        final SSEClient sseClient = new SSEClient()
 //                .setPort(8033)
                 .setPort(8778)
                 .setHost("localhost");

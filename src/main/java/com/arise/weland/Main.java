@@ -55,13 +55,9 @@ public class Main {
 
         log.info("init weland server");
         log.info("SYSUtils.isLinux() " + SYSUtils.isLinux());
-        SYSUtils.getLinuxDetails();
 
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
         MediaInfoSolver.load();
-
-
-
         AppCache.setWorker(new StandardCacheWorker());
 
         try {

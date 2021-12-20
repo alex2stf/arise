@@ -1,29 +1,37 @@
 package com.arise.cargo.management;
 
 import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 
 public class Project {
 
     final String name;
     private String forcedPlatform = null;
-    Whisker whisker = new Whisker();
+    static final Whisker whisker = new Whisker();
 
-   final Mole log;
+    final Mole log;
 
     List<Dependency> dependencies = new ArrayList<>();
-    private File outputDir;
+
+    private List includes;
+    private List sources;
 
     public Project(String name) {
         this.name = name;
@@ -33,11 +41,13 @@ public class Project {
     public static Project fromMap(Map data) {
         Project project = new Project(MapUtil.getString(data, "name"));
         project.forcedPlatform = MapUtil.getString(data, "forced-platform");
+        project.includes = MapUtil.getList(data, "include");
+        project.sources = MapUtil.getList(data, "sources");
         List<String> dependenciesNames = MapUtil.getList(data, "dependencies");
 
-        for(String d: dependenciesNames){
+        for (String d : dependenciesNames) {
             Dependency dependency = DependencyManager.getDependency(d);
-            if (dependency == null){
+            if (dependency == null) {
                 throw new RuntimeException("No dependency [" + d + "] found");
             }
             project.dependencies.add(dependency);
@@ -46,17 +56,42 @@ public class Project {
     }
 
 
+    private void append(Map<String, Set<String>> buf, String key, List<String> value, DependencyManager.Resolution r){
+        if (!buf.containsKey(key)){
+            buf.put(key, new HashSet<String>());
+        }
+        Set<String> exiting = buf.get(key);
+        for (String s: value){
+            exiting.add(
+                    new File(r.uncompressed(), s).getAbsolutePath()
+            );
+        }
+    }
 
-    public void outputTo(File outputDir) throws Exception {
-        this.outputDir = outputDir;
+
+    private boolean isAcceptedAsSource(String fname){
+        //TODO configurabil
+         return fname.endsWith(".cpp") || fname.endsWith(".h") || fname.endsWith(".c") || fname.endsWith(".hpp");
+    }
+
+
+    private File getSourceFile(String in, File projDir){
+        File f = new File(in);
+        if (!f.exists()){
+            f = new File(projDir, in);
+        }
+        return f;
+    }
+
+    public void outputTo(File depsDir, File projDir) throws Exception {
         List<DependencyManager.Resolution> resolutions = new ArrayList<>();
-        for(Dependency dependency: dependencies){
+        for (Dependency dependency : dependencies) {
             DependencyManager.Resolution resolution = DependencyManager.solveWithPlatform(dependency,
                     dependency.getVersion(forcedPlatform),
-                    outputDir,
+                    depsDir,
                     log);
 
-            if (resolution != null){
+            if (resolution != null) {
                 resolutions.add(resolution);
             }
         }
@@ -65,62 +100,105 @@ public class Project {
         context.put("name", name);
 
         //TODO configurable
-        File binDir = new File(outputDir, "bin");
-        if(!binDir.exists()){
+        File binDir = new File(projDir, "bin");
+        if (!binDir.exists()) {
             binDir.mkdirs();
         }
 
-        for (DependencyManager.Resolution resolution: resolutions){
-            Dependency.Version version = resolution.selectedVersion();
-            String includes = StringUtil.join(version.includes, ";", new StringUtil.JoinIterator<String>() {
-                @Override
-                public String toString(String value) {
-                    return new File(resolution.uncompressed(), value).getAbsolutePath();
-                }
-            });
 
-            for (String staticLib: version.staticLibs){
-                File dll = (new File(resolution.uncompressed(), staticLib));
-                if (!dll.exists()){
+        Map<String, Set<String>> buf = new HashMap<>();
+
+        for (DependencyManager.Resolution res : resolutions) {
+            Dependency.Version version = res.selectedVersion();
+            String includeId = "include-" + version.getPlatformMatch().toLowerCase();
+            String libPathId = "lib-paths-" + version.getPlatformMatch().toLowerCase();
+            append(buf, includeId, version.includes, res);
+            append(buf, libPathId, version.libPaths, res);
+
+            for (String staticLib : version.staticLibs) {
+                File dll = (new File(res.uncompressed(), staticLib));
+                if (!dll.exists()) {
                     throw new RuntimeException("Invalid zip file, wtf???");
                 }
                 //copiaza dll-urile required in bin
                 File required = new File(binDir, dll.getName());
                 //TODO check length
-                if (!required.exists()){
+                if (!required.exists()) {
                     Files.copy(dll.toPath(), new File(binDir, dll.getName()).toPath());
                 }
             }
+        }
 
-            context.put("includes-win64", includes);
+        for (Map.Entry<String, Set<String>> e: buf.entrySet()){
+            String id = "vc-" + e.getKey();
+            log.trace("defined key", id);
+            context.put(id, StringUtil.join(e.getValue(), ";"));
+        }
 
-            String linkDirectories = StringUtil.join(version.libPaths, ";", new StringUtil.JoinIterator<String>() {
+        if (!isEmpty(includes)){
+            context.put("vc-project-includes", StringUtil.join(includes, ";", new StringUtil.JoinIterator<Object>() {
+                @Override
+                public String toString(Object v) {
+                    File f = new File("" + v);
+                    return f.getPath();
+                }
+            }));
+        } else {
+            context.put("vc-project-includes", "");
+        }
+
+        if (!isEmpty(sources)){
+           List<String> files = new ArrayList<>();
+           for (Object src: sources){
+               File f = getSourceFile(src + "", projDir);
+               if (!f.isDirectory() && isAcceptedAsSource(f.getName())){
+                   sources.add(f.getAbsolutePath());
+               }
+               else if (f.isDirectory()){
+                   File [] innerFiles = f.listFiles(new FilenameFilter() {
+                       @Override
+                       public boolean accept(File dir, String name) {
+                          return isAcceptedAsSource(name);
+                       }
+                   });
+                   if (null != innerFiles){
+                       for (File z : innerFiles){
+                           files.add(z.getAbsolutePath());
+                       }
+                   }
+               }
+           }
+            context.put("vc-cl-compile", StringUtil.join(files, "\n", new StringUtil.JoinIterator<String>() {
                 @Override
                 public String toString(String value) {
-                    return new File(resolution.uncompressed(), value).getAbsolutePath();
+                    return "    <ClCompile Include=\""+value+"\" />";
                 }
-            });
-            context.put("lib-paths-win64", linkDirectories);
-            System.out.println(version);
+            }));
+
+        } else {
+            context.put("vc-cl-compile", "");
         }
 
 
+        File out = new File(projDir, name + ".vcxproj");
+
         String content = whisker.findAndCompileStream("_cargo_/visual_studio_template.vcxproj", context);
-        File out = new File(outputDir, name + ".vcxproj");
         FileUtil.writeStringToFile(out, content);
 
 
-        String mainCpp = whisker.findAndCompileStream("_cargo_/main.cpp", new HashMap<>());
 
-        FileUtil.writeStringToFile( new File(outputDir, "main.cpp"), mainCpp);
+
+
+        File mainFile = new File(projDir, "main.cpp");
+        if(!mainFile.exists()){
+            String mainCpp = whisker.findAndCompileStream("_cargo_/main.cpp", new HashMap<>());
+            FileUtil.writeStringToFile(new File(projDir, "main.cpp"), mainCpp);
+        }
 
 
 
         System.out.println(resolutions);
     }
-
-
-
 
 
 }

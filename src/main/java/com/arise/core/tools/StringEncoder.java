@@ -16,7 +16,7 @@ public class StringEncoder {
     private final static String basechars = "qorghdmspta";
     private final static String base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     private static final Mole logger = Mole.getInstance(StringEncoder.class);
-    private static final List<SecureRandom> secureRandoms = new ArrayList<>();
+    private static final List<SecureRandom> secureRandoms = new ArrayList<SecureRandom>();
 
      static {
          secureRandoms.add(new SecureRandom());

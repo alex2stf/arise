@@ -71,13 +71,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>{{includes-win32}};$(IncludePath)</IncludePath>
+    <IncludePath>{{includes-win32}};{{vc-project-includes}};$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\alexandru2.stefan\Downloads\instantclient-sdk-windows.x64-18.5.0.0.0dbru\instantclient_18_5\sdk\lib\msvc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>{{includes-win64}};$(IncludePath)</IncludePath>
-    <LibraryPath>{{lib-paths-win64}};$(LibraryPath)</LibraryPath>
+    <IncludePath>{{vc-include-win64}};{{vc-project-includes}};$(IncludePath)</IncludePath>
+    <LibraryPath>{{vc-lib-paths-win64}};$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\bin</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,10 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+{{vc-cl-compile}}
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="libs/astox/src/oraclient.cpp" />
-    <ClCompile Include="libs/astox/include/oraclient.h" />
-    <ClCompile Include="libs/astox/include/astox_macros.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,11 +1,13 @@
 package com.arise.weland.dto;
 
+import com.arise.core.tools.StringUtil;
+
 import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.StringUtil.sanitizeAppId;
 import static com.arise.weland.dto.ContentInfo.decodeString;
 import static com.arise.weland.dto.ContentInfo.encodePath;
-import static com.arise.weland.dto.DTOUtil.sanitize;
 
 public class Message {
     private String id;
@@ -16,8 +18,8 @@ public class Message {
 
 
     public Message wallMessage(){
-        this.conversationId = DTOUtil.WALL_RESERVED_ID;
-        this.receiverId = DTOUtil.WALL_RESERVED_ID;
+        this.conversationId = "";
+        this.receiverId = "";
         return this;
     }
 
@@ -27,7 +29,7 @@ public class Message {
     }
 
     public Message setConversationId(String conversationId) {
-        this.conversationId = sanitize(conversationId);
+        this.conversationId = sanitizeAppId(conversationId);
         return this;
     }
 
@@ -36,13 +38,13 @@ public class Message {
     }
 
     public Message setReceiverId(String receiverId) {
-        this.receiverId = sanitize(receiverId);
+        this.receiverId = sanitizeAppId(receiverId);
         return this;
     }
 
 
     public Message setSenderId(String sender) {
-        this.senderId = sanitize(sender);
+        this.senderId = sanitizeAppId(sender);
         return this;
     }
 
@@ -55,7 +57,7 @@ public class Message {
     }
 
     public Message setId(String id) {
-        this.id = sanitize(id);
+        this.id = sanitizeAppId(id);
         return this;
     }
 

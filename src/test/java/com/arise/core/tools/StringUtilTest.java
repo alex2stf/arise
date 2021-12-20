@@ -1,16 +1,15 @@
 package com.arise.core.tools;
 
-import org.junit.Assert;
-import org.junit.Test;
+
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static com.arise.core.tools.Assert.assertEquals;
+
 
 public class StringUtilTest {
 
-    @Test
     public void testQuote(){
         String r =StringUtil.quote("\"");
 
@@ -21,7 +20,6 @@ public class StringUtilTest {
 
     }
 
-    @Test
     public void testToNumber(){
         Number n;
 
@@ -46,7 +44,6 @@ public class StringUtilTest {
 
     }
 
-    @Test
     public void testParsing(){
         Map<String, Object> map = new HashMap<>();
         map.put("xxx", 1);
@@ -96,11 +93,9 @@ public class StringUtilTest {
     }
 
 
-    @Test
     public void testDecode(){
         StringUtil.URLDecodeResult result = StringUtil.urlDecode("http://192.168.1.4:8221/files/open?path=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DtBzfEceZtWI%26list%3DPL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC%26index%3D1%26t%3D4s");
-
-        System.out.println(result);
+        Assert.assertEquals("https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DtBzfEceZtWI%26list%3DPL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC%26index%3D1%26t%3D4s", result.getQueryParams().get("path").get(0)   );
     }
 
 
@@ -110,6 +105,10 @@ public class StringUtilTest {
     public static void main(String[] args) {
         StringUtilTest stringUtilTest = new StringUtilTest();
         stringUtilTest.testDecode();
+        stringUtilTest.testParsing();
+        stringUtilTest.testQuote();
+        stringUtilTest.testToNumber();
+
     }
 
     class TestClass {

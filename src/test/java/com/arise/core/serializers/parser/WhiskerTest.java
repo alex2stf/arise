@@ -3,7 +3,6 @@ package com.arise.core.serializers.parser;
 import com.arise.core.serializers.parser.Whisker.Lambda;
 import com.arise.core.serializers.parser.Whisker.Token;
 import com.arise.core.serializers.parser.Whisker.TokenType;
-import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,14 +18,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static com.arise.core.tools.Assert.assertEquals;
+
 
 public class WhiskerTest {
 
 
 
 
-  @Test
   public void testNodeRead(){
     String input = "txt1 {{arg}} txt2 {{ #section_start}} {{@index}} {{.}} {{#non_false?}} {{>partial}} {{ !comment}} {{& unescaped_with_&}} text {{/tst}}1dasd dsad asdasd asdasd asdasd asdasd asdasdas dasdasd2{{{undescaped_html}}}---{{node}} tttttx";
 
@@ -40,7 +39,6 @@ public class WhiskerTest {
     Whisker.printNode(root);
   }
 
-  @Test
   public void testCompiler1(){
     String input = "property test: {{prop}}\n"
         + "{{!this line should be ignored}}\n"
@@ -75,7 +73,6 @@ public class WhiskerTest {
 
   }
 
-  @Test
   public void testIterables(){
 
     List<Student> students = new ArrayList<>();
@@ -116,7 +113,6 @@ public class WhiskerTest {
   }
 
 
-  @Test
   public void testManSample(){
     String input = "Hello {{name}}\n"
         + "You have just won {{value}} dollars!\n"
@@ -141,7 +137,6 @@ public class WhiskerTest {
   }
 
 
-  @Test
   public void testLambda(){
     String input = "{{#wrapped}}{{name}} is awesome.{{/wrapped}}";
 
@@ -150,7 +145,6 @@ public class WhiskerTest {
     Map context = new HashMap();
     context.put("name", "Willy");
     context.put("wrapped", new Lambda() {
-
       @Override
       public void apply(Token token, Writer writer, Object context, int index, Whisker compiler) {
         try {
@@ -166,7 +160,6 @@ public class WhiskerTest {
 
   }
 
-  @Test
   public void testInvertedSection(){
     String input = "{{^repo}}No repos :({{/repo}}";
     Map context = new HashMap();
@@ -188,7 +181,6 @@ public class WhiskerTest {
     System.out.println(out);
   }
 
-  @Test
   public void testHashIterations(){
     String input = "Init map: {{#map}} map exists!!!\nunu={{unu}}, doi={{doi}} start iteration:\n{{#.}}Name: index: {{@index}} key: {{@key}} value:{{@value}}\n{{/.}}\niteration finished{{/map}}";
     Map context = new HashMap();
@@ -232,7 +224,6 @@ public class WhiskerTest {
 
   }
 
-  @Test
   public void testCustomDelimiters(){
     String input = "[[prop1]] and [[{unescaped_prop}]]";
 
@@ -251,7 +242,6 @@ public class WhiskerTest {
     assertEquals("property and unescaped property", out);
   }
 
-  @Test
   public void testSetDelimiters(){
     String input = "{{property}} {{=<%%>=}} <% property %> <%={{ }}=%> {{property}}";
     Map map = new HashMap();
@@ -262,7 +252,6 @@ public class WhiskerTest {
     assertEquals("test  test  test", out);
   }
 
-  @Test
   public void testGetters(){
     String input = "abc{{#item}} {{scale}} {{/item}}def";
     Map map = new HashMap();
@@ -273,7 +262,6 @@ public class WhiskerTest {
 
 
 
-  @Test
   public void testStreams() throws IOException {
 
     String input = "abc{{#item}} {{scale}} {{/item}}def";
@@ -295,7 +283,6 @@ public class WhiskerTest {
     System.out.println(outputStream);
   }
 
-  @Test
   public void testPartials() throws IOException {
 
     Map map = new HashMap();

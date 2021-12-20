@@ -1,11 +1,9 @@
 package com.arise.cargo;
 
 import com.arise.cargo.contexts.JVMContext;
-import org.junit.Test;
 
 public class CargoTest {
 
-    @Test
     public void test(){
 
         Context jvmContext = new JVMContext();

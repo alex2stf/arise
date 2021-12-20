@@ -138,14 +138,17 @@ public class AppSettings {
 
 
     public static String getProperty(Keys key){
-        return applicationProperties.getProperty(key.s);
+        if (isDefined(key)) {
+            return applicationProperties.getProperty(key.s);
+        }
+        if (StringUtil.hasText(key.defaultValue)){
+            return key.defaultValue;
+        }
+        return null;
     }
 
     public static boolean isTrue(Keys key){
-        if (isDefined(key)){
-            return "true".equalsIgnoreCase(applicationProperties.getProperty(key.s));
-        }
-        return false;
+        return "true".equalsIgnoreCase(getProperty(key));
     }
 
     public static int getInt(Keys key, int i) {
@@ -163,6 +166,7 @@ public class AppSettings {
 
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
+        PREFERRED_YOUTUBE_PLAYER("preferred.youtube.player", new String[]{"external, internal"}, "internal"),
         SERVER_PORT("server.port", new String[]{"8221 default"}),
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"}),
         LATEST_SNAPSHOT_PATH("paths.latest.snapshot", new String[]{"latest/snapshot.jpeg"}),
@@ -171,10 +175,18 @@ public class AppSettings {
 
         final String s;
         private final String[] variants;
+        private final  String defaultValue;
 
         Keys(String s, String[] variants) {
             this.s = s;
             this.variants = variants;
+            this.defaultValue = null;
+        }
+
+        Keys(String s, String[] variants, String defaultValue) {
+            this.s = s;
+            this.variants = variants;
+            this.defaultValue = defaultValue;
         }
     }
 

@@ -1,13 +1,12 @@
 package com.arise.core.tools;
 
-import net.bytebuddy.build.ToStringPlugin;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CollectionUtilTest {
-    @Test
+
+
     public void testDiff() {
         List<String> old = new ArrayList<>();
         old.add("a");
@@ -37,11 +36,8 @@ public class CollectionUtilTest {
         };
         CollectionUtil.scan(nVal, old, handler);
 
-//        CollectionUtil.scan(null, old, handler);
-//        CollectionUtil.scan(nVal, null, handler);
     }
 
-    @Test
     public void testIterate(){
         List<Integer> list = new ArrayList<>();
         list.add(1);

@@ -5,34 +5,25 @@ import com.arise.canter.Command;
 import com.arise.canter.Event;
 import com.arise.canter.EventHandler;
 import com.arise.canter.Registry;
-import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StreamUtil;
-import org.junit.Assert;
-import org.junit.Test;
 
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.arise.canter.Defaults.CMD_PRINT;
 import static com.arise.canter.Defaults.EVT_FAIL;
 import static com.arise.canter.Defaults.EVT_SUCCESS;
 import static com.arise.canter.Defaults.PROCESS_EXEC;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.arise.core.tools.Assert.assertEquals;
+import static com.arise.core.tools.Assert.assertTrue;
 
 
 public class CanterTest {
 
-    @Test
     public void test1(){
         Command command = CMD_PRINT;
         assertEquals("test 1", command.execute("test", "1"));
     }
 
-    @Test
     public void test2() throws InterruptedException {
 
         Registry registry = new Registry();
@@ -106,16 +97,15 @@ public class CanterTest {
 
     }
 
-    @Test
     public void testEvents(){
         Registry registry = new Registry();
         registry.addCommand(CMD_PRINT);
 
-        boolean handlerExecuted[] = {false};
+        final boolean handlerExecuted[] = {false};
         registry.addCommand(new Command<Object>("handler-test-execution") {
             @Override
             public Object execute(Arguments arguments) {
-                Assert.assertEquals("handler called", arguments.get(0));
+                assertEquals("handler called", arguments.get(0));
                 handlerExecuted[0] = true;
                 return null;
             }
@@ -132,19 +122,6 @@ public class CanterTest {
         assertTrue(handlerExecuted[0]);
     }
 
-    @Test
-    public void testCoronaUtils(){
-        Registry registry = new Registry();
-        registry.addCommand(PROCESS_EXEC);
-
-        registry.loadJsonResource("src/main/resources#/corona/config/win/commands.json");
-
-        registry.execute("closeProcessByName", new String[]{"firefox"}, null, null);
-
-
-
-
-    }
 
 
 

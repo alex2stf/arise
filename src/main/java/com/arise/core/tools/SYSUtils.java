@@ -1,7 +1,6 @@
 package com.arise.core.tools;
 
 import com.arise.core.tools.models.CompleteHandler;
-import com.arise.weland.dto.DTOUtil;
 
 import java.io.*;
 import java.util.*;
@@ -109,7 +108,7 @@ public class SYSUtils {
             }
         }
 
-        return DTOUtil.sanitize(sb.toString());
+        return StringUtil.sanitizeAppId(sb.toString());
     }
 
 

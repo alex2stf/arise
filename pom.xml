@@ -23,23 +23,23 @@
 
 
 
-        <dependency>
-            <groupId>org.jaudiotagger</groupId>
-            <artifactId>jaudiotagger</artifactId>
-            <version>2.2.3</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/jaudiotagger-2.2.3.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jaudiotagger</groupId>-->
+<!--            <artifactId>jaudiotagger</artifactId>-->
+<!--            <version>2.2.3</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/jaudiotagger-2.2.3.jar</systemPath>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.vlcj</groupId>
-            <artifactId>vlcj</artifactId>
-            <version>3.0.1</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/vlcj-3.0.1.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.vlcj</groupId>-->
+<!--            <artifactId>vlcj</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/vlcj-3.0.1.jar</systemPath>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.webcam</groupId>
@@ -50,32 +50,32 @@
             <systemPath>${basedir}/libs/webcam-capture-0.3.12.jar</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>org.sl4j</groupId>
-            <artifactId>sl4j</artifactId>
-            <version>3.0.1</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/slf4j-api-1.7.2.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.sl4j</groupId>-->
+<!--            <artifactId>sl4j</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/slf4j-api-1.7.2.jar</systemPath>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.sl4j</groupId>
-            <artifactId>sl4j-simple</artifactId>
-            <version>3.0.1</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/slf4j-simple-1.7.2.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.sl4j</groupId>-->
+<!--            <artifactId>sl4j-simple</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/slf4j-simple-1.7.2.jar</systemPath>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.bridj</groupId>
-            <artifactId>bridj</artifactId>
-            <version>3.0.1</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/bridj-0.7.0.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.bridj</groupId>-->
+<!--            <artifactId>bridj</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/bridj-0.7.0.jar</systemPath>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -86,24 +86,24 @@
             <systemPath>${basedir}/libs/commons-compress-1.19.jar</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>org.tukaani</groupId>
-            <artifactId>xz</artifactId>
-            <version>1.8</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/xz-1.8.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.tukaani</groupId>-->
+<!--            <artifactId>xz</artifactId>-->
+<!--            <version>1.8</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/xz-1.8.jar</systemPath>-->
+<!--        </dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.vlcj</groupId>
-            <artifactId>jna</artifactId>
-            <version>3.5.2</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/jna-3.5.2.jar</systemPath>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.slf4j/slf4j-api &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.vlcj</groupId>-->
+<!--            <artifactId>jna</artifactId>-->
+<!--            <version>3.5.2</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/libs/jna-3.5.2.jar</systemPath>-->
+<!--        </dependency>-->
 
 
 
@@ -130,96 +130,6 @@
 
 
         <dependency>
-            <groupId>com.selenium</groupId>
-            <artifactId>selenium</artifactId>
-            <version>4.0.0</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/selenium-server-4.0.0.jar</systemPath>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>net.sf.bluecove</groupId>-->
-<!--            <artifactId>bluecove-gpl</artifactId>-->
-<!--            <version>2.1.0</version>-->
-<!--        </dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>log4j</groupId>-->
-            <!--<artifactId>log4j</artifactId>-->
-            <!--<version>1.2.17</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-databind</artifactId>-->
-            <!--<version>LATEST</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-core</artifactId>-->
-            <!--<version>LATEST</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-web</artifactId>-->
-            <!--<version>5.2.1.RELEASE</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-
-        <!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj -->
-<!--        <dependency>-->
-<!--            <groupId>uk.co.caprica</groupId>-->
-<!--            <artifactId>vlcj</artifactId>-->
-<!--            <version>4.2.0</version>-->
-<!--        </dependency>-->
-
-
-        <!--        <dependency>-->
-<!--            <groupId>ro.orange</groupId>-->
-<!--            <artifactId>sftp-engine-avro-events</artifactId>-->
-<!--            <version>0.1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
-
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.httpcomponents</groupId>-->
-            <!--<artifactId>httpclient</artifactId>-->
-            <!--<version>LATEST</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.httpcomponents</groupId>-->
-            <!--<artifactId>httpmime</artifactId>-->
-            <!--<version>LATEST</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>LATEST</version>
@@ -227,113 +137,22 @@
         </dependency>
 
 
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-slf4j-impl</artifactId>-->
-<!--            <version>LATEST</version>-->
-<!--        </dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.mockito</groupId>-->
-            <!--<artifactId>mockito-all</artifactId>-->
-            <!--<version>1.9.5</verson>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>javax.persistence</groupId>-->
-            <!--<artifactId>persistence-api</artifactId>-->
-            <!--<version>1.0.2</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>full</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <!--<plugin>-->
-                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                        <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                        <!--<version>3.6.1</version>-->
-                        <!--<configuration>-->
-                            <!--<source>1.8</source>-->
-                            <!--<target>1.8</target>-->
-                            <!--<excludes>-->
-                                <!--<exclude>**/rapdroid/</exclude>-->
-                                <!--<exclude>**/android/</exclude>-->
-                            <!--</excludes>-->
-                        <!--</configuration>-->
-                    <!--</plugin>-->
-
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                    </plugin>
-                </plugins>
-
-            </build>
-        </profile>
-
-        <profile>
-            <id>canter-lib</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <excludes>
-                                <exclude>**/rapdroid/</exclude>
-                                <exclude>**/android/</exclude>
-                                <exclude>**/astox</exclude>
-                                <exclude>**/cargo</exclude>
-                                <exclude>**/geeks</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <classifier>canter-lib</classifier>
-                            <excludes>
-                                <exclude>**/astox</exclude>
-                                <exclude>**/cargo</exclude>
-                                <exclude>**/geeks</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 
     <build>
         <directory>build</directory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+        </plugins>
         <sourceDirectory>src/main/java</sourceDirectory>
     </build>
 

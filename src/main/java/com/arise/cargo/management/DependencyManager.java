@@ -275,12 +275,17 @@ public class DependencyManager {
                    libsDir.mkdirs();
                }
                File outZip = new File(libsDir, outName + ".zip");
-               FileOutputStream fileOutputStream = new FileOutputStream(outZip);
-               logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
 
-               StreamUtil.transfer(inputStream, fileOutputStream, 1024);
                File outUnzipped = new File(libsDir, outName);
-               zipper.extract(outZip, outUnzipped);
+
+               if(!outUnzipped.exists()) {
+                   FileOutputStream fileOutputStream = new FileOutputStream(outZip);
+                   logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
+
+                   StreamUtil.transfer(inputStream, fileOutputStream, 1024);
+                   zipper.extract(outZip, outUnzipped);
+               }
+
 
                return new Resolution(outUnzipped, dependency, version);
            }
@@ -358,7 +363,7 @@ public class DependencyManager {
         List<File> jars = new ArrayList<>();
         for (String name: names) {
             Dependency dependency = dependencyMap.get(name);
-            Dependency.Version version = dependency.getVersion("LINUX");
+            Dependency.Version version = dependency.getVersion("WIN64");
             File downloaded = fetchOneOfUrls(version.urls, downloadLocation, version.id );
             File outDir = new File(getRoot(), getDestination(dependency));
             if (!outDir.exists()){

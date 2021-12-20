@@ -1,9 +1,9 @@
 package com.arise.weland.dto;
 
-import com.arise.core.tools.Assert;
 import com.arise.core.tools.ContentType;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.arise.core.tools.Assert.assertEquals;
+
 
 public class ContentInfoTest {
 
@@ -16,7 +16,7 @@ public class ContentInfoTest {
         contentInfo.setHeight(78)
                 .setDuration(355)
                 .setPosition(589);
-        System.out.println(contentInfo.toCsv());
+        assertEquals("test\\,\"name\",_,_,_,_,0,_,V,34,78,589,355,_,APPLICATION_JSON", contentInfo.toCsv());
 
 
         ContentInfo dec = ContentInfo.fromCsv(contentInfo.toCsv());
@@ -30,7 +30,6 @@ public class ContentInfoTest {
     }
 
     public static void main(String[] args) {
-
         ContentInfoTest contentInfoTest = new ContentInfoTest();
         contentInfoTest.testCsv();
     }

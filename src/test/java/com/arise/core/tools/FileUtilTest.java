@@ -1,12 +1,10 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.models.FoundHandler;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FileUtilTest {
 

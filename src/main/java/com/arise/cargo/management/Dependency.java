@@ -86,7 +86,13 @@ public class Dependency {
 
 
     public Version getVersion(String in) {
+        if (null == this.versions){
+            throw new RuntimeException("Invalid dependency " + this);
+        }
         for (Version v: this.versions.values()){
+            if (null == v.platformMatch || null == in){
+                throw new RuntimeException("Invalid dependency " + this);
+            }
             if (in.equals(v.platformMatch) || in.equals(v.id) || "*".equals(in)){
                 return v;
             }
