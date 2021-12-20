@@ -168,11 +168,13 @@ function check_local_network(rootIp, c){
 
     var parts = rootIp.split(".");
 
+
     for( var i = 0; i < 30; i++){
         var th =  parts[0] + '.'  + parts[1] + '.' + parts[2] + '.' + i;
+        console.log('check ' + th);
         $get('/proxy/exec?host=' + th + "&port=8221&protocol=http&path=/device/stat", function (x) {
             if(x.err && x.test){
-                // console.log('nothing for ' + x);
+                console.log('nothing for ' +  x.test);
             } else if(c){
                 c(x);
             }

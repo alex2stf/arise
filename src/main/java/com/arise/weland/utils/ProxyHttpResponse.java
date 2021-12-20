@@ -1,45 +1,43 @@
 package com.arise.weland.utils;
 
+import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerRequest;
+import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.Util;
-import com.arise.weland.ProxyMaster;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
-import java.util.List;
-import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.Util.close;
 
 public class ProxyHttpResponse extends HttpResponse {
 
-    static final Mole log = Mole.getInstance(ProxyMaster.class);
+    static final Mole log = Mole.getInstance(ProxyHttpResponse.class);
 
-    private final String requestUrl;
 
-    public ProxyHttpResponse(String host, String port, String protocol, String path) {
-        this.requestUrl = protocol + "://" + host + ":" + port + path;
-    }
+
+
 
     @Override
     public boolean isSelfManageable() {
         return true;
     }
 
-    private byte[] err(String message){
+    private byte[] err(String message, String requestUrl){
         return HttpResponse.json("{\"err\": "+ jsonVal(message) +", \"test\": "+jsonVal(requestUrl)+"}").bytes();
     }
 
-    private void write(OutputStream outputStream, byte [] bytes){
+
+
+    private void writeError(OutputStream out, String message, String requestUrl){
         try {
-            outputStream.write(bytes);
+            out.write(err(message, requestUrl));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to write outputstram for " + requestUrl);
+            log.error("Failed to write error");
         }
     }
 
@@ -47,130 +45,122 @@ public class ProxyHttpResponse extends HttpResponse {
     public void onTransporterAccepted(ServerRequest serverRequest, Object... transporters) {
         InputStream in = null;
         OutputStream out = null;
-        HttpURLConnection httpURLConnection = null;
-        URL connectionURL = null;
-        Socket socket = (Socket) transporters[1];
+        Socket acceptedSocket = (Socket) transporters[1];
+
+        HttpRequest serverHttpRequest = (HttpRequest) serverRequest;
+        String host = serverHttpRequest.getQueryParam("host");
+        String port = serverHttpRequest.getQueryParam("port");
+        String protocol = serverHttpRequest.getQueryParam("protocol");
+        String path = serverHttpRequest.getQueryParam("path");
+        String requestUrl = protocol + "://" + host + ":" + port  + path;
+
 
         try {
-            out = socket.getOutputStream();
+            out = acceptedSocket.getOutputStream();
         } catch (IOException e) {
-            Util.close(out);
-            throw new RuntimeException("Failed to get outputstram for request " + serverRequest);
-        }
-
-        try {
-            connectionURL = new URL(requestUrl);
-        } catch (MalformedURLException e) {
-            write(out, err("malformed url"));
-            Util.close(out);
+            log.error("Failed to get acceptedSocket inputStream", e);
+            close(acceptedSocket);
             return;
         }
 
+        Socket client = null;
         try {
-            httpURLConnection = (HttpURLConnection) connectionURL.openConnection();
+            client = new Socket(host, Integer.valueOf(port));
         } catch (IOException e) {
-            write(out, err("cannot open request"));
-            Util.close(out);
-            disconnect(httpURLConnection);
-            return;
-        }
 
-        try {
-            httpURLConnection.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            write(out, err("protocol exception"));
-            Util.close(out);
-            disconnect(httpURLConnection);
-            return;
-        }
-        httpURLConnection.setConnectTimeout(3000);
-        httpURLConnection.setReadTimeout(3000);
-
-        try {
-            httpURLConnection.connect();
-        } catch (IOException e) {
-            write(out, err("connect exception"));
-            Util.close(out);
-            disconnect(httpURLConnection);
-            return;
-        }
-
-        int status = 200;
-
-        try {
-            status = httpURLConnection.getResponseCode();
-        } catch (IOException e) {
-            ;;
-        }
-
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setStatusCode(status);
-        for (Map.Entry<String, List<String>> entry : httpURLConnection.getHeaderFields().entrySet()) {
-            httpResponse.addHeader(entry.getKey(), StringUtil.join(entry.getValue(), ","));
-        }
-
-        try {
-            out.write(httpResponse.headerLine().getBytes());
-//            out.write("\r\n".getBytes());
-        } catch (IOException e) {
-            write(out, err("failed to write header"));
-            Util.close(out);
-            disconnect(httpURLConnection);
+            log.error("Failed to create socket client on " + requestUrl, e);
+            writeError(out, "client connection refused", requestUrl);
+            close(out);
+            close(client);
+            close(acceptedSocket);
             return;
         }
 
 
+        try {
+            client.setKeepAlive(true);
+        } catch (SocketException e) {
+            log.error("cannot keep alive", e);
+        }
+
 
         try {
-            in = httpURLConnection.getInputStream();
+            //TODO make it configurable
+            client.setSoTimeout(1000 * 2);
+        } catch (SocketException e) {
+            log.error("cannot set read timeout", e);
+        }
+
+        HttpRequest request;
+        try {
+            request = new HttpRequest().setMethod("GET").setUri(path).setProtocol(HttpProtocol.V1_0);
+            client.getOutputStream().write(request.getBytes());
         } catch (IOException e) {
-            write(out, err("get inputStrem exception"));
-            Util.close(out);
-            Util.close(in);
-            disconnect(httpURLConnection);
+            log.error("Failed to write request", e);
+            writeError(out, "client write request failed", requestUrl);
+            close(out);
+            close(client);
+            close(acceptedSocket);
             return;
         }
+
         byte[] buf = new byte[8192];
         int length = 0;
+        try {
+            in = client.getInputStream();
+        } catch (IOException e) {
+            log.error("Failed to get client inputStream", e);
+            writeError(out, "client read failed", requestUrl);
+            close(out);
+            close(client);
+            close(acceptedSocket);
+            return;
+        }
 
 
-        while (true){
+
+        long start = System.currentTimeMillis();
+
+        while (true) {
             try {
                 if (!((length = in.read(buf)) > 0)) {
                     break;
                 }
             } catch (IOException e) {
-                log.error("Failed to read for " + requestUrl, e);
-                break;
+                long end = System.currentTimeMillis();
+                long diff = (end - start);
+                log.error("Failed to read client for request" + request + "after " + diff + " miliseconds" , e);
+                close(out);
+                close(in);
+                close(client);
+                close(acceptedSocket);
+                return;
             }
             try {
-//                System.out.println("write  " + new String(buf));
                 out.write(buf, 0, length);
                 try {
                     out.flush();
                 } catch (IOException e) {
-                    log.error("Failed to flush for " + requestUrl, e);
+                    log.error("Failed to flush ", e);
                 }
-            } catch (IOException e) {
-                log.error("Failed to write for  " + requestUrl, e);
-                break;
+            } catch (Exception ex){
+                log.error("Failed to write bytes to client", ex);
+                close(in);
+                close(out);
+                close(client);
+                close(acceptedSocket);
+                return;
             }
+        }//exit while
 
-        }
-
-
-
-        Util.close(out);
-        Util.close(in);
-        disconnect(httpURLConnection);
+        close(client);
+        close(in);
+        close(out);
+        close(acceptedSocket);
 
 
-    }
+    }//exit method
 
 
-    private void disconnect(HttpURLConnection httpURLConnection){
-        if (httpURLConnection != null){
-            httpURLConnection.disconnect();
-        }
-    }
+
 }

@@ -33,11 +33,14 @@ import static com.arise.core.tools.StringUtil.jsonVal;
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
 
+  private static final ProxyHttpResponse proxyHttpResponse = new ProxyHttpResponse();
+
 
   ContentInfoProvider contentInfoProvider;
   ContentHandler contentHandler;
   IDeviceController iDeviceController;
-  Whisker whisker = new Whisker();
+  Whisker whisker = new Whisker()
+          .setTemplatesRoot("src/main/resources#weland");
   String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
@@ -49,8 +52,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
   public WelandServerHandler() {
-
-
   }
 
 
@@ -147,7 +148,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       appContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/app.html"));
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
-      whisker.setTemplatesRoot("src/main/resources#weland");
       return HttpResponse.html(whisker.compile(appContent, args));
     }
 
@@ -156,16 +156,12 @@ public class WelandServerHandler extends HTTPServerHandler {
       String orchContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/orchestra.html"));
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
-      whisker.setTemplatesRoot("src/main/resources#weland");
+
       return HttpResponse.html(whisker.compile(orchContent, args));
     }
 
     if(request.path().startsWith("/proxy/exec")){
-      String host = request.getQueryParam("host");
-      String port = request.getQueryParam("port");
-      String protocol = request.getQueryParam("protocol");
-      String path = request.getQueryParam("path");
-      return new ProxyHttpResponse(host, port, protocol, path);
+      return proxyHttpResponse;
     }
 
 

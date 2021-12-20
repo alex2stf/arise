@@ -48,14 +48,16 @@
     {{> common-util.js}}
 
 
+    function sortIps(a, b){
+        var c = +(a.split('.')[0]);
+        var d = +(b.split('.')[0]);
+        return d - c;
+    }
+
     $get('/device/stat', function (d) {
         if (d.I4 && d.I4.length > 0){
 
-            var sorted = d.I4.sort(function(a, b){
-                var c = +(a.split('.')[0]);
-                var d = +(b.split('.')[0]);
-                return d - c;
-            })
+            var sorted = d.I4.sort(sortIps)
 
             for(var i = 0; i < sorted.length; i++){
                 check_local_network(sorted[i], function (x) {
@@ -80,7 +82,7 @@
             alert('global data ['+item_id+'] not found')
             return;
         }
-        var ip = item.I4[0];
+        var ip = item.I4.sort(sortIps)[0];
         if (call){
             call(item, item_id, ip, uid);
         }
@@ -129,7 +131,7 @@
 
     function get_device_id(data) {
         var name = data.N;
-        var ips = data.I4.join('-');
+        var ips = data.I4.sort(sortIps).join('-');
         return  extract_id(name + ips);
     }
 
@@ -146,7 +148,9 @@
     }
     
     function showCamPlayBtn(data) {
+
         var itemId = get_device_id(data);
+        console.log(itemId + ' === itemId' );
         _g('cam-stat-' + itemId).innerHTML = 'take snapshot to start cam'
     }
 
@@ -165,7 +169,6 @@
     }
 
     function  play_alias(item_id, what) {
-
         get_ip(item_id, function (item, id, ip, count) {
             var url;
             if ('jazz' === what){
@@ -176,12 +179,7 @@
             $get(url, function (x) {
                 perform_refresh(item_id);
             })
-
-
-        })
-
-
-
+        });
     }
     
     function stop(item_id) {
@@ -206,7 +204,8 @@
         var frameId = itemId + '-p';
         var btnDiv = _g(btnId);
         var frameDiv = _g(frameId);
-        var main = data.I4[0];
+
+        var main = data.I4.sort(sortIps)[0];
 
         if(!frameDiv){
             frameDiv = document.createElement('div');
