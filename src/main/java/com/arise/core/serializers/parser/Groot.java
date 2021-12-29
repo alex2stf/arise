@@ -82,15 +82,8 @@ public class Groot {
       return decodeArray(in, firstIndex + 1, lastIndex - 1, s);
     }
 
+    throw new RuntimeException("Invalid <" + firstC + "..." + lastC + ">");
 
-
-
-//    debug("FAILED FOR", in, firstIndex, lastIndex);
-
-    throw new RuntimeException("WTF???");
-
-
-//    return null;
   }
 
 
@@ -537,4 +530,6 @@ public class Groot {
 
 
   }
+
+
 }

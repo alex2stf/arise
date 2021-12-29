@@ -17,6 +17,10 @@ public class Dependency {
     Map<String, Version> versions = new HashMap<>();
 
 
+    public Map<String, Version> getVersions(){
+        return versions;
+    }
+
 
     public static void decorate(Dependency dependency, Map args) {
         dependency.type = MapUtil.getString(args, "type");
@@ -108,6 +112,9 @@ public class Dependency {
         List<String> includes;
         List<String> dynamicLibs;
         List<String> staticLibs;
+
+        //TODO foloseste nume, match-ul tb sa fie regex
+        @Deprecated
         String platformMatch;
         String id;
         String executable;
@@ -121,6 +128,11 @@ public class Dependency {
         }
 
         public String getPlatformMatch() {
+            return platformMatch;
+        }
+
+
+        public String getName(){
             return platformMatch;
         }
 

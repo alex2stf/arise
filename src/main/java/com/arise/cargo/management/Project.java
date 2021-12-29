@@ -10,6 +10,9 @@ import com.arise.core.tools.StringUtil;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,24 +89,22 @@ public class Project {
     public void outputTo(File depsDir, File projDir) throws Exception {
         List<DependencyManager.Resolution> resolutions = new ArrayList<>();
         for (Dependency dependency : dependencies) {
-            DependencyManager.Resolution resolution = DependencyManager.solveWithPlatform(dependency,
-                    dependency.getVersion(forcedPlatform),
-                    depsDir,
-                    log);
+            for (Dependency.Version version: dependency.getVersions().values()){
+                DependencyManager.Resolution resolution = DependencyManager.solveWithPlatform(dependency,
+                        version,
+                        depsDir,
+                        log);
 
-            if (resolution != null) {
-                resolutions.add(resolution);
+                if (resolution != null) {
+                    resolutions.add(resolution);
+                }
             }
         }
 
         Map<String, String> context = new HashMap<>();
         context.put("name", name);
 
-        //TODO configurable
-        File binDir = new File(projDir, "bin");
-        if (!binDir.exists()) {
-            binDir.mkdirs();
-        }
+
 
 
         Map<String, Set<String>> buf = new HashMap<>();
@@ -118,8 +119,15 @@ public class Project {
             for (String staticLib : version.staticLibs) {
                 File dll = (new File(res.uncompressed(), staticLib));
                 if (!dll.exists()) {
-                    throw new RuntimeException("Invalid zip file, wtf???");
+                    throw new RuntimeException("Invalid zip file, wtf??? whereis " + dll.getAbsolutePath() + " ???");
                 }
+                File binDir = new File(projDir, "bin" + File.separator + version.getName().toLowerCase() );
+                if (!binDir.exists()) {
+                    binDir.mkdirs();
+                }
+
+
+
                 //copiaza dll-urile required in bin
                 File required = new File(binDir, dll.getName());
                 //TODO check length
@@ -171,6 +179,9 @@ public class Project {
             context.put("vc-cl-compile", StringUtil.join(files, "\n", new StringUtil.JoinIterator<String>() {
                 @Override
                 public String toString(String value) {
+                    if (value.endsWith(".h") || value.endsWith(".hpp") ){
+                        return "    <ClInclude Include=\""+value+"\" />";
+                    }
                     return "    <ClCompile Include=\""+value+"\" />";
                 }
             }));
@@ -178,6 +189,8 @@ public class Project {
         } else {
             context.put("vc-cl-compile", "");
         }
+
+        context.put("project-name", name);
 
 
         File out = new File(projDir, name + ".vcxproj");

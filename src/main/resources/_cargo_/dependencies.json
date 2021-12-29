@@ -45,7 +45,36 @@
   },
   "ORACLE_CLIENT": {
     "type": "library",
+    "options": [
+      {
+        "for-ids":["ora_client_19_x86", "ora_client_19_x64"]
+      }
+    ],
     "versions": [
+      {
+        "id": "ora_client_19_x86",
+        "platform-match": "WIN32",
+        "urls": [
+          "internal://oracle_instantclient_win32_19_13.zip"
+        ],
+        "lib-paths": [
+          "sdk/lib/msvc"
+        ],
+        "dynamic-libs": [
+          "oci.lib"
+        ],
+        "static-libs": [
+          "oci.dll",
+          "oraocci19.dll",
+          "oraocci19d.dll",
+          "oraociei19.dll",
+          "oraons.dll",
+          "orasql19.dll"
+        ],
+        "includes": [
+          "sdk/include"
+        ]
+      },
       {
         "id": "ora_client_19_x64",
         "platform-match": "WIN64",
