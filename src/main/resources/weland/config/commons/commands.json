@@ -6,6 +6,7 @@
     "properties": {
       "singleInstance": "{closeExisting}",
       "binaries": {
+        "firefox.ubuntu.v1": "usr/bin/firefox",
         "firefox.windows.v1": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
         "chrome.windows.v1": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
         "chrome.windows.v2": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
