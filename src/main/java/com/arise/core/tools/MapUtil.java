@@ -22,6 +22,14 @@ public class MapUtil {
         return null;
     }
 
+    public static String[] getStringList(Map map, String key){
+        List l = getList(map, key);
+        if (null != l) {
+            return CollectionUtil.toArray(getList(map, key));
+        }
+        return null;
+    }
+
     public static Integer getInteger(Map map, String key) {
         if (map.containsKey(key)){
             try {

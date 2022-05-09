@@ -85,7 +85,7 @@ public class Arguments {
         this.mapArgs = mapargs;
     }
 
-    public static Arguments fromList(String[] args) {
+    public static Arguments fromList(String... args) {
         Arguments a = new Arguments();
         a.stringArgs = Arrays.asList(args);
         return a;

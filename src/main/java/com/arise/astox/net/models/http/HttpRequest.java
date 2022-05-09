@@ -211,6 +211,14 @@ public class HttpRequest extends ServerRequest {
         return null;
     }
 
+    public String[] getQueryParamList(String k){
+        if (queryParams.get(k) != null && queryParams.get(k).size() > 0){
+            return CollectionUtil.toArray(queryParams.get(k));
+
+        }
+        return new String[]{};
+    }
+
     public String getHeaderParam(String k) {
         if (CollectionUtil.isEmpty(headers)){
             return null;

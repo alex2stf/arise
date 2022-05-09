@@ -12,7 +12,7 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
-import com.arise.weland.utils.AppSettings;
+import com.arise.core.AppSettings;
 import com.arise.weland.wrappers.VLCWrapper;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ import java.net.URLClassLoader;
 import java.util.List;
 import java.util.*;
 
-import static com.arise.weland.utils.AppSettings.Keys.*;
+import static com.arise.core.AppSettings.Keys.*;
 
 //import org.openqa.selenium.WebDriver;
 

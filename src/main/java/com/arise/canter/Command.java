@@ -7,10 +7,12 @@ import com.arise.core.tools.TypeUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.StringUtil.QUOTE_ITERATOR;
 
 
 public abstract class Command<T> extends Task<T> {
@@ -28,10 +30,15 @@ public abstract class Command<T> extends Task<T> {
     }
 
 
-
-
-
-
+    @Override
+    public String toString() {
+        return
+                StringUtil.jsonBuilder().objectStart()
+                        .add("id", id)
+                        .add("arg-names", argumentsNames, QUOTE_ITERATOR)
+                        .add("properties", properties, QUOTE_ITERATOR)
+                        .objectEnd().build();
+    }
 
     public final Arguments buildArguments(String ... args) {
         Arguments arguments = new Arguments();

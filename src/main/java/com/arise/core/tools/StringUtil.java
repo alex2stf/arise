@@ -139,7 +139,7 @@ public class StringUtil {
         String rest = in.substring(eIndex + 1);
         int sIndex = rest.indexOf("&");
         if (sIndex < 0){
-            buffer.get(key).add(rest);
+            CollectionUtil.concat(buffer.get(key), Arrays.asList(rest.split(",")));
             return;
         } else {
             //1=2&3=4
@@ -273,6 +273,9 @@ public class StringUtil {
     }
 
     public static <T> String join(T[] values, String delimiter, JoinIterator<T> iterator) {
+        if(null == values){
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < values.length; i++){
             if (i > 0){
@@ -588,6 +591,13 @@ public class StringUtil {
         }
     };
 
+    public static final JoinIterator QUOTE_ITERATOR = new JoinIterator() {
+        @Override
+        public String toString(Object value) {
+            return jsonQuote(valueOf(value));
+        }
+    };
+
     public static String capFirst(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
@@ -732,6 +742,10 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static String jsonQuote(String s){
+        return "\"" + jsonEscape(s) + "\"";
+    }
+
     public static String  jsonVal(Object s){
        if (s == null){
            return "null";
@@ -744,17 +758,16 @@ public class StringUtil {
     }
 
 
+    @Deprecated
     public static String jsonVal(Collection s){
         StringBuilder sb = new StringBuilder();
         sb.append("[")
-        .append(join(s, ",", new JoinIterator<Object>() {
-            @Override
-            public String toString(Object v) {
-                return  jsonVal(v);
-            }
-        })).append("]");
+        .append(join(s, ",", QUOTE_ITERATOR))
+        .append("]");
         return sb.toString();
     }
+
+
 
 
 
@@ -805,4 +818,120 @@ public class StringUtil {
     }
 
 
+    public static String anyToString(Object o,
+                                     JoinIterator keyIterator,
+                                     JoinIterator valueIterator,
+                                     String mapDelimiter,
+                                     String listDelimiter,
+                                     String listBegin,
+                                     String listEnd){
+        if (o instanceof Iterable) {
+            return listBegin + join((Iterable) o, listDelimiter, valueIterator) + listEnd;
+        } else if (o instanceof Map) {
+            return join((Map)o, keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
+        }
+        return valueIterator.toString(o);
+    }
+
+    public static <K, V> String join(Map<K, V> map,
+                                     JoinIterator<K> keyIterator,
+                                     JoinIterator<V> valueIterator,
+                                     String mapDelimiter,
+                                     String listDelimiter,
+                                     String listBegin,
+                                     String listEnd){
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<K, V> entry: map.entrySet()) {
+            String right = anyToString(entry.getValue(), keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
+            String left = anyToString(entry.getKey(), keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
+
+            sb.append(left)
+                    .append(mapDelimiter)
+                    .append(right);
+
+        }
+        return sb.toString();
+
+    }
+
+
+
+    public static JsonBuilder jsonBuilder(){
+        return new JsonBuilder();
+    }
+
+
+    public static class JsonBuilder {
+        private StringBuilder sb = new StringBuilder();
+        public JsonBuilder objectStart(){
+            buffer = new ArrayList<>();
+            sb.append("{");
+            return this;
+        }
+        public JsonBuilder objectEnd(){
+            sb.append(join(buffer, ","));
+            sb.append("}");
+            return this;
+        }
+        List<String> buffer = new ArrayList<>();
+
+        public JsonBuilder add(String key, String value){
+            buffer.add(jsonQuote(key) + ":" + jsonQuote(value));
+            return this;
+        }
+
+        public <T> JsonBuilder add(String key, Collection value){
+            return add(key, value, DEFAULT_ITERATOR);
+        }
+
+        public <T> JsonBuilder add(String key, Collection value, JoinIterator joinIterator){
+            buffer.add(jsonQuote(key) + ": [" + join(value, ",", joinIterator) + "]");
+            return this;
+        }
+
+        public JsonBuilder add(String key, String[] value){
+            return add(key, value, DEFAULT_ITERATOR);
+        }
+
+        public JsonBuilder add(String key, String[] value, JoinIterator joinIterator){
+            buffer.add(jsonQuote(key) + ": [" + join(value, ",", joinIterator) + "]");
+            return this;
+        }
+
+        public <T,Z> JsonBuilder add(String key, Map<T, Z> value, JoinIterator<Z> iterator){
+            if (null == value){
+                return this;
+            }
+            StringBuilder sb = new StringBuilder();
+            int cnt = 0;
+            for(Map.Entry<T, Z> entry: value.entrySet()) {
+                Z mpval = entry.getValue();
+                String right;
+                if (mpval instanceof Iterable) {
+                    right = "[" + join((Iterable<Z>) mpval, ",", iterator) + "]";
+                } else if (mpval instanceof Map) {
+                    right = "\"map-to-do\"";
+                } else {
+                    right = iterator.toString(mpval);
+                }
+                if (cnt > 0){
+                    sb.append(",");
+                }
+                sb.append(jsonQuote(entry.getKey() + "")).append(":")
+                        .append(right);
+                ;
+//                sb.append("{}");
+
+                cnt++;
+            }
+            buffer.add(jsonQuote(key) + ": {" + sb + "}");
+            return this;
+        }
+
+        public String build(){
+            return sb.toString();
+        }
+
+
+    }
 }

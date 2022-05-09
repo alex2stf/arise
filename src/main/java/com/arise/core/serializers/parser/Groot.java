@@ -23,9 +23,6 @@ public class Groot {
     //TODO improve this
 
 
-
-
-
     while (s.isWhitespace(in[firstIndex])){
       firstIndex++;
     }

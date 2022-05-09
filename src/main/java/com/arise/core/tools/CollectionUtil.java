@@ -118,7 +118,11 @@ public class CollectionUtil {
 
     }
 
-
+    public static <T> void concat(List<T> a, List<T> b) {
+        for (T i: b){
+            a.add(i);
+        }
+    }
 
 
     public interface SmartHandler<T> {

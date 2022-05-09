@@ -5,7 +5,12 @@ import com.arise.canter.Command;
 import com.arise.canter.Event;
 import com.arise.canter.EventHandler;
 import com.arise.canter.Registry;
+import com.arise.core.tools.Assert;
+import com.arise.core.tools.StringUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,6 +131,21 @@ public class CanterTest {
 
 
 
+    public void testExecution() throws ParseException {
+        Registry registry = new Registry();
+        Date d = new Date();
+        Object result = registry.execute("print", Arguments.fromList("$get-date(yyyy-MM-dd HH:mm:ss)"), null, null);
+
+        Date r = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(result + "");
+
+        Assert.assertEquals(r.getYear(), d.getYear());
+        Assert.assertEquals(r.getDate(), d.getDate());
+        Assert.assertEquals(r.getHours(), d.getHours());
+        Assert.assertEquals(r.getMinutes(), d.getMinutes());
+
+        result = registry.execute("print", Arguments.fromList("$get-date()"), null, null);
+        Assert.assertTrue(StringUtil.hasText(result + ""));
+    }
 
 
     public class CustomHandler extends EventHandler {
@@ -143,5 +163,13 @@ public class CanterTest {
     private class InnerOs {
         String name = "TESTOs";
         int version = 45;
+    }
+
+    public static void main(String[] args) throws Exception {
+        CanterTest canterTest = new CanterTest();
+//        canterTest.test1();
+//        canterTest.test2();
+//        canterTest.testEvents();
+        canterTest.testExecution();
     }
 }

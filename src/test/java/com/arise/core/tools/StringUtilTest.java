@@ -41,7 +41,6 @@ public class StringUtilTest {
         n = StringUtil.toNumber("-");
         Assert.assertNull(n);
 
-
     }
 
     public void testParsing(){
@@ -96,6 +95,12 @@ public class StringUtilTest {
     public void testDecode(){
         StringUtil.URLDecodeResult result = StringUtil.urlDecode("http://192.168.1.4:8221/files/open?path=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DtBzfEceZtWI%26list%3DPL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC%26index%3D1%26t%3D4s");
         Assert.assertEquals("https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DtBzfEceZtWI%26list%3DPL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC%26index%3D1%26t%3D4s", result.getQueryParams().get("path").get(0)   );
+
+        result = StringUtil.urlDecode("http://192.168.1.6:8221/commands/exec?cmd=print&args=unu,doi,4");
+        Assert.assertEquals(3, result.getQueryParams().get("args"));
+        Assert.assertEquals("unu", result.getQueryParams().get("args").get(0));
+        Assert.assertEquals("doi", result.getQueryParams().get("args").get(1));
+        Assert.assertEquals("4", result.getQueryParams().get("args").get(2));
     }
 
 

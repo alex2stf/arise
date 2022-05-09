@@ -1,4 +1,4 @@
-package com.arise.weland.utils;
+package com.arise.core;
 
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
@@ -147,8 +147,20 @@ public class AppSettings {
         return null;
     }
 
+    public static String getProperty(Keys key, String defaultvalue){
+        String x = getProperty(key);
+        if (null == x){
+            return defaultvalue;
+        }
+        return x;
+    }
+
     public static boolean isTrue(Keys key){
         return "true".equalsIgnoreCase(getProperty(key));
+    }
+
+    public static boolean isFalse(Keys key){
+        return "false".equalsIgnoreCase(getProperty(key));
     }
 
     public static int getInt(Keys key, int i) {
@@ -171,6 +183,8 @@ public class AppSettings {
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"}),
         LATEST_SNAPSHOT_PATH("paths.latest.snapshot", new String[]{"latest/snapshot.jpeg"}),
         KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
+        CRONUS_CONFIG_FILE("cronus.config.file", new String[]{"path to cronus.json"}),
+        CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
         TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"});
 
         final String s;

@@ -15,9 +15,9 @@ public abstract class GenericTypeWorker {
         return methodCriteria;
     }
 
-    public void setFieldCriteria(FilterCriteria<Field> fieldCriteria) {
-        this.fieldCriteria = fieldCriteria;
-    }
+//    public void setFieldCriteria(FilterCriteria<Field> fieldCriteria) {
+//        this.fieldCriteria = fieldCriteria;
+//    }
 
     public void setMethodCriteria(FilterCriteria<Method> methodCriteria) {
         this.methodCriteria = methodCriteria;

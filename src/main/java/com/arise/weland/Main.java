@@ -3,12 +3,13 @@ package com.arise.weland;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
+import com.arise.canter.Cronus;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.*;
 import com.arise.weland.impl.*;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
-import com.arise.weland.utils.AppSettings;
+import com.arise.core.AppSettings;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -105,9 +106,10 @@ public class Main {
                 desktopContentHandler.getLiveJpeg()
         );
 
+        Cronus cronus = new Cronus(registry);
         desktopContentHandler.setCameraStream(desktopCamStream);
 
-        final WelandServerHandler welandServerHandler = new WelandServerHandler()
+        final WelandServerHandler welandServerHandler = new WelandServerHandler(registry)
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler)
                 .setDeviceController(deviceController);

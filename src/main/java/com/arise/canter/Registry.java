@@ -9,13 +9,17 @@ import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.models.FoundHandler;
 
 import java.io.InputStream;
 import java.util.*;
 
+import static com.arise.canter.Defaults.CMD_GET_DATE;
 import static com.arise.canter.Defaults.CMD_PRINT;
+import static com.arise.canter.Defaults.CMD_SUM;
 
-public class Registry extends GenericTypeWorker {
+public final class Registry extends GenericTypeWorker {
 
     private Map<String, Command> commands = new HashMap<>();
     private Map<String, EventHandler> eventHandlers = new HashMap<>();
@@ -25,6 +29,16 @@ public class Registry extends GenericTypeWorker {
 
 
 
+    @Override
+    public String toString() {
+
+        return StringUtil.jsonBuilder()
+                .objectStart()
+                .add("commands", commands.values())
+                .objectEnd()
+                .build();
+    }
+
     public Registry(){
        registerDefaultCommands();
     }
@@ -33,6 +47,14 @@ public class Registry extends GenericTypeWorker {
 
     public void registerDefaultCommands(){
         addCommand(CMD_PRINT);
+        addCommand(CMD_GET_DATE);
+        addCommand(CMD_SUM);
+    }
+
+    public void forEach(FoundHandler<Command> handler){
+        for (Command c: commands.values()){
+            handler.onFound(c);
+        }
     }
 
 
@@ -60,6 +82,14 @@ public class Registry extends GenericTypeWorker {
     public Registry setAsyncExecutor(Class<? extends AsyncExecutor> tClass){
         asyncExecutorClass = tClass;
         return this;
+    }
+
+    public Object execute(String cmdId, String[] args){
+        return execute(cmdId, args, null, null);
+    }
+
+    public Object execute(String cmdId, Arguments args){
+        return execute(cmdId, args, null, null);
     }
 
     public Object execute(String commandId, Arguments arguments, Event[] onSuccess, Event[] onError) {
@@ -119,11 +149,7 @@ public class Registry extends GenericTypeWorker {
             throw  new LogicalException("Missing schema " + parentType);
         }
 
-
         String id = (String) obj.get("id");
-
-
-
 
         Command nextCmd = new Command(id) {
 

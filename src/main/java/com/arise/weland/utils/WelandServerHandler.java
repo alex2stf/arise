@@ -8,10 +8,14 @@ import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
+import com.arise.canter.Arguments;
+import com.arise.canter.Command;
+import com.arise.canter.Registry;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.*;
 import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.tools.models.FoundHandler;
 import com.arise.weland.PlaylistWorker;
 import com.arise.weland.dto.*;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -45,13 +49,15 @@ public class WelandServerHandler extends HTTPServerHandler {
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
   ThreadUtil.TimerResult syncPlayTimer;
+  private Registry registry;
 
 
   public static File getClientPropsFile(){
     return new File(FileUtil.findDocumentsDir(), "weland-client-props");
   }
 
-  public WelandServerHandler() {
+  public WelandServerHandler(Registry registry) {
+    this.registry = registry;
   }
 
 
@@ -467,6 +473,18 @@ public class WelandServerHandler extends HTTPServerHandler {
     if ("/close-app".equals(request.path())){
       contentHandler.onCloseRequested();
       return contentHandler.getDeviceStat().toHttp();
+    }
+
+    if (request.pathsStartsWith("commands", "registry")){
+
+      return HttpResponse.json(registry.toString());
+    }
+
+    if (request.pathsStartsWith("commands", "exec")){
+      String commandId = request.getQueryParam("cmd");
+      String[] args = request.getQueryParamList("args");
+      Object o = registry.execute(commandId, args, null, null);
+      return HttpResponse.plainText(String.valueOf(o));
     }
 
 

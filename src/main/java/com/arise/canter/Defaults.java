@@ -7,6 +7,8 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +18,51 @@ public class Defaults {
         @Override
         public String execute(Arguments arguments) {
             String joined = StringUtil.join(arguments.list(), " ");
-            System.out.println(">>> " + joined);
             return joined;
         }
 
+    };
+
+    public static final Command<String> CMD_SUM = new Command<String>("sum") {
         @Override
-        public String toString() {
-            return "$printTask{}";
+        public String execute(Arguments arguments) {
+            String a = arguments.get(0);
+            String b = arguments.get(1);
+            Integer ia = null;
+            Integer ib = null;
+            try {
+                ia = Integer.valueOf(a);
+                try {
+                    ib = Integer.valueOf(b);
+                    if (ia != null && ib != null){
+                        return String.valueOf(ia + ib);
+                    }
+                } catch (Exception e){
+                    ;;
+                }
+            } catch (Exception e){
+                ;;
+            }
+
+            return a + b;
         }
+
+    };
+
+    public static final Command<String> CMD_GET_DATE = new Command<String>("get-date") {
+        @Override
+        public String execute(Arguments arguments) {
+            if (StringUtil.hasText(arguments.get(0))){
+                SimpleDateFormat sdf = new SimpleDateFormat(arguments.get(0));
+                try {
+                    return sdf.format(new Date());
+                } catch (Exception e){
+                    return new Date() + "";
+                }
+            }
+            return new Date() + "";
+        }
+
     };
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
@@ -33,10 +72,6 @@ public class Defaults {
                 return  SYSUtils.exec(args).toJson();
             }
 
-            @Override
-            public String toString() {
-                return "process-exec{}";
-            }
     };
 
     
@@ -99,10 +134,6 @@ public class Defaults {
 
         }
 
-        @Override
-        public String toString() {
-            return "process-exec-when-found{}";
-        }
     };
 
 
