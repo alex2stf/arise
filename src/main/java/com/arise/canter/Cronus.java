@@ -146,7 +146,7 @@ public class Cronus {
                 public void run() {
                     registry.execute(cmdId, args, null, null);
                 }
-            }, "cronus-task-" + UUID.randomUUID().toString());
+            }, "cronus-task-" + UUID.randomUUID(), true);
 
         }
 
