@@ -52,7 +52,7 @@ public class Defaults {
     public static final Command<String> CMD_GET_DATE = new Command<String>("get-date") {
         @Override
         public String execute(Arguments arguments) {
-            if (StringUtil.hasText(arguments.get(0))){
+            if (arguments.hasData() && StringUtil.hasText(arguments.get(0))){
                 SimpleDateFormat sdf = new SimpleDateFormat(arguments.get(0));
                 try {
                     return sdf.format(new Date());

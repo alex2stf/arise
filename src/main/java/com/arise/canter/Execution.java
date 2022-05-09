@@ -61,6 +61,7 @@ public class Execution {
         try {
             response = task.execute(localArgs);
         } catch (Throwable t){
+            t.printStackTrace();
             err = t;
         }
         if (err != null &&  onError != null){

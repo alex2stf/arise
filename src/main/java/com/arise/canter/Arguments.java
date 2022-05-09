@@ -1,5 +1,6 @@
 package com.arise.canter;
 
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.TypeUtil;
 
 import java.util.*;
@@ -100,4 +101,8 @@ public class Arguments {
     }
 
 
+    public boolean hasData() {
+        return (stringArgs != null && stringArgs.size() > 0) ||
+                (mapArgs != null && mapArgs.entrySet().size() > 0);
+    }
 }
