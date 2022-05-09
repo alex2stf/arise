@@ -100,7 +100,6 @@ public class Cronus {
             return this;
         }
 
-//        String lastMomentSaved = "x";
 
         boolean isMatching(Date date){
             if (disable){
@@ -108,32 +107,7 @@ public class Cronus {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String moment = getDayRef() + " " + getHourRef();
-
-            System.out.println( moment + "    cmp to" + date);
-//            if (lastMomentSaved.equals(moment)){
-//                return false;
-//            }
-            Date now;
-            try {
-                now = sdf.parse(
-                    moment
-                );
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return false;
-            }
-            Calendar cnow = new GregorianCalendar();
-            cnow.setTime(now);
-            Calendar cdate = new GregorianCalendar();
-            cdate.setTime(date);
-//            lastMomentSaved = moment;
-            return cnow.get(Calendar.YEAR) == cdate.get(Calendar.YEAR)
-                && cnow.get(Calendar.MONTH) == cdate.get(Calendar.MONTH)
-                && cnow.get(Calendar.DAY_OF_MONTH) == cdate.get(Calendar.DAY_OF_MONTH)
-                && cnow.get(Calendar.DAY_OF_MONTH) == cdate.get(Calendar.DAY_OF_MONTH)
-                && cnow.get(Calendar.HOUR_OF_DAY) == cdate.get(Calendar.HOUR_OF_DAY)
-                && cnow.get(Calendar.MINUTE) == cdate.get(Calendar.MINUTE)
-                && cnow.get(Calendar.SECOND) >= cdate.get(Calendar.SECOND);
+            return moment.equalsIgnoreCase(sdf.format(date));
         }
 
         String getHourRef(){
