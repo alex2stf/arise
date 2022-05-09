@@ -107,6 +107,7 @@ public class Cronus {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String moment = getDayRef() + " " + getHourRef();
+            System.out.println(moment +  " ==  " + sdf.format(date));
             return moment.equalsIgnoreCase(sdf.format(date));
         }
 
