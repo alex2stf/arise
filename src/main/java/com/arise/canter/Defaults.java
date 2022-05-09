@@ -108,8 +108,9 @@ public class Defaults {
                 if (processExe.exists() && processExe.canExecute()){
                     return executeProcess(processExe, processArgs, runSingleInstance);
                 }
-
             }
+
+            Mole.getInstance(Defaults.class).warn("No executable found for command " + StringUtil.join(processArgs, " "));
 
             return  null;
         }
