@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Cronus {
 
@@ -140,7 +141,13 @@ public class Cronus {
         }
 
         public void execute() {
-            registry.execute(cmdId, args, null, null);
+            ThreadUtil.fireAndForget(new Runnable() {
+                @Override
+                public void run() {
+                    registry.execute(cmdId, args, null, null);
+                }
+            }, "cronus-task-" + UUID.randomUUID().toString());
+
         }
 
         private CronTask setCmdId(String cmdId) {
