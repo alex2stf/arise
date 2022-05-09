@@ -11,7 +11,7 @@
   {
     "name": "open Jazz",
     "day": "DAILY",
-    "hour": "18:00:00",
+    "hour": "18:22:20",
     "cmd": {
       "id": "browserOpen",
       "args": ["https://stream.srg-ssr.ch/m/rsj/mp3_128"]

@@ -100,7 +100,7 @@ public class Cronus {
             return this;
         }
 
-        String lastMomentSaved = "x";
+//        String lastMomentSaved = "x";
 
         boolean isMatching(Date date){
             if (disable){
@@ -109,9 +109,10 @@ public class Cronus {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String moment = getDayRef() + " " + getHourRef();
 
-            if (lastMomentSaved.equals(moment)){
-                return false;
-            }
+            System.out.println( moment + "    cmp to" + date);
+//            if (lastMomentSaved.equals(moment)){
+//                return false;
+//            }
             Date now;
             try {
                 now = sdf.parse(
@@ -125,7 +126,7 @@ public class Cronus {
             cnow.setTime(now);
             Calendar cdate = new GregorianCalendar();
             cdate.setTime(date);
-            lastMomentSaved = moment;
+//            lastMomentSaved = moment;
             return cnow.get(Calendar.YEAR) == cdate.get(Calendar.YEAR)
                 && cnow.get(Calendar.MONTH) == cdate.get(Calendar.MONTH)
                 && cnow.get(Calendar.DAY_OF_MONTH) == cdate.get(Calendar.DAY_OF_MONTH)
