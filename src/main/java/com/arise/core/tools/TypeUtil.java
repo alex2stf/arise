@@ -1,6 +1,8 @@
 package com.arise.core.tools;
 
 
+import com.arise.core.models.FilterCriteria;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

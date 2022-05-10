@@ -5,7 +5,7 @@ import com.arise.cargo.model.CGVar;
 import com.arise.cargo.model.InputType;
 import com.arise.cargo.model.UXField;
 import com.arise.core.serializers.parser.Whisker;
-import com.arise.core.tools.FilterCriteria;
+import com.arise.core.models.FilterCriteria;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.TypeUtil;
 

@@ -1,7 +1,7 @@
 package com.arise.core.tools;
 
 
-import com.arise.core.models.Convertor;
+import com.arise.core.models.FilterCriteria;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

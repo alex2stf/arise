@@ -1,7 +1,5 @@
 package com.arise.core.models;
 
-import com.arise.core.tools.Provider;
-
 import java.util.HashMap;
 import java.util.Map;
 

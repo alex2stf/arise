@@ -2,7 +2,7 @@ package com.arise.canter;
 
 import com.arise.core.models.AsyncExecutor;
 import com.arise.core.tools.GenericTypeWorker;
-import com.arise.core.tools.Provider;
+import com.arise.core.models.Provider;
 import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
