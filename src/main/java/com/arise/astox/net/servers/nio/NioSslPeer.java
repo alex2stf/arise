@@ -2,13 +2,21 @@ package com.arise.astox.net.servers.nio;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.ServerRequest;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,7 +122,7 @@ public abstract class NioSslPeer extends AbstractServer {
      * @throws IOException - if an error occurs during read/write to the socket channel.
      */
     protected static boolean doHandshake(SocketChannel socketChannel, SSLEngine engine,
-                                         final SelectionKey key, NIOServer server, final CompleteHandler<ServerRequest> onHandshakeComplete) throws IOException {
+                                         final SelectionKey key, NIOServer server, final Handler<ServerRequest> onHandshakeComplete) throws IOException {
 
 
 
@@ -262,16 +270,16 @@ public abstract class NioSslPeer extends AbstractServer {
 
         if (key != null){
             final NIOChannelData channelData = new NIOChannelData(CLOSEABLE, engine);
-            server.parseByteBuffer(peerAppData, new CompleteHandler<ServerRequest>() {
+            server.parseByteBuffer(peerAppData, new Handler<ServerRequest>() {
                 @Override
-                public void onComplete(ServerRequest request) {
+                public void handle(ServerRequest request) {
                     channelData.setRequest(request);
                     key.attach(channelData);
-                    onHandshakeComplete.onComplete(request);
+                    onHandshakeComplete.handle(request);
                 }
             });
         } else {
-            onHandshakeComplete.onComplete(null);
+            onHandshakeComplete.handle(null);
         }
 
         return true;
@@ -346,9 +354,9 @@ public abstract class NioSslPeer extends AbstractServer {
         try {
             if (engine != null){
                 engine.closeOutbound();
-                doHandshake(socketChannel, engine, key, sslServer, new CompleteHandler<ServerRequest>() {
+                doHandshake(socketChannel, engine, key, sslServer, new Handler<ServerRequest>() {
                     @Override
-                    public void onComplete(ServerRequest data) {
+                    public void handle(ServerRequest data) {
                         if (data == null){
                             System.out.println("NO REQUEST IN HANDSHAKE");
                         }

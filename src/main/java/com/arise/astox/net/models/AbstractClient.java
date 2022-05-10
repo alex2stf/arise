@@ -1,10 +1,10 @@
 package com.arise.astox.net.models;
 
 import com.arise.core.models.Handler;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.models.CompleteHandler;
 
 import java.util.UUID;
+
+import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 
 public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
@@ -12,13 +12,13 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
 
     public abstract CONNECTION getConnection(final I request) throws Exception;
 
-    public void connect(final I request, final CompleteHandler<CONNECTION> connectHandler){
-        ThreadUtil.fireAndForget(new Runnable() {
+    public void connect(final I request, final Handler<CONNECTION> connectHandler){
+        fireAndForget(new Runnable() {
             @Override
             public void run() {
                 try {
                     final CONNECTION connection = getConnection(request);
-                    connectHandler.onComplete(connection);
+                    connectHandler.handle(connection);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -27,27 +27,27 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
     }
 
 
-    public void send(final I request, final CompleteHandler<CONNECTION> handler){
-        connect(request, new CompleteHandler<CONNECTION>() {
+    public void send(final I request, final Handler<CONNECTION> handler){
+        connect(request, new Handler<CONNECTION>() {
             @Override
-            public void onComplete(CONNECTION connection) {
+            public void handle(CONNECTION connection) {
                 write(connection, request);
-                handler.onComplete(connection);
+                handler.handle(connection);
             }
         });
     }
 
     protected abstract void write(CONNECTION connection,  I request);
-    protected abstract void read(CONNECTION connection, CompleteHandler<O> responseHandler);
+    protected abstract void read(CONNECTION connection, Handler<O> responseHandler);
 
 
 
 
 
-    public void sendAndReceive(final I request, final CompleteHandler<O> responseHandler){
-        this.send(request, new CompleteHandler<CONNECTION>() {
+    public void sendAndReceive(final I request, final Handler<O> responseHandler){
+        this.send(request, new Handler<CONNECTION>() {
             @Override
-            public void onComplete(CONNECTION data) {
+            public void handle(CONNECTION data) {
                 read(data, responseHandler);
             }
         });

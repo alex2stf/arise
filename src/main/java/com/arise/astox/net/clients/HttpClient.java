@@ -4,8 +4,8 @@ package com.arise.astox.net.clients;
 import com.arise.astox.net.models.AbstractStreamedSocketClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -36,14 +36,14 @@ public class HttpClient extends AbstractStreamedSocketClient<HttpRequest, HttpRe
 
 
     @Override
-    protected void read(final Socket socket, final CompleteHandler<HttpResponse> responseHandler) {
+    protected void read(final Socket socket, final Handler<HttpResponse> responseHandler) {
 
         try {
             final InputStream stream = socket.getInputStream();
-            httpResponseBuilder.readInputStream(stream, new CompleteHandler<HttpResponse>() {
+            httpResponseBuilder.readInputStream(stream, new Handler<HttpResponse>() {
                 @Override
-                public void onComplete(HttpResponse data) {
-                    responseHandler.onComplete(data);
+                public void handle(HttpResponse data) {
+                    responseHandler.handle(data);
                     Util.close(stream);
                     Util.close(socket);
                 }

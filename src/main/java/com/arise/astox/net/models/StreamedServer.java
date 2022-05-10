@@ -1,9 +1,9 @@
 package com.arise.astox.net.models;
 
+import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,9 +95,9 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
 
         this.serverRequestBuilder
                 .withConnection(connection)
-                .readInputStream(inputStream, new CompleteHandler<ServerRequest>() {
+                .readInputStream(inputStream, new Handler<ServerRequest>() {
             @Override
-            public void onComplete(ServerRequest serverRequest) {
+            public void handle(ServerRequest serverRequest) {
 
                 if (serverRequest == null) {
                     log.warn("NULL server request");
@@ -128,9 +128,9 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                 }
 
             }
-        }, new CompleteHandler<Throwable>() {
+        }, new Handler<Throwable>() {
             @Override
-            public void onComplete(Throwable data) {
+            public void handle(Throwable data) {
                 data.printStackTrace();
                 close(connection);
             }

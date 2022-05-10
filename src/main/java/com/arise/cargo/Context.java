@@ -1,6 +1,13 @@
 package com.arise.cargo;
 
-import com.arise.cargo.model.*;
+import com.arise.cargo.model.CGClass;
+import com.arise.cargo.model.CGContextAware;
+import com.arise.cargo.model.CGMethod;
+import com.arise.cargo.model.CGParamType;
+import com.arise.cargo.model.CGType;
+import com.arise.cargo.model.CGVar;
+import com.arise.cargo.model.InputType;
+import com.arise.cargo.model.ParseUtil;
 import com.arise.core.exceptions.SyntaxException;
 
 import java.util.ArrayList;

@@ -8,16 +8,23 @@ import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.serviceHelpers.HTTPServerHandler;
-import com.arise.canter.Arguments;
-import com.arise.canter.Command;
 import com.arise.canter.Registry;
+import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
-import com.arise.core.tools.*;
-import com.arise.core.tools.models.CompleteHandler;
-import com.arise.core.tools.models.FoundHandler;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.PlaylistWorker;
-import com.arise.weland.dto.*;
+import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.ContentPage;
+import com.arise.weland.dto.DeviceStat;
+import com.arise.weland.dto.Message;
+import com.arise.weland.dto.Playlist;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
@@ -30,9 +37,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class WelandServerHandler extends HTTPServerHandler {
   public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
@@ -353,15 +368,15 @@ public class WelandServerHandler extends HTTPServerHandler {
         e.printStackTrace();
         return HttpResponse.plainText("invalid destination");
       }
-      ThreadUtil.fireAndForget(new Runnable() {
+      fireAndForget(new Runnable() {
         @Override
         public void run() {
           FileTransfer.Client client = new FileTransfer.Client();
           client.setHost(url.getHost());
           client.setPort(url.getPort());
-          client.sendAndReceive(new FileTransfer.FileRequest(f, name), new CompleteHandler<HttpResponse>() {
+          client.sendAndReceive(new FileTransfer.FileRequest(f, name), new Handler<HttpResponse>() {
             @Override
-            public void onComplete(HttpResponse data) {
+            public void handle(HttpResponse data) {
               System.out.println(data);
             }
           });

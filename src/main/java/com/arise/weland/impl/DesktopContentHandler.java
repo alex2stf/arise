@@ -5,14 +5,24 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.AppSettings;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.*;
+import com.arise.core.tools.AppCache;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.ReflectUtil;
+import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
-import com.arise.core.AppSettings;
 import com.arise.weland.wrappers.VLCWrapper;
 
 import javax.swing.*;
@@ -21,10 +31,15 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
-import static com.arise.core.AppSettings.Keys.*;
+import static com.arise.core.AppSettings.Keys.PREFERRED_BROWSER;
+import static com.arise.core.AppSettings.Keys.SINGLE_INSTANCES;
+import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
 
 //import org.openqa.selenium.WebDriver;
 

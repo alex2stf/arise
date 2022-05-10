@@ -1,8 +1,6 @@
 package com.arise.weland.dto;
 
 
-import com.arise.core.tools.StringUtil;
-
 import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.jsonVal;

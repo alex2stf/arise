@@ -3,14 +3,16 @@ package com.arise.astox.net.clients;
 import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponseReader;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+
+import static java.util.UUID.randomUUID;
 
 
 public class SSEClient extends HttpClient {
@@ -28,19 +30,19 @@ public class SSEClient extends HttpClient {
     Thread thread;
     volatile boolean closed = false;
     @Override
-    public void connect(final HttpRequest request, final CompleteHandler<Socket> connectHandler) {
+    public void connect(final HttpRequest request, final Handler<Socket> connectHandler) {
         closed = false;
         thread = ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
                 try {
                     Socket socket = getConnection(request);
-                    connectHandler.onComplete(socket);
+                    connectHandler.handle(socket);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        });
+        }, "sse-connect-" + randomUUID());
         try {
             thread.join();
         } catch (InterruptedException e) {
@@ -54,9 +56,9 @@ public class SSEClient extends HttpClient {
     }
 
     public void subscribe(final HttpRequest request, final Consumer consumer){
-        this.connect(request, new CompleteHandler<Socket>() {
+        this.connect(request, new Handler<Socket>() {
             @Override
-            public void onComplete(final Socket socket) {
+            public void handle(final Socket socket) {
                 try {
                     final OutputStream outputStream = socket.getOutputStream();
                     outputStream.write(request.getBytes());

@@ -23,7 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.*;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.BINARY;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.CLOSE;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.CONTINUATION;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.PING;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.PONG;
+import static com.arise.astox.net.servers.draft_6455.WebSocketOpcode.TEXT;
 
 //import com.neovisionaries.ws.client.PerMessageCompressionExtension;
 //import com.arise.astox.net.servers.draft_6455.WebSocketCloseCode;

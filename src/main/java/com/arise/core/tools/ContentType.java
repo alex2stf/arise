@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.ContentType.Location.*;
+import static com.arise.core.tools.ContentType.Location.DOCUMENTS;
+import static com.arise.core.tools.ContentType.Location.MOVIES;
+import static com.arise.core.tools.ContentType.Location.MUSIC;
+import static com.arise.core.tools.ContentType.Location.PICTURES;
 
 /**
  *

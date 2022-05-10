@@ -3,9 +3,15 @@ package com.arise.weland.wrappers;
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.*;
-import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.tools.Base64;
+import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
+import com.arise.core.tools.NetworkUtil;
+import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.DeviceStat;
 
 import java.io.File;
@@ -129,9 +135,9 @@ public class VLCWrapper {
 
         final Status status = new Status();
 
-        jHttpClient.sendAndReceiveSync(request, new CompleteHandler<HttpResponse>() {
+        jHttpClient.sendAndReceiveSync(request, new Handler<HttpResponse>() {
             @Override
-            public void onComplete(HttpResponse data) {
+            public void handle(HttpResponse data) {
 
                 if (data.status() == 200){
                     status.valid = true;

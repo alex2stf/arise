@@ -1,7 +1,7 @@
 package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.ServerRequestBuilder;
-import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.models.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,19 +15,19 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 
     @Override
     public void readInputStream(final InputStream inputStream,
-                                final CompleteHandler<HttpRequest> onSuccess,
-                                final CompleteHandler<Throwable> onError) {
+                                final Handler<HttpRequest> onSuccess,
+                                final Handler<Throwable> onError) {
         HttpRequestReader reader = new HttpRequestReader() {
             @Override
             public void handleRest(HttpReader x) {
                     getRequest().setBytes(bodyBytes.toByteArray());
-                    onSuccess.onComplete(this.getRequest());
+                    onSuccess.handle(this.getRequest());
                     flush();
             }
 
             @Override
             public void onError(Throwable e) {
-                onError.onComplete(e);
+                onError.handle(e);
             }
         };
         reader.readInputStream(inputStream);
@@ -35,8 +35,8 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 
     @Override
     public void readSocketChannel(final SocketChannel channel,
-                                  final CompleteHandler<HttpRequest> onSuccess,
-                                  final CompleteHandler<Throwable> onError) {
+                                  final Handler<HttpRequest> onSuccess,
+                                  final Handler<Throwable> onError) {
         HttpRequestReader reader = new HttpRequestReader() {
             @Override
             public void handleRest(HttpReader reader) {
@@ -49,13 +49,13 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                     }
                     getRequest().setBytes(buff.array());
                 }
-                onSuccess.onComplete(getRequest());
+                onSuccess.handle(getRequest());
                 flush();
             }
 
             @Override
             public void onError(Throwable e) {
-                onError.onComplete(e);
+                onError.handle(e);
             }
         };
 
@@ -66,7 +66,7 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                 buff = ByteBuffer.allocate(1);
             }
         } catch (Exception e){
-            onError.onComplete(e);
+            onError.handle(e);
         }
 
 
@@ -76,11 +76,11 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 
     @Override
     public void readByteBuffer(final ByteBuffer byteBuffer,
-                               final CompleteHandler<HttpRequest> onSuccess,
-                               final CompleteHandler<Throwable> onError) {
+                               final Handler<HttpRequest> onSuccess,
+                               final Handler<Throwable> onError) {
 
         if (byteBuffer.limit() == 0){
-            onSuccess.onComplete(new HttpRequest());
+            onSuccess.handle(new HttpRequest());
             return;
         }
 
@@ -94,13 +94,13 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
                     byteBuffer.get(rest);
                     getRequest().setBytes(rest);
                 }
-                onSuccess.onComplete(getRequest());
+                onSuccess.handle(getRequest());
                 flush();
             }
 
             @Override
             public void onError(Throwable e) {
-                onError.onComplete(e);
+                onError.handle(e);
             }
         };
 

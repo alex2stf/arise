@@ -1,8 +1,8 @@
 package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.ServerResponseBuilder;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.models.CompleteHandler;
 
 import java.io.InputStream;
 
@@ -11,7 +11,7 @@ public class HttpResponseBuilder extends ServerResponseBuilder<HttpResponse> {
 
 
     @Override
-    public void  readInputStream(final InputStream inputStream, final CompleteHandler<HttpResponse> completeHandler) {
+    public void  readInputStream(final InputStream inputStream, final Handler<HttpResponse> completeHandler) {
 
         HttpResponseReader reader = new HttpResponseReader() {
 
@@ -19,11 +19,10 @@ public class HttpResponseBuilder extends ServerResponseBuilder<HttpResponse> {
             @Override
             public void handleRest(HttpReader reader) {
 
-                System.out.println(getResponse());
+                Mole.getInstance(HttpResponseBuilder.class).trace(getResponse());
                 response.setBytes(bodyBytes.toByteArray());
                 Mole.getInstance(HttpResponseBuilder.class).warn("READED  " + getResponse().toString());
-
-                completeHandler.onComplete(response);
+                completeHandler.handle(response);
                 flush();
             }
 

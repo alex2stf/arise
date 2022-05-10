@@ -4,14 +4,21 @@ import com.arise.astox.net.models.AbstractStreamedSocketClient;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+
+import static com.arise.astox.net.models.http.HttpResponse.oK;
 
 public class FileTransfer  {
 
@@ -64,7 +71,7 @@ public class FileTransfer  {
         }
 
         @Override
-        protected void read(Socket socket, CompleteHandler<HttpResponse> responseHandler) {
+        protected void read(Socket socket, Handler<HttpResponse> responseHandler) {
 
             String x;
             InputStream response = null;
@@ -74,7 +81,7 @@ public class FileTransfer  {
                 } catch (Exception e) {
                     Util.close(response);
                     Util.close(socket);
-                    responseHandler.onComplete(HttpResponse.oK());
+                    responseHandler.handle(oK());
                     return;
                 }
                 x = StreamUtil.toString(response);
@@ -83,7 +90,7 @@ public class FileTransfer  {
 
             Util.close(response);
             Util.close(socket);
-            responseHandler.onComplete(HttpResponse.oK());
+            responseHandler.handle(oK());
         }
     }
 

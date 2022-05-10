@@ -1,9 +1,18 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.models.Handler;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import static com.arise.core.tools.StringUtil.jsonEscape;
 import static com.arise.core.tools.StringUtil.jsonVal;
@@ -247,7 +256,7 @@ public class SYSUtils {
         }
 
         if (outputHandler != null){
-            outputHandler.onComplete(proc);
+            outputHandler.handle(proc);
         }
 
     }
@@ -447,11 +456,11 @@ public class SYSUtils {
         }
     }
 
-    public static abstract class ProcessOutputHandler implements CompleteHandler<Process> {
+    public static abstract class ProcessOutputHandler implements Handler<Process> {
         public abstract void handle(InputStream inputStream);
         public abstract void handleErr(InputStream errorStream);
 
-        public void onComplete(Process process){
+        public void handle(Process process){
 
         };
     }

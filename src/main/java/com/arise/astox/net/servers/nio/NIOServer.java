@@ -1,12 +1,16 @@
 package com.arise.astox.net.servers.nio;
 
-import com.arise.astox.net.models.*;
+import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.ConnectionSolver;
+import com.arise.astox.net.models.DuplexDraft;
+import com.arise.astox.net.models.ServerMessage;
+import com.arise.astox.net.models.ServerRequest;
+import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.servers.draft_6455.WebSocketException;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
@@ -14,13 +18,22 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 
 import static com.arise.astox.net.servers.nio.NIOChannelData.Type.CLOSEABLE;
 import static com.arise.astox.net.servers.nio.NIOChannelData.Type.DUPLEX;
-import static com.arise.astox.net.servers.nio.NioSslPeer.*;
+import static com.arise.astox.net.servers.nio.NioSslPeer.closeConnection;
+import static com.arise.astox.net.servers.nio.NioSslPeer.doHandshake;
+import static com.arise.astox.net.servers.nio.NioSslPeer.enlargeApplicationBuffer;
+import static com.arise.astox.net.servers.nio.NioSslPeer.enlargePacketBuffer;
+import static com.arise.astox.net.servers.nio.NioSslPeer.handleBufferUnderflow;
+import static com.arise.astox.net.servers.nio.NioSslPeer.handleEndOfStream;
 
 
 /**
@@ -200,9 +213,9 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             engine.setUseClientMode(false);
             engine.beginHandshake();
 
-            doHandshake(socketChannel, engine, key, this, new CompleteHandler<ServerRequest>() {
+            doHandshake(socketChannel, engine, key, this, new com.arise.core.models.Handler<ServerRequest>() {
                 @Override
-                public void onComplete(ServerRequest data) {
+                public void handle(ServerRequest data) {
                     if (data == null){
                         Util.close(socketChannel);
                         return;
@@ -315,9 +328,9 @@ public class NIOServer extends AbstractServer<SocketChannel> {
     private void readStandard(final NIOChannelData channelData, final SocketChannel socketChannel, final SelectionKey key) throws Exception {
         if (channelData.isCloseable()){
 
-            this.serverRequestBuilder.readSocketChannel(socketChannel, new CompleteHandler<ServerRequest>() {
+            this.serverRequestBuilder.readSocketChannel(socketChannel, new com.arise.core.models.Handler<ServerRequest>() {
                 @Override
-                public void onComplete(ServerRequest serverRequest) {
+                public void handle(ServerRequest serverRequest) {
                     if (serverRequest == null || !requestHandler.validate(serverRequest)) {
                         Util.close(socketChannel);
                         key.cancel();
@@ -333,9 +346,9 @@ public class NIOServer extends AbstractServer<SocketChannel> {
                         e.printStackTrace();
                     }
                 }
-            }, new CompleteHandler<Throwable>() {
+            }, new com.arise.core.models.Handler<Throwable>() {
                 @Override
-                public void onComplete(Throwable data) {
+                public void handle(Throwable data) {
                     data.printStackTrace();
                     Util.close(socketChannel);
                 }
@@ -420,9 +433,9 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         if (channelData.isCloseable()){
             ByteBuffer buffer = ByteBuffer.allocate(finallyBytes.length);
             buffer.put(finallyBytes);
-            parseByteBuffer(buffer, new CompleteHandler<ServerRequest>() {
+            parseByteBuffer(buffer, new com.arise.core.models.Handler<ServerRequest>() {
                 @Override
-                public void onComplete(ServerRequest request) {
+                public void handle(ServerRequest request) {
                     System.out.println("SSL READ COMPLETE");
                     if (request == null){
                         closeHttpConnection(key, socketChannel, engine);
@@ -446,10 +459,10 @@ public class NIOServer extends AbstractServer<SocketChannel> {
     }
 
 
-    public ServerRequest parseByteBuffer(Object input, CompleteHandler<ServerRequest> onSuccess) {
-        this.serverRequestBuilder.readByteBuffer((ByteBuffer) input, onSuccess, new CompleteHandler<Throwable>() {
+    public ServerRequest parseByteBuffer(Object input, com.arise.core.models.Handler<ServerRequest> onSuccess) {
+        this.serverRequestBuilder.readByteBuffer((ByteBuffer) input, onSuccess, new com.arise.core.models.Handler<Throwable>() {
             @Override
-            public void onComplete(Throwable data) {
+            public void handle(Throwable data) {
                 data.printStackTrace();
             }
         });
@@ -613,6 +626,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
         return active;
     }
 
+    @Deprecated
     public static abstract class Handler {
         public abstract void onSuccess();
         public void onError(SocketChannel socketChannel, SSLEngine engine, SelectionKey key, NIOServer server, Exception ex){

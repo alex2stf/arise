@@ -3,10 +3,19 @@ package com.arise.astox.net.clients;
 import com.arise.astox.net.models.AbstractClient;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.core.tools.*;
-import com.arise.core.tools.models.CompleteHandler;
+import com.arise.core.models.Handler;
+import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.ContentType;
+import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,10 +86,10 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
-    public void sendAndReceiveSync(HttpRequest request, final CompleteHandler<HttpResponse> httpResponseCompleteHandler){
-        connectSync(request, new CompleteHandler<HttpURLConnection>() {
+    public void sendAndReceiveSync(HttpRequest request, final Handler<HttpResponse> httpResponseCompleteHandler){
+        connectSync(request, new Handler<HttpURLConnection>() {
             @Override
-            public void onComplete(HttpURLConnection data) {
+            public void handle(HttpURLConnection data) {
                 read(data, httpResponseCompleteHandler);
             }
         });
@@ -88,7 +97,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
 
 
-    public void connect(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler) {
+    public void connect(final HttpRequest request, final Handler<HttpURLConnection> completionHandler) {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
@@ -98,7 +107,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
     }
 
 
-    public void connectSync(final HttpRequest request, final CompleteHandler<HttpURLConnection> completionHandler){
+    public void connectSync(final HttpRequest request, final Handler<HttpURLConnection> completionHandler){
         try {
 
             HttpURLConnection con = getConnection(request);
@@ -125,7 +134,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
 
             try {
                 con.connect();
-                completionHandler.onComplete(con);
+                completionHandler.handle(con);
             } catch (Throwable e) {
                 e.printStackTrace();
                 onError(e);
@@ -166,7 +175,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
     }
 
     @Override
-    public void read(HttpURLConnection con, CompleteHandler<HttpResponse> responseHandler) {
+    public void read(HttpURLConnection con, Handler<HttpResponse> responseHandler) {
 
 
         HttpResponse httpResponse = new HttpResponse();
@@ -200,7 +209,7 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
         }
 
         if (responseHandler != null){
-            responseHandler.onComplete(httpResponse);
+            responseHandler.handle(httpResponse);
         }
         con.disconnect();
     }

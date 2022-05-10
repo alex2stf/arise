@@ -3,6 +3,7 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.AppSettings;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.SYSUtils;
@@ -11,7 +12,6 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.core.AppSettings;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
 
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.arise.core.tools.SYSUtils.getLinuxDetails;
 import static com.arise.core.AppSettings.Keys.LATEST_SNAPSHOT_PATH;
+import static com.arise.core.tools.SYSUtils.getLinuxDetails;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;

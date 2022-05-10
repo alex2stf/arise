@@ -4,12 +4,17 @@ import com.arise.astox.net.models.http.HttpReader;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.models.http.HttpRequestReader;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.Util;
-import com.arise.core.tools.models.CompleteHandler;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class WelandRequestBuilder extends HttpRequestBuilder {
     private final IDeviceController deviceController;
@@ -23,8 +28,8 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
 
     @Override
     public void readInputStream(final InputStream inputStream,
-                                final CompleteHandler<HttpRequest> onSuccess,
-                                final CompleteHandler<Throwable> onError) {
+                                final Handler<HttpRequest> onSuccess,
+                                final Handler<Throwable> onError) {
 
         HttpRequestReader reader = new HttpRequestReader() {
 
@@ -76,19 +81,19 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
                         e.printStackTrace();
                     }
                     getRequest().setBytes(bodyBytes.toByteArray());
-                    onSuccess.onComplete(this.getRequest());
+                    onSuccess.handle(this.getRequest());
                     flush();
                 }
                 else {
                     getRequest().setBytes(bodyBytes.toByteArray());
-                    onSuccess.onComplete(this.getRequest());
+                    onSuccess.handle(this.getRequest());
                     flush();
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                onError.onComplete(e);
+                onError.handle(e);
             }
         };
 

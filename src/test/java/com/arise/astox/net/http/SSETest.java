@@ -2,14 +2,7 @@ package com.arise.astox.net.http;
 
 import com.arise.astox.net.clients.SSEClient;
 import com.arise.astox.net.clients.SSEEvent;
-import com.arise.astox.net.models.AbstractStreamedSocketClient;
-import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
-import com.arise.core.tools.models.CompleteHandler;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 
 public class SSETest {
 
