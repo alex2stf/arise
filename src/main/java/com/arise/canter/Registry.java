@@ -3,6 +3,7 @@ package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.AsyncExecutor;
+import com.arise.core.models.Handler;
 import com.arise.core.models.ThreadBatch;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
@@ -10,7 +11,6 @@ import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.models.FoundHandler;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,11 +55,7 @@ public final class Registry extends GenericTypeWorker {
         addCommand(CMD_SUM);
     }
 
-    public void forEach(FoundHandler<Command> handler){
-        for (Command c: commands.values()){
-            handler.onFound(c);
-        }
-    }
+
 
 
     public Command getCommand(String name) {

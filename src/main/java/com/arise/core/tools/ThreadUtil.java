@@ -72,6 +72,9 @@ public class ThreadUtil {
         result.timer.purge();
     }
 
+    public static String threadId(String id) {
+        return id.replaceAll("\\s+", "-") + "-" + UUID.randomUUID();
+    }
 
 
     public  static class TimerResult {

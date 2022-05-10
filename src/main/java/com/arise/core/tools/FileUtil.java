@@ -1,6 +1,6 @@
 package com.arise.core.tools;
 
-import com.arise.core.tools.models.FoundHandler;
+import com.arise.core.models.Handler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -410,27 +410,27 @@ public class FileUtil {
 
     public static List<String> readLines(Reader r) throws IOException {
         final List<String> ls = new ArrayList<>();
-        readLineByLine(r, new FoundHandler<String>() {
+        readLineByLine(r, new Handler<String>() {
             @Override
-            public void onFound(String d) {
+            public void handle(String d) {
                 ls.add(d);
             }
         });
         return ls;
     }
 
-    public static void readLineByLine(File f, FoundHandler<String> fh) throws IOException {
+    public static void readLineByLine(File f, Handler<String> fh) throws IOException {
         readLineByLine(new FileReader(f), fh);
     }
 
-    public static void readLineByLine(Reader r, FoundHandler<String> fh) throws IOException {
+    public static void readLineByLine(Reader r, Handler<String> fh) throws IOException {
         BufferedReader c  = new BufferedReader(r);
         while (c.ready()){
             String s = (c.readLine());
             if (s == null){
                 break;
             }
-            fh.onFound(s);
+            fh.handle(s);
         }
         close(c);
     }

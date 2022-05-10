@@ -11,6 +11,9 @@ import com.arise.weland.impl.WelandRequestBuilder;
 import javax.net.ssl.SSLContext;
 import java.security.SecureRandom;
 
+import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.ThreadUtil.threadId;
+
 public abstract class AbstractServerTest {
 
   private static final SSLContext context;
@@ -45,7 +48,7 @@ public abstract class AbstractServerTest {
   public void initTest(){
    final AbstractServer server = serviceServer();
 
-    ThreadUtil.fireAndForget(new Runnable() {
+    fireAndForget(new Runnable() {
       @Override
       public void run() {
         try {
@@ -73,7 +76,7 @@ public abstract class AbstractServerTest {
           e.printStackTrace();
         }
       }
-    });
+    }, threadId("server test"));
   };
 
   public static void main(String[] args) {

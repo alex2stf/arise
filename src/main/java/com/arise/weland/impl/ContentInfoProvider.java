@@ -1,6 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
@@ -10,7 +11,6 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.models.FoundHandler;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.Playlist;
@@ -425,9 +425,9 @@ public class ContentInfoProvider {
         }
         final List<ContentInfo> contentInfos = new ArrayList<>();
         try {
-            FileUtil.readLineByLine(getPlaylistFile(playlist), new FoundHandler<String>() {
+            FileUtil.readLineByLine(getPlaylistFile(playlist), new Handler<String>() {
                 @Override
-                public void onFound(String data) {
+                public void handle(String data) {
                     if (StringUtil.hasText(data)) {
                         contentInfos.add(ContentInfo.fromCsv(data));
                     }

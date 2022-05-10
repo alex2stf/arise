@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ByteUtil {
 
+    @SuppressWarnings("unused")
     public static ByteBuffer concat(List<ByteBuffer> buffers) {
         int length = 0;
         for (ByteBuffer bb : buffers) {

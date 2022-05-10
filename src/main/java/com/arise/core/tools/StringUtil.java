@@ -1,6 +1,8 @@
 package com.arise.core.tools;
 
 
+import com.arise.core.models.Convertor;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -702,20 +704,12 @@ public class StringUtil {
     }
 
 
-    public interface JoinIterator<T> {
+
+    public interface JoinIterator<T>  {
         String toString(T value);
     }
 
-    public static String putBetweenQuotes(String s){
-        if (!s.startsWith("\"")){
-            s = "\"" + s;
-        }
-        if (!s.endsWith("\"")){
-            s = s + "\"";
-        }
 
-        return s;
-    }
 
 
     public static String map(String value, Map<String, Object> map){
