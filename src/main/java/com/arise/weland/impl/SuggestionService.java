@@ -4,7 +4,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
-import com.arise.core.tools.models.Convertor;
+import com.arise.core.models.Convertor;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.ByteArrayOutputStream;

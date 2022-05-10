@@ -189,8 +189,5 @@ public class Multipart {
             return headers;
         }
 
-        public boolean hasHeader(String header) {
-            return !CollectionUtil.isEmpty(headers) && headers.containsKey(header);
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.arise.astox.net.models;
 
+import com.arise.core.models.Handler;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.models.CompleteHandler;
 
@@ -55,16 +56,16 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
 
     protected void onError(Throwable t){
        if (errorHandler != null){
-           errorHandler.onComplete(t);
+           errorHandler.handle(t);
        }
     }
 
 
 
-    private CompleteHandler<Throwable> errorHandler = null;
+    private Handler<Throwable> errorHandler = null;
 
 
-    public AbstractClient setErrorHandler(CompleteHandler<Throwable> errorHandler) {
+    public AbstractClient setErrorHandler(Handler<Throwable> errorHandler) {
         this.errorHandler = errorHandler;
         return this;
     }

@@ -2,7 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.models.Convertor;
+import com.arise.core.models.Convertor;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 

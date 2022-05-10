@@ -1,6 +1,7 @@
 package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 
 import java.util.Map;
@@ -70,7 +71,7 @@ public class Execution {
             registry.dispatch(onSuccess, task, response);
         }
 
-        System.out.println("execute task [" + task.getId() + ": "
+        Mole.getInstance(Execution.class).log("execute task [" + task.getId() + ": "
                 + StringUtil.join(localArgs, " ")
                 + "] on thread (" + Thread.currentThread().getName() + ") into <" + returnName + ">"
                 + " value = " + response);

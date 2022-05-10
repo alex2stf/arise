@@ -1,1 +1,0 @@
-TODO convert theese interfaces to abstract classes

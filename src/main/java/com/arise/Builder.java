@@ -29,16 +29,16 @@ public class Builder {
     static final String RES_ROOT = "src/main/resources/";
     static Lib[] libs = new Lib[]{
 
-            new Lib(ROOT + "canter", ROOT + "core")
-                    .resourcesDirs(RES_ROOT + "templates")
-                    .named("canter")
-                    .version("1.0"),
-
-            new Lib(ROOT + "cargo", ROOT + "core")
-                    .resourcesDirs(RES_ROOT + "templates")
-                    .named("cargo")
-                    .mainClass("com.arise.cargo.CargoMain")
-                    .version("1.0"),
+//            new Lib(ROOT + "canter", ROOT + "core")
+//                    .resourcesDirs(RES_ROOT + "templates")
+//                    .named("canter")
+//                    .version("1.0"),
+//
+//            new Lib(ROOT + "cargo", ROOT + "core")
+//                    .resourcesDirs(RES_ROOT + "templates")
+//                    .named("cargo")
+//                    .mainClass("com.arise.cargo.CargoMain")
+//                    .version("1.0"),
 
             /**
              * 	Weland

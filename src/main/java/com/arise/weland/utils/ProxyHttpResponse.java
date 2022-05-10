@@ -20,8 +20,6 @@ public class ProxyHttpResponse extends HttpResponse {
 
 
 
-
-
     @Override
     public boolean isSelfManageable() {
         return true;
