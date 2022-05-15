@@ -261,11 +261,11 @@ public class Builder {
         return sb.toString();
     }
 
-    static void writeStringToFile(File f, String c) throws FileNotFoundException {
-        try (PrintStream o = new PrintStream(new FileOutputStream(f))) {
-            o.print(c);
-        }
-    }
+//    static void writeStringToFile(File f, String c) throws FileNotFoundException {
+//        try (PrintStream o = new PrintStream(new FileOutputStream(f))) {
+//            o.print(c);
+//        }
+//    }
 
     static void recursiveScan(String dir, List<File> files, boolean checkJava) {
         File f = new File(dir);
@@ -295,21 +295,6 @@ public class Builder {
 
 
     static String getPath(File f) {
-//        String rootParts[] = ROOT_DIRECTORY.getAbsolutePath().split(Pattern.quote(File.separator));
-//        String fileParts[] = f.getAbsolutePath().split(Pattern.quote(File.separator));
-//        String res = "";
-//
-//
-//        for (int i = rootParts.length - 1; i < fileParts.length; i++){
-//                res+="/" + fileParts[i];
-//        }
-//
-//       if (res.startsWith("/.")){
-//           res = res.substring(2);
-//       }
-
-
-//        return  res;
         String fp = f.getAbsolutePath().replaceAll(Pattern.quote(File.separator), "/");
         String rp = ROOT_DIRECTORY.getAbsolutePath().replaceAll(Pattern.quote(File.separator), "/");
 

@@ -24,6 +24,7 @@ import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
+import com.arise.weland.ui.WelandForm;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
@@ -133,6 +134,10 @@ public class Main {
 
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
 
+
+        WelandForm welandForm = new WelandForm();
+        welandForm.setVisible(true);
+        cronus.registerTask(welandForm);
 
 
         ThreadUtil.fireAndForget(new Runnable() {
