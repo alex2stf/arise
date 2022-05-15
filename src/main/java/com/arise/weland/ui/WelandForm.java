@@ -1,6 +1,9 @@
 package com.arise.weland.ui;
 
+import com.arise.core.tools.NetworkUtil;
+
 import javax.swing.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,17 +31,19 @@ public class WelandForm extends JFrame implements Runnable {
             }
         });
 
+        final String ip = NetworkUtil.getCurrentIPV4AddressSync();
+        providers.add(new Provider() {
+            @Override
+            public String getText(Date date) {
+                return "IPv4: " + ip;
+            }
+        });
+
         getContentPane().setLayout(new java.awt.GridLayout(providers.size(), 1));
 
         for (Provider p: providers){
             getContentPane().add(p.label);
         }
-
-
-
-
-
-
 
         pack();
         run();
