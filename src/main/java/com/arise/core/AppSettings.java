@@ -179,6 +179,23 @@ public class AppSettings {
         return applicationProperties.containsKey(key.s);
     }
 
+    public static List<String> getListWithPrefix(String prefix) {
+
+        List<String> res = new ArrayList<>();
+        int index = 0;
+        while(true){
+
+            String value = applicationProperties.getProperty(prefix + "." + index);
+
+            if (null == value){
+                break;
+            }
+            res.add(index, value);
+
+        }
+        return res;
+    }
+
 
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
@@ -189,6 +206,8 @@ public class AppSettings {
         KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
         CRONUS_CONFIG_FILE("cronus.config.file", new String[]{"path to cronus.json"}),
         CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
+        UI_ENABLED("ui.enabled", new String[]{"true", "false(default)"}),
+        UI_CLOSE_ON_EXIT("ui.closeOnExit", new String[]{"true", "false(default)"}),
         TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"});
 
         final String s;

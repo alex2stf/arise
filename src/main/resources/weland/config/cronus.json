@@ -16,15 +16,5 @@
       "id": "browserOpen",
       "args": ["https://stream.srg-ssr.ch/m/rsj/mp3_128"]
     }
-  },
-  {
-    "name": "print test",
-    "disable": true,
-    "day": "DAILY",
-    "hour": "EACH_SECOND",
-    "cmd": {
-      "id": "print",
-      "args": ["hello", "$get-date()"]
-    }
   }
 ]

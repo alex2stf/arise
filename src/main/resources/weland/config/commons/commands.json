@@ -13,6 +13,15 @@
       },
       "process-args": ["{url}"]
     }
+  },
+  {
+    "id": "python3-exec-to-file",
+    "parent": "process-exec-when-found",
+    "binaries": {
+      "python3": "/usr/bin/python3"
+    }
+
   }
+
 
 ]

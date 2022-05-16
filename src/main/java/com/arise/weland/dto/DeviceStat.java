@@ -27,7 +27,6 @@ public class DeviceStat {
     private int batteryLevel;
     private String deviceName;
     private SYSUtils.OS os;
-    private List<Screen> screens = new ArrayList<>();
     private String serverStatus;
     private String displayName;
     private String serverUUID;
@@ -36,39 +35,16 @@ public class DeviceStat {
     private Map<String, Object> props = new ConcurrentHashMap<>();
 
 
-    public static final DeviceStat INSTANCE = new DeviceStat(true).scanIPV4();
+    public static final DeviceStat INSTANCE = new DeviceStat().scanIPV4();
 
     public static DeviceStat getInstance() {
         return INSTANCE;
     }
 
 
-    private DeviceStat(boolean scan){
-        if (!scan){
-            return;
-        }
+    private DeviceStat(){
         this.os = SYSUtils.getOS();
         deviceName = SYSUtils.getDeviceName().toUpperCase();
-
-
-        Object graphicsEnvironment =
-                ReflectUtil.getStaticMethod("java.awt.GraphicsEnvironment", "getLocalGraphicsEnvironment").call();
-
-        if (graphicsEnvironment != null){
-            try {
-                Object [] devices = (Object[]) ReflectUtil.getMethod(graphicsEnvironment, "getScreenDevices").call();
-                for (Object device: devices){
-                    Object displayMode = ReflectUtil.getMethod(device, "getDisplayMode").call();
-                    if (displayMode != null){
-                        Integer width = ReflectUtil.getMethod(displayMode, "getWidth").callForInteger();
-                        Integer height = ReflectUtil.getMethod(displayMode, "getHeight").callForInteger();
-                        screens.add(new Screen(width, height));
-                    }
-                }
-            } catch (Exception e){
-
-            }
-        }
     }
 
 
@@ -93,9 +69,6 @@ public class DeviceStat {
         addVal(sb, "P", serverStatus);
         addVal(sb, "D", displayName);
         addVal(sb, "U", serverUUID);
-        if (!isEmpty(screens)){
-            sb.append("\"S\":").append(jsonVal(screens)).append(",");
-        }
 
         if (!isEmpty(ipv4Addrs)){
             sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
@@ -181,9 +154,7 @@ public class DeviceStat {
         return this;
     }
 
-    public List<Screen> getScreens() {
-        return screens;
-    }
+
 
     public SYSUtils.OS getOs() {
         return os;
@@ -263,6 +234,7 @@ public class DeviceStat {
 
 
 
+    @Deprecated
     public static class Screen {
         private final Integer width;
         private final Integer height;

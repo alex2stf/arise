@@ -1,12 +1,10 @@
 package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -66,17 +64,59 @@ public class Defaults {
     };
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
-            @Override
-            public String execute(Arguments arguments) {
-                List<String> args = (List<String>) arguments.get("process-args");
-                return  SYSUtils.exec(args).toJson();
+        @Override
+        public String execute(Arguments arguments) {
+            List<String> args = (List<String>) arguments.get("process-args");
+            if(CollectionUtil.isEmpty(args)){
+                args = arguments.getListArgs();
             }
+
+            File stdOutFile = null;
+            int lastIndex = args.size();
+            int firstIndex = 0;
+            for(int i = 0; i < args.size(); i++){
+                String part = args.get(i);
+                if(part.startsWith("STDOUT>")){
+                    stdOutFile = new File(part.substring("STDOUT>".length()).trim());
+                    lastIndex = i;
+                    break;
+                }
+            }
+
+
+            int size = lastIndex - firstIndex;
+            String[] actualArgs = new String[size];
+            for(int j = firstIndex; j < lastIndex; j++){
+                actualArgs[j] = args.get(j);
+            }
+
+
+            final File finalStdOutFile = stdOutFile;
+            if(stdOutFile.exists()) {
+                finalStdOutFile.delete();
+            }
+
+            SYSUtils.exec(CollectionUtil.toArray(args), new SYSUtils.ProcessLineReader() {
+                @Override
+                public void onStdoutLine(int line, String content) {
+                    if (finalStdOutFile != null) {
+                        try {
+                            FileUtil.appendNewLineToFile(content, finalStdOutFile);
+                        } catch (IOException e) {
+                            e.printStackTrace(); //TODO fix this error catch
+                        }
+                    }
+                }
+            }, true, true);
+            return "x";
+        }
 
     };
 
     
 
 
+    @Deprecated
     public static final Command<String> PROCESS_EXEC_WHEN_FOUND = new Command<String>("process-exec-when-found") {
         @Override
         public String execute(Arguments arguments) {

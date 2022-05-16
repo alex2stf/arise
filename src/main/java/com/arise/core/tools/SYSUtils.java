@@ -47,12 +47,16 @@ public class SYSUtils {
         for (String s :parts){
 
             if(ext.indexOf(s) < 0){
-                sb.append(s);
+                sb.append(s).append(" ");
             }
         }
     }
 
     public static String getDeviceName() {
+        return StringUtil.sanitizeAppId(getDeviceDetailsString());
+    }
+
+    public static String getDeviceDetailsString() {
 
         if(_deviceName != null){
             return _deviceName;
@@ -61,32 +65,27 @@ public class SYSUtils {
         StringBuilder sb = new StringBuilder();
 
         if (env.containsKey("COMPUTERNAME")) {
-            sb.append(env.get("COMPUTERNAME"));
+            sb.append(env.get("COMPUTERNAME")).append(" ");
         }
         if (env.containsKey("HOSTNAME")) {
-            sb.append(env.get("HOSTNAME"));
+            sb.append(env.get("HOSTNAME")).append(" ");
         }
 
         if (env.containsKey("USER")){
-            sb.append(env.get("USER"));
+            sb.append(env.get("USER")).append(" ");
         }
 
         if (env.containsKey("DESKTOP_SESSION")){
-            sb.append(env.get("DESKTOP_SESSION"));
+            sb.append(env.get("DESKTOP_SESSION")).append(" ");
         }
 
         if (env.containsKey("XDG_SESSION_TYPE")){
-            sb.append(env.get("XDG_SESSION_TYPE"));
+            sb.append(env.get("XDG_SESSION_TYPE")).append(" ");
         }
 
         if (env.containsKey("XDG_SEAT")){
-            sb.append(env.get("XDG_SEAT"));
+            sb.append(env.get("XDG_SEAT")).append(" ");
         }
-
-        if (env.containsKey("USER")){
-            sb.append(env.get("USER"));
-        }
-
 
         if (ReflectUtil.classExists("android.os.Build")){
 
@@ -117,7 +116,7 @@ public class SYSUtils {
             }
         }
 
-        return StringUtil.sanitizeAppId(sb.toString());
+        return sb.toString();
     }
 
 
@@ -205,15 +204,6 @@ public class SYSUtils {
     public static void exec(String[] args, final ProcessOutputHandler outputHandler,
                             boolean useBuilder,
                             boolean async){
-//        log.info("exec: " + StringUtil.join(args, "  ", new StringUtil.JoinIterator<String>() {
-//            @Override
-//            public String toString(String value) {
-//                if (value.indexOf(" ") > -1){
-//                    return "\"" + value + "\"";
-//                }
-//                return value;
-//            }
-//        }));
         Process proc = null;
         if (!useBuilder){
             Runtime rt = Runtime.getRuntime();

@@ -141,7 +141,7 @@ public final class Registry extends GenericTypeWorker {
         return this;
     }
 
-    private void importJsonObject(Map obj) {
+    public void importJsonObject(Map obj) {
         String parentType = (String) obj.get("parent");
 
         final Command parentCmd = getCommand(parentType);

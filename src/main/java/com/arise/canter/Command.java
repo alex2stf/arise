@@ -31,8 +31,7 @@ public abstract class Command<T> extends Task<T> {
 
     @Override
     public String toString() {
-        return
-                StringUtil.jsonBuilder().objectStart()
+        return StringUtil.jsonBuilder().objectStart()
                         .add("id", id)
                         .add("arg-names", argumentsNames, QUOTE_ITERATOR)
                         .add("properties", properties, QUOTE_ITERATOR)

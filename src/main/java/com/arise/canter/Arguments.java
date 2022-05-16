@@ -109,4 +109,8 @@ public class Arguments {
         return (stringArgs != null && stringArgs.size() > 0) ||
                 (mapArgs != null && mapArgs.entrySet().size() > 0);
     }
+
+    public List<String> getListArgs() {
+        return stringArgs;
+    }
 }

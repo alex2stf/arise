@@ -31,14 +31,8 @@ public class Cronus {
     private List<Runnable> otherTasks = new ArrayList<>();
 
 
-    public Cronus(Registry registry){
+    public Cronus(Registry registry, String path){
         this.registry = registry;
-
-        boolean disabled = AppSettings.isFalse(AppSettings.Keys.CRONUS_ENABLED);
-        if (disabled){
-            return;
-        }
-        String path = AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json");
 
 
         try {
@@ -125,7 +119,7 @@ public class Cronus {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String moment = getDayRef() + " " + getHourRef();
-            System.out.println(moment +  " ==  " + sdf.format(date));
+//            System.out.println(moment +  " ==  " + sdf.format(date));
             return moment.equalsIgnoreCase(sdf.format(date));
         }
 

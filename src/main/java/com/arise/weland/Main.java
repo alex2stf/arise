@@ -7,33 +7,22 @@ import com.arise.canter.Cronus;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
-import com.arise.core.tools.AppCache;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.NetworkUtil;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StandardCacheWorker;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.weland.impl.BluecoveServer;
-import com.arise.weland.impl.ContentInfoDecoder;
-import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.DesktopCamStream;
-import com.arise.weland.impl.DesktopContentHandler;
-import com.arise.weland.impl.IDeviceController;
-import com.arise.weland.impl.PCDecoder;
-import com.arise.weland.impl.PCDeviceController;
-import com.arise.weland.impl.WelandRequestBuilder;
+import com.arise.core.tools.*;
+import com.arise.weland.impl.*;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.ui.WelandForm;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.SSLContext;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
+import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
 
@@ -60,6 +49,26 @@ public class Main {
 
 
 
+    private static void detect_device_capabilities(){
+        try {
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+            // Returns an array of all the screen GraphicsDevice objects.
+            GraphicsDevice[] devices = env.getScreenDevices();
+
+            int gdTotal = devices.length;
+            getInstance().setProp("gd_total", gdTotal + "");
+
+            for(GraphicsDevice gd: devices){
+                String id = gd.getIDstring();
+                getInstance().setProp("gd_" + id + "_type", gd.getType() + "");
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -71,6 +80,7 @@ public class Main {
 
         log.info("init weland server");
         log.info("SYSUtils.isLinux() " + SYSUtils.isLinux());
+        detect_device_capabilities();
 
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
         MediaInfoSolver.load();
@@ -106,12 +116,16 @@ public class Main {
 
 
         for (File file: AppSettings.getScannableLocations()){
+            if (!file.exists()){
+                log.warn("scannable location " + file.getAbsolutePath() + " not found...");
+            } else {
+                log.info("added scannable root ", file.getAbsolutePath());
+            }
             contentInfoProvider.addRoot(file);
-            log.info("added scannable root ", file.getAbsolutePath());
+
         }
 
         contentInfoProvider.get();
-
 
 
         DesktopContentHandler desktopContentHandler = new DesktopContentHandler(contentInfoProvider,  registry);
@@ -121,7 +135,12 @@ public class Main {
                 desktopContentHandler.getLiveJpeg()
         );
 
-        Cronus cronus = new Cronus(registry);
+        Cronus cronus = null;
+
+        if (!AppSettings.isFalse(AppSettings.Keys.CRONUS_ENABLED)){
+            cronus = new Cronus(registry, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+        }
+
         desktopContentHandler.setCameraStream(desktopCamStream);
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler(registry)
@@ -130,14 +149,24 @@ public class Main {
                 .setDeviceController(deviceController);
 
 
-
-
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
 
 
-        WelandForm welandForm = new WelandForm();
-        welandForm.setVisible(true);
-        cronus.registerTask(welandForm);
+        if(AppSettings.isTrue(AppSettings.Keys.UI_ENABLED)) {
+            WelandForm welandForm = new WelandForm();
+            welandForm.setVisible(true);
+
+            if(cronus != null) {
+                cronus.registerTask(welandForm);
+            }
+            else {
+                ThreadUtil.repeatedTask(welandForm, 1000);
+            }
+
+            if(AppSettings.isTrue(AppSettings.Keys.UI_CLOSE_ON_EXIT)){
+                welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
+        }
 
 
         ThreadUtil.fireAndForget(new Runnable() {

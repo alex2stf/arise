@@ -3,6 +3,7 @@ build-info.properties
 *.iml
 .idea
 application.properties
+cronus_pi.json
 Bunga_and_Kion.png
 arch/
 scripts/

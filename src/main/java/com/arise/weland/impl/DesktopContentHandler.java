@@ -31,6 +31,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -168,6 +169,7 @@ public class DesktopContentHandler extends ContentHandler {
 
 
     private void openMedia(String path) {
+        path = Paths.get(path).normalize().toAbsolutePath().toString();
         log.info("received request to open ", path);
         File vlcExecutable = VLCWrapper.open(getCommands("media", path));
         if (vlcExecutable != null){
