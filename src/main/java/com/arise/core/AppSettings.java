@@ -185,13 +185,17 @@ public class AppSettings {
         int index = 0;
         while(true){
 
-            String value = applicationProperties.getProperty(prefix + "." + index);
+            String key = prefix + "." + index;
+            if (!applicationProperties.containsKey(key)){
+                break;
+            }
+            String value = applicationProperties.getProperty(key);
 
             if (null == value){
                 break;
             }
             res.add(index, value);
-
+            index++;
         }
         return res;
     }

@@ -1,15 +1,11 @@
 package com.arise.weland.ui;
 
+import com.arise.canter.Registry;
 import com.arise.core.AppSettings;
-import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StringUtil;
-import com.arise.weland.dto.DeviceStat;
-import com.github.sarxos.webcam.ds.buildin.natives.Device;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +18,7 @@ public class WelandForm extends JFrame implements Runnable {
 
     List<Provider> providers = new ArrayList<>();
 
-    public WelandForm(){
+    public WelandForm(final Registry registry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 //        setAlwaysOnTop(true);
 
@@ -71,6 +67,16 @@ public class WelandForm extends JFrame implements Runnable {
             }
         });
 
+        List<String> displays = AppSettings.getListWithPrefix("ui.display");
+        for (final String d: displays){
+            providers.add(new Provider() {
+                @Override
+                public String getText(Date date) {
+                    return "" + registry.executeCmdLine(d);
+                }
+            });
+        }
+
         providers.add(new Provider() {
             @Override
             protected Font buildFont() {
@@ -89,9 +95,6 @@ public class WelandForm extends JFrame implements Runnable {
         for (Provider p: providers){
             getContentPane().add(p.label);
         }
-
-        List<String> displays = AppSettings.getListWithPrefix("ui.display");
-        
 
         pack();
         run();

@@ -153,7 +153,8 @@ public class Main {
 
 
         if(AppSettings.isTrue(AppSettings.Keys.UI_ENABLED)) {
-            WelandForm welandForm = new WelandForm();
+            WelandForm welandForm = new WelandForm(registry);
+            welandForm.pack();
             welandForm.setVisible(true);
 
             if(cronus != null) {
@@ -166,6 +167,7 @@ public class Main {
             if(AppSettings.isTrue(AppSettings.Keys.UI_CLOSE_ON_EXIT)){
                 welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
+
         }
 
 

@@ -220,7 +220,7 @@ public class SYSUtils {
             }
         } else {
             ProcessBuilder processBuilder = new ProcessBuilder(args);
-            processBuilder.redirectErrorStream(false);
+            processBuilder.redirectErrorStream(true);
 //            String path = processBuilder.environment().get("PATH");
 //            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\bin";
 //            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\msys\\1.0\\bin";

@@ -52,6 +52,9 @@ public class Assert {
         try {
             assert s1.equals(s2);
             tick();
+            if (!s1.equals(s2)){
+                throwException(s1, s2, new RuntimeException("assert disabled"));
+            }
         } catch (Throwable e){
             throwException(s1, s2, e);
         }
@@ -78,7 +81,6 @@ public class Assert {
     public static void throwException(Object a, Object b, Throwable c){
         System.out.println("Expected " + a + " given " + b);
         throw new AssertException(a, b, c);
-
     }
 
     public static void assertNull(Object aNull) {

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import static com.arise.core.tools.Util.close;
 
@@ -788,6 +789,14 @@ public class FileUtil {
 
     public static boolean exists(String s) {
         return new File(s).exists();
+    }
+
+    public static String getNameFromPath(String path) {
+        String names[] = path.split(Pattern.quote(File.separator));
+        String name = names[names.length - 1];
+        names = name.split("/");
+        name = names[names.length - 1];
+        return name;
     }
 
 

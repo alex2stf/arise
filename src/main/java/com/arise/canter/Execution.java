@@ -29,6 +29,9 @@ public class Execution {
         this.onError = onError;
     }
 
+
+
+
     public Object execute(Arguments args){
         Task task = registry.getCommand(commandId);
 
@@ -42,14 +45,7 @@ public class Execution {
                     localArgs[i] = StringUtil.map(arguments[i], mapArgs, registry.getFieldCriteria(), registry.getMethodCriteria());
                 }
                 else if (currentArg.startsWith("$")){
-                    int argBegin = currentArg.indexOf("(");
-                    int argEnd = currentArg.indexOf(")");
-                    if (argBegin < 0 || argEnd < 0){
-                        throw new LogicalException("any nested method should be called with ()");
-                    }
-                    String nsargs[] = currentArg.substring(argBegin + 1, argEnd).split(",");
-                    String commandId = currentArg.substring(1, argBegin);
-                    localArgs[i] = registry.execute(commandId, nsargs)  + "";
+                    localArgs[i] = registry.executeCmdLine(currentArg) + "";
                 }
                 else {
                     localArgs[i] = arguments[i];
@@ -71,10 +67,10 @@ public class Execution {
             registry.dispatch(onSuccess, task, response);
         }
 
-        Mole.getInstance(Execution.class).log("execute task [" + task.getId() + ": "
-                + StringUtil.join(localArgs, " ")
-                + "] on thread (" + Thread.currentThread().getName() + ") into <" + returnName + ">"
-                + " value = " + response);
+//        Mole.getInstance(Execution.class).log("execute task [" + task.getId() + ": "
+//                + StringUtil.join(localArgs, " ")
+//                + "] on thread (" + Thread.currentThread().getName() + ") into <" + returnName + ">"
+//                + " value = " + response);
 
         return response;
     }

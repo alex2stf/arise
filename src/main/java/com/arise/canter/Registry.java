@@ -3,7 +3,6 @@ package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.AsyncExecutor;
-import com.arise.core.models.Handler;
 import com.arise.core.models.ThreadBatch;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
@@ -18,10 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.arise.canter.Defaults.CMD_FIND_FILE_STREAM;
 import static com.arise.canter.Defaults.CMD_GET_DATE;
 import static com.arise.canter.Defaults.CMD_PRINT;
 import static com.arise.canter.Defaults.CMD_SUM;
+import static com.arise.canter.Defaults.CMD_VALID_FILE;
+import static com.arise.canter.Defaults.PROCESS_EXEC_PRINT;
 
 public final class Registry extends GenericTypeWorker {
 
@@ -53,6 +56,16 @@ public final class Registry extends GenericTypeWorker {
         addCommand(CMD_PRINT);
         addCommand(CMD_GET_DATE);
         addCommand(CMD_SUM);
+        addCommand(CMD_VALID_FILE);
+        addCommand(CMD_FIND_FILE_STREAM);
+        addCommand(PROCESS_EXEC_PRINT);
+        addCommand(new Command<String>("read-storage") {
+            @Override
+            public String execute(Arguments arguments) {
+                String key = arguments.get(0);
+                return storage.get(key) + "";
+            }
+        });
     }
 
 
@@ -93,8 +106,26 @@ public final class Registry extends GenericTypeWorker {
     }
 
     public Object execute(String commandId, Arguments arguments, Event[] onSuccess, Event[] onError) {
+        return newExecution(commandId, arguments, onSuccess, onError).execute(arguments);
+    }
+
+    public Execution newExecution(String commandId, Arguments arguments, Event[] onSuccess, Event[] onError){
         return new Execution(this, UUID.randomUUID().toString(), commandId,
-                false, arguments.array(), onSuccess, onError).execute(arguments);
+                false, arguments.array(), onSuccess, onError);
+    }
+
+    public Object executeCmdLine(String line){
+        if (line.startsWith("$")){
+            int argBegin = line.indexOf("(");
+            int argEnd = line.indexOf(")");
+            if (argBegin < 0 || argEnd < 0){
+                throw new LogicalException("any nested method should be called with ()");
+            }
+            String nsargs[] = line.substring(argBegin + 1, argEnd).split(",");
+            String commandId = line.substring(1, argBegin);
+            return execute(commandId, nsargs);
+        }
+        return line;
     }
 
     public Object execute(String commandId, String[] args, Event[] onSuccess, Event[] onError) {
@@ -182,4 +213,8 @@ public final class Registry extends GenericTypeWorker {
     }
 
 
+    private Map<String, Object> storage = new ConcurrentHashMap<>();
+    public synchronized void store(String key, Object res) {
+        storage.put(key, res);
+    }
 }
