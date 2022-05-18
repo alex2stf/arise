@@ -1,9 +1,15 @@
 package com.arise.core.tools;
 
 
+import com.arise.core.models.Handler;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +23,74 @@ public class AppCache {
     private static final Set<URL> urlsCache = new HashSet<>();
     private static Object worker;
 
+
+    public static class StoredList {
+        private final List<String> items;
+        private final int index;
+
+        public StoredList(List<String> items, int index) {
+            this.items = items;
+            this.index = index;
+        }
+
+        public List<String> getItems() {
+            return items;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public boolean isEmpty() {
+            return CollectionUtil.isEmpty(items);
+        }
+
+        public boolean isIndexExceeded() {
+            return !isEmpty() && (index > items.size() - 1);
+        }
+    }
+
+    static File getStoredListFile(String name){
+        File listsDir = new File(FileUtil.findAppDir(), "lists");
+        if (!listsDir.exists()){
+            listsDir.mkdir();
+        }
+        return new File(listsDir, name);
+    }
+
+    public static StoredList storeList(String name, List<String> items, int index){
+        if (CollectionUtil.isEmpty(items)){
+            return new StoredList(new ArrayList<String>(), 0);
+        }
+        File list = getStoredListFile(name);
+        StringBuilder sb = new StringBuilder().append(index).append("\n");
+        for (String s: items){
+            sb.append(s.trim()).append("\n");
+        }
+        FileUtil.writeStringToFile(list, sb.toString());
+        return new StoredList(items, index);
+    }
+
+    public static void dropStoredList(String name){
+        getStoredListFile(name).delete();
+    }
+
+    public static StoredList getStoredList(String name) {
+        File list = getStoredListFile(name);
+        if (!list.exists()){
+            return new StoredList(new ArrayList<String>(), 0);
+        }
+        final List<String> x = FileUtil.readLinesFromFile(list);
+        Integer index;
+        try {
+            index = Integer.valueOf(x.get(0));
+        }catch (Exception e){
+            index = 0;
+        }
+        x.remove(0);
+
+        return new StoredList(x, index);
+    }
 
     public static void putString(String key, String value){
         stringsCache.put(key, value);

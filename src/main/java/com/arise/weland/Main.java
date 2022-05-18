@@ -3,6 +3,8 @@ package com.arise.weland;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
+import com.arise.canter.Arguments;
+import com.arise.canter.Command;
 import com.arise.canter.Cronus;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.DependencyManager;
@@ -18,6 +20,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
@@ -47,6 +54,51 @@ public class Main {
 
 
 
+    private static volatile boolean cmd_executing = false;
+
+    private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
+        @Override
+        public String execute(Arguments arguments) {
+            if (cmd_executing){
+                return "xx";
+            }
+            cmd_executing = true;
+            String path =
+                    Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
+            System.out.println("PLAY_MP3_RANDOM_CMD called with " + path);
+
+            AppCache.StoredList storedList = AppCache.getStoredList("mp3-rand");
+            if (storedList.isEmpty() || storedList.isIndexExceeded()){
+
+                File dir = new File(path);
+                File[] files = dir.listFiles();
+                if (files == null || files.length == 0){
+                    return dir.getAbsolutePath();
+                }
+                List<String> items = new ArrayList<>();
+                for (File f: files){
+                    items.add(f.getAbsolutePath());
+                }
+                Collections.shuffle(items);
+
+                storedList = AppCache.storeList("mp3-rand", items, 0);
+                System.out.println("RESHUFFLED LIST");
+            }
+
+            List<String> saved = storedList.getItems();
+            int index = storedList.getIndex();
+            AppCache.storeList("mp3-rand", saved, index + 1);
+
+            String selected = saved.get(index);
+
+            System.out.println(new Date() + " ] PLAY "+ index + " from " + selected);
+            desktopContentHandler.openPath(selected);
+            cmd_executing = false;
+            return saved.get(index);
+        }
+    };
+
+
 
 
     private static void detect_device_capabilities(){
@@ -63,9 +115,7 @@ public class Main {
                 String id = gd.getIDstring();
                 getInstance().setProp("gd_" + id + "_type", gd.getType() + "");
             }
-
-
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -75,6 +125,7 @@ public class Main {
 
     static BluecoveServer bluecoveServer;
     static AbstractServer ioServer;
+    static  DesktopContentHandler desktopContentHandler;
 
     public static void main(String[] args) throws IOException {
 
@@ -95,7 +146,8 @@ public class Main {
 
         final Registry registry = new Registry();
         registry.addCommand(PROCESS_EXEC)
-                .addCommand(PROCESS_EXEC_WHEN_FOUND);
+                .addCommand(PROCESS_EXEC_WHEN_FOUND)
+                .addCommand(PLAY_MP3_RANDOM_CMD);
 
         try {
             registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
@@ -128,7 +180,9 @@ public class Main {
         contentInfoProvider.get();
 
 
-        DesktopContentHandler desktopContentHandler = new DesktopContentHandler(contentInfoProvider,  registry);
+
+        desktopContentHandler = new DesktopContentHandler(contentInfoProvider,  registry);
+
 
         DesktopCamStream desktopCamStream = new DesktopCamStream(
                 desktopContentHandler.getLiveMjpegStream(),
@@ -153,20 +207,27 @@ public class Main {
 
 
         if(AppSettings.isTrue(AppSettings.Keys.UI_ENABLED)) {
-            WelandForm welandForm = new WelandForm(registry);
-            welandForm.pack();
-            welandForm.setVisible(true);
+            final Cronus finalCronus = cronus;
+            ThreadUtil.fireAndForget(new Runnable() {
+                @Override
+                public void run() {
 
-            if(cronus != null) {
-                cronus.registerTask(welandForm);
-            }
-            else {
-                ThreadUtil.repeatedTask(welandForm, 1000);
-            }
+                    WelandForm welandForm = new WelandForm(registry);
+                    welandForm.pack();
+                    welandForm.setVisible(true);
 
-            if(AppSettings.isTrue(AppSettings.Keys.UI_CLOSE_ON_EXIT)){
-                welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
+                    if(finalCronus != null) {
+                        finalCronus.registerTask(welandForm);
+                    }
+                    else {
+                        ThreadUtil.repeatedTask(welandForm, 1000);
+                    }
+
+                    if(AppSettings.isTrue(AppSettings.Keys.UI_CLOSE_ON_EXIT)){
+                        welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+                }
+            }, ThreadUtil.threadId("ui-thread"));
 
         }
 

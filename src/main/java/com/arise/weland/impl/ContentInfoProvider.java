@@ -245,7 +245,7 @@ public class ContentInfoProvider {
         String existingContent = getPlaylistFileContent(playlist);
         String encodedPath = ContentInfo.csvEncode(contentInfo.getPath());
         if (existingContent.indexOf(encodedPath) > -1){
-            log.trace("Skip already registered " + contentInfo.getPath() );
+//            log.trace("Skip already registered " + contentInfo.getPath() );
             return;
         }
         try {

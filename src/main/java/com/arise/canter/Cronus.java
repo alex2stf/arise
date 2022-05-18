@@ -129,6 +129,7 @@ public class Cronus {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String moment = getDayRef() + " " + getHourRef();
+//            System.out.println("compare " + moment + " with " + sdf.format(date));
             return moment.equalsIgnoreCase(sdf.format(date));
         }
 
@@ -137,6 +138,12 @@ public class Cronus {
             Calendar calendar = Calendar.getInstance();
             if ("EACH_SECOND".equalsIgnoreCase(hourRef)){
                 return sdf.format(calendar.getTime());
+            }
+            if ("EACH_MINUTE".equalsIgnoreCase(hourRef)){
+                if(calendar.get(Calendar.SECOND) == 59) {
+                    return sdf.format(calendar.getTime());
+                }
+                return "xx:xx:xx";
             }
             if (hourRef.startsWith("EACH_") && hourRef.endsWith("_SECONDS")){
                 String sec = hourRef.split("_")[1];
@@ -147,6 +154,19 @@ public class Cronus {
                       return sdf.format(calendar.getTime());
                   }
                   return "xx:xx:xx";
+                } catch (Exception e){
+                    throw new SyntaxException("invalid hourRef " + hourRef, e);
+                }
+            }
+            if (hourRef.startsWith("EACH_") && hourRef.endsWith("_MINUTES")){
+                String sec = hourRef.split("_")[1];
+                try {
+                    int num = Integer.valueOf(sec);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    if (minute % num == 0 && 59 == calendar.get(Calendar.SECOND)){
+                        return sdf.format(calendar.getTime());
+                    }
+                    return "xx:xx:xx";
                 } catch (Exception e){
                     throw new SyntaxException("invalid hourRef " + hourRef, e);
                 }
