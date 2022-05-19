@@ -67,8 +67,6 @@ public class WelandForm extends JFrame implements Runnable {
             });
         }
 
-
-
         List<String> displays = AppSettings.getListWithPrefix("ui.display");
         for (final String d: displays){
             providers.add(new Provider() {
