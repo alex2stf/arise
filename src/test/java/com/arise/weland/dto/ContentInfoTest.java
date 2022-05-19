@@ -7,7 +7,7 @@ import static com.arise.core.tools.Assert.assertEquals;
 
 public class ContentInfoTest {
 
-    public void testCsv(){
+    public static void testCsv(){
         ContentInfo contentInfo = new ContentInfo();
         contentInfo.setPath("test,\"name\"");
         contentInfo.setContentType(ContentType.APPLICATION_JSON);
@@ -30,7 +30,6 @@ public class ContentInfoTest {
     }
 
     public static void main(String[] args) {
-        ContentInfoTest contentInfoTest = new ContentInfoTest();
-        contentInfoTest.testCsv();
+        ContentInfoTest.testCsv();
     }
 }

@@ -63,9 +63,13 @@ public class Main {
                 return "xx";
             }
             cmd_executing = true;
-            String path =
-                    Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
-            System.out.println("PLAY_MP3_RANDOM_CMD called with " + path);
+            String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
+
+            if (!new File(path).exists()){
+                log.warn("Path " + path + " does not exist");
+            } else {
+                log.trace("PLAY_MP3_RANDOM_CMD called with " + path);
+            }
 
             AppCache.StoredList storedList = AppCache.getStoredList("mp3-rand");
             if (storedList.isEmpty() || storedList.isIndexExceeded()){
@@ -82,7 +86,7 @@ public class Main {
                 Collections.shuffle(items);
 
                 storedList = AppCache.storeList("mp3-rand", items, 0);
-                System.out.println("RESHUFFLED LIST");
+                log.info("RESHUFFLED LIST");
             }
 
             List<String> saved = storedList.getItems();
@@ -91,7 +95,12 @@ public class Main {
 
             String selected = saved.get(index);
 
-            System.out.println(new Date() + " ] PLAY "+ index + " from " + selected);
+            if (!new File(selected).exists()){
+                log.warn("Path " + selected + " does not exist anymore");
+            } else {
+                log.info(new Date() + " ] PLAY "+ index + " from " + selected);
+            }
+
             desktopContentHandler.openPath(selected);
             cmd_executing = false;
             return saved.get(index);

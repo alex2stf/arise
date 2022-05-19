@@ -96,6 +96,9 @@ public class Assert {
         try {
             assert  true == given;
             tick();
+            if (!given){
+                throwException(true, false, new RuntimeException("assert disabled"));
+            }
         } catch (Throwable e){
             throwException("true", "false", e);
         }
@@ -105,6 +108,10 @@ public class Assert {
         try {
             assert  false == given;
             tick();
+
+            if (given){
+                throwException(true, false, new RuntimeException("assert disabled"));
+            }
         } catch (Throwable e){
             throwException("false", "true", e);
         }
