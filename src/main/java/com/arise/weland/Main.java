@@ -108,6 +108,22 @@ public class Main {
     };
 
 
+    private static final Command<String> MOUSE_PING = new Command<String>("mouse-ping") {
+        @Override
+        public String execute(Arguments arguments) {
+            try {
+                new Robot().mouseMove(0, 0);
+                if ("debug".equalsIgnoreCase(arguments.get(0))) {
+                    log.info("MOUSE_PING at " + new Date());
+                }
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    };
+
+
 
 
     private static void detect_device_capabilities(){
@@ -156,6 +172,7 @@ public class Main {
         final Registry registry = new Registry();
         registry.addCommand(PROCESS_EXEC)
                 .addCommand(PROCESS_EXEC_WHEN_FOUND)
+                .addCommand(MOUSE_PING)
                 .addCommand(PLAY_MP3_RANDOM_CMD);
 
         try {
