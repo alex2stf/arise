@@ -2,14 +2,19 @@ package com.arise.weland.ui;
 
 import com.arise.canter.Registry;
 import com.arise.core.AppSettings;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.SYSUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static com.arise.core.tools.StringUtil.join;
 import static com.arise.weland.dto.DeviceStat.getInstance;
@@ -18,6 +23,10 @@ public class WelandForm extends JFrame implements Runnable {
 
     List<Provider> providers = new ArrayList<>();
 
+    private static final int LARGE_FONT = 44;
+    private static final int BIG_FONT = 30;
+
+
     public WelandForm(final Registry registry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 //        setAlwaysOnTop(true);
@@ -25,19 +34,7 @@ public class WelandForm extends JFrame implements Runnable {
         providers.add(new Provider() {
             @Override
             protected Font buildFont() {
-                return new java.awt.Font("Tahoma", Font.ITALIC, 44);
-            }
-
-            @Override
-            public String getText(Date date) {
-                return "----------------";
-            }
-        });
-
-        providers.add(new Provider() {
-            @Override
-            protected Font buildFont() {
-                return new java.awt.Font("Tahoma", Font.ITALIC, 44);
+                return new java.awt.Font("Tahoma", Font.ITALIC, BIG_FONT);
             }
 
             @Override
@@ -60,12 +57,17 @@ public class WelandForm extends JFrame implements Runnable {
             }
         });
 
-        providers.add(new Provider() {
-            @Override
-            public String getText(Date date) {
-                return "IPv4: " + join(getInstance().getIpv4Addrs(), ",");
-            }
-        });
+        final Set<String> addrs = getInstance().getIpv4Addrs();
+        if (!CollectionUtil.isEmpty(addrs)){
+            providers.add(new Provider() {
+                @Override
+                public String getText(Date date) {
+                    return "IPv4: " + join(addrs, ",");
+                }
+            });
+        }
+
+
 
         List<String> displays = AppSettings.getListWithPrefix("ui.display");
         for (final String d: displays){
@@ -77,23 +79,28 @@ public class WelandForm extends JFrame implements Runnable {
             });
         }
 
-        providers.add(new Provider() {
-            @Override
-            protected Font buildFont() {
-                return new java.awt.Font("Tahoma", Font.ITALIC, 44);
-            }
+        if (getIcon() != null) {
+            providers.add(new Provider() {
+                @Override
+                public String getText(Date date) {
+                    return null;
+                }
 
-            @Override
-            public String getText(Date date) {
-                return "----------------";
-            }
-        });
+                @Override
+                protected Container buildLabel() {
+                    ImageIcon imageIcon = new ImageIcon(getIcon().getAbsolutePath());
+                    JLabel imageLabel = new ImageLabel(imageIcon);
+                    return imageLabel;
+                }
+            });
+        }
 
-
-        getContentPane().setLayout(new java.awt.GridLayout(providers.size(), 1));
+        getContentPane().setLayout(new GridLayout(providers.size(), 1));
 
         for (Provider p: providers){
-            getContentPane().add(p.label);
+            if (p != null){
+                getContentPane().add(p.getContainer());
+            }
         }
 
         pack();
@@ -101,36 +108,95 @@ public class WelandForm extends JFrame implements Runnable {
     }
 
 
+    File getIcon(){
+        File f = new File(AppSettings.getProperty(AppSettings.Keys.UI_IMAGE_ICON_PATH));
+        if (f.exists()){
+            return f;
+        }
+        return null;
+    }
+
+
     @Override
     public void run() {
         Date date = new Date();
         for (Provider p: providers){
-            p.getLabel().setText(p.getText(date));
+            Container container = p.getContainer();
+            if(container instanceof JLabel) {
+                JLabel label = (JLabel) container;
+                String text = p.getText(date);
+                if (text != null) {
+                    label.setText(text);
+                }
+                else if (label instanceof ImageLabel && AppSettings.isTrue(AppSettings.Keys.UI_IMAGE_ICON_REFRESH)) {
+                    ((ImageLabel)label).setImageIcon(getIcon().getAbsolutePath());
+                }
+            }
         }
     }
 
     private static abstract class Provider {
-        JLabel label;
+
+        Container label;
 
         public Provider(){
             label = buildLabel();
         }
 
-        protected JLabel buildLabel(){
-            label = new JLabel();
+        protected Container buildLabel(){
+            JLabel label = new JLabel();
             label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             label.setFont(buildFont());
+            label.setForeground(new Color(4, 2, 69));
             return label;
         }
 
         protected Font buildFont(){
-            return new java.awt.Font("Tahoma", Font.BOLD, 64);
+            return new java.awt.Font("Tahoma", Font.BOLD, LARGE_FONT);
         }
 
-        public  JLabel getLabel(){
+        public  Container getContainer(){
             return label;
         }
 
         public abstract String getText(Date date);
     }
+
+
+    public static class ImageLabel extends JLabel {
+        private Image _myimage;
+        int iW;
+        int iH;
+
+        public ImageLabel(ImageIcon _myImage){
+            setImageIcon(_myImage);
+        }
+
+        public void setImageIcon(String path){
+            try {
+                setImageIcon(new ImageIcon(ImageIO.read(new File(path))));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void setImageIcon(ImageIcon imageIcon) {
+            if (this._myimage != null){
+                this._myimage.flush();
+            }
+            this._myimage = imageIcon.getImage();
+            iW = imageIcon.getIconWidth();
+            iH = imageIcon.getIconHeight();
+            this.revalidate();
+            this.repaint();
+        }
+
+        @Override
+        public void paint(Graphics g){
+            int ph = this.getHeight();
+            g.drawImage(_myimage, 0, 0, iW * ph / iH, ph , null);
+        }
+    }
+
+
 }

@@ -212,7 +212,9 @@ public class AppSettings {
         CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
         UI_ENABLED("ui.enabled", new String[]{"true", "false(default)"}),
         UI_CLOSE_ON_EXIT("ui.closeOnExit", new String[]{"true", "false(default)"}),
-        TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"});
+        UI_IMAGE_ICON_PATH("ui.image.icon.path", new String[]{"/valid/path"}),
+        TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"}),
+        UI_IMAGE_ICON_REFRESH("ui.image.icon.refresh", new String[]{"true", "false(default)"} );
 
         final String s;
         private final String[] variants;

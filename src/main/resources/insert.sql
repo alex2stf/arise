@@ -1,3 +1,0 @@
-
-INSERT INTO PARTNER_SHOP (ID, NAME, MERCHANT_ID, TERMINAL_ID, CREATED_DATE)
-    VALUES (PARTNER_SHOP_ID_SEQ.nextval, '{{terminal_name}}', '{{mid}}', '{{tid}}', CURRENT_TIMESTAMP);

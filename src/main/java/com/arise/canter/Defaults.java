@@ -125,10 +125,6 @@ public class Defaults {
                 args = arguments.getListArgs();
             }
 
-
-
-
-
             File stdOutFile = null;
             int lastIndex = args.size();
             for(int i = 0; i < args.size(); i++){
