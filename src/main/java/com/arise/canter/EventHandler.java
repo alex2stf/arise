@@ -1,22 +1,20 @@
 package com.arise.canter;
 
-public class EventHandler extends Task {
+public class EventHandler {
     private final String id;
     private final Event event;
+    private Registry registry;
 
     public EventHandler(String id, Event event) {
         this.event = event;
         this.id = id;
     }
 
-    @Override
     public final Object execute(String... args) {
         Arguments arguments = new Arguments();
-        batchExecute(executions, arguments, getRegistry().newAsyncExecutor());
         return arguments;
     }
 
-    @Override
     public final String getId() {
         return id;
     }
@@ -32,5 +30,10 @@ public class EventHandler extends Task {
             x[i] = String.valueOf(args[i]);
         }
         return execute(x);
+    }
+
+    EventHandler setRegistry(Registry registry) {
+        this.registry = registry;
+        return this;
     }
 }

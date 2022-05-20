@@ -6,9 +6,10 @@ import com.arise.core.tools.StringUtil;
 
 import java.util.Map;
 
-import static com.arise.canter.Arguments.shouldParse;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 
+
+@Deprecated
 public class Execution {
     final Registry registry;
     final String returnName;
@@ -33,18 +34,14 @@ public class Execution {
 
 
     public Object execute(Arguments args){
-        Task task = registry.getCommand(commandId);
+        Command command = registry.getCommand(commandId);
 
         String[] localArgs = new String[]{};
         if (!isEmpty(arguments)){
             localArgs = new String[arguments.length];
             for (int i = 0; i < arguments.length; i++){
                 String currentArg = arguments[i];
-                if (shouldParse(arguments[i])){
-                    Map<String, Object> mapArgs = args.getMapArgs();
-                    localArgs[i] = StringUtil.map(arguments[i], mapArgs, registry.getFieldCriteria(), registry.getMethodCriteria());
-                }
-                else if (currentArg.startsWith("$")){
+                if (currentArg.startsWith("$")){
                     localArgs[i] = registry.executeCmdLine(currentArg) + "";
                 }
                 else {
@@ -56,15 +53,15 @@ public class Execution {
         Object response = null;
         Throwable err = null;
         try {
-            response = task.execute(localArgs);
+            response = command.execute(localArgs);
         } catch (Throwable t){
             t.printStackTrace();
             err = t;
         }
         if (err != null &&  onError != null){
-            registry.dispatch(onError, task, err);
+            registry.dispatch(onError, command, err);
         } else if (onSuccess != null){
-            registry.dispatch(onSuccess, task, response);
+            registry.dispatch(onSuccess, command, response);
         }
 
 //        Mole.getInstance(Execution.class).log("execute task [" + task.getId() + ": "

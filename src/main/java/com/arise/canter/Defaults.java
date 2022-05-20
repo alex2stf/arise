@@ -22,6 +22,7 @@ public class Defaults {
         @Override
         public String execute(Arguments arguments) {
             String joined = join(arguments.list(), " ");
+            System.out.println(joined);
             return joined;
         }
 
@@ -120,10 +121,7 @@ public class Defaults {
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
         @Override
         public String execute(Arguments arguments) {
-            List<String> args = (List<String>) arguments.get("process-args");
-            if(CollectionUtil.isEmpty(args)){
-                args = arguments.getListArgs();
-            }
+            List<String> args = arguments.getListArgs();
 
             File stdOutFile = null;
             int lastIndex = args.size();
@@ -177,7 +175,7 @@ public class Defaults {
             if (returnSb[0]) {
                 return sb.toString();
             }
-            return finStdFile.getAbsolutePath();
+            return finStdFile != null ? finStdFile.getAbsolutePath() : "null";
         }
 
     };
@@ -185,66 +183,7 @@ public class Defaults {
     
 
 
-    @Deprecated
-    public static final Command<String> PROCESS_EXEC_WHEN_FOUND = new Command<String>("process-exec-when-found") {
-        @Override
-        public String execute(Arguments arguments) {
 
-            if (CollectionUtil.isEmpty(arguments.getMapArgs())){
-                throw new LogicalException("Cannot execute with empty arguments map");
-            }
-
-
-            Map<String, String> binaries;
-            try {
-                binaries = (Map<String, String>) arguments.get("binaries");
-            } catch (Exception e){
-                throw new LogicalException("properties binaries must be a valid map<string,string>", e);
-            }
-            boolean runSingleInstance = "true".equalsIgnoreCase(String.valueOf(arguments.get("singleInstance")));
-
-            List<String> processArgs;
-            try {
-                processArgs = (List<String>) arguments.get("process-args");
-            }catch (Exception e){
-                throw new LogicalException("process arguments must be a valid list<string>", e);
-            }
-
-
-            File processExe;
-            for (Map.Entry<String, String> entry: binaries.entrySet()){
-                processExe = new File(entry.getValue());
-                if (processExe.exists() && processExe.canExecute()){
-                    return executeProcess(processExe, processArgs, runSingleInstance);
-                }
-            }
-
-            Mole.getInstance(Defaults.class).warn("No executable found for command " + join(processArgs, " "));
-
-            return  null;
-        }
-
-        private String executeProcess(File path,  List<String> processArgs, boolean runSingleInstance){
-            if (runSingleInstance){
-                Command closeRunningProcess = this.getRegistry().getCommand("closeProcessByName");
-                if (closeRunningProcess == null){
-                    Mole.getInstance(this.getClass()).warn("to runSingleInstance must define command closeProcessByName" );
-                } else {
-                    String processName = path.getName();
-                    closeRunningProcess.execute(processName);
-                }
-            }
-
-            String args[] = new String[processArgs.size() + 1];
-            args[0] = path.getAbsolutePath();
-            for (int i = 0; i < processArgs.size(); i++){
-                args[i+1] = processArgs.get(i);
-            }
-            return SYSUtils.exec(args).toJson();
-
-        }
-
-    };
 
 
 

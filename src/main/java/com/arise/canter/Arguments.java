@@ -13,21 +13,22 @@ import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.CollectionUtil.merge;
 import static com.arise.core.tools.StringUtil.hasText;
 
+@Deprecated
 public class Arguments {
 
 
 
     List<String> stringArgs = new ArrayList<>();
-    private Map<String, Object> mapArgs = new HashMap<>();
+//    private Map<String, Object> mapArgs = new HashMap<>();
 
 
 
 
 
 
-    static boolean shouldParse(String s){
-        return hasText(s) && s.indexOf("}") > -1 && (!s.endsWith("\\}") && !s.endsWith("/}"));
-    }
+//    static boolean shouldParse(String s){
+//        return hasText(s) && s.indexOf("}") > -1 && (!s.endsWith("\\}") && !s.endsWith("/}"));
+//    }
 
 
 
@@ -37,23 +38,18 @@ public class Arguments {
     }
 
 
-    public Object get(String name){
-        return mapArgs.get(name);
-    }
-
-
-    public Object find(String ... names){
-        if (isEmpty(names)){
-            return null;
-        }
-        return TypeUtil.search(names, mapArgs, 0);
-    }
+//    public Object get(String name){
+//        return mapArgs.get(name);
+//    }
 
 
 
-    public void put(String name, Object arg) {
-        mapArgs.put(name, arg);
-    }
+
+
+
+//    public void put(String name, Object arg) {
+//        mapArgs.put(name, arg);
+//    }
 
 
 
@@ -77,18 +73,18 @@ public class Arguments {
 
 
 
-    void addResults(Map<String, Object> source) {
-        merge(source, mapArgs);
-    }
+//    void addResults(Map<String, Object> source) {
+//        merge(source, mapArgs);
+//    }
 
-    public Map<String, Object> getMapArgs() {
-        return mapArgs;
-    }
+//    public Map<String, Object> getMapArgs() {
+//        return mapArgs;
+//    }
 
 
-    void setMapArgs(Map<String, Object> mapargs) {
-        this.mapArgs = mapargs;
-    }
+//    void setMapArgs(Map<String, Object> mapargs) {
+//        this.mapArgs = mapargs;
+//    }
 
     public static Arguments fromList(String... args) {
         Arguments a = new Arguments();
@@ -106,11 +102,14 @@ public class Arguments {
 
 
     public boolean hasData() {
-        return (stringArgs != null && stringArgs.size() > 0) ||
-                (mapArgs != null && mapArgs.entrySet().size() > 0);
+        return (stringArgs != null && stringArgs.size() > 0);
     }
 
     public List<String> getListArgs() {
         return stringArgs;
+    }
+
+    public boolean hasIndex(int index) {
+        return stringArgs.size() - 1 >= index;
     }
 }

@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.canter.Defaults;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
@@ -439,34 +440,47 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public DeviceStat onDeviceUpdate(Map<String, List<String>> params) {
-        if (desktopCamStream == null){
-            return getDeviceStat();
-        }
+
+        DeviceStat deviceStat = getDeviceStat();
 
         int now = (int) System.currentTimeMillis();
         int lastUpdate = AppCache.getInt("crmfx", 0);
         int diff = now - lastUpdate;
         if (diff < 3000) {
             log.info("Need to wait more than " + (3000 - diff) + " miliseconds");
-            return getDeviceStat();
+//            return getDeviceStat();
         }
 
         AppCache.putInt("crmfx", (int) System.currentTimeMillis());
 
+//
+//        String camId = MapUtil.findQueryParamString(params, "camId");
+//        boolean shouldStop = "false".equalsIgnoreCase(MapUtil.findQueryParamString(params, "camEnabled"));
+//
+//        if (shouldStop){
+//            desktopCamStream.stop();
+//        } else {
+//            if (!desktopCamStream.isRunning()) {
+//                desktopCamStream.start();
+//            }
+//        }
 
-        String camId = MapUtil.findQueryParamString(params, "camId");
-        boolean shouldStop = "false".equalsIgnoreCase(MapUtil.findQueryParamString(params, "camEnabled"));
-
-        if (shouldStop){
-            desktopCamStream.stop();
-        } else {
-            if (!desktopCamStream.isRunning()) {
-                desktopCamStream.start();
+        String volumeStr = params.get("musicVolume").get(0);
+        if(StringUtil.hasText(volumeStr)) {
+            if(registry.containsCommand("set-master-volume")){
+                String v = "" + registry.execute("set-master-volume", new String[]{volumeStr});
+                deviceStat.setProp("audio.music.volume", v);
             }
+        }
+        else if(registry.containsCommand("get-master-volume")){
+            String x = registry.execute("get-master-volume", new String[]{}) + "";
+            deviceStat.setProp("audio.music.volume", x);
         }
 
 
-        return getDeviceStat();
+
+
+        return deviceStat;
     }
 
 
@@ -482,6 +496,8 @@ public class DesktopContentHandler extends ContentHandler {
 
         deviceStat.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
         deviceStat.setProp("cams.v1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
+
+
         return deviceStat;
     }
 

@@ -1,12 +1,14 @@
 package com.arise.canter;
 
 
+import com.arise.canter.Command.JsonCommand;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.AsyncExecutor;
 import com.arise.core.models.ThreadBatch;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.GenericTypeWorker;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
@@ -30,8 +32,6 @@ public final class Registry extends GenericTypeWorker {
 
     private Map<String, Command> commands = new HashMap<>();
     private Map<String, EventHandler> eventHandlers = new HashMap<>();
-    private List<Event> events = new ArrayList<>();
-    private Class<? extends AsyncExecutor> asyncExecutorClass = ThreadBatch.class;
     private static final Mole log = Mole.getInstance(Registry.class);
 
 
@@ -71,6 +71,8 @@ public final class Registry extends GenericTypeWorker {
 
 
 
+
+
     public Command getCommand(String name) {
         return commands.get(name);
     }
@@ -85,17 +87,6 @@ public final class Registry extends GenericTypeWorker {
 
 
 
-
-
-    public Registry addEvent(Event e) {
-        events.add(e);
-        return this;
-    }
-
-    public Registry setAsyncExecutor(Class<? extends AsyncExecutor> tClass){
-        asyncExecutorClass = tClass;
-        return this;
-    }
 
     public Object execute(String cmdId, String[] args){
         return execute(cmdId, args, null, null);
@@ -133,7 +124,7 @@ public final class Registry extends GenericTypeWorker {
                 false, args, onSuccess, onError).execute(Arguments.fromList(args));
     }
 
-    public void dispatch(Event [] events, Task parentTask, Object ... args) {
+    public void dispatch(Event [] events, Command parentCommand, Object ... args) {
         for (Event event: events){
             for (EventHandler handler: eventHandlers.values()){
                 if (handler.getEvent().getName().equals(event.getName())){
@@ -143,28 +134,13 @@ public final class Registry extends GenericTypeWorker {
         }
     }
 
-    public Registry addEventHandler(EventHandler eventHandler) {
-        eventHandlers.put(eventHandler.getId(), eventHandler);
-        eventHandler.setRegistry(this);
-        return this;
-    }
-
-    public List<Event> getEvents(){
-        return events;
-    }
-
-
-    AsyncExecutor newAsyncExecutor() {
-        try {
-            return asyncExecutorClass.newInstance();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public Registry loadJsonResource(String s) {
         InputStream inputStream = FileUtil.findStream(s);
         String content = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
+        return loadJsonString(content);
+    }
+
+    public Registry loadJsonString(String content) {
         List arr = (List) Groot.decodeBytes(content);
         for (Object obj: arr){
             importJsonObject((Map) obj);
@@ -172,49 +148,21 @@ public final class Registry extends GenericTypeWorker {
         return this;
     }
 
-    public void importJsonObject(Map obj) {
-        String parentType = (String) obj.get("parent");
-
-        final Command parentCmd = getCommand(parentType);
-        if (parentCmd == null){
-            throw  new LogicalException("Missing schema " + parentType);
-        }
-
-        String id = (String) obj.get("id");
-
-        Command nextCmd = new Command(id) {
-
-            final Command parent = parentCmd;
-            @Override
-            public Object execute(Arguments arguments) {
-                return parent.setArgumentNames(this.argumentsNames)
-                        .setProperties(this.properties).execute(arguments);
-            }
-        };
-
-        List arr = (List) obj.get("arguments");
-        String args[] = new String[arr.size()];
-        for (int i = 0; i < arr.size(); i++){
-            args[i] = String.valueOf(arr.get(i));
-        }
-        nextCmd.setArgumentNames(args);
-        Map<String, Object> props = (Map<String, Object>) obj.get("properties");
-
-
-        Map<String, Object> properties = new HashMap<>();
-        for (Map.Entry<String, Object> entry: props.entrySet()){
-            properties.put(entry.getKey(), entry.getValue());
-        }
-        nextCmd.setProperties(properties);
-
-        log.info("import cmd " + id + " using schema " + parentCmd);
-        addCommand(nextCmd);
-
+    public void importJsonObject(Map m) {
+        String id = MapUtil.getString(m, "id");
+        JsonCommand jsonCommand = new JsonCommand(id);
+        jsonCommand.cmds = MapUtil.getList(m, "commands");
+        jsonCommand.returnValue = MapUtil.getString(m, "return-value");
+        addCommand(jsonCommand);
     }
 
 
     private Map<String, Object> storage = new ConcurrentHashMap<>();
     public synchronized void store(String key, Object res) {
         storage.put(key, res);
+    }
+
+    public boolean containsCommand(String key) {
+        return commands.containsKey(key);
     }
 }

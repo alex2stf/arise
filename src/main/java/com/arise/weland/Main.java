@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
-import static com.arise.canter.Defaults.PROCESS_EXEC_WHEN_FOUND;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
@@ -171,20 +170,24 @@ public class Main {
 
         final Registry registry = new Registry();
         registry.addCommand(PROCESS_EXEC)
-                .addCommand(PROCESS_EXEC_WHEN_FOUND)
                 .addCommand(MOUSE_PING)
                 .addCommand(PLAY_MP3_RANDOM_CMD);
 
-        try {
-            registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
-            if (SYSUtils.isWindows()){
-                registry.loadJsonResource("src/main/resources#/weland/config/win/commands.json");
-            } else {
-                registry.loadJsonResource("src/main/resources#/weland/config/unix/commands.json");
-            }
-            log.info("Successfully loaded commands definitions");
-        } catch (Exception e){
-            log.error("Failed to load commands definitions", e);
+//        try {
+//            registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
+//            if (SYSUtils.isWindows()){
+//                registry.loadJsonResource("src/main/resources#/weland/config/win/commands.json");
+//            } else {
+//                registry.loadJsonResource("src/main/resources#/weland/config/unix/commands.json");
+//            }
+//            log.info("Successfully loaded commands definitions");
+//        } catch (Exception e){
+//            log.error("Failed to load commands definitions", e);
+//        }
+
+        String localCommands = AppSettings.getProperty(AppSettings.Keys.LOCAL_COMANDS_FILE);
+        if (StringUtil.hasText(localCommands) && new File(localCommands).exists()){
+            registry.loadJsonResource(localCommands);
         }
 
         final IDeviceController deviceController = new PCDeviceController();

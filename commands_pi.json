@@ -1,0 +1,36 @@
+[
+  {
+    "id":"get-master-volume",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
+          "$find-file-stream(#python_scripts/dummy.py)"
+        ],
+        "store-key": "device-master-volume"
+      }
+    ],
+    "return-value": "$read-storage(device-master-volume)"
+  },
+  {
+    "id": "set-master-volume",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
+          "$find-file-stream(#python_scripts/dummy.py)",
+          "{0}"
+        ],
+        "store-key": "device-master-volume"
+      },
+      {
+        "id": "print",
+        "args": [
+          "$read-storage(device-master-volume)"
+        ]
+      }
+    ]
+  }
+]

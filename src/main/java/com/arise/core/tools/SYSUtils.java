@@ -1,5 +1,6 @@
 package com.arise.core.tools;
 
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 
 import java.io.BufferedReader;
@@ -237,10 +238,8 @@ public class SYSUtils {
                 if (!async) {
                     proc.waitFor();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                throw new LogicalException("Cannot execute " + StringUtil.join(args, " "), e);
             }
 
         }
