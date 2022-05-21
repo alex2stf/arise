@@ -28,12 +28,8 @@ public class WelandForm extends JFrame implements Runnable {
     private static final int BIG_FONT = 30;
 
 
-
-
-
     public WelandForm(final Registry registry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        setAlwaysOnTop(true);
 
         providers.add(new Provider() {
             @Override

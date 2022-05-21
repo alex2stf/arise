@@ -172,19 +172,30 @@ public class DesktopContentHandler extends ContentHandler {
     private void openMedia(String path) {
         path = Paths.get(path).normalize().toAbsolutePath().toString();
         log.info("received request to open ", path);
-        SYSUtils.exec("pkill", "vlc");
-        try {
-            Thread.sleep(1000 * 10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        final String finalPath = path;
-        ThreadUtil.fireAndForget(new Runnable() {
-            @Override
-            public void run() {
-                SYSUtils.exec("/usr/bin/vlc", finalPath);
+        if (registry.containsCommand("close-media-player")){
+            registry.execute("close-media-player", new String[]{});
+//            SYSUtils.exec("pkill", "vlc");
+            try {
+                Thread.sleep(1000 * 10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }, ThreadUtil.threadId("exec-task"), true);
+        }
+
+
+        if (registry.containsCommand("play-media")){
+            registry.execute("play-media", new String[]{path});
+//            final String finalPath = path;
+//        ThreadUtil.fireAndForget(new Runnable() {
+//            @Override
+//            public void run() {
+//                SYSUtils.exec("/usr/bin/vlc", finalPath);
+//            }
+//        }, ThreadUtil.threadId("exec-task"), true);
+        }
+
+
+//
 
 
 //        File vlcExecutable = VLCWrapper.open(getCommands("media", path));

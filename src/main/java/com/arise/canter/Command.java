@@ -3,11 +3,13 @@ package com.arise.canter;
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.canter.Arguments.fromCollection;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 
@@ -78,26 +80,50 @@ public abstract class Command<T> extends GenericTypeWorker {
             super(id);
         }
 
+        private void storeResultIfNecessary(Object o, Map c){
+            String storeKey = MapUtil.getString(c, "store-key");
+            if (StringUtil.hasText(storeKey)){
+                getRegistry().store(storeKey, o);
+            }
+        }
+
         @Override
-        public String execute(Arguments arguments) {
-           Object o = null;
-           for (Map c: cmds){
-               String commandId = MapUtil.getString(c, "id");
-               List<String> args = MapUtil.getList(c, "args");
-               o = getRegistry().execute(commandId, Arguments.fromCollection(
-                       Command.parseArgs(args, arguments)
-               ));
-               String storeKey = MapUtil.getString(c, "store-key");
-               if (StringUtil.hasText(storeKey)){
-                   getRegistry().store(storeKey, o);
+        public String execute(final Arguments arguments) {
+           final Object res[] = new Object[]{null};
+           for (final Map c: cmds){
+               final String commandId = MapUtil.getString(c, "id");
+               final List<String> args = MapUtil.getList(c, "args");
+               String asyncMode = MapUtil.getString(c, "async");
+
+               if ("daemon".equalsIgnoreCase(asyncMode)){
+                   ThreadUtil.fireAndForget(new Runnable() {
+                       @Override
+                       public void run() {
+                           res[0] = getRegistry().execute(commandId, fromCollection(
+                                   Command.parseArgs(args, arguments)
+                           ));
+                           storeResultIfNecessary(res[0], c);
+                       }
+                   }, ThreadUtil.threadId("async-cmd-" + commandId), true);
+               } else {
+                   res[0] = getRegistry().execute(commandId, fromCollection(
+                           Command.parseArgs(args, arguments)
+                   ));
+                   storeResultIfNecessary(res[0], c);
                }
+
+
+
            }
            if(StringUtil.hasText(returnValue)) {
                return String.valueOf(getRegistry().executeCmdLine(returnValue));
            }
-           return String.valueOf(o);
+           return String.valueOf(res[0]);
         }
     }
+
+
+
 
     private static List<String> parseArgs(List<String> in, Arguments arguments){
         List<String> cp = new ArrayList<>();

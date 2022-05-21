@@ -32,5 +32,24 @@
         ]
       }
     ]
+  },
+  {
+    "id": "close-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["pkill", "vlc"]
+      }
+    ]
+  },
+  {
+    "id": "play-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/vlc", "{0}"],
+        "async": "daemon"
+      }
+    ]
   }
 ]
