@@ -111,7 +111,7 @@ public class Main {
         @Override
         public String execute(Arguments arguments) {
             try {
-                new Robot().mouseMove(0, 0);
+                new Robot().mouseMove(-2, -2);
                 if ("debug".equalsIgnoreCase(arguments.get(0))) {
                     log.info("MOUSE_PING at " + new Date());
                 }

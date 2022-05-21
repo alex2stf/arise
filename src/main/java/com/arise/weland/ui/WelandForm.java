@@ -3,6 +3,7 @@ package com.arise.weland.ui;
 import com.arise.canter.Registry;
 import com.arise.core.AppSettings;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,9 @@ public class WelandForm extends JFrame implements Runnable {
 
     private static final int LARGE_FONT = 44;
     private static final int BIG_FONT = 30;
+
+
+
 
 
     public WelandForm(final Registry registry){
@@ -93,6 +97,39 @@ public class WelandForm extends JFrame implements Runnable {
             });
         }
 
+        final JTextArea jTextArea = new JTextArea();
+        jTextArea.setLineWrap(true);
+        jTextArea.setEditable(false);
+        jTextArea.setVisible(true);
+        final JScrollPane scrollPane = new JScrollPane(jTextArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+
+        final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Mole.addAppender(new Mole.Appender() {
+            @Override
+            public void append(String id, Mole.Bag bag, String text) {
+                jTextArea.append(id + " " + bag + "] (" + sdf.format(new Date()) + " ) " + text + "\n");
+                JScrollBar vertical = scrollPane.getVerticalScrollBar();
+                vertical.setValue( vertical.getMaximum()  + 1);
+            }
+        });
+
+        Mole.getInstance(WelandForm.class).info("form loaded");
+        providers.add(new Provider() {
+            @Override
+            public String getText(Date date) {
+                return null;
+            }
+
+            @Override
+            protected Container buildLabel() {
+                return scrollPane;
+            }
+        });
+
+
         getContentPane().setLayout(new GridLayout(providers.size(), 1));
 
         for (Provider p: providers){
@@ -125,6 +162,7 @@ public class WelandForm extends JFrame implements Runnable {
                 String text = p.getText(date);
                 if (text != null) {
                     label.setText(text);
+                    label.setToolTipText(text);
                 }
                 else if (label instanceof ImageLabel && AppSettings.isTrue(AppSettings.Keys.UI_IMAGE_ICON_REFRESH)) {
                     ((ImageLabel)label).setImageIcon(getIcon().getAbsolutePath());

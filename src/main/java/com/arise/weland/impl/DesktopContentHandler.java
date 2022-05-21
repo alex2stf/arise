@@ -172,13 +172,28 @@ public class DesktopContentHandler extends ContentHandler {
     private void openMedia(String path) {
         path = Paths.get(path).normalize().toAbsolutePath().toString();
         log.info("received request to open ", path);
-        File vlcExecutable = VLCWrapper.open(getCommands("media", path));
-        if (vlcExecutable != null){
-            exes.add(vlcExecutable.getAbsolutePath());
-            DeviceStat.getInstance().setProp(CURRENT_RUNNING, "vlc");
-        } else {
-            execute(getCommands("media", path));
+        SYSUtils.exec("pkill", "vlc");
+        try {
+            Thread.sleep(1000 * 10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        final String finalPath = path;
+        ThreadUtil.fireAndForget(new Runnable() {
+            @Override
+            public void run() {
+                SYSUtils.exec("/usr/bin/vlc", finalPath);
+            }
+        }, ThreadUtil.threadId("exec-task"), true);
+
+
+//        File vlcExecutable = VLCWrapper.open(getCommands("media", path));
+//        if (vlcExecutable != null){
+//            exes.add(vlcExecutable.getAbsolutePath());
+//            DeviceStat.getInstance().setProp(CURRENT_RUNNING, "vlc");
+//        } else {
+//            execute(getCommands("media", path));
+//        }
     }
 
     private boolean isMedia(String path) {
@@ -465,7 +480,11 @@ public class DesktopContentHandler extends ContentHandler {
 //            }
 //        }
 
-        String volumeStr = params.get("musicVolume").get(0);
+        String volumeStr = null;
+        if(params.containsKey("musicVolume")) {
+            volumeStr = params.get("musicVolume").get(0);
+        }
+
         if(StringUtil.hasText(volumeStr)) {
             if(registry.containsCommand("set-master-volume")){
                 String v = "" + registry.execute("set-master-volume", new String[]{volumeStr});

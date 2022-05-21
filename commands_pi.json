@@ -6,7 +6,7 @@
         "id": "process-exec",
         "args": [
           "$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
-          "$find-file-stream(#python_scripts/dummy.py)"
+          "$find-file-stream(#python_scripts/alsaaudio_read_volume.py)"
         ],
         "store-key": "device-master-volume"
       }
@@ -20,7 +20,7 @@
         "id": "process-exec",
         "args": [
           "$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
-          "$find-file-stream(#python_scripts/dummy.py)",
+          "$find-file-stream(#python_scripts/alsaaudio_write_volume.py)",
           "{0}"
         ],
         "store-key": "device-master-volume"

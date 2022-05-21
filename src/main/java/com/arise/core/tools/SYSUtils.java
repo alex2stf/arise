@@ -179,6 +179,7 @@ public class SYSUtils {
     }
 
     public static Result exec(String ... args){
+       System.out.println("---!" + StringUtil.join(args, " "));
 
        final StringBuilder sb = new StringBuilder();
        final StringBuilder eb = new StringBuilder();

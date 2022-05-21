@@ -219,7 +219,7 @@ public class Cronus {
             return sdf.format(calendar.getTime());
         }
         if ("each_minute".equalsIgnoreCase(moment)){
-            if(calendar.get(Calendar.SECOND) == 59) {
+            if(calendar.get(Calendar.SECOND) == 01) {
                 return sdf.format(calendar.getTime());
             }
             return "xx:xx:xx";

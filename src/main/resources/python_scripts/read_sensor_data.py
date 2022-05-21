@@ -11,7 +11,10 @@ try:
     if len(sys.argv) > 2:
         FORMAT = sys.argv[2]
 
-    humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, DHT_PIN)
-    print(FORMAT % (humidity, temperature))
+    try:
+        humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, DHT_PIN)
+        print(FORMAT % (humidity, temperature))
+    except:
+        print("ERR dht22 PIN" + str(DHT_PIN))
 except:
     print("ERR: " + traceback.format_exc()  )
