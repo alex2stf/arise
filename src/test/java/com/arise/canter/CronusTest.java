@@ -1,8 +1,6 @@
 package com.arise.canter;
 
 
-import com.arise.core.tools.Assert;
-
 import java.util.Calendar;
 
 import static com.arise.canter.Cronus.isAfter;

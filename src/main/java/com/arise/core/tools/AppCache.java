@@ -1,10 +1,7 @@
 package com.arise.core.tools;
 
 
-import com.arise.core.models.Handler;
-
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;

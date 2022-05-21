@@ -7,9 +7,9 @@ import com.arise.cargo.model.CGType;
 import com.arise.cargo.model.CGVar;
 import com.arise.cargo.model.ClassFlavour;
 import com.arise.core.exceptions.SyntaxException;
+import com.arise.core.models.FilterCriteria;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.FileUtil;
-import com.arise.core.models.FilterCriteria;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 

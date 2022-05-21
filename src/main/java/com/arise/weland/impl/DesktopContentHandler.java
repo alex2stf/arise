@@ -2,7 +2,6 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.canter.Defaults;
 import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;

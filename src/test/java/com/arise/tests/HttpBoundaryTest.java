@@ -4,8 +4,6 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.Multipart;
 import com.arise.core.tools.Assert;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class HttpBoundaryTest {

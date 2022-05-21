@@ -1,22 +1,17 @@
 #pip install PyQtWebEngine
-import PyQt5
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView,QWebEnginePage as QWebPage
-from PyQt5.QtWebEngineWidgets import QWebEngineSettings as QWebSettings
-from PyQt5.QtWebEngineCore import QWebEngineUrlRequestInterceptor, QWebEngineUrlRequestInfo
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, QWebEngineProfile
-
-from PyQt5.QtNetwork import *
-import sys, json, _thread
 import http.server
 import socketserver
-from http.server import BaseHTTPRequestHandler
-from threading import Thread
-from time import sleep
-
-from PyQt5.QtCore    import *
+import sys
+from PyQt5.QtCore import *
+from PyQt5.QtCore import QUrl
+from PyQt5.QtNetwork import *
+from PyQt5.QtWebEngineCore import QWebEngineUrlRequestInterceptor, QWebEngineUrlRequestInfo
+from PyQt5.QtWebEngineWidgets import QWebEngineProfile
+from PyQt5.QtWebEngineWidgets import QWebEngineSettings as QWebSettings
+from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
 from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QWidget
+from http.server import BaseHTTPRequestHandler
 
 window = None
 

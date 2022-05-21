@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.canter.Arguments.fromCollection;
-import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 
 public abstract class Command<T> extends GenericTypeWorker {
@@ -96,7 +96,7 @@ public abstract class Command<T> extends GenericTypeWorker {
                String asyncMode = MapUtil.getString(c, "async");
 
                if ("daemon".equalsIgnoreCase(asyncMode)){
-                   ThreadUtil.fireAndForget(new Runnable() {
+                   fireAndForget(new Runnable() {
                        @Override
                        public void run() {
                            res[0] = getRegistry().execute(commandId, fromCollection(
