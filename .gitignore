@@ -4,6 +4,7 @@ build-info.properties
 .idea
 application.properties
 cronus_pi.json
+commands_pi.json
 Bunga_and_Kion.png
 arch/
 scripts/
