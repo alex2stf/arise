@@ -17,27 +17,32 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.join;
 
 public class Defaults {
 
     public static final Command<String> CMD_PRINT = new Command<String>("print") {
+
+
         @Override
-        public String execute(Arguments arguments) {
-            String joined = join(arguments.list(), " ");
+        public String execute(List<String> arguments) {
+            String joined = join(arguments, " ");
             System.out.println(joined);
             return joined;
         }
-
     };
 
     public static final Command<String> CMD_SUM = new Command<String>("sum") {
+
+
         @Override
-        public String execute(Arguments arguments) {
+        public String execute(List<String> arguments) {
             String a = arguments.get(0);
             String b = arguments.get(1);
-            Integer ia = null;
-            Integer ib = null;
+            Integer ia;
+            Integer ib;
             try {
                 ia = Integer.valueOf(a);
                 try {
@@ -54,14 +59,13 @@ public class Defaults {
 
             return a + b;
         }
-
     };
 
     public static final Command<String> CMD_GET_DATE = new Command<String>("get-date") {
         @Override
-        public String execute(Arguments arguments) {
-            if (arguments.hasData() && StringUtil.hasText(arguments.get(0))){
-                SimpleDateFormat sdf = new SimpleDateFormat(arguments.get(0));
+        public String execute(List<String> args) {
+            if (!isEmpty(args) && hasText(args.get(0))){
+                SimpleDateFormat sdf = new SimpleDateFormat(args.get(0));
                 try {
                     return sdf.format(new Date());
                 } catch (Exception e){
@@ -75,8 +79,7 @@ public class Defaults {
 
     public static Command<String> CMD_FIND_FILE_STREAM = new Command<String>("find-file-stream") {
         @Override
-        public String execute(Arguments arguments) {
-            List<String> args = arguments.getListArgs();
+        public String execute(List<String> args) {
             String path = args.get(0);
             InputStream inputStream = FileUtil.findStream(path);
             String name = FileUtil.getNameFromPath(path);
@@ -99,8 +102,7 @@ public class Defaults {
 
     public static final Command<String> CMD_VALID_FILE = new Command<String>("valid-file") {
         @Override
-        public String execute(Arguments arguments) {
-            List<String> tests = arguments.getListArgs();
+        public String execute( List<String> tests) {
             for (String s: tests){
                 File f = new File(s);
                 if(f.exists()){
@@ -114,8 +116,8 @@ public class Defaults {
 
     public static final Command<String> PROCESS_EXEC_PRINT = new Command<String>("process-exec-print") {
         @Override
-        public String execute(Arguments arguments) {
-            String res = PROCESS_EXEC.execute(arguments);
+        public String execute(List<String> x) {
+            String res = PROCESS_EXEC.execute(x);
             System.out.println(res);
             return res;
         }
@@ -123,9 +125,7 @@ public class Defaults {
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
         @Override
-        public String execute(Arguments arguments) {
-            List<String> args = arguments.getListArgs();
-
+        public String execute(List<String> args) {
             File stdOutFile = null;
             int lastIndex = args.size();
             for(int i = 0; i < args.size(); i++){

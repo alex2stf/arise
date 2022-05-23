@@ -6,10 +6,10 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.canter.Arguments.fromCollection;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 
@@ -27,7 +27,7 @@ public abstract class Command<T> extends GenericTypeWorker {
     }
 
     protected String description = "-";
-    private Registry registry;
+    private CommandRegistry commandRegistry;
 
 
 
@@ -49,25 +49,24 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
 
-    public final T execute(String ... args){
-        Arguments arguments = Arguments.fromList(args);
-        return execute(arguments);
+    public T execute(String ... args){
+        return execute(Arrays.asList(args));
     };
 
-    public abstract T execute(Arguments arguments);
+    public abstract T execute(List<String> arguments);
 
 
     public String getId() {
         return id;
     }
 
-    Command setRegistry(Registry registry) {
-        this.registry = registry;
+    Command setRegistry(CommandRegistry commandRegistry) {
+        this.commandRegistry = commandRegistry;
         return this;
     }
 
-    public Registry getRegistry() {
-        return registry;
+    public CommandRegistry getRegistry() {
+        return commandRegistry;
     }
 
 
@@ -88,7 +87,7 @@ public abstract class Command<T> extends GenericTypeWorker {
         }
 
         @Override
-        public String execute(final Arguments arguments) {
+        public String execute(final List<String> arguments) {
            final Object res[] = new Object[]{null};
            for (final Map c: cmds){
                final String commandId = MapUtil.getString(c, "id");
@@ -99,16 +98,12 @@ public abstract class Command<T> extends GenericTypeWorker {
                    fireAndForget(new Runnable() {
                        @Override
                        public void run() {
-                           res[0] = getRegistry().execute(commandId, fromCollection(
-                                   Command.parseArgs(args, arguments)
-                           ));
+                           res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
                            storeResultIfNecessary(res[0], c);
                        }
                    }, ThreadUtil.threadId("async-cmd-" + commandId), true);
                } else {
-                   res[0] = getRegistry().execute(commandId, fromCollection(
-                           Command.parseArgs(args, arguments)
-                   ));
+                   res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
                    storeResultIfNecessary(res[0], c);
                }
 
@@ -125,11 +120,11 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
 
-    private static List<String> parseArgs(List<String> in, Arguments arguments){
+    private static List<String> parseArgs(List<String> in, List<String> arguments){
         List<String> cp = new ArrayList<>();
         for (String s: in){
             Integer index = argIndex(s);
-            if (index != null && arguments.hasIndex(index)){
+            if (index != null && arguments.size() - 1 >= index){
                 cp.add(arguments.get(index));
             } else {
                 cp.add(s);

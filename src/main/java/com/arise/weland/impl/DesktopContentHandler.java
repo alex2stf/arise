@@ -2,12 +2,11 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.canter.Registry;
+import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
 import com.arise.core.exceptions.DependencyException;
-import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
@@ -16,7 +15,6 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
@@ -36,7 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -79,7 +76,7 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
     private final ContentInfoProvider contentInfoProvider;
-    private final Registry registry;
+    private final CommandRegistry commandRegistry;
     boolean fullScreenNwjs = "true".equalsIgnoreCase(System.getProperty("nwjs.fullscreen"));
     Map commands;
     volatile boolean clearing = false;
@@ -90,9 +87,9 @@ public class DesktopContentHandler extends ContentHandler {
     private DesktopCamStream desktopCamStream;
 
 
-    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, Registry registry) {
+    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry commandRegistry) {
         this.contentInfoProvider = contentInfoProvider;
-        this.registry = registry;
+        this.commandRegistry = commandRegistry;
         setupArgs();
     }
 
@@ -196,8 +193,8 @@ public class DesktopContentHandler extends ContentHandler {
         log.info("Open media " + path+ " using strategy [" + strategy + "]");
 
         if("commands".equalsIgnoreCase(strategy)) {
-            if (registry.containsCommand("close-media-player")) {
-                registry.execute("close-media-player", new String[]{});
+            if (commandRegistry.containsCommand("close-media-player")) {
+                commandRegistry.execute("close-media-player", new String[]{});
                 SYSUtils.exec("pkill", "vlc");
                 try {
                     Thread.sleep(1000 * 10);
@@ -207,8 +204,8 @@ public class DesktopContentHandler extends ContentHandler {
             }
 
 
-            if (registry.containsCommand("play-media")) {
-                registry.execute("play-media", new String[]{path});
+            if (commandRegistry.containsCommand("play-media")) {
+                commandRegistry.execute("play-media", new String[]{path});
             }
         }
 
@@ -542,13 +539,13 @@ public class DesktopContentHandler extends ContentHandler {
         }
 
         if(StringUtil.hasText(volumeStr)) {
-            if(registry.containsCommand("set-master-volume")){
-                String v = "" + registry.execute("set-master-volume", new String[]{volumeStr});
+            if(commandRegistry.containsCommand("set-master-volume")){
+                String v = "" + commandRegistry.execute("set-master-volume", new String[]{volumeStr});
                 deviceStat.setProp("audio.music.volume", v);
             }
         }
-        else if(registry.containsCommand("get-master-volume")){
-            String x = registry.execute("get-master-volume", new String[]{}) + "";
+        else if(commandRegistry.containsCommand("get-master-volume")){
+            String x = commandRegistry.execute("get-master-volume", new String[]{}) + "";
             deviceStat.setProp("audio.music.volume", x);
         }
 

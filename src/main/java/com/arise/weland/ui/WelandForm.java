@@ -1,6 +1,6 @@
 package com.arise.weland.ui;
 
-import com.arise.canter.Registry;
+import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
@@ -28,7 +28,7 @@ public class WelandForm extends JFrame implements Runnable {
     private static final int BIG_FONT = 30;
 
 
-    public WelandForm(final Registry registry){
+    public WelandForm(final CommandRegistry commandRegistry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         providers.add(new Provider() {
@@ -72,7 +72,7 @@ public class WelandForm extends JFrame implements Runnable {
             providers.add(new Provider() {
                 @Override
                 public String getText(Date date) {
-                    return "" + registry.executeCmdLine(d);
+                    return "" + commandRegistry.executeCmdLine(d);
                 }
             });
         }

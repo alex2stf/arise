@@ -26,12 +26,12 @@ public class Cronus {
 
     private final List<CronTask> cronTasks = new ArrayList<>();
 
-    private Registry registry;
+    private CommandRegistry commandRegistry;
     private List<Runnable> otherTasks = new ArrayList<>();
 
 
-    public Cronus(Registry registry, String path){
-        this.registry = registry;
+    public Cronus(CommandRegistry commandRegistry, String path){
+        this.commandRegistry = commandRegistry;
 
 
         try {
@@ -79,7 +79,7 @@ public class Cronus {
         String cmdId = MapUtil.getString(cmd, "id");
         String args[] = MapUtil.getStringList(cmd, "args");
         cronTasks.add(
-               new CronTask(registry)
+               new CronTask(commandRegistry)
                        .setDisable(disable)
                        .setDayRef(day)
                        .setStoreKey(storeKey)
@@ -102,15 +102,15 @@ public class Cronus {
         String cmdId;
         String storeKey;
         String args[];
-        private Registry registry;
+        private CommandRegistry commandRegistry;
         private boolean disable = false;
 
         public CronTask setStoreKey(String storeKey){
             this.storeKey = storeKey;
             return this;
         }
-        public CronTask(Registry registry) {
-            this.registry = registry;
+        public CronTask(CommandRegistry commandRegistry) {
+            this.commandRegistry = commandRegistry;
         }
 
         CronTask setDayRef(String dayRef){
@@ -151,9 +151,9 @@ public class Cronus {
             fireAndForget(new Runnable() {
                 @Override
                 public void run() {
-                   Object res = registry.execute(cmdId, args, null, null);
+                   Object res = commandRegistry.execute(cmdId, args, null, null);
                     if(StringUtil.hasText(storeKey)){
-                        registry.store(storeKey, res);
+                        commandRegistry.store(storeKey, res);
                     }
                 }
             }, "cronus-task-" + UUID.randomUUID(), true);

@@ -3,10 +3,9 @@ package com.arise.weland;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
-import com.arise.canter.Arguments;
 import com.arise.canter.Command;
 import com.arise.canter.Cronus;
-import com.arise.canter.Registry;
+import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
 import com.arise.core.tools.AppCache;
@@ -72,7 +71,7 @@ public class Main {
 
     private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
         @Override
-        public String execute(Arguments arguments) {
+        public String execute(List<String> arguments) {
             if (cmd_executing){
                 return "xx";
             }
@@ -124,7 +123,7 @@ public class Main {
 
     private static final Command<String> MOUSE_PING = new Command<String>("mouse-ping") {
         @Override
-        public String execute(Arguments arguments) {
+        public String execute(List<String> arguments) {
             try {
                 new Robot().mouseMove(-2, -2);
                 if ("debug".equalsIgnoreCase(arguments.get(0))) {
@@ -183,8 +182,8 @@ public class Main {
             log.error("Failed to load content-type definitions", e);
         }
 
-        final Registry registry = new Registry();
-        registry.addCommand(PROCESS_EXEC)
+        final CommandRegistry commandRegistry = new CommandRegistry();
+        commandRegistry.addCommand(PROCESS_EXEC)
                 .addCommand(MOUSE_PING)
                 .addCommand(PLAY_MP3_RANDOM_CMD);
 
@@ -202,7 +201,7 @@ public class Main {
 
         String localCommands = AppSettings.getProperty(AppSettings.Keys.LOCAL_COMANDS_FILE);
         if (StringUtil.hasText(localCommands) && new File(localCommands).exists()){
-            registry.loadJsonResource(localCommands);
+            commandRegistry.loadJsonResource(localCommands);
         }
 
         final IDeviceController deviceController = new PCDeviceController();
@@ -225,7 +224,7 @@ public class Main {
 
 
 
-        desktopContentHandler = new DesktopContentHandler(contentInfoProvider,  registry);
+        desktopContentHandler = new DesktopContentHandler(contentInfoProvider, commandRegistry);
 
 
         DesktopCamStream desktopCamStream = new DesktopCamStream(
@@ -236,12 +235,12 @@ public class Main {
         Cronus cronus = null;
 
         if (!AppSettings.isFalse(AppSettings.Keys.CRONUS_ENABLED)){
-            cronus = new Cronus(registry, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+            cronus = new Cronus(commandRegistry, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
         }
 
         desktopContentHandler.setCameraStream(desktopCamStream);
 
-        final WelandServerHandler welandServerHandler = new WelandServerHandler(registry)
+        final WelandServerHandler welandServerHandler = new WelandServerHandler(commandRegistry)
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler)
                 .setDeviceController(deviceController);
@@ -256,7 +255,7 @@ public class Main {
                 @Override
                 public void run() {
 
-                    WelandForm welandForm = new WelandForm(registry);
+                    WelandForm welandForm = new WelandForm(commandRegistry);
                     welandForm.pack();
                     welandForm.setVisible(true);
 

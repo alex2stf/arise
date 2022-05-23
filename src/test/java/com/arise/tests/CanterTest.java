@@ -1,12 +1,12 @@
 package com.arise.tests;
 
-import com.arise.canter.Registry;
+import com.arise.canter.CommandRegistry;
 
 
 public class CanterTest {
 
     public static void testJsonImport(){
-        Registry registry = new Registry();
+        CommandRegistry commandRegistry = new CommandRegistry();
 //        registry.loadJsonString("{}")
     }
 
