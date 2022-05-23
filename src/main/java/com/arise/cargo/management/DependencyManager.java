@@ -1,5 +1,7 @@
 package com.arise.cargo.management;
 
+import com.arise.core.exceptions.DependencyException;
+import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -26,6 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.cargo.management.Locations.dest;
+import static com.arise.cargo.management.Locations.downloads;
+import static com.arise.cargo.management.Locations.out;
+import static com.arise.cargo.management.Locations.src;
+
 public class DependencyManager {
 
     private DependencyManager(){
@@ -34,6 +42,79 @@ public class DependencyManager {
 
 
     private static final Map<String, Dependency> dependencyMap = new HashMap<>();
+
+
+    private static final Mole log = Mole.getInstance(DependencyManager.class);
+
+    public static void withJarDependencyLoader(String name, final Handler<URLClassLoader> handler){
+        withJarDependency(name, new Handler<Resolution>() {
+            @Override
+            public void handle(Resolution resolution) {
+                File jar = resolution.file();
+                try {
+                    URLClassLoader classLoader  = new URLClassLoader(
+                            new URL[] {jar.toURI().toURL()},
+                            DependencyManager.class.getClassLoader()
+                    );
+                    handler.handle(classLoader);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    throw new DependencyException("URLClassLoader failed for " + jar.getAbsolutePath(), e);
+                }
+            }
+        });
+    }
+
+    public static void withJarDependency(String name, Handler<Resolution> handler){
+        Resolution r = solveDependency(name);
+        if (r._u != null && r._u.exists()) {
+            handler.handle(r);
+        } else {
+            log.warn("Could not solve dependency " + name);
+        }
+    }
+
+    public static Resolution solveDependency(String name){
+        Dependency dependency = getDependency(name);
+        for (Map.Entry<String, Dependency.Version> e: dependency.getVersions().entrySet()){
+            Resolution r = trySolveVersion(e.getValue(), dependency);
+            if (r != null){
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private static Resolution trySolveVersion(Dependency.Version v, Dependency d){
+        for (String url: v.urls){
+            Resolution r = trySolveUrlString(url, d, v);
+            if (r != null){
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private static Resolution trySolveUrlString(String url, Dependency dependency, Dependency.Version v){
+        if (url.startsWith("$maven-local:")){
+            url = url.substring("$maven-local:".length());
+            File m2 = FileUtil.getUserDirectory(".m2");
+            File jarFile = new File(new File(m2, "repository"), url);
+            if (m2.exists() && jarFile.exists()){
+                return new Resolution(jarFile, dependency, v);
+            }
+        }
+
+        try {
+            File fetched = download(url, Locations.libs(), v.id);
+            return new Resolution(fetched, dependency, v);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     public static void importDependencyRules(String in) throws IOException {
         InputStream inps = FileUtil.findStream(in);
@@ -82,7 +163,6 @@ public class DependencyManager {
             proxy  = new Proxy(proxyType, inetSocketAddress);
         }
 
-        HttpURLConnection connection;
         if (proxy != null){
             return  (HttpURLConnection) url.openConnection(proxy);
         } else {
@@ -235,34 +315,15 @@ public class DependencyManager {
     }
 
 
-    public static File getRoot(){
-        File out = FileUtil.findAppDir();
-        return new File(out, "dpmngmt");
-    }
 
-    public static File getSrc(){
-        File src = new File(getRoot(), "src");
-        if (!src.exists()){
-            src.mkdirs();
-        }
-        return src;
-    }
 
-    public static File getLibs(){
-        File libs = new File(getRoot(), "libs");
-        if (!libs.exists()){
-            libs.mkdirs();
-        }
-        return libs;
-    }
+
+
+
+
 
     public static Resolution solveSilent(Dependency dependency){
-        try {
-            return solve(dependency);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return solveDependency(dependency.getName());
     }
 
     public static Resolution solve(Dependency dependency, File out) throws IOException {
@@ -283,7 +344,7 @@ public class DependencyManager {
                String id = url.substring("internal://".length());
                InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
 
-               String outName = (dependency.getName() + "_" + version.getPlatformMatch()).toLowerCase();
+               String outName = (dependency.getName() + "_" + version.platformMatch).toLowerCase();
                File libsDir = new File(outputDir, "libs");
                if (!libsDir.exists()) {
                    libsDir.mkdirs();
@@ -311,12 +372,11 @@ public class DependencyManager {
 
 
     public static Resolution solve(Dependency dependency) throws IOException {
-        File out = getRoot();
-        Rule systemRule = download(dependency, new File(out, "src"));
+        Rule systemRule = download(dependency, src());
         if (systemRule == null){
             return null;
         }
-        File currentPath = uncompress(dependency, systemRule, new File(out, "out") );
+        File currentPath = uncompress(dependency, systemRule, out() );
         return new Resolution(systemRule, currentPath, dependency);
     }
 
@@ -353,12 +413,7 @@ public class DependencyManager {
 
 
 
-    public static String getDestination(Dependency dependency){
-        if ("binary".equalsIgnoreCase(dependency.type)){
-            return "bin";
-        }
-        return "libs";
-    }
+
 
 
     private static boolean requiresUncompressed(File downloaded){
@@ -369,20 +424,12 @@ public class DependencyManager {
 
     public static Tuple2<List<Resolution>, URLClassLoader> withDependencies(String [] names) throws Exception {
         List<Resolution> resolutions = new ArrayList<>();
-        File root = getRoot();
-        File downloadLocation = new File(root, "downloads");
-        if (!downloadLocation.exists()){
-            downloadLocation.mkdirs();
-        }
         List<File> jars = new ArrayList<>();
         for (String name: names) {
             Dependency dependency = dependencyMap.get(name);
             Dependency.Version version = dependency.getVersion("WIN64");
-            File downloaded = fetchOneOfUrls(version.urls, downloadLocation, version.id );
-            File outDir = new File(getRoot(), getDestination(dependency));
-            if (!outDir.exists()){
-                outDir.mkdirs();
-            }
+            File downloaded = fetchOneOfUrls(version.urls, downloads(), version.id );
+            File outDir = dest(dependency);
             Resolution resolution;
 
             if (requiresUncompressed(downloaded)){
@@ -407,7 +454,6 @@ public class DependencyManager {
             if ("jar".equalsIgnoreCase(dependency.type)) {
                 try {
                     jars.add(downloaded);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -433,6 +479,7 @@ public class DependencyManager {
         private final Dependency _s;
         private Dependency.Version _cp;
 
+        @Deprecated
         public Resolution(Rule _r, File _u, Dependency _s) {
             this._r = _r;
             this._u = _u;
@@ -454,7 +501,12 @@ public class DependencyManager {
             return _r;
         }
 
+        @Deprecated
         public File uncompressed() {
+            return _u;
+        }
+
+        public File file() {
             return _u;
         }
 

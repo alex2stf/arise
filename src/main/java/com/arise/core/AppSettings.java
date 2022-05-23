@@ -219,7 +219,8 @@ public class AppSettings {
         TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"}),
         GET_VOLUME_CMD("cmd.get.volume", new String[]{"fswebcam out.jpeg"}),
         UI_IMAGE_ICON_REFRESH("ui.image.icon.refresh", new String[]{"true", "false(default)"} ),
-        LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands.json"} );
+        LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands.json"} ),
+        MEDIA_PLAY_STRATEGY("media.play.strategy", new String[]{"commands", "javafx"});
 
 
         final String s;

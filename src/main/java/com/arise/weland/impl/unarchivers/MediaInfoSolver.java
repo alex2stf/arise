@@ -207,8 +207,8 @@ public class MediaInfoSolver {
     }
 
     public static void load() {
-        mntResolution = DependencyManager.solveSilent(Dependencies.MNT_CLI_WIN_32);
-        mediaInfoResolution = DependencyManager.solveSilent(Dependencies.MEDIA_INFO_CLI_WIN32);
+//        mntResolution = DependencyManager.solveSilent(Dependencies.MNT_CLI_WIN_32);
+//        mediaInfoResolution = DependencyManager.solveSilent(Dependencies.MEDIA_INFO_CLI_WIN32);
     }
 
 }

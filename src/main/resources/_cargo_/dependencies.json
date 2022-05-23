@@ -1,4 +1,16 @@
 {
+  "JAVAZOOM_JLAYER_101": {
+    "type": "jar",
+    "versions": [
+      {
+        "id": "jlayer-1.0.1.jar",
+        "urls": [
+          "$maven-local:javazoom/jlayer/1.0.1/jlayer-1.0.1.jar",
+          "https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar"
+        ]
+      }
+    ]
+  },
   "CHROME_DRIVER": {
     "type": "binary",
     "versions": [

@@ -126,19 +126,8 @@ public class Dependency {
             }
             return executable;
         }
-
-        public String getPlatformMatch() {
+        public String name(){
             return platformMatch;
-        }
-
-
-        public String getName(){
-            return platformMatch;
-        }
-
-        public Version setPlatformMatch(String platformMatch) {
-            this.platformMatch = platformMatch;
-            return this;
         }
     }
 }

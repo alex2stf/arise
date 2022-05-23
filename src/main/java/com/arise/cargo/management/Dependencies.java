@@ -21,6 +21,9 @@ public class Dependencies {
             .setWindowsSource("https://github.com/jonasstrandstedt/MinGW/archive/master.zip");
 
 
+    public static void main(String[] args) {
+
+    }
 
 
 

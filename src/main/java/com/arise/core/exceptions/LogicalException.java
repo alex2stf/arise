@@ -13,6 +13,4 @@ public class LogicalException extends RuntimeException {
     public LogicalException(String message, String path, int lineNo){
         super(message + " at [" + path + "  - " + lineNo + "]");
     }
-
-
 }

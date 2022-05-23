@@ -107,8 +107,8 @@ public class Project {
 
         for (DependencyManager.Resolution res : resolutions) {
             Dependency.Version version = res.selectedVersion();
-            String includeId = "include-" + version.getPlatformMatch().toLowerCase();
-            String libPathId = "lib-paths-" + version.getPlatformMatch().toLowerCase();
+            String includeId = "include-" + version.platformMatch.toLowerCase();
+            String libPathId = "lib-paths-" + version.platformMatch.toLowerCase();
             append(buf, includeId, version.includes, res);
             append(buf, libPathId, version.libPaths, res);
 
@@ -117,7 +117,7 @@ public class Project {
                 if (!dll.exists()) {
                     throw new RuntimeException("Invalid zip file, wtf??? whereis " + dll.getAbsolutePath() + " ???");
                 }
-                File binDir = new File(projDir, "bin" + File.separator + version.getName().toLowerCase() );
+                File binDir = new File(projDir, "bin" + File.separator + version.name().toLowerCase() );
                 if (!binDir.exists()) {
                     binDir.mkdirs();
                 }

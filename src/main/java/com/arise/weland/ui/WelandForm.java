@@ -46,7 +46,7 @@ public class WelandForm extends JFrame implements Runnable {
         providers.add(new Provider() {
             @Override
             public String getText(Date date) {
-                return new SimpleDateFormat("EEEEE dd MMMMM[MM] yyyy").format(date);
+                return new SimpleDateFormat("EEEEE dd MMMMM yyyy").format(date);
             }
         });
 

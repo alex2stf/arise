@@ -249,6 +249,10 @@ public class SYSUtils {
             outputHandler.handle(proc);
         }
 
+        if(!async){
+            proc.destroy();
+        }
+
     }
 
 

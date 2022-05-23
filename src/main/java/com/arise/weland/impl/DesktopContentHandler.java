@@ -6,6 +6,9 @@ import com.arise.canter.Registry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
+import com.arise.core.exceptions.DependencyException;
+import com.arise.core.exceptions.LogicalException;
+import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.AppCache;
@@ -28,10 +31,13 @@ import com.arise.weland.wrappers.VLCWrapper;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +47,9 @@ import java.util.Set;
 import static com.arise.core.AppSettings.Keys.PREFERRED_BROWSER;
 import static com.arise.core.AppSettings.Keys.SINGLE_INSTANCES;
 import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
+import static com.arise.core.tools.ReflectUtil.getMethod;
+import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.ThreadUtil.threadId;
 
 //import org.openqa.selenium.WebDriver;
 
@@ -168,33 +177,70 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
 
-    private void openMedia(String path) {
-        path = Paths.get(path).normalize().toAbsolutePath().toString();
-        log.info("received request to open ", path);
-        if (registry.containsCommand("close-media-player")){
-            registry.execute("close-media-player", new String[]{});
-//            SYSUtils.exec("pkill", "vlc");
-            try {
-                Thread.sleep(1000 * 10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    static {
+       // NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "/usr/lib/arm-linux-gnueabihf/vlc");
+//        new NativeDiscovery().discover();
+    }
+
+
+    Object mediaplayer= null;
+//    Player player = null;
+
+//   EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+
+
+    private void openMedia(final String path) {
+
+
+        String strategy = AppSettings.getProperty(AppSettings.Keys.MEDIA_PLAY_STRATEGY, "vlc");
+        log.info("Open media " + path+ " using strategy [" + strategy + "]");
+
+        if("commands".equalsIgnoreCase(strategy)) {
+            if (registry.containsCommand("close-media-player")) {
+                registry.execute("close-media-player", new String[]{});
+                SYSUtils.exec("pkill", "vlc");
+                try {
+                    Thread.sleep(1000 * 10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            if (registry.containsCommand("play-media")) {
+                registry.execute("play-media", new String[]{path});
             }
         }
 
 
-        if (registry.containsCommand("play-media")){
-            registry.execute("play-media", new String[]{path});
-//            final String finalPath = path;
-//        ThreadUtil.fireAndForget(new Runnable() {
-//            @Override
-//            public void run() {
-//                SYSUtils.exec("/usr/bin/vlc", finalPath);
-//            }
-//        }, ThreadUtil.threadId("exec-task"), true);
+        else if ("javazone-player".equalsIgnoreCase(strategy)) {
+
+            DependencyManager.withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
+                @Override
+                public void handle(URLClassLoader classLoader) {
+                    if(mediaplayer != null){
+                        getMethod(mediaplayer, "close").call();
+                    }
+
+                    try {
+                        mediaplayer = Class.forName("javazoom.jl.player.Player", true, classLoader).getConstructor(InputStream.class).newInstance(new BufferedInputStream(new FileInputStream(path)));
+                        fireAndForget(new Runnable() {
+                            @Override
+                            public void run() {
+                                getMethod(mediaplayer, "play").call();
+                            }
+                        }, threadId(path));
+                    } catch (Exception e) {
+                        throw new DependencyException("javazoom.jl.player.Player failed", e);
+                    }
+                }
+            });
+
+
+
+
         }
 
-
-//
 
 
 //        File vlcExecutable = VLCWrapper.open(getCommands("media", path));
@@ -303,7 +349,7 @@ public class DesktopContentHandler extends ContentHandler {
         //TODO use selenium for same instance
 
         if("selenium".equals(AppSettings.getProperty(PREFERRED_BROWSER))){
-            Object  currentUrl = ReflectUtil.getMethod(seleniumDriver, "getCurrentUrl").call();
+            Object  currentUrl = getMethod(seleniumDriver, "getCurrentUrl").call();
 
             if (currentUrl == null){
                 List<DependencyManager.Resolution> resolutions = null;
@@ -332,7 +378,7 @@ public class DesktopContentHandler extends ContentHandler {
             }
 
 
-            ReflectUtil.getMethod(seleniumDriver, "get", String.class).call(path);
+            getMethod(seleniumDriver, "get", String.class).call(path);
 
 
         }
