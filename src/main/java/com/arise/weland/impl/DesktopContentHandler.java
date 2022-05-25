@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.arise.cargo.management.DependencyManager.withJarDependencyLoader;
 import static com.arise.core.AppSettings.Keys.PREFERRED_BROWSER;
 import static com.arise.core.AppSettings.Keys.SINGLE_INSTANCES;
 import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
@@ -212,7 +213,7 @@ public class DesktopContentHandler extends ContentHandler {
 
         else if ("javazone-player".equalsIgnoreCase(strategy)) {
 
-            DependencyManager.withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
+            withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
                 @Override
                 public void handle(URLClassLoader classLoader) {
                     if(mediaplayer != null){

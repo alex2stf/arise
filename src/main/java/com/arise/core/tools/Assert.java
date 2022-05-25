@@ -61,12 +61,10 @@ public class Assert {
     }
 
     public static void assertEquals(int s1, int s2){
-        try {
-            assert s1 == s2;
-            tick();
-        } catch (Throwable e){
-            throwException(s1, s2, e);
+        if (s1 != s2){
+            throwException(s1, s2);
         }
+        tick();
     }
 
     public static void assertEquals(double s1, double s2, int decimals){
@@ -83,6 +81,10 @@ public class Assert {
         throw new AssertException(a, b, c);
     }
 
+    public static void throwException(Object a, Object b){
+        throwException(a, b, new AssertException(a, b));
+    }
+
     public static void assertNull(Object aNull) {
         try {
             assert  null == aNull;
@@ -93,28 +95,17 @@ public class Assert {
     }
 
     public static void assertTrue(boolean given) {
-        try {
-            assert  true == given;
-            tick();
-            if (!given){
-                throwException(true, false, new RuntimeException("assert disabled"));
-            }
-        } catch (Throwable e){
-            throwException("true", "false", e);
+        if (!given){
+            throwException(true, false);
         }
+        tick();
     }
 
     public static void assertFalse(boolean given) {
-        try {
-            assert  false == given;
-            tick();
-
-            if (given){
-                throwException(true, false, new RuntimeException("assert disabled"));
-            }
-        } catch (Throwable e){
-            throwException("false", "true", e);
+        if (given){
+            throwException(true, false);
         }
+        tick();
     }
 
     public static void assertNotNull(Object given) {
@@ -126,10 +117,25 @@ public class Assert {
         }
     }
 
+    public static void assertThrows(Runnable r, Class<? extends Throwable> t) {
+        try {
+            r.run();
+        }catch (Exception e){
+            if (!e.getClass().isAssignableFrom(t)){
+                throwException(e.getClass(), t);
+            }
+            tick();
+        }
+    }
+
     public static final class AssertException extends RuntimeException {
 
         public AssertException(Object expect, Object given, Throwable cause){
             super("Expected " + expect + " given " + given, cause);
+        }
+
+        AssertException(Object expect, Object given){
+            super("Expected " + expect + " given " + given);
         }
     }
 }

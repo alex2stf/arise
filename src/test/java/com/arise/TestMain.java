@@ -1,5 +1,6 @@
 package com.arise;
 
+import com.arise.canter.CommandRegistryTest;
 import com.arise.canter.CronusTest;
 import com.arise.core.serializers.parser.GrootTest;
 import com.arise.core.tools.AppCacheTest;
@@ -17,5 +18,6 @@ public class TestMain {
         StringUtilTest.main(args);
         GrootTest.main(args);
         CronusTest.main(args);
+        CommandRegistryTest.main(args);
     }
 }

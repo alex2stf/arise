@@ -97,10 +97,6 @@ public final class CommandRegistry extends GenericTypeWorker {
     }
 
 
-
-
-
-
     public Object executeCmdLine(String line){
         if (line.startsWith("$")){
             int argBegin = line.indexOf("(");

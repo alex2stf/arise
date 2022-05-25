@@ -22,4 +22,7 @@ public class Tuple2<A, B> {
     }
 
 
+    public static Tuple2<Integer, Integer>  numInt(int a, int b) {
+        return new Tuple2<>(a, b);
+    }
 }
