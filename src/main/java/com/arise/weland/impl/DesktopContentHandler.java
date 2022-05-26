@@ -182,9 +182,6 @@ public class DesktopContentHandler extends ContentHandler {
 
 
     Object mediaplayer= null;
-//    Player player = null;
-
-//   EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 
 
     private void openMedia(final String path) {
@@ -203,14 +200,10 @@ public class DesktopContentHandler extends ContentHandler {
                     e.printStackTrace();
                 }
             }
-
-
             if (commandRegistry.containsCommand("play-media")) {
                 commandRegistry.execute("play-media", new String[]{path});
             }
         }
-
-
         else if ("javazone-player".equalsIgnoreCase(strategy)) {
 
             withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
@@ -233,10 +226,21 @@ public class DesktopContentHandler extends ContentHandler {
                     }
                 }
             });
+        }
 
+        else {
+            mediaplayer = commandRegistry.getCommand("play-media").getProperty("process");
 
+            if (mediaplayer != null && mediaplayer instanceof Process) {
+                ((Process) mediaplayer).destroy();
+            }
 
-
+            fireAndForget(new Runnable() {
+                @Override
+                public void run() {
+                    commandRegistry.getCommand("play-media").execute(path);
+                }
+            }, threadId("media-play"));
         }
 
 

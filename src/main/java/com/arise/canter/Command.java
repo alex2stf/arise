@@ -69,6 +69,9 @@ public abstract class Command<T> extends GenericTypeWorker {
         return commandRegistry;
     }
 
+    public Object getProperty(String x) {
+        return null;
+    }
 
 
     static class JsonCommand extends Command<String> {

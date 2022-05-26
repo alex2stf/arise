@@ -200,10 +200,14 @@ public class SYSUtils {
     }
 
 
-
-
-
-    public static void exec(String[] args, final ProcessOutputHandler outputHandler,
+    /**
+     * use Defaults#PROCESS_EXEC
+     * @param args
+     * @param outputHandler
+     * @param useBuilder
+     * @param async
+     */
+    public static Process exec(String[] args, final ProcessOutputHandler outputHandler,
                             boolean useBuilder,
                             boolean async){
         Process proc = null;
@@ -253,6 +257,7 @@ public class SYSUtils {
             proc.destroy();
         }
 
+        return proc;
     }
 
 

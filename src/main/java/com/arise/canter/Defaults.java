@@ -124,6 +124,17 @@ public class Defaults {
     };
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
+
+        private Process process;
+
+        @Override
+        public Object getProperty(String x) {
+            if ("process".equalsIgnoreCase(x)){
+                return process;
+            }
+            return null;
+        }
+
         @Override
         public String execute(List<String> args) {
             File stdOutFile = null;
@@ -150,10 +161,9 @@ public class Defaults {
             }
 
 
-
             final StringBuilder sb = new StringBuilder();
             final boolean[] returnSb = {false};
-            SYSUtils.exec(CollectionUtil.toArray(args), new SYSUtils.ProcessLineReader() {
+            process = SYSUtils.exec(CollectionUtil.toArray(args), new SYSUtils.ProcessLineReader() {
 
                 @Override
                 public void onErrLine(int line, String content) {
@@ -180,7 +190,6 @@ public class Defaults {
             }
             return finStdFile != null ? finStdFile.getAbsolutePath() : "null";
         }
-
     };
 
     
