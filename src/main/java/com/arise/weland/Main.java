@@ -14,6 +14,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StandardCacheWorker;
+import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
@@ -84,7 +85,8 @@ public class Main {
                 log.trace("PLAY_MP3_RANDOM_CMD called with " + path);
             }
 
-            AppCache.StoredList storedList = AppCache.getStoredList("mp3-rand");
+            String listId = UUID.nameUUIDFromBytes(path.getBytes()).toString();
+            AppCache.StoredList storedList = AppCache.getStoredList("mp3-rand-" + listId);
             if (storedList.isEmpty() || storedList.isIndexExceeded()){
 
                 File dir = new File(path);
