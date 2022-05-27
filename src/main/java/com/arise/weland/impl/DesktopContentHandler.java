@@ -6,8 +6,6 @@ import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.Dependencies;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
-import com.arise.core.exceptions.DependencyException;
-import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.AppCache;
@@ -29,11 +27,8 @@ import com.arise.weland.wrappers.VLCWrapper;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,13 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.arise.cargo.management.DependencyManager.withJarDependencyLoader;
 import static com.arise.core.AppSettings.Keys.PREFERRED_BROWSER;
 import static com.arise.core.AppSettings.Keys.SINGLE_INSTANCES;
 import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
 import static com.arise.core.tools.ReflectUtil.getMethod;
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
-import static com.arise.core.tools.ThreadUtil.threadId;
 
 //import org.openqa.selenium.WebDriver;
 
@@ -87,10 +79,11 @@ public class DesktopContentHandler extends ContentHandler {
     Set<String> exes = new HashSet<>();
     private DesktopCamStream desktopCamStream;
 
-
+    private MediaPlayer mediaPlayer;
     public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry commandRegistry) {
         this.contentInfoProvider = contentInfoProvider;
         this.commandRegistry = commandRegistry;
+        mediaPlayer = MediaPlayer.getInstance(DesktopContentHandler.class, commandRegistry);
         setupArgs();
     }
 
@@ -181,77 +174,13 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
 
-    Object mediaplayer= null;
+
 
 
     private void openMedia(final String path) {
 
 
-        String strategy = AppSettings.getProperty(AppSettings.Keys.MEDIA_PLAY_STRATEGY, "vlc");
-        log.info("Open media " + path+ " using strategy [" + strategy + "]");
 
-        if("commands".equalsIgnoreCase(strategy)) {
-            if (commandRegistry.containsCommand("close-media-player")) {
-                commandRegistry.execute("close-media-player", new String[]{});
-                SYSUtils.exec("pkill", "vlc");
-                try {
-                    Thread.sleep(1000 * 10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (commandRegistry.containsCommand("play-media")) {
-                commandRegistry.execute("play-media", new String[]{path});
-            }
-        }
-        else if ("javazone-player".equalsIgnoreCase(strategy)) {
-
-            withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
-                @Override
-                public void handle(URLClassLoader classLoader) {
-                    if(mediaplayer != null){
-                        getMethod(mediaplayer, "close").call();
-                    }
-
-                    try {
-                        mediaplayer = Class.forName("javazoom.jl.player.Player", true, classLoader).getConstructor(InputStream.class).newInstance(new BufferedInputStream(new FileInputStream(path)));
-                        fireAndForget(new Runnable() {
-                            @Override
-                            public void run() {
-                                getMethod(mediaplayer, "play").call();
-                            }
-                        }, threadId(path));
-                    } catch (Exception e) {
-                        throw new DependencyException("javazoom.jl.player.Player failed", e);
-                    }
-                }
-            });
-        }
-
-        else {
-            mediaplayer = commandRegistry.getCommand("play-media").getProperty("process");
-
-            if (mediaplayer != null && mediaplayer instanceof Process) {
-                ((Process) mediaplayer).destroy();
-            }
-
-            fireAndForget(new Runnable() {
-                @Override
-                public void run() {
-                    commandRegistry.getCommand("play-media").execute(path);
-                }
-            }, threadId("media-play"));
-        }
-
-
-
-//        File vlcExecutable = VLCWrapper.open(getCommands("media", path));
-//        if (vlcExecutable != null){
-//            exes.add(vlcExecutable.getAbsolutePath());
-//            DeviceStat.getInstance().setProp(CURRENT_RUNNING, "vlc");
-//        } else {
-//            execute(getCommands("media", path));
-//        }
     }
 
     private boolean isMedia(String path) {

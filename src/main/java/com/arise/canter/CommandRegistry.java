@@ -13,6 +13,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ import static com.arise.canter.Defaults.CMD_GET_DATE;
 import static com.arise.canter.Defaults.CMD_PRINT;
 import static com.arise.canter.Defaults.CMD_SUM;
 import static com.arise.canter.Defaults.CMD_VALID_FILE;
-import static com.arise.canter.Defaults.PROCESS_EXEC_PRINT;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 
 public final class CommandRegistry extends GenericTypeWorker {
@@ -57,12 +57,23 @@ public final class CommandRegistry extends GenericTypeWorker {
         addCommand(CMD_SUM);
         addCommand(CMD_VALID_FILE);
         addCommand(CMD_FIND_FILE_STREAM);
-        addCommand(PROCESS_EXEC_PRINT);
         addCommand(new Command<String>("read-storage") {
             @Override
             public String execute(List<String> arguments) {
                 String key = arguments.get(0);
                 return storage.get(key) + "";
+            }
+        });
+
+        addCommand(new Command<Process>("exec-sync") {
+            @Override
+            public Process execute(List<String> arguments) {
+                try {
+                    return Runtime.getRuntime().exec(CollectionUtil.toArray(arguments));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
         });
     }

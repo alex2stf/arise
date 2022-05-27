@@ -23,6 +23,7 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopCamStream;
 import com.arise.weland.impl.DesktopContentHandler;
 import com.arise.weland.impl.IDeviceController;
+import com.arise.weland.impl.MediaPlayer;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.WelandRequestBuilder;
@@ -44,6 +45,8 @@ import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.weland.dto.DeviceStat.getInstance;
+import static com.arise.weland.impl.MediaPlayer.getInstance;
+import static java.util.Collections.shuffle;
 
 public class Main {
 
@@ -68,15 +71,10 @@ public class Main {
 
 
 
-    private static volatile boolean cmd_executing = false;
 
     private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
         @Override
         public String execute(List<String> arguments) {
-            if (cmd_executing){
-                return "xx";
-            }
-            cmd_executing = true;
             String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
 
             if (!new File(path).exists()){
@@ -85,8 +83,8 @@ public class Main {
                 log.trace("PLAY_MP3_RANDOM_CMD called with " + path);
             }
 
-            String listId = UUID.nameUUIDFromBytes(path.getBytes()).toString();
-            AppCache.StoredList storedList = AppCache.getStoredList("mp3-rand-" + listId);
+            String listId = "mp3-rand-" + UUID.nameUUIDFromBytes(path.getBytes()).toString();
+            AppCache.StoredList storedList = AppCache.getStoredList(listId);
             if (storedList.isEmpty() || storedList.isIndexExceeded()){
 
                 File dir = new File(path);
@@ -98,15 +96,15 @@ public class Main {
                 for (File f: files){
                     items.add(f.getAbsolutePath());
                 }
-                Collections.shuffle(items);
+                shuffle(items);
 
-                storedList = AppCache.storeList("mp3-rand", items, 0);
-                log.info("RESHUFFLED LIST");
+                storedList = AppCache.storeList(listId, items, 0);
+                log.info("RESHUFFLED LIST " + listId);
             }
 
             List<String> saved = storedList.getItems();
             int index = storedList.getIndex();
-            AppCache.storeList("mp3-rand", saved, index + 1);
+            AppCache.storeList(listId, saved, index + 1);
 
             String selected = saved.get(index);
 
@@ -116,8 +114,7 @@ public class Main {
                 log.info(new Date() + " ] PLAY "+ index + " from " + selected);
             }
 
-            desktopContentHandler.openPath(selected);
-            cmd_executing = false;
+            getInstance(listId, getRegistry()).play(path);
             return saved.get(index);
         }
     };

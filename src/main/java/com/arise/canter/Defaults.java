@@ -114,14 +114,6 @@ public class Defaults {
         }
     };
 
-    public static final Command<String> PROCESS_EXEC_PRINT = new Command<String>("process-exec-print") {
-        @Override
-        public String execute(List<String> x) {
-            String res = PROCESS_EXEC.execute(x);
-            System.out.println(res);
-            return res;
-        }
-    };
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
 

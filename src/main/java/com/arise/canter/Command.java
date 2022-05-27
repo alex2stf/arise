@@ -74,7 +74,7 @@ public abstract class Command<T> extends GenericTypeWorker {
     }
 
 
-    static class JsonCommand extends Command<String> {
+    static class JsonCommand extends Command<Object> {
 
         List<Map> cmds;
         String returnValue;
@@ -90,7 +90,20 @@ public abstract class Command<T> extends GenericTypeWorker {
         }
 
         @Override
-        public String execute(final List<String> arguments) {
+        public Object getProperty(String x) {
+            for (final Map c: cmds){
+                final String commandId = MapUtil.getString(c, "id");
+                Object prop = getRegistry().getCommand(commandId).getProperty(x);
+                if (prop != null){
+                    return prop;
+                }
+            }
+            return null;
+        }
+
+
+        @Override
+        public Object execute(final List<String> arguments) {
            final Object res[] = new Object[]{null};
            for (final Map c: cmds){
                final String commandId = MapUtil.getString(c, "id");
@@ -114,9 +127,9 @@ public abstract class Command<T> extends GenericTypeWorker {
 
            }
            if(StringUtil.hasText(returnValue)) {
-               return String.valueOf(getRegistry().executeCmdLine(returnValue));
+               return getRegistry().executeCmdLine(returnValue);
            }
-           return String.valueOf(res[0]);
+           return (res[0]);
         }
     }
 

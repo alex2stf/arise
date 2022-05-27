@@ -63,7 +63,6 @@ public class WelandServerHandler extends HTTPServerHandler {
   String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-  ThreadUtil.TimerResult syncPlayTimer;
   private CommandRegistry commandRegistry;
 
 
@@ -89,7 +88,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   public WelandServerHandler setContentProvider(ContentInfoProvider contentProvider){
     this.contentInfoProvider = contentProvider;
     if (contentHandler != null){
-      contentHandler.setContentInfoProvider(contentInfoProvider);
+        contentHandler.setContentInfoProvider(contentInfoProvider);
     }
     return this;
   }

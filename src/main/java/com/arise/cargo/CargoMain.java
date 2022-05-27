@@ -32,28 +32,5 @@ public class CargoMain {
                 System.out.println(classToLoad);
             }
         });
-//        DependencyManager.withJarDependency("JAVAZOOM_JLAYER_101", new Handler<DependencyManager.Resolution>() {
-//            @Override
-//            public void handle(DependencyManager.Resolution resolution) {
-//                System.out.println(resolution.file());
-//                File jar = resolution.file();
-//
-//                URLClassLoader child = null;
-//                try {
-//                    child = new URLClassLoader(
-//                            new URL[] {jar.toURI().toURL()},
-//                            this.getClass().getClassLoader()
-//                    );
-//                    Class classToLoad = Class.forName("javazoom.jl.player.Player", true, child);
-//
-//                    System.out.println(classToLoad);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
-
-//        System.out.println(project);
     }
 }
