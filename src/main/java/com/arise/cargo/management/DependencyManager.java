@@ -262,24 +262,6 @@ public class DependencyManager {
 
 
 
-    @Deprecated
-    public static Rule download(Dependency dependency, File outputDir) throws IOException {
-
-        if (!outputDir.exists()){
-            outputDir.mkdirs();
-        }
-
-
-
-        for (Rule rule: dependency.ruleList){
-            if (rule.acceptConditions()){
-                File zipped = download(rule.getPath(), outputDir, rule.getSourceName());
-                return rule.setZipped(zipped);
-            }
-        }
-
-        return null;
-    }
 
     public static final List<Unarchiver> unarchivers = new ArrayList<>();
 
@@ -294,25 +276,6 @@ public class DependencyManager {
     }
 
 
-    @Deprecated
-    public static File uncompress(Dependency dependency, Rule rule, File rootDir){
-        File unarchived = new File(rootDir, dependency.getName() + "_" + rule.getName());
-        if (!FileUtil.hasFiles(unarchived)){
-            File zipped = rule.getZipped();
-            for (Unarchiver unarchiver: unarchivers){
-               if (unarchiver.extract(zipped, unarchived)){
-                   break;
-               }
-            }
-        }
-        File list[] = unarchived.listFiles();
-        while (list != null && list.length == 1 && list[0].isDirectory()){
-            unarchived = list[0];
-            list = unarchived.listFiles();
-        }
-
-        return unarchived;
-    }
 
 
 
@@ -326,14 +289,7 @@ public class DependencyManager {
         return solveDependency(dependency.getName());
     }
 
-    public static Resolution solve(Dependency dependency, File out) throws IOException {
-        Rule systemRule = download(dependency, new File(out, "src"));
-        if (systemRule == null){
-            return null;
-        }
-        File currentPath = uncompress(dependency, systemRule, new File(out, "out") );
-        return new Resolution(systemRule, currentPath, dependency);
-    }
+
 
     public static Resolution solveWithPlatform(Dependency dependency,
                                                Dependency.Version version,
@@ -371,14 +327,7 @@ public class DependencyManager {
 
 
 
-    public static Resolution solve(Dependency dependency) throws IOException {
-        Rule systemRule = download(dependency, src());
-        if (systemRule == null){
-            return null;
-        }
-        File currentPath = uncompress(dependency, systemRule, out() );
-        return new Resolution(systemRule, currentPath, dependency);
-    }
+
 
 
 
@@ -474,21 +423,14 @@ public class DependencyManager {
 
 
     public static class Resolution{
-        private final Rule  _r;
         private final File  _u;
         private final Dependency _s;
         private Dependency.Version _cp;
 
-        @Deprecated
-        public Resolution(Rule _r, File _u, Dependency _s) {
-            this._r = _r;
-            this._u = _u;
-            this._s = _s;
-        }
+
 
         public Resolution(File _u, Dependency _s, Dependency.Version _cp) {
             this._cp = _cp;
-            this._r = null;
             this._u = _u;
             this._s = _s;
         }
@@ -497,9 +439,6 @@ public class DependencyManager {
             return _cp;
         }
 
-        public Rule rule() {
-            return _r;
-        }
 
         @Deprecated
         public File uncompressed() {
@@ -516,6 +455,7 @@ public class DependencyManager {
     }
 
 
+    @SuppressWarnings("unused")
     public static final void addUnarchiver(Unarchiver unarchiver) {
 
         unarchivers.add(unarchiver);

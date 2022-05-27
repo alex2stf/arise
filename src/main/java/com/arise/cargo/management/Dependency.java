@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Dependency {
-    List<Rule> ruleList = new ArrayList<>();
     private String name;
 
     String type;
@@ -42,31 +41,6 @@ public class Dependency {
         }
     }
 
-
-    public Dependency addRule(Rule rule) {
-        ruleList.add(rule);
-        return this;
-    }
-
-
-    public Dependency setWindowsSource(final String path){
-        return addRule(new Rule() {
-            @Override
-            public boolean acceptConditions() {
-                return SYSUtils.isWindows();
-            }
-
-            @Override
-            public String getPath() {
-                return path;
-            }
-
-            @Override
-            public String getName() {
-                return "win32";
-            }
-        });
-    }
 
    public Dependency setName(String name) {
         this.name = name;

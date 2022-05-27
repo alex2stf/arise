@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+
+@Deprecated
 public class VLCWrapper {
 
     private static final String VLC_HTTP_PASSWORD = "arise";

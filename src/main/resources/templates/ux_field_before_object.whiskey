@@ -1,7 +1,0 @@
-<div class="card border border-secondary rounded bg-light p-3">
-<a class="btn btn-secondary center-block" data-toggle="collapse"
-    href="#{{id}}_CT" role="button" aria-expanded="false"
-    aria-controls="{{id}}_CT">
-    {{label}}
-</a>
-<div id="{{id}}_CT" class="form-group nested collapse">

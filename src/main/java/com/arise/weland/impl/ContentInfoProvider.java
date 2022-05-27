@@ -35,7 +35,6 @@ import static com.arise.weland.dto.Playlist.VIDEOS;
 
 public class ContentInfoProvider {
 
-    private static final Random rd = new Random();
     final ContentInfoDecoder decoder;
     List<File> roots = new ArrayList<>();
     private Mole log = Mole.getInstance(ContentInfoProvider.class);

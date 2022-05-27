@@ -1,4 +1,4 @@
-package com.arise.astox.net.serviceHelpers;
+package com.arise.astox.net.servers;
 
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
