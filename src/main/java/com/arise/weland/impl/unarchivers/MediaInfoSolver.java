@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class MediaInfoSolver {
-    static  DependencyManager.Resolution mediaInfoResolution;
-    static  DependencyManager.Resolution mntResolution;
+//    static  DependencyManager.Resolution mediaInfoResolution;
+//    static  DependencyManager.Resolution mntResolution;
 
 //    private static final Mole log = Mole.getInstance(MediaInfoSolver.class);
 
@@ -31,12 +32,13 @@ public class MediaInfoSolver {
     }
 
     private static SuggestionService.Data solveThumbnail(final ContentInfo info) {
-        if (mntResolution == null){
-            return null;
-        }
+//        if (mntResolution == null){
+//            return null;
+//        }
         String id = "mnt" + StringEncoder.encodeShiftSHA(info.getPath(), "yy") + ".jpg";
 
-        File mntExe = new File(mntResolution.uncompressed(), "mtn.exe");
+        File mntExe = null;
+        //                 null; new File(mntResolution.uncompressed(), "mtn.exe");
         File outDir = PCDecoder.thumbnailsDirectory();
         if (!outDir.exists()){
             outDir.mkdirs();
@@ -139,11 +141,12 @@ public class MediaInfoSolver {
      * @param info
      */
     public static void solveInfo(final ContentInfo info) {
-        if (mediaInfoResolution == null){
-            return;
-        }
+//        if (mediaInfoResolution == null){
+//            return;
+//        }
 
-        File mediaExe = new File(mediaInfoResolution.uncompressed(), "MediaInfo.exe");
+        File mediaExe = null;
+//                new File(mediaInfoResolution.uncompressed(), "MediaInfo.exe");
 
         SYSUtils.exec(
                 new String[]{mediaExe.getAbsolutePath(), info.getPath()},

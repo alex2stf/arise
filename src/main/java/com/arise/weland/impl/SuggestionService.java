@@ -236,7 +236,7 @@ public class SuggestionService {
     public void do_get(URL url, OutputStream out){
         HttpURLConnection connection = null;
         try {
-            connection = DependencyManager.getConnection(url);
+            connection = DependencyManager.getConnection(url, null, null);
         } catch (IOException e) {
             close(connection);
             throw new SuggestionFetchException("Failed to obtain connection to " + url, e);

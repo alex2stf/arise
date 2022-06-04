@@ -3,11 +3,33 @@
     "type": "jar",
     "versions": [
       {
-        "id": "jlayer-1.0.1.jar",
+        "name": "maven-jlayer-1.0.1.jar",
+        "condition": "always",
+        "disabled": false,
+        "params": {
+          "jar-location": "$location-exists($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
+        }
+      },
+      {
+        "name": "jlayer-1.0.1.jar",
+        "condition": "always",
+        "disabled": true,
+        "params": {
+            "jar-location": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
+        }
+      }
+    ]
+  },
+  "MEDIA_INFO_CLI_WIN32": {
+    "type": "binary",
+    "versions": [
+      {
+        "id": "MediaInfo_CLI_0.7.60_Windows_i386",
+        "platform-match": "WINDOWS_32",
         "urls": [
-          "$maven-local:javazoom/jlayer/1.0.1/jlayer-1.0.1.jar",
-          "https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar"
-        ]
+          "https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip"
+        ],
+        "unzip": "zip"
       }
     ]
   },

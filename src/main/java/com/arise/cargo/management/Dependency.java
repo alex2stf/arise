@@ -1,6 +1,8 @@
 package com.arise.cargo.management;
 
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 
 import java.util.ArrayList;
@@ -8,7 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.Mole.logWarn;
+
 public class Dependency {
+
+
     private String name;
 
     String type;
@@ -25,19 +32,22 @@ public class Dependency {
         dependency.type = MapUtil.getString(args, "type");
         List<Map<String, Object>> versions = MapUtil.getList(args, "versions");
 
-
+        if (isEmpty(versions)){
+            logWarn( "Empty versions definition, skip dependency " + dependency.getName());
+            return;
+        }
 
         for (Map m: versions){
-            Version version = new Version();
-            version.id = MapUtil.getString(m, "id");
-            version.platformMatch = MapUtil.getString(m, "platform-match");
-            version.urls = MapUtil.getList(m, "urls");
-            version.libPaths = MapUtil.getList(m, "lib-paths");
-            version.dynamicLibs = MapUtil.getList(m, "dynamic-libs");
-            version.staticLibs = MapUtil.getList(m, "static-libs");
-            version.includes = MapUtil.getList(m, "includes");
-            version.executable = MapUtil.getString(m, "executable");
-            dependency.versions.put(version.id, version);
+
+            boolean disabled = MapUtil.getBool(m, "disabled");
+            if (!disabled) {
+
+                Version version = new Version();
+                version._n = MapUtil.getString(m, "name");
+                version._c = MapUtil.getString(m, "condition");
+                version._p = MapUtil.getMap(m, "params");
+                dependency.versions.put(version._n, version);
+            }
         }
     }
 
@@ -63,45 +73,23 @@ public class Dependency {
 
 
 
-    public Version getVersion(String in) {
-        if (null == this.versions){
-            throw new RuntimeException("Invalid dependency " + this);
-        }
-        for (Version v: this.versions.values()){
-            if (null == v.platformMatch || null == in){
-                throw new RuntimeException("Invalid dependency " + this);
-            }
-            if (in.equals(v.platformMatch) || in.equals(v.id) || "*".equals(in)){
-                return v;
-            }
-        }
 
-        return getLatestVersion();
-    }
 
 
     public static class Version {
-        List<String> urls;
-        List<String> libPaths;
-        List<String> includes;
-        List<String> dynamicLibs;
-        List<String> staticLibs;
-
-        //TODO foloseste nume, match-ul tb sa fie regex
-        @Deprecated
-        String platformMatch;
-        String id;
-        String executable;
+       String _n;
+       String _c;
+       Map<String, String> _p;
 
 
-        public String getExecutable() {
-            if (SYSUtils.isWindows() && !executable.endsWith(".exe")){
-                return executable + ".exe";
-            }
-            return executable;
+        public Map<String, String> params(){
+            return _p;
         }
         public String name(){
-            return platformMatch;
+            return _n;
+        }
+        public String condition(){
+            return _c;
         }
     }
 }

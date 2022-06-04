@@ -80,6 +80,11 @@ public class CronusTest {
         assertFalse(isBetween("19:20:20", "07:22:20", "06:24:00"));
 
         assertTrue(isBetween("23:00:00", "00:00:00", "01:00:00"));
+        assertTrue(dayIsBetween("sunday", "monday", "saturday"));
+        assertTrue(dayIsBetween("sunday", "tuesday", "saturday"));
+        assertTrue(dayIsBetween("sunday", "wednesday", "saturday"));
+        assertTrue(dayIsBetween("sunday", "thursday", "saturday"));
+        assertTrue(dayIsBetween("sunday", "friday", "saturday"));
 
     }
 

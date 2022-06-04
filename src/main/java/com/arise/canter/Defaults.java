@@ -24,8 +24,6 @@ import static com.arise.core.tools.StringUtil.join;
 public class Defaults {
 
     public static final Command<String> CMD_PRINT = new Command<String>("print") {
-
-
         @Override
         public String execute(List<String> arguments) {
             String joined = join(arguments, " ");
@@ -184,15 +182,13 @@ public class Defaults {
         }
     };
 
-    
 
 
 
 
 
 
-    public static final Event EVT_SUCCESS = new Event("CMD_SUCCESS", new String[]{"FULL"});
-    public static final Event EVT_FAIL = new Event("CMD_FAILED", new String[]{"FULL"});
+
 
 
 }

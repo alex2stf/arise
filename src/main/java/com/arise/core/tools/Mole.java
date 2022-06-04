@@ -138,6 +138,14 @@ public class Mole {
     }
 
 
+    public static void logInfo(Object ... args) {
+        Mole.getInstance(Mole.class).info(args);
+    }
+
+    public static void logWarn(Object ... args) {
+        Mole.getInstance(Mole.class).warn(args);
+    }
+
     public void info(Object ... args) {
         delegate.info(args);
         callAppenders(Bag.INFO, args);

@@ -48,12 +48,6 @@ public class MediaPlayer {
         if ("commands".equalsIgnoreCase(strategy)) {
             if (r.containsCommand("close-media-player")) {
                 r.execute("close-media-player", new String[]{});
-                SYSUtils.exec("pkill", "vlc");
-                try {
-                    Thread.sleep(1000 * 10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
             if (r.containsCommand("play-media")) {
                 r.execute("play-media", new String[]{path});

@@ -1,9 +1,13 @@
 package com.arise.cargo.management;
 
+import com.arise.canter.Command;
+import com.arise.canter.CommandRegistry;
 import com.arise.core.exceptions.DependencyException;
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
@@ -12,6 +16,7 @@ import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,11 +33,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import static com.arise.cargo.management.Locations.bin;
 import static com.arise.cargo.management.Locations.dest;
 import static com.arise.cargo.management.Locations.downloads;
 import static com.arise.cargo.management.Locations.out;
 import static com.arise.cargo.management.Locations.src;
+import static com.arise.core.tools.CollectionUtil.safeGetItem;
+import static com.arise.core.tools.Mole.logInfo;
+import static com.arise.core.tools.Mole.logWarn;
+import static com.arise.core.tools.StringUtil.hasText;
 
 public class DependencyManager {
 
@@ -41,16 +52,65 @@ public class DependencyManager {
     }
 
 
+    private static final CommandRegistry cmdReg = new CommandRegistry();
+    public static final Command<String> DOWNLOAD_COMMAND = new Command<String>("download") {
+        @Override
+        public String execute(List<String> args) {
+            String urlStr = args.get(0);
+            File loc = Locations.forName(safeGetItem(args, 1, "downloads"));
+            String name = safeGetItem(args, 2, UUID.randomUUID().toString()).trim();
+
+            try {
+                URL url = new URL(urlStr);
+
+                return download(url, loc, name, null, null).getAbsolutePath();
+            } catch (Exception e) {
+                dispatchError(e);
+            }
+            return null;
+        }
+    };
+
+    private static final Command<String> LOCATION_EXISTS = new Command<String>("location-exists") {
+        @Override
+        public String execute(List<String> x) {
+            String p = x.get(0);
+            File f = new File(p);
+            if (f.exists()){
+                return f.getAbsolutePath();
+            }
+            return null;
+        }
+    };
+
+
+
+    static {
+        cmdReg.addCommand(DOWNLOAD_COMMAND);
+        cmdReg.addCommand(LOCATION_EXISTS);
+
+        cmdReg.addCommand(new Command<String>("maven-repo") {
+            @Override
+            public String execute(List<String> args) {
+                File repo = new File(FileUtil.getUserDirectory(".m2"), "repository");
+                return new File(repo, args.get(0)).getAbsolutePath();
+            }
+        });
+    }
+
     private static final Map<String, Dependency> dependencyMap = new HashMap<>();
-
-
     private static final Mole log = Mole.getInstance(DependencyManager.class);
 
-    public static void withJarDependencyLoader(String name, final Handler<URLClassLoader> handler){
-        withJarDependency(name, new Handler<Resolution>() {
+    public static void withJarDependencyLoader(final String n, final Handler<URLClassLoader> handler){
+
+        withDependency(n, new Handler<Map<String, Object>>() {
             @Override
-            public void handle(Resolution resolution) {
-                File jar = resolution.file();
+            public void handle(Map<String, Object> res) {
+                if (!res.containsKey("jar-location")){
+                    throw new LogicalException("jar dependency " + n + " not found");
+                }
+                String path = (String) res.get("jar-location");
+                File jar = new File(path);
                 try {
                     URLClassLoader classLoader  = new URLClassLoader(
                             new URL[] {jar.toURI().toURL()},
@@ -58,103 +118,106 @@ public class DependencyManager {
                     );
                     handler.handle(classLoader);
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    throw new DependencyException("URLClassLoader failed for " + jar.getAbsolutePath(), e);
+                    throw new LogicalException("jar dependency " + n + " path malformed", e);
                 }
             }
         });
+
     }
 
-    public static void withJarDependency(String name, Handler<Resolution> handler){
-        Resolution r = solveDependency(name);
-        if (r._u != null && r._u.exists()) {
-            handler.handle(r);
-        } else {
-            log.warn("Could not solve dependency " + name);
+    public static void withDependency(String n, Handler<Map<String, Object>> h){
+        Map<String, Object> res = solveDependency(n);
+        if (res == null){
+            throw new LogicalException("Unable to solve dependency " + n);
         }
+        h.handle(res);
     }
 
-    public static Resolution solveDependency(String name){
-        Dependency dependency = getDependency(name);
-        for (Map.Entry<String, Dependency.Version> e: dependency.getVersions().entrySet()){
-            Resolution r = trySolveVersion(e.getValue(), dependency);
-            if (r != null){
-                return r;
-            }
-        }
-        return null;
-    }
+//    public static Resolution solveDependency(String name){
+//        Dependency dependency = getDependency(name);
+//        for (Map.Entry<String, Dependency.Version> e: dependency.getVersions().entrySet()){
+//            Resolution r = trySolveVersion(e.getValue(), dependency);
+//            if (r != null){
+//                return r;
+//            }
+//        }
+//        return null;
+//    }
+//
+//    private static Resolution trySolveVersion(Dependency.Version v, Dependency d){
+//        for (String url: v.urls){
+//            Resolution r = trySolveUrlString(url, d, v);
+//            if (r != null){
+//                return r;
+//            }
+//        }
+//        return null;
+//    }
 
-    private static Resolution trySolveVersion(Dependency.Version v, Dependency d){
-        for (String url: v.urls){
-            Resolution r = trySolveUrlString(url, d, v);
-            if (r != null){
-                return r;
-            }
-        }
-        return null;
-    }
+//    public static boolean useMaven = true;
 
-    private static Resolution trySolveUrlString(String url, Dependency dependency, Dependency.Version v){
-        if (url.startsWith("$maven-local:")){
-            url = url.substring("$maven-local:".length());
-            File m2 = FileUtil.getUserDirectory(".m2");
-            File jarFile = new File(new File(m2, "repository"), url);
-            if (m2.exists() && jarFile.exists()){
-                return new Resolution(jarFile, dependency, v);
-            }
-        }
-
-        try {
-            File fetched = download(url, Locations.libs(), v.id);
-            return new Resolution(fetched, dependency, v);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
+//    private static Resolution trySolveUrlString(String url, Dependency dependency, Dependency.Version v){
+//        if (url.startsWith("$maven-local:") && useMaven){
+//            url = url.substring("$maven-local:".length());
+//            File m2 = FileUtil.getUserDirectory(".m2");
+//            File jarFile = new File(new File(m2, "repository"), url);
+//            if (m2.exists() && jarFile.exists()){
+//                return new Resolution(jarFile, dependency, v);
+//            }
+//        }
+//
+//        if (url.startsWith("$maven-local:") && !useMaven){
+//            return null;
+//        }
+//
+//        try {
+//            File fetched = download(url, Locations.libs(), v.id);
+//            return new Resolution(fetched, dependency, v);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//    }
+//
 
 
     public static void importDependencyRules(String in) throws IOException {
         InputStream inps = FileUtil.findStream(in);
         if(inps == null){
-                System.out.println(in + " NOT FOUND ");
+            logWarn("Could not find stream " + in);
         }
         String x = StreamUtil.toString(inps);
         Map<Object, Object> data = (Map) Groot.decodeBytes(x);
 
-
         for (Map.Entry<Object, Object> e: data.entrySet()){
-            String name = (String) e.getKey();
+            String n = (String) e.getKey();
 
             Map args = (Map) e.getValue();
             String type = MapUtil.getString(args, "type");
-            if ("wrapper".equals(type) || "indev".equals(type)){
-                System.out.println("in dev dependency " + name);
-                continue;
-            }
 
-            System.out.println("import dependency " + name);
-            Dependency dependency = new Dependency();
-            dependency.setName(name);
-            Dependency.decorate(dependency, args);
-            dependencyMap.put(name, dependency);
+                logInfo("import dependency " + n);
+                Dependency dependency = new Dependency();
+                dependency.setName(n);
+                Dependency.decorate(dependency, args);
+                dependencyMap.put(n, dependency);
         }
     }
 
 
-    public static HttpURLConnection getConnection(URL url) throws IOException {
+    public static HttpURLConnection getConnection(URL url, String pH, String pP) throws IOException {
         Proxy proxy = null;
+        String apH = hasText(pH) ? pH : System.getProperty("proxy.host");
+        String apP = hasText(pP) ? pP : System.getProperty("proxy.port");
 
-        if (StringUtil.hasContent(System.getProperty("proxy.host"))){
+        if (hasText(apH)){
             Proxy.Type proxyType = Proxy.Type.HTTP;
 
             Integer port = 8080;
-            if (StringUtil.hasContent(System.getProperty("proxy.port"))){
+            if (hasText(apP)){
                 try {
-                    port = Integer.valueOf(System.getProperty("proxy.port"));
+                    port = Integer.valueOf(apP);
                 }catch (Exception e){
+                    log.error("Failed to parse port number " + apP + " using defaul 8080");
                     port = 8080;
                 }
             }
@@ -172,18 +235,22 @@ public class DependencyManager {
 
 
     public static File download(String uri, File outDir, String name) throws IOException {
-        return download(new URL(uri), outDir, name);
+        return download(new URL(uri), outDir, name, null, null);
     }
 
 
-    public static File download(URL url, File outDir, String name) throws IOException {
+    public static File download(URL url,
+                                File outDir,
+                                String name,
+                                String proxyHost,
+                                String proxyPort) throws IOException {
 
 
         File out = new File(outDir, name);
         if (out.exists()){
             return out;
         }
-        HttpURLConnection connection = getConnection(url);
+        HttpURLConnection connection = getConnection(url, proxyHost, proxyPort);
 
         connection.setRequestMethod("GET");
 
@@ -263,17 +330,6 @@ public class DependencyManager {
 
 
 
-    public static final List<Unarchiver> unarchivers = new ArrayList<>();
-
-    private static Zip zipper = new Zip();
-    static {
-        unarchivers.add(zipper);
-    }
-
-    static String getExt(File f){
-        String p[] = f.getName().split("\\.");
-        return p[p.length -1];
-    }
 
 
 
@@ -285,45 +341,40 @@ public class DependencyManager {
 
 
 
-    public static Resolution solveSilent(Dependency dependency){
-        return solveDependency(dependency.getName());
-    }
 
-
-
-    public static Resolution solveWithPlatform(Dependency dependency,
-                                               Dependency.Version version,
-                                               File outputDir,
-                                               Mole logger) throws IOException {
-       for(String url: version.urls) {
-           if (url.startsWith("internal://")) {
-               String id = url.substring("internal://".length());
-               InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
-
-               String outName = (dependency.getName() + "_" + version.platformMatch).toLowerCase();
-               File libsDir = new File(outputDir, "libs");
-               if (!libsDir.exists()) {
-                   libsDir.mkdirs();
-               }
-               File outZip = new File(libsDir, outName + ".zip");
-
-               File outUnzipped = new File(libsDir, outName);
-
-               if(!outUnzipped.exists()) {
-                   FileOutputStream fileOutputStream = new FileOutputStream(outZip);
-                   logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
-
-                   StreamUtil.transfer(inputStream, fileOutputStream, 1024);
-                   zipper.extract(outZip, outUnzipped);
-               }
-
-
-               return new Resolution(outUnzipped, dependency, version);
-           }
-       }
-
-        return null;
-    }
+//    public static Resolution solveWithPlatform(Dependency dependency,
+//                                               Dependency.Version version,
+//                                               File outputDir,
+//                                               Mole logger) throws IOException {
+//       for(String url: version.urls) {
+//           if (url.startsWith("internal://")) {
+//               String id = url.substring("internal://".length());
+//               InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
+//
+//               String outName = (dependency.getName() + "_" + version.platformMatch).toLowerCase();
+//               File libsDir = new File(outputDir, "libs");
+//               if (!libsDir.exists()) {
+//                   libsDir.mkdirs();
+//               }
+//               File outZip = new File(libsDir, outName + ".zip");
+//
+//               File outUnzipped = new File(libsDir, outName);
+//
+//               if(!outUnzipped.exists()) {
+//                   FileOutputStream fileOutputStream = new FileOutputStream(outZip);
+//                   logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
+//
+//                   StreamUtil.transfer(inputStream, fileOutputStream, 1024);
+////                   zipper.extract(outZip, outUnzipped);
+//               }
+//
+//
+//               return new Resolution(outUnzipped, dependency, version);
+//           }
+//       }
+//
+//        return null;
+//    }
 
 
 
@@ -336,128 +387,34 @@ public class DependencyManager {
     }
 
 
-
-
-    public static File fetchOneOfUrls(List<String> urls, File out, String name){
-        for (String url: urls){
-            File fetched = null;
-            try {
-                String actualName = name;
-                if (url.endsWith(".jar")){
-                    actualName += ".jar";
-                }
-                else if (url.endsWith(".zip")){
-                    actualName += ".zip";
-                }
-                fetched = download(url, out, actualName);
-                if (fetched.exists()){
-                    return fetched;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+    public static Map<String, Object> solveDependency(String n) {
+        Dependency d = getDependency(n);
+        if (d == null){
+            throw new LogicalException("Dependency not found");
+        }
+        for (Dependency.Version v: d.getVersions().values()){
+            log.info("try solve dependency " + d.getName() + " version " + v.name());
+            Map<String, Object> res = parseParams(v);
+            if (res != null){
+                return res;
             }
         }
         return null;
     }
 
-
-
-
-
-
-    private static boolean requiresUncompressed(File downloaded){
-        String name = downloaded.getAbsolutePath();
-        return name.endsWith(".zip");
-    }
-
-
-    public static Tuple2<List<Resolution>, URLClassLoader> withDependencies(String [] names) throws Exception {
-        List<Resolution> resolutions = new ArrayList<>();
-        List<File> jars = new ArrayList<>();
-        for (String name: names) {
-            Dependency dependency = dependencyMap.get(name);
-            Dependency.Version version = dependency.getVersion("WIN64");
-            File downloaded = fetchOneOfUrls(version.urls, downloads(), version.id );
-            File outDir = dest(dependency);
-            Resolution resolution;
-
-            if (requiresUncompressed(downloaded)){
-
-                File unzipped = new File(outDir, version.id);
-
-                if (!unzipped.exists()) {
-                    System.out.println("Transfer " + downloaded.getAbsolutePath() + " into " + unzipped.getAbsolutePath());
-                    zipper.extract(downloaded, unzipped);
-                }
-                resolution = new Resolution(unzipped, dependency, version);
-            } else {
-                File moved = new File(outDir, downloaded.getName());
-                if (!moved.exists()) {
-                    Files.copy(downloaded.toPath(), new File(outDir, downloaded.getName()).toPath());
-                }
-                resolution = new Resolution(moved, dependency, version);
+    private static Map<String, Object> parseParams(Dependency.Version v){
+        Map<String, Object> res = new HashMap<>();
+        for (Map.Entry<String, String> e: v.params().entrySet()){
+            String key = e.getKey();
+            Object val = cmdReg.executeCmdLine(e.getValue());
+            if (val != null){
+                res.put(key, val);
+                System.out.println(key + " = " + val);
             }
-
-
-
-            if ("jar".equalsIgnoreCase(dependency.type)) {
-                try {
-                    jars.add(downloaded);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            resolutions.add(resolution);
         }
-        return new Tuple2<>(resolutions, ReflectUtil.loadJars(jars));
-    }
-
-    public static Resolution findResolution(List<Resolution> resolutions, String name) {
-            for (Resolution s: resolutions){
-                if (name.equalsIgnoreCase(s.source().getName())){
-                    return s;
-                }
-            }
-            return null;
-    }
-
-
-    public static class Resolution{
-        private final File  _u;
-        private final Dependency _s;
-        private Dependency.Version _cp;
-
-
-
-        public Resolution(File _u, Dependency _s, Dependency.Version _cp) {
-            this._cp = _cp;
-            this._u = _u;
-            this._s = _s;
+        if (res.values().size() == v.params().size()){
+            return res;
         }
-
-        public Dependency.Version selectedVersion(){
-            return _cp;
-        }
-
-
-        @Deprecated
-        public File uncompressed() {
-            return _u;
-        }
-
-        public File file() {
-            return _u;
-        }
-
-        public Dependency source() {
-            return _s;
-        }
-    }
-
-
-    @SuppressWarnings("unused")
-    public static final void addUnarchiver(Unarchiver unarchiver) {
-
-        unarchivers.add(unarchiver);
+        return null;
     }
 }

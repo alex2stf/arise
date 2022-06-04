@@ -124,6 +124,13 @@ public class CollectionUtil {
         }
     }
 
+    public static <T> T safeGetItem(List<T> args, int i, T def) {
+        if (i <= args.size() -1){
+            return args.get(i);
+        }
+        return def;
+    }
+
 
     public interface SmartHandler<T> {
         void  handle(T t1, T t2);

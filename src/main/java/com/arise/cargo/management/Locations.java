@@ -18,6 +18,24 @@ public class Locations {
         return f;
     }
 
+    public static File forName(String s){
+        s = s.trim();
+        if ("libs".equalsIgnoreCase(s)){
+            return libs();
+        }
+        if ("src".equalsIgnoreCase(s)){
+            return src();
+        }
+        if ("out".equalsIgnoreCase(s)){
+            return out();
+        }
+
+        if ("bin".equalsIgnoreCase(s)){
+            return bin();
+        }
+        return new File(s);
+    }
+
     public static File downloads(){
         return gd("downloads");
     }

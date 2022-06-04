@@ -153,7 +153,7 @@ public class FileUtil {
         return documentsDir;
     }
 
-    private static final String[] locations = new String[]{
+    private static final String[] usrLocs = new String[]{
             System.getenv("EXTERNAL_SDCARD_STORAGE"),   System.getenv("EXTERNAL_STORAGE"),  System.getProperty("user.home")
     };
     public static File getUserDirectory(String name){
@@ -169,7 +169,7 @@ public class FileUtil {
             return next;
         }
         File rootDir = null;
-        for (String s: locations){
+        for (String s: usrLocs){
             if (StringUtil.hasText(s)) {
                 rootDir = new File(s);
                 if (rootDir != null && rootDir.exists()) {
@@ -221,9 +221,6 @@ public class FileUtil {
         if (result == null || !result.exists()){
             result = findOrCreateUserDirectory("arise-app");
         }
-
-
-
 
         return result;
     }
@@ -462,23 +459,6 @@ public class FileUtil {
 
 
 
-//    public static void linearScan(File directory, final FileFoundHandler fileFoundHandler){
-//        if (!fileExists(directory)){
-//            return;
-//        }
-//
-//        recursiveScan(directory, new FileFoundHandler() {
-//            @Override
-//            public void foundFile(File file) {
-//                fileFoundHandler.foundFile(file);
-//            }
-//
-//            @Override
-//            public boolean acceptDir(File file) {
-//                return false;
-//            }
-//        });
-//    }
 
 
     private static boolean fileExists(File f){

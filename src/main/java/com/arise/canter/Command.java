@@ -46,6 +46,10 @@ public abstract class Command<T> extends GenericTypeWorker {
     }
 
 
+    public void dispatchError(Throwable e){
+        e.printStackTrace();
+    }
+
 
 
 

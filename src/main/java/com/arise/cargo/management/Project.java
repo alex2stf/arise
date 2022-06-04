@@ -55,17 +55,6 @@ public class Project {
     }
 
 
-    private void append(Map<String, Set<String>> buf, String key, List<String> value, DependencyManager.Resolution r){
-        if (!buf.containsKey(key)){
-            buf.put(key, new HashSet<String>());
-        }
-        Set<String> exiting = buf.get(key);
-        for (String s: value){
-            exiting.add(
-                    new File(r.uncompressed(), s).getAbsolutePath()
-            );
-        }
-    }
 
 
     private boolean isAcceptedAsSource(String fname){
@@ -83,19 +72,19 @@ public class Project {
     }
 
     public void outputTo(File depsDir, File projDir) throws Exception {
-        List<DependencyManager.Resolution> resolutions = new ArrayList<>();
-        for (Dependency dependency : dependencies) {
-            for (Dependency.Version version: dependency.getVersions().values()){
-                DependencyManager.Resolution resolution = DependencyManager.solveWithPlatform(dependency,
-                        version,
-                        depsDir,
-                        log);
-
-                if (resolution != null) {
-                    resolutions.add(resolution);
-                }
-            }
-        }
+//        List<DependencyManager.Resolution> resolutions = new ArrayList<>();
+//        for (Dependency dependency : dependencies) {
+//            for (Dependency.Version version: dependency.getVersions().values()){
+//                DependencyManager.Resolution resolution = DependencyManager.solveWithPlatform(dependency,
+//                        version,
+//                        depsDir,
+//                        log);
+//
+//                if (resolution != null) {
+//                    resolutions.add(resolution);
+//                }
+//            }
+//        }
 
         Map<String, String> context = new HashMap<>();
         context.put("name", name);
@@ -105,33 +94,33 @@ public class Project {
 
         Map<String, Set<String>> buf = new HashMap<>();
 
-        for (DependencyManager.Resolution res : resolutions) {
-            Dependency.Version version = res.selectedVersion();
-            String includeId = "include-" + version.platformMatch.toLowerCase();
-            String libPathId = "lib-paths-" + version.platformMatch.toLowerCase();
-            append(buf, includeId, version.includes, res);
-            append(buf, libPathId, version.libPaths, res);
-
-            for (String staticLib : version.staticLibs) {
-                File dll = (new File(res.uncompressed(), staticLib));
-                if (!dll.exists()) {
-                    throw new RuntimeException("Invalid zip file, wtf??? whereis " + dll.getAbsolutePath() + " ???");
-                }
-                File binDir = new File(projDir, "bin" + File.separator + version.name().toLowerCase() );
-                if (!binDir.exists()) {
-                    binDir.mkdirs();
-                }
-
-
-
-                //copiaza dll-urile required in bin
-                File required = new File(binDir, dll.getName());
-                //TODO check length
-                if (!required.exists()) {
-                    Files.copy(dll.toPath(), new File(binDir, dll.getName()).toPath());
-                }
-            }
-        }
+//        for (DependencyManager.Resolution res : resolutions) {
+//            Dependency.Version version = res.selectedVersion();
+//            String includeId = "include-" + version.platformMatch.toLowerCase();
+//            String libPathId = "lib-paths-" + version.platformMatch.toLowerCase();
+//            append(buf, includeId, version.includes, res);
+//            append(buf, libPathId, version.libPaths, res);
+//
+//            for (String staticLib : version.staticLibs) {
+//                File dll = (new File(res.uncompressed(), staticLib));
+//                if (!dll.exists()) {
+//                    throw new RuntimeException("Invalid zip file, wtf??? whereis " + dll.getAbsolutePath() + " ???");
+//                }
+//                File binDir = new File(projDir, "bin" + File.separator + version.name().toLowerCase() );
+//                if (!binDir.exists()) {
+//                    binDir.mkdirs();
+//                }
+//
+//
+//
+//                //copiaza dll-urile required in bin
+//                File required = new File(binDir, dll.getName());
+//                //TODO check length
+//                if (!required.exists()) {
+//                    Files.copy(dll.toPath(), new File(binDir, dll.getName()).toPath());
+//                }
+//            }
+//        }
 
         for (Map.Entry<String, Set<String>> e: buf.entrySet()){
             String id = "vc-" + e.getKey();
@@ -206,7 +195,6 @@ public class Project {
 
 
 
-        System.out.println(resolutions);
     }
 
 

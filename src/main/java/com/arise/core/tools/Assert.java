@@ -128,6 +128,11 @@ public class Assert {
         }
     }
 
+    public static void assertFailed(Exception e) {
+        e.printStackTrace();
+        System.exit(-1);
+    }
+
     public static final class AssertException extends RuntimeException {
 
         public AssertException(Object expect, Object given, Throwable cause){

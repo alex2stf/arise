@@ -7,9 +7,12 @@ arise is a monolith package-based solution framework
 
 you can choose from:
 
-weland - 
-cargo ->
-canter -> CommAnd eveNT rEgistry 
+- net -> servers utilities
+- core -> core exportable tools
+- weland -> device controller
+- cargo -> dependency manager, export utilities and language wrappers
+- canter -> CommAnd eveNT rEgistry 
+- geeks -> custom algorithms
 
 Advices for devs:
 arise is a small compilable codebase and doesn't respect all the java community standards
