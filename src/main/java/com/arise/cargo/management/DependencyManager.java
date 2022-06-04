@@ -2,23 +2,17 @@ package com.arise.cargo.management;
 
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
-import com.arise.core.exceptions.DependencyException;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
-import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -28,22 +22,17 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.arise.cargo.management.Locations.bin;
-import static com.arise.cargo.management.Locations.dest;
-import static com.arise.cargo.management.Locations.downloads;
-import static com.arise.cargo.management.Locations.out;
-import static com.arise.cargo.management.Locations.src;
+
 import static com.arise.core.tools.CollectionUtil.safeGetItem;
 import static com.arise.core.tools.Mole.logInfo;
 import static com.arise.core.tools.Mole.logWarn;
 import static com.arise.core.tools.StringUtil.hasText;
+import static java.lang.String.*;
 
 public class DependencyManager {
 
@@ -71,23 +60,42 @@ public class DependencyManager {
         }
     };
 
-    private static final Command<String> LOCATION_EXISTS = new Command<String>("location-exists") {
-        @Override
-        public String execute(List<String> x) {
-            String p = x.get(0);
-            File f = new File(p);
-            if (f.exists()){
-                return f.getAbsolutePath();
-            }
-            return null;
-        }
-    };
 
 
 
     static {
         cmdReg.addCommand(DOWNLOAD_COMMAND);
-        cmdReg.addCommand(LOCATION_EXISTS);
+        cmdReg.addCommand(new Command<String>("dir-exist") {
+            @Override
+            public String execute(List<String> x) {
+                String p = x.get(0);
+                if (!StringUtil.hasText(p)){
+                    log.warn("$dir-exist() called with empty param");
+                }
+                File f = new File(p);
+                log.info("$dir-exist(" + f.getAbsolutePath() + ")");
+                if (f.exists() && f.isDirectory()){
+                    return f.getAbsolutePath();
+                }
+                return null;
+            }
+        });
+
+        cmdReg.addCommand(new Command<String>("file-exist") {
+            @Override
+            public String execute(List<String> x) {
+                String p = x.get(0);
+                if (!StringUtil.hasText(p)){
+                    log.warn("$file-exist() called with empty param");
+                }
+                File f = new File(p);
+                log.info("$file-exist(" + f.getAbsolutePath() + ")");
+                if (f.exists() && f.isFile()){
+                    return f.getAbsolutePath();
+                }
+                return null;
+            }
+        });
 
         cmdReg.addCommand(new Command<String>("maven-repo") {
             @Override
@@ -96,20 +104,66 @@ public class DependencyManager {
                 return new File(repo, args.get(0)).getAbsolutePath();
             }
         });
+
+        final Unarchiver unarchiver = new Zip();
+
+        cmdReg.addCommand(new Command<String>("unzip") {
+            @Override
+            public String execute(List<String> x) {
+                File s = new File(x.get(0));
+                File out = Locations.forName(x.get(1));
+                unarchiver.extract(s, out);
+                return out.getAbsolutePath();
+            }
+        });
+
+        cmdReg.addCommand(new Command<String>("sub-location") {
+            @Override
+            public String execute(List<String> a) {
+                File p = Locations.forName(a.get(0));
+                File f = new File(p, a.get(1));
+                String m = safeGetItem(a, 1, "nil");
+                log.info("$sub-location(" + f.getAbsolutePath() + ") mode " + m);
+                if ("w".equalsIgnoreCase(m) || "rw".equalsIgnoreCase(m)) {
+                    if (!f.exists()) {
+                        f.mkdirs();
+                    }
+                }
+                if (f.exists()){
+                    return f.getAbsolutePath();
+                }
+                return null;
+            }
+        });
+
+        cmdReg.addCommand(new Command<String>("downloaded") {
+            @Override
+            public String execute(List<String> a) {
+                return new File(Locations.down(), a.get(0)).getAbsolutePath();
+            }
+        });
     }
 
     private static final Map<String, Dependency> dependencyMap = new HashMap<>();
     private static final Mole log = Mole.getInstance(DependencyManager.class);
 
-    public static void withJarDependencyLoader(final String n, final Handler<URLClassLoader> handler){
-
-        withDependency(n, new Handler<Map<String, Object>>() {
+    public static void withBinary(String n, final Handler<File> h) {
+        withStrictDependency(n, new Handler<Object>() {
             @Override
-            public void handle(Map<String, Object> res) {
-                if (!res.containsKey("jar-location")){
-                    throw new LogicalException("jar dependency " + n + " not found");
+            public void handle(Object o) {
+                File p = new File(valueOf(o));
+                if (p.exists()){
+                    h.handle(p);
                 }
-                String path = (String) res.get("jar-location");
+            }
+        }, "binary");
+    }
+
+    public static void withJar(final String n, final Handler<URLClassLoader> handler){
+        withStrictDependency(n, new Handler<Object>() {
+            @Override
+            public void handle(Object o) {
+                String path = valueOf(o);
                 File jar = new File(path);
                 try {
                     URLClassLoader classLoader  = new URLClassLoader(
@@ -121,64 +175,31 @@ public class DependencyManager {
                     throw new LogicalException("jar dependency " + n + " path malformed", e);
                 }
             }
-        });
-
+        }, "jar");
     }
 
     public static void withDependency(String n, Handler<Map<String, Object>> h){
-        Map<String, Object> res = solveDependency(n);
+        Map<String, Object> res = solve(n);
         if (res == null){
             throw new LogicalException("Unable to solve dependency " + n);
         }
         h.handle(res);
     }
 
-//    public static Resolution solveDependency(String name){
-//        Dependency dependency = getDependency(name);
-//        for (Map.Entry<String, Dependency.Version> e: dependency.getVersions().entrySet()){
-//            Resolution r = trySolveVersion(e.getValue(), dependency);
-//            if (r != null){
-//                return r;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    private static Resolution trySolveVersion(Dependency.Version v, Dependency d){
-//        for (String url: v.urls){
-//            Resolution r = trySolveUrlString(url, d, v);
-//            if (r != null){
-//                return r;
-//            }
-//        }
-//        return null;
-//    }
+    public static void withStrictDependency(final String n, final Handler<Object> h, final String t){
+        withDependency(n, new Handler<Map<String, Object>>() {
+            @Override
+            public void handle(Map<String, Object> m) {
+                String k = t + "-location";
+                if (m.containsKey(k)){
+                    h.handle(m.get(k));
+                } else {
+                    throw new LogicalException("Dependency " + n + " has no strict type " + t + ", param [" + t + "-location] required");
+                }
+            }
+        });
+    }
 
-//    public static boolean useMaven = true;
-
-//    private static Resolution trySolveUrlString(String url, Dependency dependency, Dependency.Version v){
-//        if (url.startsWith("$maven-local:") && useMaven){
-//            url = url.substring("$maven-local:".length());
-//            File m2 = FileUtil.getUserDirectory(".m2");
-//            File jarFile = new File(new File(m2, "repository"), url);
-//            if (m2.exists() && jarFile.exists()){
-//                return new Resolution(jarFile, dependency, v);
-//            }
-//        }
-//
-//        if (url.startsWith("$maven-local:") && !useMaven){
-//            return null;
-//        }
-//
-//        try {
-//            File fetched = download(url, Locations.libs(), v.id);
-//            return new Resolution(fetched, dependency, v);
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//    }
-//
 
 
     public static void importDependencyRules(String in) throws IOException {
@@ -338,57 +359,8 @@ public class DependencyManager {
 
 
 
-
-
-
-
-//    public static Resolution solveWithPlatform(Dependency dependency,
-//                                               Dependency.Version version,
-//                                               File outputDir,
-//                                               Mole logger) throws IOException {
-//       for(String url: version.urls) {
-//           if (url.startsWith("internal://")) {
-//               String id = url.substring("internal://".length());
-//               InputStream inputStream = FileUtil.findStream("_cargo_/" + id);
-//
-//               String outName = (dependency.getName() + "_" + version.platformMatch).toLowerCase();
-//               File libsDir = new File(outputDir, "libs");
-//               if (!libsDir.exists()) {
-//                   libsDir.mkdirs();
-//               }
-//               File outZip = new File(libsDir, outName + ".zip");
-//
-//               File outUnzipped = new File(libsDir, outName);
-//
-//               if(!outUnzipped.exists()) {
-//                   FileOutputStream fileOutputStream = new FileOutputStream(outZip);
-//                   logger.info("Transfer " + id + " into " + outZip.getAbsolutePath());
-//
-//                   StreamUtil.transfer(inputStream, fileOutputStream, 1024);
-////                   zipper.extract(outZip, outUnzipped);
-//               }
-//
-//
-//               return new Resolution(outUnzipped, dependency, version);
-//           }
-//       }
-//
-//        return null;
-//    }
-
-
-
-
-
-
-
-    public static Dependency getDependency(String name) {
-        return dependencyMap.get(name);
-    }
-
-
-    public static Map<String, Object> solveDependency(String n) {
-        Dependency d = getDependency(n);
+    static Map<String, Object> solve(String n) {
+        Dependency d = dependencyMap.get(n);
         if (d == null){
             throw new LogicalException("Dependency not found");
         }
@@ -417,4 +389,6 @@ public class DependencyManager {
         }
         return null;
     }
+
+
 }

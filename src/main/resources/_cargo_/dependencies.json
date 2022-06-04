@@ -7,13 +7,13 @@
         "condition": "always",
         "disabled": false,
         "params": {
-          "jar-location": "$location-exists($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
+          "jar-location": "$file-exist($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
         }
       },
       {
         "name": "jlayer-1.0.1.jar",
         "condition": "always",
-        "disabled": true,
+        "disabled": false,
         "params": {
             "jar-location": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
         }
@@ -24,12 +24,13 @@
     "type": "binary",
     "versions": [
       {
-        "id": "MediaInfo_CLI_0.7.60_Windows_i386",
-        "platform-match": "WINDOWS_32",
-        "urls": [
-          "https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip"
-        ],
-        "unzip": "zip"
+        "name": "MediaInfo_CLI_0.7.60_Windows_i386",
+        "condition": "always",
+        "params": {
+            "zip-location": "$download(https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip, downloads, MediaInfo_CLI_0.7.60_Windows_i386.zip)",
+            "unzip-directory": "$unzip($downloaded(MediaInfo_CLI_0.7.60_Windows_i386.zip), $sub-location(bin,MediaInfo_CLI_0_7_60_i386,rw) )",
+            "binary-location": "$file-exist( $sub-location(bin,MediaInfo_CLI_0_7_60_i386/MediaInfo.exe,r)  )"
+        }
       }
     ]
   },

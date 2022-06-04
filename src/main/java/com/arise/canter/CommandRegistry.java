@@ -15,6 +15,7 @@ import com.arise.core.tools.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import static com.arise.canter.Defaults.CMD_PRINT;
 import static com.arise.canter.Defaults.CMD_SUM;
 import static com.arise.canter.Defaults.CMD_VALID_FILE;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.StringUtil.hasText;
 
 public final class CommandRegistry extends GenericTypeWorker {
 
@@ -115,7 +117,31 @@ public final class CommandRegistry extends GenericTypeWorker {
             if (argBegin < 0 || argEnd < 0){
                 throw new SyntaxException("Invalid sintax cmdLine [" + line + "]");
             }
-            String nsargs[] = line.substring(argBegin + 1, argEnd).trim().split(",");
+            //TODO fixeaza aici splitul dupa virgula, ca nu e bine deloc!!!!
+            //String nsargs[] = line.substring(argBegin + 1, argEnd).trim().split(",");
+            int num = 0;
+            List<String> nsargs = new ArrayList<>();
+            StringBuilder sb = new StringBuilder();
+            for (int i = argBegin + 1; i < argEnd; i++){
+                char c = line.charAt(i);
+                if (c == '('){
+                    num++;
+                }
+                if (c == ')'){
+                    num--;
+                }
+                if (num % 2 == 0 && c == ','){
+                    nsargs.add(sb.toString().trim());
+                    sb = new StringBuilder();
+                } else {
+                    sb.append(c);
+                }
+            }
+            String r = sb.toString().trim();
+            if (hasText(r)){
+                nsargs.add(r);
+            }
+
             String commandId = line.substring(1, argBegin);
             return execute(commandId, nsargs);
         }

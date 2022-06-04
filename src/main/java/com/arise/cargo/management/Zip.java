@@ -1,6 +1,7 @@
 package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.Util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static com.arise.core.tools.Util.close;
 
 public class Zip implements Unarchiver {
 
@@ -30,28 +33,36 @@ public class Zip implements Unarchiver {
 
                 String fileName = ze.getName();
                 File newFile = new File(destination + File.separator + fileName);
-                if (ze.isDirectory()){
+                if (ze.isDirectory() && newFile.exists()){
                     newFile.mkdir();
                     ze = zis.getNextEntry();
                     System.out.println("mkdir " + newFile.getAbsolutePath());
                     continue;
                 }
-                System.out.println("unzip "+ newFile.getAbsolutePath());
-                new File(newFile.getParent()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+
+                File parentDir = new File(newFile.getParent());
+                if (!parentDir.exists()){
+                    parentDir.mkdirs();
                 }
-                fos.close();
+
+                if (!newFile.exists()){
+                    System.out.println("unzip "+ newFile.getAbsolutePath());
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    close(fos);
+                }
+
                 //close this ZipEntry
                 zis.closeEntry();
                 ze = zis.getNextEntry();
             }
             //close last ZipEntry
             zis.closeEntry();
-            zis.close();
-            fis.close();
+            close(zis);
+            close(fis);
         } catch (IOException e) {
             e.printStackTrace();
         }

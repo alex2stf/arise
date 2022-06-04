@@ -30,14 +30,18 @@ public class Locations {
             return out();
         }
 
-        if ("bin".equalsIgnoreCase(s)){
+        if ("bin".equalsIgnoreCase(s) || "binary".equalsIgnoreCase(s)){
             return bin();
+        }
+
+        if ("downloads".equalsIgnoreCase(s) || "down".equalsIgnoreCase(s)) {
+            return down();
         }
         return new File(s);
     }
 
-    public static File downloads(){
-        return gd("downloads");
+    public static File down(){
+        return gd("down");
     }
 
     public static File libs(){
@@ -54,12 +58,5 @@ public class Locations {
 
     public static File bin() {
         return gd("bin");
-    }
-
-    public static File dest(Dependency dependency){
-        if ("binary".equalsIgnoreCase(dependency.type)){
-            return gd("bin");
-        }
-        return libs();
     }
 }

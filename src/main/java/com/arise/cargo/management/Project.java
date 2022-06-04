@@ -44,13 +44,13 @@ public class Project {
         project.sources = MapUtil.getList(data, "sources");
         List<String> dependenciesNames = MapUtil.getList(data, "dependencies");
 
-        for (String d : dependenciesNames) {
-            Dependency dependency = DependencyManager.getDependency(d);
-            if (dependency == null) {
-                throw new RuntimeException("No dependency [" + d + "] found");
-            }
-            project.dependencies.add(dependency);
-        }
+//        for (String d : dependenciesNames) {
+//            Dependency dependency = DependencyManager.getDependency(d);
+//            if (dependency == null) {
+//                throw new RuntimeException("No dependency [" + d + "] found");
+//            }
+//            project.dependencies.add(dependency);
+//        }
         return project;
     }
 

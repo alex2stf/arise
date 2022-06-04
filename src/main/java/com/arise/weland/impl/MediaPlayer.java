@@ -5,7 +5,6 @@ import com.arise.core.AppSettings;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -14,7 +13,7 @@ import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.arise.cargo.management.DependencyManager.withJarDependencyLoader;
+import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 import static com.arise.core.tools.ThreadUtil.threadId;
@@ -54,7 +53,7 @@ public class MediaPlayer {
             }
         } else if ("javazone-player".equalsIgnoreCase(strategy)) {
 
-            withJarDependencyLoader("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
+            withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
                 @Override
                 public void handle(URLClassLoader classLoader) {
                     if (winst != null) {
