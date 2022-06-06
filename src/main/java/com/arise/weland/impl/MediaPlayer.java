@@ -6,8 +6,15 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLClassLoader;
 import java.util.Map;
@@ -16,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static java.lang.Runtime.getRuntime;
 
 public class MediaPlayer {
 
@@ -24,8 +32,17 @@ public class MediaPlayer {
     Object winst = null;
     private CommandRegistry r;
 
+    static volatile boolean isAppClosed = false;
+
     private MediaPlayer(CommandRegistry r){
         this.r = r;
+        getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                  isAppClosed = true;
+                  log.warn("Close all media player instances");
+            }
+        });
     }
 
     public static MediaPlayer getInstance(Class n, CommandRegistry r){
@@ -39,9 +56,45 @@ public class MediaPlayer {
         return m.get(n);
     }
 
+    public static long getAudioDurationMs(File f, long dv) {
+        Mole.todo();
+        return dv;
+    }
+
     public Object play(final String path) {
+        if (isAppClosed){
+            log.warn("App received shutdown hook");
+            return null;
+        }
         String strategy = AppSettings.getProperty(AppSettings.Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
+
+        if (path.endsWith("wav")){
+            AudioInputStream audioIn = null;
+            try {
+                audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Clip clip = null;
+            try {
+                clip = AudioSystem.getClip();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            try {
+                clip.open(audioIn);
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            clip.start();
+            return audioIn;
+        }
 
         if ("commands".equalsIgnoreCase(strategy)) {
             if (r.containsCommand("close-media-player")) {
@@ -73,19 +126,17 @@ public class MediaPlayer {
                 }
             });
         } else {
-//            mediaplayer = commandRegistry.getCommand("play-media").getProperty("process");
-
-//            if (winst != null && winst instanceof Process) {
-//                ((Process) winst).destroy();
-//            }
+            if (winst != null && winst instanceof Process) {
+                ((Process) winst).destroy();
+            }
             winst = r.getCommand("play-media").execute(path);
-//            if (winst instanceof Process){
-//                try {
-//                    ((Process) winst).waitFor();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (winst instanceof Process){
+                try {
+                    ((Process) winst).waitFor();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return winst;
     }

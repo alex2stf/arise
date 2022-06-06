@@ -30,9 +30,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static com.arise.core.tools.Util.close;
+import static java.util.Collections.shuffle;
 
 public class FileUtil {
 
@@ -738,6 +740,46 @@ public class FileUtil {
         }
         File c[] = d.listFiles();
         return c != null && c.length > 0;
+    }
+
+    public static final File getRandomFileFromDirectory(String path){
+        if (!new File(path).exists()){
+            log.w("Path " + path + " does not exist");
+        } else {
+            log.trace("select random file from " + path);
+        }
+
+        String listId = "rand-file-" + UUID.nameUUIDFromBytes(path.getBytes());
+        AppCache.StoredList storedList = AppCache.getStoredList(listId);
+        if (storedList.isEmpty() || storedList.isIndexExceeded()){
+
+            File dir = new File(path);
+            File[] files = dir.listFiles();
+            if (files == null || files.length == 0){
+                return null;
+            }
+            List<String> items = new ArrayList<>();
+            for (File f: files){
+                items.add(f.getAbsolutePath());
+            }
+            shuffle(items);
+
+            storedList = AppCache.storeList(listId, items, 0);
+            log.info("reshuffled list " + listId);
+        }
+
+        List<String> saved = storedList.getItems();
+        int index = storedList.getIndex();
+        AppCache.storeList(listId, saved, index + 1);
+
+        String selected = saved.get(index);
+
+        File res = new File(selected);
+        if (!res.exists()){
+            log.warn("Path " + selected + "may not exist anymore");
+        }
+
+        return res;
     }
 
     public static void writeBytesToFile(byte[] bytes, File f) {

@@ -172,9 +172,10 @@ public class Cronus {
         Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + new Date());
     }
 
-    public static boolean matchMoment(Calendar c, String day, String hour){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String moment = parseDayRef(day, c) + " " + parseHourRef(hour, c);
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static boolean matchMoment(Calendar c, String d, String h){
+        String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
         return moment.equalsIgnoreCase(sdf.format(c.getTime()));
     }
 
@@ -435,6 +436,9 @@ public class Cronus {
     }
 
     private static boolean compareIsBetween(Comparable i, Comparable m, Comparable d){
+        if (i.compareTo(d) == 1){
+            return i.compareTo(m) == -1 && d.compareTo(m) == -1;
+        }
         if (i.compareTo(d) == -1){
             return m.compareTo(i) == 1 && m.compareTo(d) == -1;
         }

@@ -76,10 +76,10 @@ public class CronusTest {
 
 
         assertTrue(isBetween("07:20:20", "07:22:20", "07:24:00"));
-        assertTrue(isBetween("19:20:20", "07:22:20", "07:24:00"));
+        assertFalse(isBetween("19:20:20", "07:22:20", "07:24:00"));
         assertFalse(isBetween("19:20:20", "07:22:20", "06:24:00"));
 
-        assertTrue(isBetween("23:00:00", "00:00:00", "01:00:00"));
+        assertFalse(isBetween("23:00:00", "00:00:00", "01:00:00"));
         assertTrue(dayIsBetween("sunday", "monday", "saturday"));
         assertTrue(dayIsBetween("sunday", "tuesday", "saturday"));
         assertTrue(dayIsBetween("sunday", "wednesday", "saturday"));
@@ -95,6 +95,18 @@ public class CronusTest {
         CronusTest.testDays();
         CronusTest.testDays2();
         CronusTest.testDays3();
+        CronusTest.testBetweeens();
+    }
+
+    private static void testBetweeens() {
+        Calendar c = buildMock();
+        c.set(Calendar.HOUR, 23);
+        c.set(Calendar.MINUTE, 11);
+        c.set(Calendar.SECOND, 23);
+
+        boolean x = isBetween("23:00:00", c, "01:00:00");
+//        String s = parseHourRef("each_second between_23:00:00_and_01:00:00", c);
+        System.out.println(x);
     }
 
     private static void testDays3() {

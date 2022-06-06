@@ -2,38 +2,44 @@ package com.arise.weland.impl;
 
 
 import com.arise.canter.CommandRegistry;
-import com.arise.canter.Defaults;
-import com.arise.core.tools.AppCache;
+import com.arise.canter.Cronus;
+import com.arise.cargo.management.DependencyManager;
+import com.arise.core.models.Handler;
+import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ThreadUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.FileUtil.findStream;
+import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
+import static com.arise.core.tools.MapUtil.getInt;
 import static com.arise.core.tools.MapUtil.getList;
 import static com.arise.core.tools.MapUtil.getString;
 import static com.arise.core.tools.StreamUtil.toBytes;
-import static java.util.Collections.shuffle;
+import static com.arise.core.tools.ThreadUtil.delayedTask;
 
 public class RadioPlayer {
 
     List<Show> shows = new ArrayList<>();
-    MediaPlayer mPlayer;
+
+    private static final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
+
+    static MediaPlayer mPlayer = MediaPlayer.getInstance("radio", cmdReg);
 
     private volatile boolean is_play = true;
 
     private static final Mole log = Mole.getInstance(RadioPlayer.class);
 
-
-    public RadioPlayer(CommandRegistry cmdReg){
-        mPlayer = MediaPlayer.getInstance("radio", cmdReg);
+    public static MediaPlayer getMediaPlayer() {
+        return mPlayer;
     }
-
 
 
     public void play() {
@@ -41,16 +47,44 @@ public class RadioPlayer {
         loop();
     }
 
+    int lR = 1000;
     private void loop(){
+        if (MediaPlayer.isAppClosed){
+            log.warn("Media player closed, loop disabled");
+            return;
+        }
+        Show s = getActiveShow();
+        if (s == null){
+            log.warn("no valid show defined for now... rety in " + lR  + "ms");
+            try {
+                Thread.sleep(lR);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lR += 100;
+            if (is_play || !MediaPlayer.isAppClosed) {
+                loop();
+            }
+            return;
+        }
+        lR = 1000;
+        s.run(new Handler<Show>() {
+            @Override
+            public void handle(Show show) {
+                if (is_play || !MediaPlayer.isAppClosed) {
+                    loop();
+                }
+            }
+        });
+    }
+
+    private Show getActiveShow(){
         for (Show s: shows){
             if (s.isActive()){
-                s.start(mPlayer);
+                return s;
             }
-            break;
         }
-        if (is_play) {
-            loop();
-        }
+        return null;
     }
 
     public void loadShowsResourcePath(String p) {
@@ -66,6 +100,7 @@ public class RadioPlayer {
                 s._d = getString(h, "day");
                 s._s = getList(h, "sources");
                 s._m = getString(h, "strategy");
+                s._t = getInt(h, "delay", 0);
                 shows.add(s);
             }
         } catch (IOException e) {
@@ -75,6 +110,7 @@ public class RadioPlayer {
     }
 
     public static class Show {
+        int _t;
         String _d;
         String _h;
         List<String> _s;
@@ -92,60 +128,63 @@ public class RadioPlayer {
         }
 
         public boolean isActive() {
-            return true;
+            return (Cronus.matchMoment(Calendar.getInstance(), _d, _h));
         }
 
-        public void start(MediaPlayer mPlayer) {
-            String p = _s.get(0);
-            File f = getRandomFileFromDirectory(p);
-            mPlayer.play(f.getAbsolutePath());
+
+        public void run(Handler<Show> c){
+            if ("media-play".equalsIgnoreCase(_m)){
+                String p = _s.get(0);
+                File f = getRandomFileFromDirectory(p);
+                mPlayer.play(f.getAbsolutePath());
+                trigger(c);
+            }
+            else if ("sound-over-music".equalsIgnoreCase(_m)){
+                String s = _s.get(0);
+                String m = _s.get(1);
+                final File sf = getRandomFileFromDirectory(s);
+                File mf = getRandomFileFromDirectory(m);
+
+                long max = MediaPlayer.getAudioDurationMs(mf, 3000);
+                final int time = (int) ((Math.random() * (max - 1000)) + 1000);
+
+                delayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("delayed " + time);
+                        MediaPlayer.getInstance("radio-sounds", cmdReg).play(sf.getAbsolutePath());
+                    }
+                }, time);
+                mPlayer.play(mf.getAbsolutePath());
+                trigger(c);
+            }
+            else if ("stream".equalsIgnoreCase(_m)){
+
+            }
+
+            else {
+                System.out.println("wtf strategy is [" + _m + "] ?");
+            }
         }
+
+
+        void trigger(Handler<Show> c){
+            if (_t > 999) {
+                System.out.println("sleep for "+ _t);
+                try {
+                    Thread.sleep(_t);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            c.handle(this);
+        }
+
+
 
 
     }
 
 
-    public static final File getRandomFileFromDirectory(String path){
 
-        if (Defaults.closed == true){
-            return null;
-        }
-        if (!new File(path).exists()){
-            log.w("Path " + path + " does not exist");
-        } else {
-            log.trace("select random file from " + path);
-        }
-
-        String listId = "rand-file-" + UUID.nameUUIDFromBytes(path.getBytes());
-        AppCache.StoredList storedList = AppCache.getStoredList(listId);
-        if (storedList.isEmpty() || storedList.isIndexExceeded()){
-
-            File dir = new File(path);
-            File[] files = dir.listFiles();
-            if (files == null || files.length == 0){
-                return null;
-            }
-            List<String> items = new ArrayList<>();
-            for (File f: files){
-                items.add(f.getAbsolutePath());
-            }
-            shuffle(items);
-
-            storedList = AppCache.storeList(listId, items, 0);
-            log.info("reshuffled list " + listId);
-        }
-
-        List<String> saved = storedList.getItems();
-        int index = storedList.getIndex();
-        AppCache.storeList(listId, saved, index + 1);
-
-        String selected = saved.get(index);
-
-        File res = new File(selected);
-        if (!res.exists()){
-            log.warn("Path " + selected + "may not exist anymore");
-        }
-
-        return res;
-    }
 }

@@ -1,8 +1,10 @@
 package com.arise.canter;
 
+import com.arise.core.AppSettings;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.File;
@@ -113,55 +115,19 @@ public class Defaults {
         }
     };
 
-    public static volatile boolean closed = false;
 
-    public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
+    public static final Command<Process> PROCESS_EXEC = new Command<Process>("process-exec") {
 
-
-        private Map<String, Process> procs = new ConcurrentHashMap<>();
 
 
         @Override
-        protected void onInit() {
-            getRuntime().addShutdownHook(new Thread(){
-                @Override
-                public void run() {
-
-                    closed = true;
-                    for (String s: procs.keySet()){
-                        File f = new File(s);
-                        System.out.println("taskkill /F /IM " + f.getName());
-                        try {
-                            Runtime.getRuntime().exec(new String[]{"taskkill", "/F", "/IM", f.getName()});
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println("shutdown hook");
-                }
-            });
-        }
-
-
-        @Override
-        public String execute(List<String> args) {
-
-            String key = args.get(0);
-            if (procs.containsKey(key)){
-                procs.get(key).destroy();
-            }
-
+        public Process execute(List<String> args) {
             try {
-                procs.put(
-                        key,
-                        getRuntime().exec(toArray(args))
-                );
-                procs.get(key).waitFor();
+                return getRuntime().exec(toArray(args));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return "";
+            return null;
         }
     };
 

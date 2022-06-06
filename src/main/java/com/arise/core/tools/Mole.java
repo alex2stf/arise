@@ -103,6 +103,18 @@ public class Mole {
         id = clazz.getName();
     }
 
+    public static void todo() {
+        logInfo("\t| -------------------------------");
+        logInfo("\t| TODO (method not implemented)");
+        StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        if (ste != null || ste.length > 1){
+            StackTraceElement as = ste[2];
+            logInfo( "\t| " + as.getClassName() + "#" + as.getMethodName() + "(?) @" + as.getLineNumber() );
+        }
+        logInfo("\t| -------------------------------");
+    }
+
+
 
 
     private void callAppenders(Bag bag, Object ... args){

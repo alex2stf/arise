@@ -41,7 +41,7 @@ public class DesktopContentHandler extends ContentHandler {
     public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry cmdRegistry) {
         this.contentInfoProvider = contentInfoProvider;
         this.cmdRegistry = cmdRegistry;
-        mediaPlayer = MediaPlayer.getInstance(DesktopContentHandler.class, cmdRegistry);
+        mediaPlayer = RadioPlayer.getMediaPlayer();
     }
 
 

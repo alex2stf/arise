@@ -17,7 +17,7 @@ public class Assert {
         }
     }
 
-    private static void tick() {
+    public static void tick() {
         StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         if (ste == null || ste.length < 3){
             return;

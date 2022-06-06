@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.ThreadUtil.startDaemon;
+import static java.util.Arrays.asList;
 
 
 public abstract class Command<T> extends GenericTypeWorker {
@@ -32,12 +33,8 @@ public abstract class Command<T> extends GenericTypeWorker {
 
     public Command(String id){
         this.id = id;
-        onInit();
     }
 
-    protected void onInit() {
-
-    }
 
 
     @Override
@@ -58,7 +55,7 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
     public T execute(String ... args){
-        return execute(Arrays.asList(args));
+        return execute(asList(args));
     };
 
     public abstract T execute(List<String> arguments);

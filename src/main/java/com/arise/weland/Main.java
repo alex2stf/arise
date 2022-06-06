@@ -10,6 +10,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
+import static com.arise.core.tools.FileUtil.*;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
@@ -71,7 +73,7 @@ public class Main {
         @Override
         public String execute(List<String> arguments) {
             String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
-            File f = RadioPlayer.getRandomFileFromDirectory(path);
+            File f = getRandomFileFromDirectory(path);
             return f.getAbsolutePath();
         }
     };
@@ -120,6 +122,7 @@ public class Main {
     static BluecoveServer bluecoveServer;
     static AbstractServer ioServer;
     static  DesktopContentHandler desktopContentHandler;
+    static  RadioPlayer rplayer;
 
     public static void main(String[] args) throws IOException {
 
@@ -183,10 +186,10 @@ public class Main {
         }
 
         if (AppSettings.isTrue(AppSettings.Keys.RADIO_ENABLED)){
-            final RadioPlayer rplayer = new RadioPlayer(cmdReg);
+            rplayer = new RadioPlayer();
             rplayer.loadShowsResourcePath(AppSettings.getProperty(AppSettings.Keys.RADIO_SHOWS_PATH));
 
-            final Thread t = ThreadUtil.startThread(new Runnable() {
+            ThreadUtil.startThread(new Runnable() {
                 @Override
                 public void run() {
                     rplayer.play();
