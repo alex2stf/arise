@@ -4,8 +4,8 @@ import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Command;
-import com.arise.canter.Cronus;
 import com.arise.canter.CommandRegistry;
+import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
 import com.arise.core.tools.AppCache;
@@ -14,7 +14,6 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StandardCacheWorker;
-import com.arise.core.tools.StringEncoder;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
@@ -23,9 +22,9 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.DesktopCamStream;
 import com.arise.weland.impl.DesktopContentHandler;
 import com.arise.weland.impl.IDeviceController;
-import com.arise.weland.impl.MediaPlayer;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.PCDeviceController;
+import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.ui.WelandForm;
@@ -37,16 +36,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.weland.dto.DeviceStat.getInstance;
-import static com.arise.weland.impl.MediaPlayer.getInstance;
-import static java.util.Collections.shuffle;
 
 public class Main {
 
@@ -76,46 +71,8 @@ public class Main {
         @Override
         public String execute(List<String> arguments) {
             String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
-
-            if (!new File(path).exists()){
-                log.warn("Path " + path + " does not exist");
-            } else {
-                log.trace("PLAY_MP3_RANDOM_CMD called with " + path);
-            }
-
-            String listId = "mp3-rand-" + UUID.nameUUIDFromBytes(path.getBytes()).toString();
-            AppCache.StoredList storedList = AppCache.getStoredList(listId);
-            if (storedList.isEmpty() || storedList.isIndexExceeded()){
-
-                File dir = new File(path);
-                File[] files = dir.listFiles();
-                if (files == null || files.length == 0){
-                    return dir.getAbsolutePath();
-                }
-                List<String> items = new ArrayList<>();
-                for (File f: files){
-                    items.add(f.getAbsolutePath());
-                }
-                shuffle(items);
-
-                storedList = AppCache.storeList(listId, items, 0);
-                log.info("RESHUFFLED LIST " + listId);
-            }
-
-            List<String> saved = storedList.getItems();
-            int index = storedList.getIndex();
-            AppCache.storeList(listId, saved, index + 1);
-
-            String selected = saved.get(index);
-
-            if (!new File(selected).exists()){
-                log.warn("Path " + selected + " does not exist anymore");
-            } else {
-                log.info(new Date() + " ] PLAY "+ index + " from " + selected);
-            }
-
-            getInstance(listId, getRegistry()).play(path);
-            return saved.get(index);
+            File f = RadioPlayer.getRandomFileFromDirectory(path);
+            return f.getAbsolutePath();
         }
     };
 
@@ -181,26 +138,15 @@ public class Main {
             log.error("Failed to load content-type definitions", e);
         }
 
-        final CommandRegistry commandRegistry = new CommandRegistry();
-        commandRegistry.addCommand(PROCESS_EXEC)
+        final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
+        cmdReg.addCommand(PROCESS_EXEC)
                 .addCommand(MOUSE_PING)
                 .addCommand(PLAY_MP3_RANDOM_CMD);
 
-//        try {
-//            registry.loadJsonResource("src/main/resources#/weland/config/commons/commands.json");
-//            if (SYSUtils.isWindows()){
-//                registry.loadJsonResource("src/main/resources#/weland/config/win/commands.json");
-//            } else {
-//                registry.loadJsonResource("src/main/resources#/weland/config/unix/commands.json");
-//            }
-//            log.info("Successfully loaded commands definitions");
-//        } catch (Exception e){
-//            log.error("Failed to load commands definitions", e);
-//        }
 
         String localCommands = AppSettings.getProperty(AppSettings.Keys.LOCAL_COMANDS_FILE);
         if (StringUtil.hasText(localCommands) && new File(localCommands).exists()){
-            commandRegistry.loadJsonResource(localCommands);
+            cmdReg.loadJsonResource(localCommands);
         }
 
         final IDeviceController deviceController = new PCDeviceController();
@@ -216,14 +162,13 @@ public class Main {
                 log.info("added scannable root ", file.getAbsolutePath());
             }
             contentInfoProvider.addRoot(file);
-
         }
 
         contentInfoProvider.get();
 
 
 
-        desktopContentHandler = new DesktopContentHandler(contentInfoProvider, commandRegistry);
+        desktopContentHandler = new DesktopContentHandler(contentInfoProvider, cmdReg);
 
 
         DesktopCamStream desktopCamStream = new DesktopCamStream(
@@ -234,12 +179,24 @@ public class Main {
         Cronus cronus = null;
 
         if (!AppSettings.isFalse(AppSettings.Keys.CRONUS_ENABLED)){
-            cronus = new Cronus(commandRegistry, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+            cronus = new Cronus(cmdReg, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+        }
+
+        if (AppSettings.isTrue(AppSettings.Keys.RADIO_ENABLED)){
+            final RadioPlayer rplayer = new RadioPlayer(cmdReg);
+            rplayer.loadShowsResourcePath(AppSettings.getProperty(AppSettings.Keys.RADIO_SHOWS_PATH));
+
+            final Thread t = ThreadUtil.startThread(new Runnable() {
+                @Override
+                public void run() {
+                    rplayer.play();
+                }
+            }, "radio-play");
         }
 
         desktopContentHandler.setCameraStream(desktopCamStream);
 
-        final WelandServerHandler welandServerHandler = new WelandServerHandler(commandRegistry)
+        final WelandServerHandler welandServerHandler = new WelandServerHandler(cmdReg)
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler)
                 .setDeviceController(deviceController);
@@ -254,7 +211,7 @@ public class Main {
                 @Override
                 public void run() {
 
-                    WelandForm welandForm = new WelandForm(commandRegistry);
+                    WelandForm welandForm = new WelandForm(cmdReg);
                     welandForm.pack();
                     welandForm.setVisible(true);
 
@@ -269,7 +226,7 @@ public class Main {
                         welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     }
                 }
-            }, ThreadUtil.threadId("ui-thread"));
+            }, "ui-thread");
 
         }
 
@@ -296,7 +253,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-        }, "Main#startServer" + UUID.randomUUID().toString());
+        }, "Main#startServer");
 
         //DO NOT DELETE BluecoveServer
 //        ThreadUtil.fireAndForget(new Runnable() {
@@ -326,5 +283,8 @@ public class Main {
             bluecoveServer.stop();
         }
     }
+
+
+
 
 }

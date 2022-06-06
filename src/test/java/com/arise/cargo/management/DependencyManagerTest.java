@@ -9,19 +9,21 @@ import java.net.URLClassLoader;
 import java.util.Map;
 
 import static com.arise.cargo.management.DependencyManager.importDependencyRules;
+import static com.arise.cargo.management.DependencyManager.withBinary;
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.Assert.assertEquals;
 import static com.arise.core.tools.Assert.assertFailed;
 import static com.arise.core.tools.Assert.assertNotNull;
+import static com.arise.core.tools.Assert.assertTrue;
 
 
 public class DependencyManagerTest {
 
 
-    public static void test1() throws IOException {
+    public static void test1() {
 
         Map<String, Object>  res = DependencyManager.solve("JAVAZOOM_JLAYER_101");
-        Assert.assertTrue((res.get("jar-location") + "").endsWith("jlayer-1.0.1.jar"));
+        assertTrue((res.get("jar-location") + "").endsWith("jlayer-1.0.1.jar"));
         withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
             @Override
             public void handle(URLClassLoader classLoader) {
@@ -35,10 +37,10 @@ public class DependencyManagerTest {
         });
 
 
-        DependencyManager.withBinary("MEDIA_INFO_CLI_WIN32", new Handler<File>() {
+        withBinary("MEDIA_INFO_CLI_WIN32", new Handler<File>() {
             @Override
             public void handle(File file) {
-                Assert.assertEquals("MediaInfo.exe", file.getName());
+                assertEquals("MediaInfo.exe", file.getName());
             }
         });
 
@@ -50,9 +52,12 @@ public class DependencyManagerTest {
 //
 
         importDependencyRules("_cargo_/dependencies.json");
-        DependencyManagerTest.test1();
-       Map<String, Object> res = DependencyManager.solve("MEDIA_INFO_CLI_WIN32");
+//        DependencyManagerTest.test1();
+        Map<String, Object> res = DependencyManager.solve("MEDIA_INFO_CLI_WIN32");
 
+
+        res = DependencyManager.solve("MNT_CLI_WIN_32");
+        res = DependencyManager.solve("MP3_PLAYER");
 
         System.out.println(res);
     }

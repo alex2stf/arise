@@ -8,15 +8,30 @@ public class ThreadUtil {
 
 
     public static Thread startDaemon(Runnable action, String name){
-        return fireAndForget(action, name, true);
+        return startNewThread(action, "DU-" + name, true, -1);
+    }
+
+    public static Thread startThread(Runnable action, String name){
+        return startNewThread(action, "DU-" + name, false, -1);
+    }
+
+    public static Thread startJoinedThread(Runnable a, String n){
+        return startNewThread(a, "JT-" + n, false, 0);
+    }
+
+    public static Thread startJoinedDaemon(Runnable a, String n){
+        return startNewThread(a, "JD-" + n, true, 0);
     }
 
 
     public static Thread fireAndForget(Runnable action, String name){
-        return fireAndForget(action, name, false);
+        return startNewThread(action, "FF-" + name, false, -1);
     }
 
-    public static Thread fireAndForget(final Runnable action, String name, boolean daemon){
+    private static Thread startNewThread(final Runnable action,
+                                         String name,
+                                         boolean daemon,
+                                         int join){
 
         Thread t = new Thread(new Runnable() {
             @Override
@@ -24,18 +39,25 @@ public class ThreadUtil {
                 action.run();
                 try {
                     Thread.currentThread().interrupt();
-                }catch (Exception e){
+                } catch (Exception e){
                     ;;
                 }
             }
         });
-        t.setDaemon(daemon); //WTF is this?
+        t.setDaemon(daemon);
         if (name != null){
-            t.setName(name);
+            t.setName(threadId(name));
         }
         try {
             t.start();
-        }catch (OutOfMemoryError error){
+            if (join > -1){
+                try {
+                    t.join(join);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (OutOfMemoryError error){
             error.printStackTrace();
             t.run();
         }
@@ -72,7 +94,7 @@ public class ThreadUtil {
         result.timer.purge();
     }
 
-    public static String threadId(String id) {
+    private static String threadId(String id) {
         return id.replaceAll("\\s+", "-") + "-" + UUID.randomUUID();
     }
 

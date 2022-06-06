@@ -14,13 +14,12 @@ import javax.bluetooth.UUID;
 import java.io.IOException;
 import java.util.Vector;
 
+@Deprecated
 public class BluetoothUtil {
 
     private static final Mole log = Mole.getInstance(BluetoothUtil.class);
 
-    public static void scan(String [] names, String [] uids){
-        ThreadUtil.fireAndForget(new BluetoothScanner(names, uids));
-    }
+
 
 
     private static class BluetoothScanner implements Runnable {

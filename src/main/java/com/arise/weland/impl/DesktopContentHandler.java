@@ -9,7 +9,6 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
-import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.StringUtil.hasText;
 
 //import org.openqa.selenium.WebDriver;

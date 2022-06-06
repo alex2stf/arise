@@ -1,7 +1,5 @@
 package com.arise.weland.impl.unarchivers;
 
-import com.arise.cargo.management.Dependencies;
-import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.SYSUtils;

@@ -10,8 +10,8 @@ public class Locations {
         return new File(x, "dpmngmt");
     }
 
-    private static File gd(String name){
-        File f = new File(rt(), name);
+    private static File gd(String n){
+        File f = new File(rt(), n);
         if (!f.exists()){
             f.mkdirs();
         }
@@ -34,7 +34,8 @@ public class Locations {
             return bin();
         }
 
-        if ("downloads".equalsIgnoreCase(s) || "down".equalsIgnoreCase(s)) {
+        if ("downloads".equalsIgnoreCase(s) || "down".equalsIgnoreCase(s)
+        || "download".equalsIgnoreCase(s)) {
             return down();
         }
         return new File(s);

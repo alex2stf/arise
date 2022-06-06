@@ -4,7 +4,7 @@ import com.arise.core.models.Handler;
 
 import java.util.UUID;
 
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.ThreadUtil.startThread;
 
 
 public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
@@ -13,7 +13,7 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
     public abstract CONNECTION getConnection(final I request) throws Exception;
 
     public void connect(final I request, final Handler<CONNECTION> connectHandler){
-        fireAndForget(new Runnable() {
+        startThread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -23,7 +23,7 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
                     e.printStackTrace();
                 }
             }
-        }, "AbstractClient#Connect-" + UUID.randomUUID().toString());
+        }, "AbstractClient#Connect-" + UUID.randomUUID());
     }
 
 

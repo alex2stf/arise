@@ -1,7 +1,6 @@
 package com.arise.cargo.management;
 
 import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,27 +15,29 @@ public class Zip implements Unarchiver {
 
 
     @Override
-    public boolean extract(File source, File destination) {
+    public boolean extract(File src, File dest) {
 
         // create output directory if it doesn't exist
-        if(!destination.exists()) {
-            destination.mkdirs();
+        if(!dest.exists()) {
+            dest.mkdirs();
         }
         FileInputStream fis;
         //buffer for read and write data to file
         byte[] buffer = new byte[1024];
         try {
-            fis = new FileInputStream(source);
+            fis = new FileInputStream(src);
             ZipInputStream zis = new ZipInputStream(fis);
             ZipEntry ze = zis.getNextEntry();
             while(ze != null){
 
                 String fileName = ze.getName();
-                File newFile = new File(destination + File.separator + fileName);
-                if (ze.isDirectory() && newFile.exists()){
-                    newFile.mkdir();
+                File newFile = new File(dest + File.separator + fileName);
+                if (ze.isDirectory() ){
+                    if (!newFile.exists()) {
+                        newFile.mkdir();
+                        System.out.println("mkdir " + newFile.getAbsolutePath());
+                    }
                     ze = zis.getNextEntry();
-                    System.out.println("mkdir " + newFile.getAbsolutePath());
                     continue;
                 }
 
@@ -66,7 +67,7 @@ public class Zip implements Unarchiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return FileUtil.hasFiles(destination);
+        return FileUtil.hasFiles(dest);
     }
 
 

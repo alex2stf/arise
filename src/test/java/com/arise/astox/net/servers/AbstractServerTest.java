@@ -4,14 +4,13 @@ import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.nio.NioSslPeer;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.WelandRequestBuilder;
 
 import javax.net.ssl.SSLContext;
 import java.security.SecureRandom;
 
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
-import static com.arise.core.tools.ThreadUtil.threadId;
 
 public abstract class AbstractServerTest {
 
@@ -47,7 +46,7 @@ public abstract class AbstractServerTest {
   public void initTest(){
    final AbstractServer server = serviceServer();
 
-    fireAndForget(new Runnable() {
+    ThreadUtil.startThread(new Runnable() {
       @Override
       public void run() {
         try {
@@ -75,7 +74,7 @@ public abstract class AbstractServerTest {
           e.printStackTrace();
         }
       }
-    }, threadId("server test"));
+    }, ("server test"));
   };
 
   public static void main(String[] args) {

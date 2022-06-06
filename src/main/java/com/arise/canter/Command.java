@@ -3,14 +3,13 @@ package com.arise.canter;
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.ThreadUtil.startDaemon;
 
 
 public abstract class Command<T> extends GenericTypeWorker {
@@ -33,6 +32,11 @@ public abstract class Command<T> extends GenericTypeWorker {
 
     public Command(String id){
         this.id = id;
+        onInit();
+    }
+
+    protected void onInit() {
+
     }
 
 
@@ -115,13 +119,13 @@ public abstract class Command<T> extends GenericTypeWorker {
                String asyncMode = MapUtil.getString(c, "async");
 
                if ("daemon".equalsIgnoreCase(asyncMode)){
-                   fireAndForget(new Runnable() {
+                   startDaemon(new Runnable() {
                        @Override
                        public void run() {
                            res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
                            storeResultIfNecessary(res[0], c);
                        }
-                   }, ThreadUtil.threadId("async-cmd-" + commandId), true);
+                   }, ("async-cmd-" + commandId));
                } else {
                    res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
                    storeResultIfNecessary(res[0], c);

@@ -20,10 +20,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
-import static com.arise.core.tools.ThreadUtil.threadId;
+import static com.arise.core.tools.ThreadUtil.startDaemon;
 
 public class Cronus {
 
@@ -55,12 +54,17 @@ public class Cronus {
         ThreadUtil.repeatedTask(new Runnable() {
             @Override
             public void run() {
-                for (CronTask c: cronTasks){
-                    if (c.isMatching(new Date())){
-                        c.execute();
+                for (final CronTask c: cronTasks){
+                    if (c.isMatching(Calendar.getInstance())){
+                        startDaemon(new Runnable() {
+                            @Override
+                            public void run() {
+                                c.execute();
+                            }
+                        }, "cronus-task-" + c.name);
                     }
                     for (Runnable x: otherTasks){
-                        fireAndForget(x, threadId("other-task"));
+                        fireAndForget(x, "cronus-other-task");
                     }
                 }
             }
@@ -105,15 +109,15 @@ public class Cronus {
         String cmdId;
         String storeKey;
         String args[];
-        private CommandRegistry commandRegistry;
+        private CommandRegistry cmdReg;
         private boolean disable = false;
 
         public CronTask setStoreKey(String storeKey){
             this.storeKey = storeKey;
             return this;
         }
-        public CronTask(CommandRegistry commandRegistry) {
-            this.commandRegistry = commandRegistry;
+        public CronTask(CommandRegistry cmdReg) {
+            this.cmdReg = cmdReg;
         }
 
         CronTask setDayRef(String dayRef){
@@ -122,37 +126,18 @@ public class Cronus {
         }
 
 
-        boolean isMatching(Date date){
+        boolean isMatching(Calendar c ){
             if (disable){
                 return false;
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            Calendar c = Calendar.getInstance();
-            String moment = getDayRef(c) + " " + getHourRef(c);
-//            System.out.println("compare " + moment + " with " + sdf.format(date));
-            return moment.equalsIgnoreCase(sdf.format(date));
-        }
-
-        String getHourRef(Calendar c){
-            return parseHourRef(hourRef, c);
-        }
-
-        String getDayRef(Calendar c){
-            return parseDayRef(dayRef, c);
+            return matchMoment(c, dayRef, hourRef);
         }
 
         public void execute() {
-            fireAndForget(new Runnable() {
-                @Override
-                public void run() {
-                   Object res = commandRegistry.execute(cmdId, args, null, null);
-                    if(StringUtil.hasText(storeKey)){
-                        commandRegistry.store(storeKey, res);
-                    }
-                }
-            }, "cronus-task-" + UUID.randomUUID(), true);
-
+            Object res = cmdReg.execute(cmdId, args, null, null);
+            if(StringUtil.hasText(storeKey)){
+                cmdReg.store(storeKey, res);
+            }
         }
 
         private CronTask setCmdId(String cmdId) {
@@ -185,6 +170,12 @@ public class Cronus {
 
     public static void main(String[] args) {
         Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + new Date());
+    }
+
+    public static boolean matchMoment(Calendar c, String day, String hour){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String moment = parseDayRef(day, c) + " " + parseHourRef(hour, c);
+        return moment.equalsIgnoreCase(sdf.format(c.getTime()));
     }
 
 

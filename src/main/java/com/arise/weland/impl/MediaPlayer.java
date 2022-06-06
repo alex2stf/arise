@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
-import static com.arise.core.tools.ThreadUtil.threadId;
 
 public class MediaPlayer {
 
@@ -67,7 +66,7 @@ public class MediaPlayer {
                             public void run() {
                                 getMethod(winst, "play").call();
                             }
-                        }, threadId(path));
+                        }, "media-play-" + path);
                     } catch (Exception e) {
                         throw new DependencyException("javazoom.jl.player.Player failed", e);
                     }
@@ -76,10 +75,17 @@ public class MediaPlayer {
         } else {
 //            mediaplayer = commandRegistry.getCommand("play-media").getProperty("process");
 
-            if (winst != null && winst instanceof Process) {
-                ((Process) winst).destroy();
-            }
+//            if (winst != null && winst instanceof Process) {
+//                ((Process) winst).destroy();
+//            }
             winst = r.getCommand("play-media").execute(path);
+//            if (winst instanceof Process){
+//                try {
+//                    ((Process) winst).waitFor();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         return winst;
     }

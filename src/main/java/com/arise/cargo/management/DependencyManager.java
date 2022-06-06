@@ -27,17 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 import static com.arise.core.tools.CollectionUtil.safeGetItem;
 import static com.arise.core.tools.Mole.logInfo;
 import static com.arise.core.tools.Mole.logWarn;
 import static com.arise.core.tools.StringUtil.hasText;
-import static java.lang.String.*;
+import static java.lang.String.valueOf;
 
 public class DependencyManager {
 
     private DependencyManager(){
 
+    }
+
+
+    public static CommandRegistry getCommandRegistry(){
+        return cmdReg;
     }
 
 
@@ -112,6 +116,7 @@ public class DependencyManager {
             public String execute(List<String> x) {
                 File s = new File(x.get(0));
                 File out = Locations.forName(x.get(1));
+                log.info("$unzip " + s.getAbsolutePath() + " to " + out.getAbsolutePath());
                 unarchiver.extract(s, out);
                 return out.getAbsolutePath();
             }
@@ -122,9 +127,9 @@ public class DependencyManager {
             public String execute(List<String> a) {
                 File p = Locations.forName(a.get(0));
                 File f = new File(p, a.get(1));
-                String m = safeGetItem(a, 1, "nil");
-                log.info("$sub-location(" + f.getAbsolutePath() + ") mode " + m);
-                if ("w".equalsIgnoreCase(m) || "rw".equalsIgnoreCase(m)) {
+                String m = safeGetItem(a, 2, "xxx");
+                log.info("$sub-location(" + f.getAbsolutePath() + ") mode '" + m + "'");
+                if ("wd".equalsIgnoreCase(m) || "rwd".equalsIgnoreCase(m)) {
                     if (!f.exists()) {
                         f.mkdirs();
                     }
@@ -136,12 +141,6 @@ public class DependencyManager {
             }
         });
 
-        cmdReg.addCommand(new Command<String>("downloaded") {
-            @Override
-            public String execute(List<String> a) {
-                return new File(Locations.down(), a.get(0)).getAbsolutePath();
-            }
-        });
     }
 
     private static final Map<String, Dependency> dependencyMap = new HashMap<>();
@@ -376,14 +375,16 @@ public class DependencyManager {
 
     private static Map<String, Object> parseParams(Dependency.Version v){
         Map<String, Object> res = new HashMap<>();
-        for (Map.Entry<String, String> e: v.params().entrySet()){
-            String key = e.getKey();
-            Object val = cmdReg.executeCmdLine(e.getValue());
+        for (int i = 0; i < v.params().size(); i++){
+            Map<String, String> p = (Map<String, String>) v.params().get(i);
+            String key = p.get("key");
+            Object val = cmdReg.executeCmdLine(p.get("val"));
             if (val != null){
                 res.put(key, val);
-                System.out.println(key + " = " + val);
+                log.info("@dpmgmt[" + key + "]=(" + val + ")");
             }
         }
+
         if (res.values().size() == v.params().size()){
             return res;
         }

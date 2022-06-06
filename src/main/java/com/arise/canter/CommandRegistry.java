@@ -2,7 +2,6 @@ package com.arise.canter;
 
 
 import com.arise.canter.Command.JsonCommand;
-import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.CollectionUtil;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.canter.Defaults.CMD_FIND_FILE_STREAM;
@@ -141,6 +139,10 @@ public final class CommandRegistry extends GenericTypeWorker {
             if (hasText(r)){
                 nsargs.add(r);
             }
+//            List<String> actArgs = new ArrayList<>();
+//            for (String s: nsargs){
+//                actArgs.add(executeCmdLine(s) + "");
+//            }
 
             String commandId = line.substring(1, argBegin);
             return execute(commandId, nsargs);

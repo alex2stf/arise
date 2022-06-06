@@ -1,11 +1,7 @@
 package com.arise.cargo.management;
 
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.MapUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +41,7 @@ public class Dependency {
                 Version version = new Version();
                 version._n = MapUtil.getString(m, "name");
                 version._c = MapUtil.getString(m, "condition");
-                version._p = MapUtil.getMap(m, "params");
+                version._p = MapUtil.getList(m, "params");
                 dependency.versions.put(version._n, version);
             }
         }
@@ -61,14 +57,7 @@ public class Dependency {
         return name;
     }
 
-    public Version getLatestVersion(){
-       for (Version v: versions.values()){
-           if (v != null){
-               return v;
-           }
-       }
-       return null;
-    }
+
 
 
 
@@ -79,10 +68,10 @@ public class Dependency {
     public static class Version {
        String _n;
        String _c;
-       Map<String, String> _p;
+       List _p;
 
 
-        public Map<String, String> params(){
+        public List params(){
             return _p;
         }
         public String name(){

@@ -6,17 +6,24 @@
         "name": "maven-jlayer-1.0.1.jar",
         "condition": "always",
         "disabled": false,
-        "params": {
-          "jar-location": "$file-exist($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
-        }
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$file-exist($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
+          }
+        ]
       },
       {
         "name": "jlayer-1.0.1.jar",
         "condition": "always",
         "disabled": false,
-        "params": {
-            "jar-location": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
-        }
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
+          }
+
+        ]
       }
     ]
   },
@@ -26,14 +33,73 @@
       {
         "name": "MediaInfo_CLI_0.7.60_Windows_i386",
         "condition": "always",
-        "params": {
-            "zip-location": "$download(https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip, downloads, MediaInfo_CLI_0.7.60_Windows_i386.zip)",
-            "unzip-directory": "$unzip($downloaded(MediaInfo_CLI_0.7.60_Windows_i386.zip), $sub-location(bin,MediaInfo_CLI_0_7_60_i386,rw) )",
-            "binary-location": "$file-exist( $sub-location(bin,MediaInfo_CLI_0_7_60_i386/MediaInfo.exe,r)  )"
-        }
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip, downloads, MediaInfo_CLI_0.7.60_Windows_i386.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down,MediaInfo_CLI_0.7.60_Windows_i386.zip), $sub-location(bin,MediaInfo_CLI_0_7_60_i386,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,MediaInfo_CLI_0_7_60_i386/MediaInfo.exe,r)  )"
+          }
+
+        ]
       }
     ]
   },
+  "MNT_CLI_WIN_32": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "mnt_cli_32",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://netix.dl.sourceforge.net/project/moviethumbnail/movie%20thumbnailer%20win32%20binary/mtn-200808a-win32/mtn-200808a-win32.zip, down, mtn-200808a-win32.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, mtn-200808a-win32.zip), $sub-location(bin,mnt_cli_32,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,mnt_cli_32/mtn-200808a-win32/mtn.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+  "MP3_PLAYER": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "mp3_player_mpg123_1_14_0",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(http://www.mpg123.de/download/win64/mpg123-1.14.0-x86-64.zip, down, mpg123-1.14.0-x86-64.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, mpg123-1.14.0-x86-64.zip), $sub-location(bin,mp3_player_mpg123_1_14_0,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,mp3_player_mpg123_1_14_0/mpg123-1.14.0-x86-64/mpg123.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+
   "CHROME_DRIVER": {
     "type": "binary",
     "versions": [

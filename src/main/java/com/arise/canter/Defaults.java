@@ -1,11 +1,8 @@
 package com.arise.canter;
 
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.File;
@@ -16,10 +13,14 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.CollectionUtil.toArray;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.join;
+import static java.lang.Runtime.getRuntime;
 
 public class Defaults {
 
@@ -112,73 +113,55 @@ public class Defaults {
         }
     };
 
+    public static volatile boolean closed = false;
 
     public static final Command<String> PROCESS_EXEC = new Command<String>("process-exec") {
 
-        private Process process;
+
+        private Map<String, Process> procs = new ConcurrentHashMap<>();
+
 
         @Override
-        public Object getProperty(String x) {
-            if ("process".equalsIgnoreCase(x)){
-                return process;
-            }
-            return null;
+        protected void onInit() {
+            getRuntime().addShutdownHook(new Thread(){
+                @Override
+                public void run() {
+
+                    closed = true;
+                    for (String s: procs.keySet()){
+                        File f = new File(s);
+                        System.out.println("taskkill /F /IM " + f.getName());
+                        try {
+                            Runtime.getRuntime().exec(new String[]{"taskkill", "/F", "/IM", f.getName()});
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("shutdown hook");
+                }
+            });
         }
+
 
         @Override
         public String execute(List<String> args) {
-            File stdOutFile = null;
-            int lastIndex = args.size();
-            for(int i = 0; i < args.size(); i++){
-                String part = args.get(i);
-                if(part.startsWith("STDOUT>")){
-                    stdOutFile = new File(part.substring("STDOUT>".length()).trim());
-                    lastIndex = i;
-                    break;
-                }
+
+            String key = args.get(0);
+            if (procs.containsKey(key)){
+                procs.get(key).destroy();
             }
 
-
-            String[] actualArgs = new String[lastIndex];
-            for(int j = 0; j < lastIndex; j++){
-                actualArgs[j] = args.get(j);
+            try {
+                procs.put(
+                        key,
+                        getRuntime().exec(toArray(args))
+                );
+                procs.get(key).waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-
-            final File finStdFile = stdOutFile;
-            if(finStdFile != null && finStdFile.exists()) {
-                finStdFile.delete();
-            }
-
-
-            final StringBuilder sb = new StringBuilder();
-            final boolean[] returnSb = {false};
-            process = SYSUtils.exec(CollectionUtil.toArray(args), new SYSUtils.ProcessLineReader() {
-
-                @Override
-                public void onErrLine(int line, String content) {
-                    System.out.println(content);
-                }
-
-                @Override
-                public void onStdoutLine(int line, String content) {
-                    if (finStdFile != null) {
-                        try {
-                            FileUtil.appendNewLineToFile(content, finStdFile);
-                        } catch (IOException e) {
-                            e.printStackTrace(); //TODO fix this error catch
-                        }
-                        returnSb[0] = false;
-                    } else {
-                        sb.append(content);
-                        returnSb[0] = true;
-                    }
-                }
-            }, true, false);
-            if (returnSb[0]) {
-                return sb.toString();
-            }
-            return finStdFile != null ? finStdFile.getAbsolutePath() : "null";
+            return "";
         }
     };
 
