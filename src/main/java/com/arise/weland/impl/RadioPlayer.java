@@ -128,7 +128,10 @@ public class RadioPlayer {
         }
 
         public boolean isActive() {
-            return (Cronus.matchMoment(Calendar.getInstance(), _d, _h));
+            boolean act = (Cronus.matchMoment(Calendar.getInstance(), _d, _h));
+
+            log.info("show " + n + " active = " + act);
+            return act;
         }
 
 
@@ -151,7 +154,7 @@ public class RadioPlayer {
                 delayedTask(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("delayed " + time);
+                        log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
                         MediaPlayer.getInstance("radio-sounds", cmdReg).play(sf.getAbsolutePath());
                     }
                 }, time);
@@ -159,6 +162,17 @@ public class RadioPlayer {
                 trigger(c);
             }
             else if ("stream".equalsIgnoreCase(_m)){
+                String u = _s.get(0);
+                mPlayer.playStream(u);
+
+
+                ThreadUtil.delayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPlayer.stop();
+                    }
+                }, 4000);
+
 
             }
 

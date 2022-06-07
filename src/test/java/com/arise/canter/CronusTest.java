@@ -13,6 +13,7 @@ import java.util.Calendar;
 import static com.arise.canter.Cronus.dayFromString;
 import static com.arise.canter.Cronus.dayIsBetween;
 import static com.arise.canter.Cronus.dayMonthIsBetween;
+import static com.arise.canter.Cronus.fromString;
 import static com.arise.canter.Cronus.isAfter;
 import static com.arise.canter.Cronus.isBefore;
 import static com.arise.canter.Cronus.isBetween;
@@ -76,10 +77,10 @@ public class CronusTest {
 
 
         assertTrue(isBetween("07:20:20", "07:22:20", "07:24:00"));
-        assertFalse(isBetween("19:20:20", "07:22:20", "07:24:00"));
+
         assertFalse(isBetween("19:20:20", "07:22:20", "06:24:00"));
 
-        assertFalse(isBetween("23:00:00", "00:00:00", "01:00:00"));
+
         assertTrue(dayIsBetween("sunday", "monday", "saturday"));
         assertTrue(dayIsBetween("sunday", "tuesday", "saturday"));
         assertTrue(dayIsBetween("sunday", "wednesday", "saturday"));
@@ -89,6 +90,15 @@ public class CronusTest {
     }
 
     public static void main(String[] args) {
+
+        assertFalse(
+                isBetween("06:15:00", "19:02:00", "17:23:00")
+        );
+
+        assertTrue(
+                isBetween("23:15:00", "23:16:00", "24:00:00")
+        );
+
         CronusTest.testStrings();
         CronusTest.test();
         CronusTest.testCompares();
@@ -100,13 +110,30 @@ public class CronusTest {
 
     private static void testBetweeens() {
         Calendar c = buildMock();
-        c.set(Calendar.HOUR, 23);
+
+
+        boolean x;
+        x = isBetween("21:00:00", "24:00:00", "25:00:00");
+        assertTrue(x);
+
+        c.set(Calendar.HOUR_OF_DAY, 23);
         c.set(Calendar.MINUTE, 11);
         c.set(Calendar.SECOND, 23);
 
-        boolean x = isBetween("23:00:00", c, "01:00:00");
-//        String s = parseHourRef("each_second between_23:00:00_and_01:00:00", c);
-        System.out.println(x);
+
+        Cronus.MomentInDay m = new Cronus.MomentInDay();
+        m._h = c.get(Calendar.HOUR_OF_DAY);
+        m._m = c.get(Calendar.MINUTE);
+        m._s = c.get(Calendar.SECOND);
+        assertFalse(
+                isAfter(m, fromString("23:00:00"))
+        );
+
+        assertTrue(
+                isBetween("23:00:00", "23:27:00", "24:00:00")
+        );
+
+        assertTrue(isBetween("23:00:00", "24:00:00", "24:01:00"));
     }
 
     private static void testDays3() {

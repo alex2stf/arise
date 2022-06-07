@@ -5,6 +5,7 @@ import com.arise.core.AppSettings;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ThreadUtil;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -39,8 +40,8 @@ public class MediaPlayer {
         getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-                  isAppClosed = true;
-                  log.warn("Close all media player instances");
+            isAppClosed = true;
+            log.warn("Close all media player instances");
             }
         });
     }
@@ -57,8 +58,9 @@ public class MediaPlayer {
     }
 
     public static long getAudioDurationMs(File f, long dv) {
-        Mole.todo();
-        return dv;
+        long len = (f.length() / 152) / 10;
+        Mole.todo(f.getName() + " len=" + (len / 1000) + "sec");
+        return len;
     }
 
     public Object play(final String path) {
@@ -139,5 +141,16 @@ public class MediaPlayer {
             }
         }
         return winst;
+    }
+
+    public void playStream(String u) {
+        final Process proc[] = new Process[]{null};
+//                proc[0].pid();
+        Mole.todo("need to calculate period based on betweens");
+        proc[0] = (Process) r.getCommand("browser-open").execute(u);
+    }
+
+    public void stop() {
+        r.getCommand("browser-close").execute();
     }
 }

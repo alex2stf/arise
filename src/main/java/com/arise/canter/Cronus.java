@@ -432,17 +432,22 @@ public class Cronus {
     }
 
     public static boolean isBetween(MomentInDay i, MomentInDay m, MomentInDay d){
+
+
+//        if (isAfter(i, m)){
+//            if (isBefore(d, i)){
+//                d._h = 24 + d._h;
+//                return isBefore(m, d);
+//            }
+//        }
+
+
        return compareIsBetween(i, m, d);
     }
 
+
     private static boolean compareIsBetween(Comparable i, Comparable m, Comparable d){
-        if (i.compareTo(d) == 1){
-            return i.compareTo(m) == -1 && d.compareTo(m) == -1;
-        }
-        if (i.compareTo(d) == -1){
-            return m.compareTo(i) == 1 && m.compareTo(d) == -1;
-        }
-        return m.compareTo(i) == -1 && m.compareTo(d) == -1;
+        return i.compareTo(m) == -1 && m.compareTo(d) == -1;
     }
 
 
@@ -571,7 +576,10 @@ public class Cronus {
         int _s;
 
         public int compareTo(MomentInDay o) {
-           if (hour() == o.hour()){
+            boolean sh = hour() == o.hour()
+                    || (hour() == 24 && o.hour() == 0)
+                    || (hour() == 0 && o.hour() == 24);
+           if (sh){
                if (minute() == o.minute()){
                    return second() < o.second() ? -1 : ((second() == o.second()) ? 0 : 1);
                }
@@ -590,6 +598,10 @@ public class Cronus {
 
         public int second() {
             return _s;
+        }
+
+        public boolean isMid() {
+            return _h == 0 || _h == 24;
         }
     }
 
