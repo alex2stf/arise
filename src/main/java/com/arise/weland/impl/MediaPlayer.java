@@ -143,10 +143,12 @@ public class MediaPlayer {
         return winst;
     }
 
+    final Process proc[] = new Process[]{null};
+
     public void playStream(String u) {
-        final Process proc[] = new Process[]{null};
-//                proc[0].pid();
-        Mole.todo("need to calculate period based on betweens");
+        if (proc[0] != null){
+            proc[0].destroy();
+        }
         proc[0] = (Process) r.getCommand("browser-open").execute(u);
     }
 

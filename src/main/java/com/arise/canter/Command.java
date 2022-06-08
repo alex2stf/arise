@@ -5,10 +5,10 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.startDaemon;
 import static java.util.Arrays.asList;
 
@@ -79,14 +79,14 @@ public abstract class Command<T> extends GenericTypeWorker {
     static class JsonCommand extends Command<Object> {
 
         List<Map> cmds;
-        String returnValue;
+        String retVal;
         public JsonCommand(String id) {
             super(id);
         }
 
         private void storeResultIfNecessary(Object o, Map c){
             String storeKey = MapUtil.getString(c, "store-key");
-            if (StringUtil.hasText(storeKey)){
+            if (hasText(storeKey)){
                 getRegistry().store(storeKey, o);
             }
         }
@@ -116,8 +116,8 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
            }
-           if(StringUtil.hasText(returnValue)) {
-               return getRegistry().executeCmdLine(returnValue);
+           if(hasText(retVal)) {
+               return getRegistry().executeCmdLine(retVal);
            }
            return (res[0]);
         }

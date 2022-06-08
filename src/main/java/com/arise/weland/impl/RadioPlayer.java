@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +136,7 @@ public class RadioPlayer {
         }
 
 
-        public void run(Handler<Show> c){
+        public synchronized void run(Handler<Show> c){
             if ("media-play".equalsIgnoreCase(_m)){
                 String p = _s.get(0);
                 File f = getRandomFileFromDirectory(p);
@@ -163,15 +164,27 @@ public class RadioPlayer {
             }
             else if ("stream".equalsIgnoreCase(_m)){
                 String u = _s.get(0);
+                String p[] = Cronus.getParts(_h);
+                long exp = 4000;
+                if (p.length == 3){
+                    Cronus.MomentInDay m = Cronus.fromString(p[2]);
+
+                    if (m != null){
+                        Calendar li = Cronus.decorate(m, Calendar.getInstance());
+                        exp = Math.abs(li.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+
+                        log.info("show " + n + " will end in " + (exp / 1000) + " seconds");
+                    }
+                }
                 mPlayer.playStream(u);
 
 
-                ThreadUtil.delayedTask(new Runnable() {
+                delayedTask(new Runnable() {
                     @Override
                     public void run() {
                         mPlayer.stop();
                     }
-                }, 4000);
+                }, exp);
 
 
             }

@@ -2,6 +2,7 @@ package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
@@ -69,6 +70,21 @@ public class Cronus {
                 }
             }
         }, 1000);
+    }
+
+    public static MomentInDay fromCalendar(Calendar c) {
+        MomentInDay m = new MomentInDay();
+        m._h = c.get(Calendar.HOUR_OF_DAY);
+        m._m = c.get(Calendar.MINUTE);
+        m._s = c.get(Calendar.SECOND);
+        return m;
+    }
+
+    public static Calendar decorate(MomentInDay m, Calendar c) {
+        c.set(Calendar.HOUR_OF_DAY, m._h);
+        c.set(Calendar.MINUTE, m._m);
+        c.set(Calendar.SECOND, m._s);
+        return c;
     }
 
 
@@ -178,7 +194,7 @@ public class Cronus {
 
     private static final String nilh = "xx:xx:xx";
 
-    private static String[] getParts(String x) {
+    public static String[] getParts(String x) {
         String p[] = x.split(" ");
         String a = p[0].toLowerCase();
         String b = p.length > 1 ? p[1].toLowerCase() : null;
@@ -234,6 +250,7 @@ public class Cronus {
     }
 
 
+
     public static String parseHourRef(String input, Calendar calendar) {
         String p[] = getParts(input);
         String moment = p[0].toLowerCase();
@@ -285,7 +302,7 @@ public class Cronus {
     }
 
 
-    static MomentInDay fromString(String s) {
+    public static MomentInDay fromString(String s) {
         String parts[] = s.split(":");
         MomentInDay m = new MomentInDay();
         try {
@@ -303,10 +320,7 @@ public class Cronus {
     }
 
     public static boolean isBetween(String x, Calendar s, String y) {
-        MomentInDay m = new MomentInDay();
-        m._h = s.get(Calendar.HOUR_OF_DAY);
-        m._m = s.get(Calendar.MINUTE);
-        m._s = s.get(Calendar.SECOND);
+        MomentInDay m = fromCalendar(s);
         return isBetween(fromString(x), m, fromString(y));
     }
 

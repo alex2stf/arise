@@ -208,7 +208,7 @@ public final class CommandRegistry extends GenericTypeWorker {
         String id = MapUtil.getString(m, "id");
         JsonCommand jsonCommand = new JsonCommand(id);
         jsonCommand.cmds = MapUtil.getList(m, "commands");
-        jsonCommand.returnValue = MapUtil.getString(m, "return-value");
+        jsonCommand.retVal = MapUtil.getString(m, "return-value");
         addCommand(jsonCommand);
     }
 
