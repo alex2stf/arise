@@ -8,9 +8,9 @@ import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
+import com.arise.core.AppSettings.Keys;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
@@ -20,11 +20,8 @@ import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.DesktopCamStream;
 import com.arise.weland.impl.DesktopContentHandler;
-import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.impl.PCDecoder;
-import com.arise.weland.impl.PCDeviceController;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
@@ -42,7 +39,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
+import static com.arise.core.AppSettings.isTrue;
 import static com.arise.core.tools.FileUtil.*;
+import static com.arise.core.tools.ThreadUtil.repeatedTask;
+import static com.arise.core.tools.ThreadUtil.startThread;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
@@ -147,12 +147,11 @@ public class Main {
                 .addCommand(PLAY_MP3_RANDOM_CMD);
 
 
-        String localCommands = AppSettings.getProperty(AppSettings.Keys.LOCAL_COMANDS_FILE);
-        if (StringUtil.hasText(localCommands) && new File(localCommands).exists()){
-            cmdReg.loadJsonResource(localCommands);
+        String cmds = AppSettings.getProperty(Keys.LOCAL_COMANDS_FILE);
+        if (StringUtil.hasText(cmds) && new File(cmds).exists()){
+            cmdReg.loadJsonResource(cmds);
         }
 
-        final IDeviceController deviceController = new PCDeviceController();
         final ContentInfoDecoder decoder = new PCDecoder();
         final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
                 .addFromLocalResource("weland/config/commons/content-infos.json");
@@ -173,23 +172,16 @@ public class Main {
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider, cmdReg);
 
-
-        DesktopCamStream desktopCamStream = new DesktopCamStream(
-                desktopContentHandler.getLiveMjpegStream(),
-                desktopContentHandler.getLiveJpeg()
-        );
-
         Cronus cronus = null;
 
-        if (!AppSettings.isFalse(AppSettings.Keys.CRONUS_ENABLED)){
-            cronus = new Cronus(cmdReg, AppSettings.getProperty(AppSettings.Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+        if (!AppSettings.isFalse(Keys.CRONUS_ENABLED)){
+            cronus = new Cronus(cmdReg, AppSettings.getProperty(Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
         }
 
-        if (AppSettings.isTrue(AppSettings.Keys.RADIO_ENABLED)){
+        if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
-            rplayer.loadShowsResourcePath(AppSettings.getProperty(AppSettings.Keys.RADIO_SHOWS_PATH));
-
-            ThreadUtil.startThread(new Runnable() {
+            rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
+            startThread(new Runnable() {
                 @Override
                 public void run() {
                     rplayer.play();
@@ -197,18 +189,15 @@ public class Main {
             }, "radio-play");
         }
 
-        desktopContentHandler.setCameraStream(desktopCamStream);
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler(cmdReg)
                 .setContentProvider(contentInfoProvider)
-                .setContentHandler(desktopContentHandler)
-                .setDeviceController(deviceController);
+                .setContentHandler(desktopContentHandler);
+
+        final WelandRequestBuilder requestBuilder = new WelandRequestBuilder();
 
 
-        final WelandRequestBuilder requestBuilder = new WelandRequestBuilder(deviceController);
-
-
-        if(AppSettings.isTrue(AppSettings.Keys.UI_ENABLED)) {
+        if(isTrue(Keys.UI_ENABLED)) {
             final Cronus finalCronus = cronus;
             ThreadUtil.fireAndForget(new Runnable() {
                 @Override
@@ -222,10 +211,10 @@ public class Main {
                         finalCronus.registerTask(welandForm);
                     }
                     else {
-                        ThreadUtil.repeatedTask(welandForm, 1000);
+                        repeatedTask(welandForm, 1000);
                     }
 
-                    if(AppSettings.isTrue(AppSettings.Keys.UI_CLOSE_ON_EXIT)){
+                    if(isTrue(Keys.UI_CLOSE_ON_EXIT)){
                         welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     }
                 }
@@ -239,7 +228,7 @@ public class Main {
             @Override
             public void run() {
 
-                int port = AppSettings.getInt(AppSettings.Keys.SERVER_PORT, 8221);
+                int port = AppSettings.getInt(Keys.SERVER_PORT, 8221);
                 ioServer = new IOServer()
                         .setPort(port)
                         .setName("DR_" + SYSUtils.getDeviceName())

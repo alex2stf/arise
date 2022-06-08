@@ -76,13 +76,9 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
     }
 
 
-    private IDeviceController deviceController;
 
 
-    public BluecoveServer setDeviceController(IDeviceController deviceController) {
-        this.deviceController = deviceController;
-        return this;
-    }
+
 
     @Override
     protected void handle(final StreamConnection connection) {
@@ -113,7 +109,6 @@ public class BluecoveServer extends StreamedServer<StreamConnectionNotifier, Str
             public void handleRest(HttpReader reader) {
                 byte bytes[] = bodyBytes.toByteArray();
                 if (bytes.length > 0 && bytes[0] == '>'){
-                    deviceController.digestBytes(bytes);
                     resetBodyBytes();
                     this.readInputStream(inputStream);
                 }

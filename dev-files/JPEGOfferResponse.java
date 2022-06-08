@@ -7,6 +7,8 @@ import com.arise.core.tools.ContentType;
 import java.nio.charset.Charset;
 import java.util.Date;
 
+
+@Deprecated
 public class JPEGOfferResponse extends HttpResponse {
     public JPEGOfferResponse(){
         setStatusCode(200)

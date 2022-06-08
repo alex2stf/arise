@@ -62,7 +62,7 @@ public abstract class AbstractServerTest {
 
 
           server
-              .setRequestBuilder(new WelandRequestBuilder(null))
+              .setRequestBuilder(new WelandRequestBuilder())
               .addDuplexDraft(new WSDraft6455())
               .setHost("localhost")
               .setStateObserver(serverTestHandler)

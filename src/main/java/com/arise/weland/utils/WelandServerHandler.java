@@ -25,7 +25,6 @@ import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.IDeviceController;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.model.FileTransfer;
 
@@ -45,21 +44,21 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.StringUtil.jsonVal;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class WelandServerHandler extends HTTPServerHandler {
-  public static final String MSG_RECEIVE_OK = "MSG-RECEIVE-OK";
 
   private static final ProxyHttpResponse proxyHttpResponse = new ProxyHttpResponse();
 
 
   ContentInfoProvider contentInfoProvider;
   ContentHandler contentHandler;
-  IDeviceController iDeviceController;
   Whisker whisker = new Whisker()
           .setTemplatesRoot("src/main/resources#weland");
-  String appContent = StreamUtil.toString(FileUtil.findStream("weland/app.html"));
+  String appContent = StreamUtil.toString(findStream("weland/app.html"));
+
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
   private CommandRegistry commandRegistry;
@@ -92,10 +91,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-  public WelandServerHandler setDeviceController(IDeviceController iDeviceController) {
-    this.iDeviceController = iDeviceController;
-    return this;
-  }
 
   public WelandServerHandler setContentHandler(ContentHandler contentHandler) {
     this.contentHandler = contentHandler;
@@ -138,33 +133,9 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if ("/device/controls/set".equalsIgnoreCase(request.path())){
-      return contentHandler.getDeviceStat().toHttp();
-    }
-
-    if ("/device/live/audio.wav".equalsIgnoreCase(request.path())){
-      return contentHandler.getLiveWav();
-    }
-
-    if ("/device/live/mjpeg".equalsIgnoreCase(request.path())){
-      return contentHandler.getLiveMjpegStream();
-    }
-
-    if ("/device/live/jpeg".equalsIgnoreCase(request.path())){
-      return contentHandler.getLiveJpeg();
-    }
-
-    if("/alias-play/rockfm".equalsIgnoreCase(request.path())){
-      return contentHandler.openPath("https://live.rockfm.ro:8443/rockfm.aacp");
-    }
-
-    if("/alias-play/jazz".equalsIgnoreCase(request.path())){
-      return contentHandler.openPath("https://stream.srg-ssr.ch/m/rsj/mp3_128");
-    }
-
     //main html rendering
     if ("/app".equalsIgnoreCase(request.path()) || "/app.html".equalsIgnoreCase(request.path())){
-      appContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/app.html"));
+      appContent = StreamUtil.toString(findStream("src/main/resources#weland/app.html"));
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
       return HttpResponse.html(whisker.compile(appContent, args));
@@ -172,7 +143,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if(request.path().equalsIgnoreCase("/orchestra")){
-      String orchContent = StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/orchestra.html"));
+      String orchContent = StreamUtil.toString(findStream("src/main/resources#weland/orchestra.html"));
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
 
@@ -431,7 +402,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
     if ("/kontrols".equalsIgnoreCase(request.path())){
       Map<String, Object> args = new HashMap<>();
-      return HttpResponse.html(whisker.compile(StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/kontrols.html")), args));
+      return HttpResponse.html(whisker.compile(StreamUtil.toString(findStream("src/main/resources#weland/kontrols.html")), args));
     }
 
 
@@ -452,7 +423,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       args.put("port", server.getPort());
       args.put("id", id);
       args.put("protocol", server.isSecure() ? "wss" : "ws");
-      return HttpResponse.javascript(whisker.compile(StreamUtil.toString(FileUtil.findStream("src/main/resources#weland/WSKontrol.js")), args));
+      return HttpResponse.javascript(whisker.compile(StreamUtil.toString(findStream("src/main/resources#weland/WSKontrol.js")), args));
     }
 
 

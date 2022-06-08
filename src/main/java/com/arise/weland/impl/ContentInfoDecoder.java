@@ -4,7 +4,6 @@ import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.File;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.arise.core.tools.StringUtil.hasContent;
+import static com.arise.core.tools.StringUtil.hasText;
 
 public abstract class ContentInfoDecoder {
 
@@ -21,14 +21,14 @@ public abstract class ContentInfoDecoder {
 
     protected ContentInfoProvider provider;
 
-    public final SuggestionService suggestionService = new SuggestionService()
+    public final SuggestionService sugServ = new SuggestionService()
             .load("weland/config/commons/suggestions.json");
 
     private static final byte[] EMPTY_BYTE = new byte[0];
 
 
     public ContentInfoDecoder(){
-        suggestionService.setCacheStrategy(new SuggestionService.CacheStrategy(){
+        sugServ.setCacheStrategy(new SuggestionService.CacheStrategy(){
             @Override
             public boolean contains(String id) {
                 if (dataCache.containsKey(id)){
@@ -67,7 +67,7 @@ public abstract class ContentInfoDecoder {
     }
 
     public byte[] getThumbnail(String id) {
-        if (!StringUtil.hasText(id)){
+        if (!hasText(id)){
             return EMPTY_BYTE;
         }
 
@@ -89,7 +89,7 @@ public abstract class ContentInfoDecoder {
     }
 
     public ContentType getThumbnailContentType(String id) {
-        if (!StringUtil.hasText(id)){
+        if (!hasText(id)){
             return ContentType.IMAGE_JPEG;
         }
         if (dataCache.containsKey(id)){
@@ -154,7 +154,7 @@ public abstract class ContentInfoDecoder {
     }
 
     public void fixThumbnails(ContentInfo i) {
-        SuggestionService.Data data = suggestionService.solveThumbnail(i);
+        SuggestionService.Data data = sugServ.solveThumbnail(i);
         if (data != null){
             i.setThumbnailId(data.getId());
         } else {
@@ -165,6 +165,6 @@ public abstract class ContentInfoDecoder {
 
 
     public SuggestionService.Data fixThumbnail(String thumbnail) {
-       return suggestionService.solveUrlOrBase64(thumbnail);
+       return sugServ.solveUrlOrBase64(thumbnail);
     }
 }

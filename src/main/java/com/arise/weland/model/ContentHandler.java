@@ -12,8 +12,6 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.utils.JPEGOfferResponse;
-import com.arise.weland.utils.MJPEGResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +28,6 @@ import static com.arise.core.tools.SYSUtils.getLinuxDetails;
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
 
-    private static MJPEGResponse mjpegResponse = new MJPEGResponse();
-    private static JPEGOfferResponse jpegOfferResponse = new JPEGOfferResponse();
-
     public ContentHandler setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;
         return this;
@@ -43,7 +38,6 @@ public abstract  class ContentHandler {
         return openPath(ContentInfo.decodePath(path));
     }
 
-    protected abstract HttpResponse openInfo(ContentInfo info);
     public abstract HttpResponse openPath(String path);
     protected abstract HttpResponse pause(String path);
 
@@ -71,21 +65,9 @@ public abstract  class ContentHandler {
         return stop(info.getPath());
     }
 
-
     public abstract void onMessageReceived(Message message);
 
     public abstract void onPlaylistPlay(String name);
-
-    public static MJPEGResponse getLiveMjpegStream(){
-        return mjpegResponse;
-    }
-
-    public static JPEGOfferResponse getLiveJpeg() {
-        return jpegOfferResponse;
-    }
-
-    public abstract <T extends SingletonHttpResponse> T getLiveWav();
-
 
     public abstract DeviceStat onDeviceUpdate(Map<String, List<String>> params);
 

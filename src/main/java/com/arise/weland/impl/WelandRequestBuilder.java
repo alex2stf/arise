@@ -17,13 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class WelandRequestBuilder extends HttpRequestBuilder {
-    private final IDeviceController deviceController;
 
     private static final Mole log = Mole.getInstance(WelandRequestBuilder.class);
 
-    public WelandRequestBuilder(IDeviceController deviceController) {
-        this.deviceController = deviceController;
-    }
 
 
     @Override
@@ -37,15 +33,7 @@ public class WelandRequestBuilder extends HttpRequestBuilder {
             public void handleRest(HttpReader reader) {
                 byte[] bytes = this.bodyBytes.toByteArray();
 
-                //logica de device controller
-                if (bytes.length > 0 && bytes[0] == '>'){
-//                    System.out.println("RECEIVED " + new String(bytes));
-                    deviceController.digestBytes(bytes);
-                    resetBodyBytes();
-                    this.readInputStream(inputStream);
-                }
-
-                else if (request.pathsStartsWith("transfer")){
+                if (request.pathsStartsWith("transfer")){
                     String name = request.getQueryParam("name");
                     log.info("transfer file " + name);
                     try {

@@ -16,7 +16,7 @@ public class PCDecoder extends ContentInfoDecoder {
 
     public PCDecoder(){
         //adauga convertoare de PC:
-        suggestionService.addConvertor(new Convertor<SuggestionService.Data, ContentInfo>() {
+        sugServ.addConvertor(new Convertor<SuggestionService.Data, ContentInfo>() {
             @Override
             public SuggestionService.Data convert(ContentInfo data) {
                 try {

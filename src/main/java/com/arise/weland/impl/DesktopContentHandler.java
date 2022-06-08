@@ -24,6 +24,7 @@ import java.util.Set;
 
 import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
 import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.weland.dto.DeviceStat.getInstance;
 
 //import org.openqa.selenium.WebDriver;
 
@@ -31,27 +32,15 @@ public class DesktopContentHandler extends ContentHandler {
 
     private static final Mole log = Mole.getInstance(DesktopContentHandler.class);
 
-    private final CommandRegistry cmdRegistry;
+    private final CommandRegistry cmdReg;
 
     Set<String> exes = new HashSet<>();
-    private DesktopCamStream desktopCamStream;
 
     private final MediaPlayer mediaPlayer;
-    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry cmdRegistry) {
+    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry cmdReg) {
         this.contentInfoProvider = contentInfoProvider;
-        this.cmdRegistry = cmdRegistry;
+        this.cmdReg = cmdReg;
         mediaPlayer = RadioPlayer.getMediaPlayer();
-    }
-
-
-
-
-
-
-    @Override
-    public HttpResponse openInfo(ContentInfo info) {
-        openString(info.getPath());
-        return null;
     }
 
 
@@ -71,7 +60,7 @@ public class DesktopContentHandler extends ContentHandler {
     //TODO fa stopPreviews mai destept
     private HttpResponse openString(final String path){
            log.info("OPEN " + path);
-           DeviceStat deviceStat = DeviceStat.getInstance();
+           DeviceStat deviceStat = getInstance();
 
             if (isHttpPath(path)){
                 System.out.println(path);
@@ -137,6 +126,7 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
+        mediaPlayer.stop();
         return null;
     }
 
@@ -156,36 +146,26 @@ public class DesktopContentHandler extends ContentHandler {
 
 
 
-
-
     @Override
-    public <T extends SingletonHttpResponse> T getLiveWav() {
-        return null;
-    }
-
-
-
-    @Override
-    public DeviceStat onDeviceUpdate(Map<String, List<String>> params) {
+    public DeviceStat onDeviceUpdate(Map<String, List<String>> p) {
 
         DeviceStat deviceStat = getDeviceStat();
 
 
-
-        String volumeStr = null;
-        if(params.containsKey("musicVolume")) {
-            volumeStr = params.get("musicVolume").get(0);
+        String mVol = null;
+        if(p.containsKey("musicVolume")) {
+            mVol = p.get("musicVolume").get(0);
         }
 
-        if(hasText(volumeStr)) {
-            if(cmdRegistry.containsCommand("set-master-volume")){
-                String v = "" + cmdRegistry.execute("set-master-volume", new String[]{volumeStr});
-                deviceStat.setProp("audio.music.volume", v);
+        if(hasText(mVol)) {
+            mVol = mediaPlayer.setVolume(mVol);
+            getInstance().setProp("audio.music.volume", mVol);
+        }
+        else {
+            mVol = mediaPlayer.getVolume();
+            if (StringUtil.hasText(mVol)){
+                getInstance().setProp("audio.music.volume", mVol);
             }
-        }
-        else if(cmdRegistry.containsCommand("get-master-volume")){
-            String x = cmdRegistry.execute("get-master-volume", new String[]{}) + "";
-            deviceStat.setProp("audio.music.volume", x);
         }
 
 
@@ -198,11 +178,10 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public DeviceStat getDeviceStat() {
-        DeviceStat deviceStat = DeviceStat.getInstance();
+        DeviceStat deviceStat = getInstance();
 
         deviceStat.setProp("cams.active.v", "v1");
         deviceStat.setProp("cams.active.id", "0");
-        deviceStat.setProp("cams.active.run", desktopCamStream.isRunning()  + "" );
         deviceStat.setProp("flash.modes.active", "off" );
 
         deviceStat.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
@@ -237,7 +216,4 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
 
-    public void setCameraStream(DesktopCamStream desktopCamStream) {
-        this.desktopCamStream = desktopCamStream;
-    }
 }

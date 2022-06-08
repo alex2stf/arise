@@ -7,6 +7,7 @@ import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
+import com.arise.weland.dto.DeviceStat;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -176,5 +177,19 @@ public class MediaPlayer {
 
     public void pause() {
 
+    }
+
+    public String setVolume(String v) {
+        if(r.containsCommand("set-master-volume")){
+            return "" + r.execute("set-master-volume", new String[]{v});
+        }
+        return getVolume();
+    }
+
+    public String getVolume() {
+        if(r.containsCommand("get-master-volume")){
+            return r.execute("get-master-volume", new String[]{}) + "";
+        }
+        return "";
     }
 }

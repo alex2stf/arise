@@ -6,6 +6,8 @@ import com.arise.astox.net.models.SingletonHttpResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+
+@Deprecated
 public class MJPEGResponse extends SingletonHttpResponse {
 
     protected static String boundary = "some-rand-boundary";
