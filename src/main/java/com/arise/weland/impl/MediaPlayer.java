@@ -6,6 +6,7 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.Util.close;
 import static java.lang.Runtime.getRuntime;
 
 public class MediaPlayer {
@@ -63,6 +65,9 @@ public class MediaPlayer {
         return len;
     }
 
+    AudioInputStream audioIn = null;
+    Clip clip = null;
+
     public Object play(final String path) {
         if (isAppClosed){
             log.warn("App received shutdown hook");
@@ -72,7 +77,6 @@ public class MediaPlayer {
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
         if (path.endsWith(".wav")){
-            AudioInputStream audioIn = null;
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
             } catch (UnsupportedAudioFileException e) {
@@ -81,7 +85,8 @@ public class MediaPlayer {
                 e.printStackTrace();
             }
 
-            Clip clip = null;
+
+
             try {
                 clip = AudioSystem.getClip();
             } catch (LineUnavailableException e) {
@@ -153,6 +158,23 @@ public class MediaPlayer {
     }
 
     public void stop() {
+        if (clip != null){
+            try {
+                clip.stop();
+            }catch (Exception e){
+            }
+            close(clip);
+        }
+        if (audioIn != null){
+            close(clip);
+        }
+        if (proc[0] != null){
+            proc[0].destroy();
+        }
         r.getCommand("browser-close").execute();
+    }
+
+    public void pause() {
+
     }
 }

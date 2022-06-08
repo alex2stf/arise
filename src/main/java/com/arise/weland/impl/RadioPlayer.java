@@ -5,15 +5,12 @@ import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Handler;
-import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.ThreadUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +22,7 @@ import static com.arise.core.tools.MapUtil.getList;
 import static com.arise.core.tools.MapUtil.getString;
 import static com.arise.core.tools.StreamUtil.toBytes;
 import static com.arise.core.tools.ThreadUtil.delayedTask;
+import static com.arise.core.tools.ThreadUtil.sleep;
 
 public class RadioPlayer {
 
@@ -56,12 +54,8 @@ public class RadioPlayer {
         }
         Show s = getActiveShow();
         if (s == null){
-            log.warn("no valid show defined for now... rety in " + lR  + "ms");
-            try {
-                Thread.sleep(lR);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            log.warn("no valid show defined for now... retry in " + lR  + "ms");
+            sleep(lR);
             lR += 100;
             if (is_play || !MediaPlayer.isAppClosed) {
                 loop();
@@ -91,8 +85,6 @@ public class RadioPlayer {
     public void loadShowsResourcePath(String p) {
         try {
             Map m = (Map) decodeBytes(toBytes(findStream(p)));
-            System.out.println(m);
-
             List<Map> x = getList(m, "shows");
             for (Map h: x){
                 Show s = new Show();

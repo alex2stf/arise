@@ -13,7 +13,6 @@ import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
-import com.arise.weland.wrappers.VLCWrapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     protected HttpResponse pause(String path) {
-        VLCWrapper.pauseHttp();
+        mediaPlayer.pause();
         return HttpResponse.oK();
     }
 

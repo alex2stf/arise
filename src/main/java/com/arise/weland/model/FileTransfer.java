@@ -7,7 +7,6 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.File;
@@ -19,41 +18,39 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import static com.arise.astox.net.models.http.HttpResponse.oK;
+import static com.arise.core.tools.StringUtil.hasText;
 
 public class FileTransfer  {
 
     public static class FileRequest extends ServerRequest {
-        final File file;
-        final String fileName;
+        final File f;
+        final String n;
 
-        public FileRequest(File file, String fileName) {
-            this.file = file;
-            this.fileName = StringUtil.hasText(fileName) ? fileName : file.getName();
+        public FileRequest(File f, String n) {
+            this.f = f;
+            this.n = hasText(n) ? n : f.getName();
         }
     }
 
     public static class Client extends AbstractStreamedSocketClient<FileRequest, HttpResponse> {
 
 
-
-
         @Override
-        protected void write(Socket socket, FileRequest request) {
+        protected void write(Socket s, FileRequest r) {
 
             try {
-                ContentType contentType = ContentType.search(request.file);
+                ContentType ct = ContentType.search(r.f);
 
-                HttpRequest httpRequest = new HttpRequest();
-                httpRequest.setUri("/transfer?name=" + request.fileName);
-                httpRequest.addHeader("Content-Type", contentType.toString());
-
-                socket.getOutputStream().write(httpRequest.getBytes());
+                HttpRequest req = new HttpRequest();
+                req.setUri("/transfer?name=" + r.n);
+                req.addHeader("Content-Type", ct.toString());
+                s.getOutputStream().write(req.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                FileInputStream in = new FileInputStream(request.file);
-                OutputStream out = socket.getOutputStream();
+                FileInputStream in = new FileInputStream(r.f);
+                OutputStream out = s.getOutputStream();
                 byte[] bytes = new byte[16 * 1024];
                 int count;
                 while ((count = in.read(bytes)) > 0) {
@@ -65,23 +62,20 @@ public class FileTransfer  {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-
         }
 
         @Override
-        protected void read(Socket socket, Handler<HttpResponse> responseHandler) {
+        protected void read(Socket _s, Handler<HttpResponse> _h) {
 
             String x;
             InputStream response = null;
             do {
                 try {
-                    response = socket.getInputStream();
+                    response = _s.getInputStream();
                 } catch (Exception e) {
                     Util.close(response);
-                    Util.close(socket);
-                    responseHandler.handle(oK());
+                    Util.close(_s);
+                    _h.handle(oK());
                     return;
                 }
                 x = StreamUtil.toString(response);
@@ -89,8 +83,8 @@ public class FileTransfer  {
             } while (!"copied".equals(x.trim()));
 
             Util.close(response);
-            Util.close(socket);
-            responseHandler.handle(oK());
+            Util.close(_s);
+            _h.handle(oK());
         }
     }
 

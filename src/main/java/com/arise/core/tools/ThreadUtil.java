@@ -98,6 +98,14 @@ public class ThreadUtil {
         return id.replaceAll("\\s+", "-") + "-" + UUID.randomUUID();
     }
 
+    public static void sleep(long v) {
+        try {
+            Thread.sleep(v);
+        } catch (InterruptedException e) {
+            Mole.getInstance(ThreadUtil.class).e("sleep interrupted ", e);
+        }
+    }
+
 
     public  static class TimerResult {
         final Timer timer;
