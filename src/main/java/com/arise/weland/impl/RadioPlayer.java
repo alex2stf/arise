@@ -130,8 +130,9 @@ public class RadioPlayer {
 
         public boolean isActive() {
             boolean act = (Cronus.matchMoment(Calendar.getInstance(), _d, _h));
-
-            log.info("show " + n + " active = " + act);
+            if (act){
+                log.info("show " + n + " active = " + act);
+            }
             return act;
         }
 

@@ -92,8 +92,8 @@ public class Defaults {
                 fo = new FileOutputStream(tmp);
                 StreamUtil.transfer(inputStream, fo);
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Mole.logWarn("Unable to find stream " + path, e);
             }
             Util.close(inputStream);
             Util.close(fo);
