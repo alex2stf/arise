@@ -3,7 +3,7 @@ package com.arise.weland.impl;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.utils.JPEGOfferResponse;
 import com.arise.weland.utils.MJPEGResponse;
-import com.github.sarxos.webcam.Webcam;
+//import com.github.sarxos.webcam.Webcam;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,7 +16,7 @@ public class DesktopCamStream {
     final MJPEGResponse mjpegResponse;
     final JPEGOfferResponse jpegOfferResponse;
 
-    volatile Webcam webcam;
+//    volatile Webcam webcam;
     volatile boolean started = false;
 
     public DesktopCamStream(MJPEGResponse mjpegResponse, JPEGOfferResponse jpegOfferResponse) {
@@ -27,10 +27,10 @@ public class DesktopCamStream {
     public synchronized void stop() {
         ThreadUtil.closeTimer(timerResult);
         started = false;
-        if (webcam == null){
-            return;
-        }
-        webcam.close();
+//        if (webcam == null){
+//            return;
+//        }
+//        webcam.close();
 
     }
 
@@ -50,17 +50,18 @@ public class DesktopCamStream {
 
 
     public boolean isRunning() {
-        return webcam != null ? webcam.isOpen() : false;
+//        return webcam != null ? webcam.isOpen() : false;
+        return false;
     }
 
     public synchronized void start() {
-        if (webcam == null){
-            webcam = Webcam.getDefault();
-        }
-
-        if (!webcam.isOpen()){
-            webcam.open();
-        }
+//        if (webcam == null){
+//            webcam = Webcam.getDefault();
+//        }
+//
+//        if (!webcam.isOpen()){
+//            webcam.open();
+//        }
         started = true;
         ThreadUtil.closeTimer(timerResult);
         timerResult = ThreadUtil.repeatedTask(new Runnable() {
@@ -73,11 +74,11 @@ public class DesktopCamStream {
                 }
                 System.out.println("take snapshot at " + new Date());
                 byte[] bytes = null;
-                try {
-                    bytes = (toByteArray(webcam.getImage(), "JPEG"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    bytes = (toByteArray(webcam.getImage(), "JPEG"));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 if (bytes != null) {
                     mjpegResponse.pushJPEGFrame(bytes);
                     jpegOfferResponse.offerJPEG(bytes);

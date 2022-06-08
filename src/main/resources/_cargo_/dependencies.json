@@ -100,6 +100,31 @@
   },
 
 
+  "NWJS": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "nwjs_win32",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(http://dl.nwjs.io/v0.12.0/nwjs-v0.12.0-win-ia32.zip, down, nwjs-v0.12.0-win-ia32.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down, nwjs-v0.12.0-win-ia32.zip), $sub-location(bin,nwjs-v0.12.0-win-ia32,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,nwjs-v0.12.0-win-ia32/nwjs-v0.12.0-win-ia32/nw.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+
   "CHROME_DRIVER": {
     "type": "binary",
     "versions": [

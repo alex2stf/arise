@@ -32,7 +32,7 @@ public class Cronus {
     private List<Runnable> otherTasks = new ArrayList<>();
 
 
-    public Cronus(CommandRegistry commandRegistry, String path){
+    public Cronus(CommandRegistry commandRegistry, String path) {
         this.commandRegistry = commandRegistry;
 
 
@@ -40,8 +40,8 @@ public class Cronus {
             List config = (List) Groot.decodeBytes(
                     StreamUtil.toBytes(FileUtil.findStream(path))
             );
-            for (Object o: config){
-                if (o instanceof Map){
+            for (Object o : config) {
+                if (o instanceof Map) {
                     Map m = (Map) o;
                     registerJob(m);
                 }
@@ -54,8 +54,8 @@ public class Cronus {
         ThreadUtil.repeatedTask(new Runnable() {
             @Override
             public void run() {
-                for (final CronTask c: cronTasks){
-                    if (c.isMatching(Calendar.getInstance())){
+                for (final CronTask c : cronTasks) {
+                    if (c.isMatching(Calendar.getInstance())) {
                         startDaemon(new Runnable() {
                             @Override
                             public void run() {
@@ -63,7 +63,7 @@ public class Cronus {
                             }
                         }, "cronus-task-" + c.name);
                     }
-                    for (Runnable x: otherTasks){
+                    for (Runnable x : otherTasks) {
                         fireAndForget(x, "cronus-other-task");
                     }
                 }
@@ -72,11 +72,7 @@ public class Cronus {
     }
 
 
-
-
-
-
-    private void registerJob(Map m){
+    private void registerJob(Map m) {
         String hour = MapUtil.getString(m, "hour");
         String name = MapUtil.getString(m, "name");
         String day = MapUtil.getString(m, "day");
@@ -86,14 +82,14 @@ public class Cronus {
         String cmdId = MapUtil.getString(cmd, "id");
         String args[] = MapUtil.getStringList(cmd, "args");
         cronTasks.add(
-               new CronTask(commandRegistry)
-                       .setDisable(disable)
-                       .setDayRef(day)
-                       .setStoreKey(storeKey)
-                       .setName(name)
-                       .setHourRef(hour)
-                       .setCmdId(cmdId)
-                       .setArgs(args)
+                new CronTask(commandRegistry)
+                        .setDisable(disable)
+                        .setDayRef(day)
+                        .setStoreKey(storeKey)
+                        .setName(name)
+                        .setHourRef(hour)
+                        .setCmdId(cmdId)
+                        .setArgs(args)
         );
     }
 
@@ -112,22 +108,23 @@ public class Cronus {
         private CommandRegistry cmdReg;
         private boolean disable = false;
 
-        public CronTask setStoreKey(String storeKey){
+        public CronTask setStoreKey(String storeKey) {
             this.storeKey = storeKey;
             return this;
         }
+
         public CronTask(CommandRegistry cmdReg) {
             this.cmdReg = cmdReg;
         }
 
-        CronTask setDayRef(String dayRef){
+        CronTask setDayRef(String dayRef) {
             this.dayRef = dayRef;
             return this;
         }
 
 
-        boolean isMatching(Calendar c ){
-            if (disable){
+        boolean isMatching(Calendar c) {
+            if (disable) {
                 return false;
             }
             return matchMoment(c, dayRef, hourRef);
@@ -135,7 +132,7 @@ public class Cronus {
 
         public void execute() {
             Object res = cmdReg.execute(cmdId, args, null, null);
-            if(StringUtil.hasText(storeKey)){
+            if (StringUtil.hasText(storeKey)) {
                 cmdReg.store(storeKey, res);
             }
         }
@@ -167,14 +164,13 @@ public class Cronus {
     }
 
 
-
     public static void main(String[] args) {
         Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + new Date());
     }
 
     static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static boolean matchMoment(Calendar c, String d, String h){
+    public static boolean matchMoment(Calendar c, String d, String h) {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
         return moment.equalsIgnoreCase(sdf.format(c.getTime()));
     }
@@ -182,12 +178,12 @@ public class Cronus {
 
     private static final String nilh = "xx:xx:xx";
 
-    private static String[] getParts(String x){
+    private static String[] getParts(String x) {
         String p[] = x.split(" ");
         String a = p[0].toLowerCase();
         String b = p.length > 1 ? p[1].toLowerCase() : null;
-        if (null != b){
-            if (b.startsWith("between_")){
+        if (null != b) {
+            if (b.startsWith("between_")) {
                 String substr = b.substring("between_".length());
                 p = substr.split("_and_");
                 return new String[]{a, p[0], p[1]};
@@ -201,17 +197,32 @@ public class Cronus {
         String p[] = getParts(in);
         String moment = p[0].toLowerCase();
 
-        if (p.length == 3){
+        if (p.length == 3) {
             String fromDay = p[1];
             String toDay = p[2];
-            if (!dayIsBetween(fromDay, c, toDay)){
+            if (!dayIsBetween(fromDay, c, toDay)) {
                 return nilh;
             }
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        if ("DAILY".equalsIgnoreCase(moment)){
+        if ("DAILY".equalsIgnoreCase(moment)) {
             return sdf.format(c.getTime());
+        }
+
+        if (moment.indexOf("_") > -1 || isWeekdayFormat(moment)){
+            String dwd[] = moment.toLowerCase().split("_");
+            if (isWeekdayFormat(dwd)){
+                Date d = c.getTime();
+                String n = new SimpleDateFormat("EEEE").format(d).toLowerCase();
+                for (String s: dwd){
+                    if (n.equals(s)){
+                        return sdf.format(d);
+                    }
+                }
+                return nilh;
+            }
+            return nilh;
         }
         try {
             Date d = sdf.parse(moment);
@@ -223,46 +234,45 @@ public class Cronus {
     }
 
 
-
-    public static String parseHourRef(String input, Calendar calendar){
+    public static String parseHourRef(String input, Calendar calendar) {
         String p[] = getParts(input);
         String moment = p[0].toLowerCase();
-        if (p.length == 3 && !isBetween(p[1],calendar, p[2])){
+        if (p.length == 3 && !isBetween(p[1], calendar, p[2])) {
             return nilh;
         }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        if ("each_second".equalsIgnoreCase(moment)){
+        if ("each_second".equalsIgnoreCase(moment)) {
             return sdf.format(calendar.getTime());
         }
-        if ("each_minute".equalsIgnoreCase(moment)){
-            if(calendar.get(Calendar.SECOND) == 01) {
+        if ("each_minute".equalsIgnoreCase(moment)) {
+            if (calendar.get(Calendar.SECOND) == 01) {
                 return sdf.format(calendar.getTime());
             }
             return "xx:xx:xx";
         }
-        if (moment.startsWith("each_") && moment.endsWith("_seconds")){
+        if (moment.startsWith("each_") && moment.endsWith("_seconds")) {
             String sec = moment.split("_")[1];
             try {
                 int num = Integer.valueOf(sec);
                 int seconds = calendar.get(Calendar.SECOND);
-                if (seconds % num == 0){
+                if (seconds % num == 0) {
                     return sdf.format(calendar.getTime());
                 }
                 return "xx:xx:xx";
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new SyntaxException("invalid hourRef " + input, e);
             }
         }
-        if (moment.startsWith("each_") && moment.endsWith("_minutes")){
+        if (moment.startsWith("each_") && moment.endsWith("_minutes")) {
             String sec = moment.split("_")[1];
             try {
                 int num = Integer.valueOf(sec);
                 int minute = calendar.get(Calendar.MINUTE);
-                if (minute % num == 0 && 59 == calendar.get(Calendar.SECOND)){
+                if (minute % num == 0 && 59 == calendar.get(Calendar.SECOND)) {
                     return sdf.format(calendar.getTime());
                 }
                 return "xx:xx:xx";
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new SyntaxException("invalid hourRef " + input, e);
             }
         }
@@ -275,24 +285,24 @@ public class Cronus {
     }
 
 
-    static MomentInDay fromString(String s){
+    static MomentInDay fromString(String s) {
         String parts[] = s.split(":");
         MomentInDay m = new MomentInDay();
         try {
-           m._h = Integer.parseInt(parts[0]);
-           m._m = Integer.parseInt(parts[1]);
-           m._s = Integer.parseInt(parts[2]);
-        } catch (Exception e){
-           throw new SyntaxException("Invalid string " + s + " for parsing MomentInDay");
+            m._h = Integer.parseInt(parts[0]);
+            m._m = Integer.parseInt(parts[1]);
+            m._s = Integer.parseInt(parts[2]);
+        } catch (Exception e) {
+            throw new SyntaxException("Invalid string " + s + " for parsing MomentInDay");
         }
         return m;
     }
 
-    public static boolean isBetween(String x, String s, String y){
+    public static boolean isBetween(String x, String s, String y) {
         return isBetween(fromString(x), fromString(s), fromString(y));
     }
 
-    public static boolean isBetween(String x, Calendar s, String y){
+    public static boolean isBetween(String x, Calendar s, String y) {
         MomentInDay m = new MomentInDay();
         m._h = s.get(Calendar.HOUR_OF_DAY);
         m._m = s.get(Calendar.MINUTE);
@@ -301,7 +311,7 @@ public class Cronus {
     }
 
 
-    private static final Map<String, Integer> wk = Collections.unmodifiableMap(new HashMap<String, Integer>(){{
+    private static final Map<String, Integer> wk = Collections.unmodifiableMap(new HashMap<String, Integer>() {{
         put("monday", 1);
         put("tuesday", 2);
         put("wednesday", 3);
@@ -312,11 +322,11 @@ public class Cronus {
     }});
 
 
-    public static boolean isWeekdayFormat(String ... args) {
+    public static boolean isWeekdayFormat(String... args) {
         int i = 0;
-        for (String s: args){
-            for (String d: wk.keySet()){
-                if (d.equals(s.toLowerCase())){
+        for (String s : args) {
+            for (String d : wk.keySet()) {
+                if (d.equals(s.toLowerCase())) {
                     i++;
                 }
             }
@@ -325,19 +335,19 @@ public class Cronus {
     }
 
 
-    public static boolean dayIsBetween(String a, Calendar c, String b){
+    public static boolean dayIsBetween(String a, Calendar c, String b) {
 
 
-        if (isWeekdayFormat(a, b)){
+        if (isWeekdayFormat(a, b)) {
             String x = null;
             int wd = c.get(Calendar.DAY_OF_WEEK);
-            for (Map.Entry<String, Integer> e: wk.entrySet()){
-                if (e.getValue().equals(wd)){
+            for (Map.Entry<String, Integer> e : wk.entrySet()) {
+                if (e.getValue().equals(wd)) {
                     x = e.getKey();
                     break;
                 }
             }
-            if(!StringUtil.hasText(x)){
+            if (!StringUtil.hasText(x)) {
                 return false;
             }
             return dayIsBetween(a, x, b);
@@ -353,11 +363,11 @@ public class Cronus {
 
     private static MomentInYear dayFromCalendar(Calendar c, MomentInYear m) {
         MomentInYear r = new MomentInYear();
-        if (m.hasOnlyDay()){
+        if (m.hasOnlyDay()) {
             r._d = c.get(Calendar.DAY_OF_MONTH);
             return r;
         }
-        if (m.hasNoYear()){
+        if (m.hasNoYear()) {
             r._d = c.get(Calendar.DAY_OF_MONTH);
             r._m = c.get(Calendar.MONTH) + 1;
             return r;
@@ -369,11 +379,11 @@ public class Cronus {
     }
 
 
-    public static boolean dayIsBetween(String a, String x, String b){
+    public static boolean dayIsBetween(String a, String x, String b) {
         a = a.toLowerCase();
         b = b.toLowerCase();
         x = x.toLowerCase();
-        if (wk.containsKey(a) && wk.containsKey(x) && wk.containsKey(b)){
+        if (wk.containsKey(a) && wk.containsKey(x) && wk.containsKey(b)) {
             return rollIsBetween(
                     wk.get(a),
                     wk.get(x),
@@ -391,7 +401,7 @@ public class Cronus {
 
         if (i.hasOnlyDay() &&
                 m.hasOnlyDay() &&
-                d.hasOnlyDay()){
+                d.hasOnlyDay()) {
             return rollIsBetween(i.day(), m.day(), d.day());
         }
 
@@ -402,36 +412,36 @@ public class Cronus {
         if (d.month() < i.month() &&
                 m.hasNoYear() &&
                 i.hasNoYear() &&
-                d.hasNoYear()){
+                d.hasNoYear()) {
             dd.add(Calendar.YEAR, 1);
         }
         return dm.after(di) && dm.before(dd);
     }
 
 
-    public static Calendar calendarFromString(String i, String f){
+    public static Calendar calendarFromString(String i, String f) {
         SimpleDateFormat s = new SimpleDateFormat(f);
         try {
             Calendar c = Calendar.getInstance();
             c.setTime(s.parse(i));
             return c;
         } catch (ParseException e) {
-           throw new SyntaxException("invalid date " + i + " format " + f);
+            throw new SyntaxException("invalid date " + i + " format " + f);
         }
     }
 
-    static boolean rollIsBetween(int da, int xx, int db){
-        if (da <= db){
+    static boolean rollIsBetween(int da, int xx, int db) {
+        if (da <= db) {
             return xx > da && xx < db;
         }
         return xx + da >= da && xx + da < db + da;
     }
 
-    public static boolean isBefore(String a, String m){
+    public static boolean isBefore(String a, String m) {
         return isBefore(fromString(a), fromString(m));
     }
 
-    public static boolean isBetween(MomentInDay i, MomentInDay m, MomentInDay d){
+    public static boolean isBetween(MomentInDay i, MomentInDay m, MomentInDay d) {
 
 
 //        if (isAfter(i, m)){
@@ -442,90 +452,88 @@ public class Cronus {
 //        }
 
 
-       return compareIsBetween(i, m, d);
+        return compareIsBetween(i, m, d);
     }
 
 
-    private static boolean compareIsBetween(Comparable i, Comparable m, Comparable d){
+    private static boolean compareIsBetween(Comparable i, Comparable m, Comparable d) {
         return i.compareTo(m) == -1 && m.compareTo(d) == -1;
     }
 
 
-    public static int compareHourRefs(String a, String b){
+    public static int compareHourRefs(String a, String b) {
         return fromString(a).compareTo(fromString(b));
     }
 
-    public static boolean isBefore(MomentInDay a, MomentInDay m){
+    public static boolean isBefore(MomentInDay a, MomentInDay m) {
         return a.compareTo(m) == -1;
     }
 
-    public static boolean isAfter(MomentInDay a, MomentInDay m){
+    public static boolean isAfter(MomentInDay a, MomentInDay m) {
         return m.compareTo(a) == 1;
     }
 
-    public static boolean isAfter(String a, String m){
+    public static boolean isAfter(String a, String m) {
         return isAfter(fromString(a), fromString(m));
     }
 
 
-
-
-    static String lead(int x){
+    static String lead(int x) {
         return x <= 9 ? "0" + x : "" + x;
     }
 
-    public static class MomentInYear implements Comparable<MomentInYear>{
+    public static class MomentInYear implements Comparable<MomentInYear> {
         int _y = -1;
         int _m = -1;
         int _d = -1;
 
         @Override
         public String toString() {
-            if (_m < 0 && _y < 0){
+            if (_m < 0 && _y < 0) {
                 return lead(_d);
             }
-            if (_y < 0){
+            if (_y < 0) {
                 return lead(_m) + "-" + lead(_d);
             }
             return _y + "-" + lead(_m) + "-" + lead(_d);
         }
 
         public String format() {
-            if (_m < 0 && _y < 0){
+            if (_m < 0 && _y < 0) {
                 return "dd";
             }
-            if (_y < 0){
+            if (_y < 0) {
                 return "MM-dd";
             }
             return "yyyy-MM-dd";
         }
 
-        public int day(){
+        public int day() {
             return _d;
         }
 
-        public int year(){
+        public int year() {
             return _y;
         }
 
-        public int month(){
+        public int month() {
             return _m;
         }
 
         public int compareTo(MomentInYear o) {
-            if ( isMinus(year(), o.year()) ||
-                    isMinus(month(), o.month())||
+            if (isMinus(year(), o.year()) ||
+                    isMinus(month(), o.month()) ||
                     isMinus(day(), o.day())
             ) {
                 throw new LogicalException("cannot compare incomplete moments");
             }
-            if (year() == o.year()){
-                if (month() == o.month()){
+            if (year() == o.year()) {
+                if (month() == o.month()) {
                     return day() < o.day() ? -1 : ((day() == o.day()) ? 0 : 1);
                 }
                 return month() < o.month() ? -1 : 1;
             }
-           return year() < o.year() ? -1 : 1;
+            return year() < o.year() ? -1 : 1;
         }
 
         public boolean hasOnlyDay() {
@@ -538,34 +546,34 @@ public class Cronus {
     }
 
 
-    static boolean isMinus(int a, int b){
-       if ( (a < 0 && b > 0) || (a > 0 && b < 0)) {
-           return true;
-       }
+    static boolean isMinus(int a, int b) {
+        if ((a < 0 && b > 0) || (a > 0 && b < 0)) {
+            return true;
+        }
         return false;
     }
 
-    public static MomentInYear dayFromString(String x){
+    public static MomentInYear dayFromString(String x) {
         String p[] = x.split("-");
         MomentInYear m = new MomentInYear();
         try {
-            if (p.length == 1){
+            if (p.length == 1) {
                 m._d = Integer.parseInt(p[0]);
                 return m;
             }
-            if (p.length == 2){
+            if (p.length == 2) {
                 m._m = Integer.parseInt(p[0]);
                 m._d = Integer.parseInt(p[1]);
                 return m;
             }
-            if (p.length == 3){
+            if (p.length == 3) {
                 m._y = Integer.parseInt(p[0]);
                 m._m = Integer.parseInt(p[1]);
                 m._d = Integer.parseInt(p[2]);
                 return m;
             }
             return m;
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -579,13 +587,13 @@ public class Cronus {
             boolean sh = hour() == o.hour()
                     || (hour() == 24 && o.hour() == 0)
                     || (hour() == 0 && o.hour() == 24);
-           if (sh){
-               if (minute() == o.minute()){
-                   return second() < o.second() ? -1 : ((second() == o.second()) ? 0 : 1);
-               }
-               return minute() < o.minute() ? -1 : 1;
-           }
-           return hour() < o.hour() ? -1 : 1;
+            if (sh) {
+                if (minute() == o.minute()) {
+                    return second() < o.second() ? -1 : ((second() == o.second()) ? 0 : 1);
+                }
+                return minute() < o.minute() ? -1 : 1;
+            }
+            return hour() < o.hour() ? -1 : 1;
         }
 
         public int hour() {

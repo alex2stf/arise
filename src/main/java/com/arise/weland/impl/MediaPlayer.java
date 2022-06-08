@@ -71,7 +71,7 @@ public class MediaPlayer {
         String strategy = AppSettings.getProperty(AppSettings.Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
-        if (path.endsWith("wav")){
+        if (path.endsWith(".wav")){
             AudioInputStream audioIn = null;
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());

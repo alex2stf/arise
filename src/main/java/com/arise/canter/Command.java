@@ -74,9 +74,6 @@ public abstract class Command<T> extends GenericTypeWorker {
         return commandRegistry;
     }
 
-    public Object getProperty(String x) {
-        return null;
-    }
 
 
     static class JsonCommand extends Command<Object> {
@@ -92,18 +89,6 @@ public abstract class Command<T> extends GenericTypeWorker {
             if (StringUtil.hasText(storeKey)){
                 getRegistry().store(storeKey, o);
             }
-        }
-
-        @Override
-        public Object getProperty(String x) {
-            for (final Map c: cmds){
-                final String commandId = MapUtil.getString(c, "id");
-                Object prop = getRegistry().getCommand(commandId).getProperty(x);
-                if (prop != null){
-                    return prop;
-                }
-            }
-            return null;
         }
 
 

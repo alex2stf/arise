@@ -1,5 +1,6 @@
 package com.arise.cargo.management;
 
+import com.arise.canter.Defaults;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Assert;
 
@@ -58,7 +59,15 @@ public class DependencyManagerTest {
 
         res = DependencyManager.solve("MNT_CLI_WIN_32");
         res = DependencyManager.solve("MP3_PLAYER");
+        res = DependencyManager.solve("NWJS");
 
+        DependencyManager.withBinary("NWJS", new Handler<File>() {
+            @Override
+            public void handle(File file) {
+                System.out.println(file);
+                Defaults.PROCESS_EXEC.execute(file.getAbsolutePath(), "https://live.rockfm.ro:8443/rockfm.aacp");
+            }
+        });
         System.out.println(res);
     }
 
