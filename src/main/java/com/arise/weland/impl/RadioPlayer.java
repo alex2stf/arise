@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +130,7 @@ public class RadioPlayer {
         }
 
 
-        public synchronized void run(Handler<Show> c){
+        public synchronized void run(final Handler<Show> c){
             if ("media-play".equalsIgnoreCase(_m)){
                 String p = _s.get(0);
                 File f = getRandomFileFromDirectory(p);
@@ -176,6 +177,8 @@ public class RadioPlayer {
                     @Override
                     public void run() {
                         mPlayer.stop();
+                        log.i("show "+ n + " stooped at " + new Date());
+                        trigger(c);
                     }
                 }, exp);
 

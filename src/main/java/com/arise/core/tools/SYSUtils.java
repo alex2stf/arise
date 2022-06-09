@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.arise.core.tools.FileUtil.exists;
+import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.jsonEscape;
 import static com.arise.core.tools.StringUtil.jsonVal;
 
@@ -352,14 +354,35 @@ public class SYSUtils {
 
     private static volatile Boolean _is_32_bits = null;
 
+
+    public static boolean is64Bits(){
+        String sadm = System.getProperty("sun.arch.data.model");
+        if (hasText(sadm)){
+            try {
+                Integer i = Integer.valueOf(sadm.trim());
+                return 64 == i;
+            }catch (Exception e){
+                return false;
+            }
+        }
+        return false;
+    }
+
     public static boolean is32Bits() {
 
         if(_is_32_bits != null){
             return _is_32_bits;
         }
-        if(FileUtil.exists("/lib/systemd/systemd") && isUnix()){
+
+        if(is64Bits()){
+            _is_32_bits = false;
+            return _is_32_bits;
+        }
+
+
+        if(exists("/lib/systemd/systemd") && isUnix()){
             Result r = exec("file", "/lib/systemd/systemd");
-            if (StringUtil.hasText(r.stdout())){
+            if (hasText(r.stdout())){
                 boolean is32 = r.stdout().indexOf("32-bit") > -1;
                 if(is32) {
                     _is_32_bits = is32;

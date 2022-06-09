@@ -1,6 +1,6 @@
 package com.arise.weland.impl.unarchivers;
 
-import com.arise.cargo.management.Unarchiver;
+import com.arise.core.models.Unarchiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;

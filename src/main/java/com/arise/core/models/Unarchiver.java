@@ -1,4 +1,4 @@
-package com.arise.cargo.management;
+package com.arise.core.models;
 
 import java.io.File;
 

@@ -4,6 +4,8 @@ import java.io.File;
 
 import static com.arise.core.tools.FileUtil.findAppDir;
 
+
+@Deprecated
 public class Locations {
     private static File rt(){
         File x = findAppDir();

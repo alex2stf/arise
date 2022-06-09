@@ -1,6 +1,6 @@
 package com.arise.weland.impl.unarchivers;
 
-import com.arise.cargo.management.Unarchiver;
+import com.arise.core.models.Unarchiver;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StreamUtil;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;

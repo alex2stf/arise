@@ -144,6 +144,9 @@ public class AppSettings {
 
 
     public static String getProperty(Keys key){
+        if (System.getProperty(key.s) != null){
+            return System.getProperty(key.s);
+        }
         if (isDefined(key)) {
             return applicationProperties.getProperty(key.s);
         }
@@ -225,8 +228,9 @@ public class AppSettings {
         MEDIA_PLAY_STRATEGY("media.play.strategy", new String[]{"commands", "javafx"})
         , RADIO_ENABLED("radio.enabled", new String[]{"true", "false(default)"})
         , RADIO_SHOWS_PATH("radio.shows.path", new String[]{"/path/to/local/shows.json"})
-
+        , DEPENDENCY_FORCED_PROFILES("dependencies.forced.profiles", new String[]{})
         ;
+
 
 
         final String s;

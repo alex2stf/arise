@@ -2,12 +2,15 @@ package com.arise.cargo.management;
 
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
+import com.arise.core.AppSettings;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
+import com.arise.core.models.Unarchiver;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
@@ -22,30 +25,40 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.arise.core.AppSettings.Keys.DEPENDENCY_FORCED_PROFILES;
+import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.AppSettings.isFalse;
 import static com.arise.core.tools.CollectionUtil.safeGetItem;
 import static com.arise.core.tools.Mole.logInfo;
 import static com.arise.core.tools.Mole.logWarn;
+import static com.arise.core.tools.SYSUtils.getOS;
+import static com.arise.core.tools.SYSUtils.is32Bits;
+import static com.arise.core.tools.SYSUtils.is64Bits;
+import static com.arise.core.tools.SYSUtils.isAndroid;
+import static com.arise.core.tools.SYSUtils.isLinux;
+import static com.arise.core.tools.SYSUtils.isMac;
+import static com.arise.core.tools.SYSUtils.isRaspberryPI;
+import static com.arise.core.tools.SYSUtils.isSolaris;
+import static com.arise.core.tools.SYSUtils.isUnix;
+import static com.arise.core.tools.SYSUtils.isWindows;
 import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.StringUtil.join;
+import static com.arise.core.tools.Util.close;
 import static java.lang.String.valueOf;
 
 public class DependencyManager {
 
-    private DependencyManager(){
-
-    }
-
-
-    public static CommandRegistry getCommandRegistry(){
-        return cmdReg;
-    }
-
-
     private static final CommandRegistry cmdReg = new CommandRegistry();
+    private static final Map<String, Dependency> dependencyMap = new HashMap<>();
+    private static final Mole log = Mole.getInstance(DependencyManager.class);
+
     public static final Command<String> DOWNLOAD_COMMAND = new Command<String>("download") {
         @Override
         public String execute(List<String> args) {
@@ -55,7 +68,6 @@ public class DependencyManager {
 
             try {
                 URL url = new URL(urlStr);
-
                 return download(url, loc, name, null, null).getAbsolutePath();
             } catch (Exception e) {
                 dispatchError(e);
@@ -69,27 +81,11 @@ public class DependencyManager {
 
     static {
         cmdReg.addCommand(DOWNLOAD_COMMAND);
-        cmdReg.addCommand(new Command<String>("dir-exist") {
-            @Override
-            public String execute(List<String> x) {
-                String p = x.get(0);
-                if (!StringUtil.hasText(p)){
-                    log.warn("$dir-exist() called with empty param");
-                }
-                File f = new File(p);
-                log.info("$dir-exist(" + f.getAbsolutePath() + ")");
-                if (f.exists() && f.isDirectory()){
-                    return f.getAbsolutePath();
-                }
-                return null;
-            }
-        });
-
         cmdReg.addCommand(new Command<String>("file-exist") {
             @Override
             public String execute(List<String> x) {
                 String p = x.get(0);
-                if (!StringUtil.hasText(p)){
+                if (!hasText(p)){
                     log.warn("$file-exist() called with empty param");
                 }
                 File f = new File(p);
@@ -143,8 +139,13 @@ public class DependencyManager {
 
     }
 
-    private static final Map<String, Dependency> dependencyMap = new HashMap<>();
-    private static final Mole log = Mole.getInstance(DependencyManager.class);
+    private DependencyManager(){
+
+    }
+
+    public static CommandRegistry getCommandRegistry(){
+        return cmdReg;
+    }
 
     public static void withBinary(String n, final Handler<File> h) {
         withStrictDependency(n, new Handler<Object>() {
@@ -204,22 +205,19 @@ public class DependencyManager {
     public static void importDependencyRules(String in) throws IOException {
         InputStream inps = FileUtil.findStream(in);
         if(inps == null){
-            logWarn("Could not find stream " + in);
+            log.w("Could not find stream " + in);
         }
         String x = StreamUtil.toString(inps);
         Map<Object, Object> data = (Map) Groot.decodeBytes(x);
 
         for (Map.Entry<Object, Object> e: data.entrySet()){
             String n = (String) e.getKey();
-
             Map args = (Map) e.getValue();
-            String type = MapUtil.getString(args, "type");
-
-                logInfo("import dependency " + n);
-                Dependency dependency = new Dependency();
-                dependency.setName(n);
-                Dependency.decorate(dependency, args);
-                dependencyMap.put(n, dependency);
+            log.i("*** " + n + " ***");
+            Dependency dependency = new Dependency();
+            dependency.setName(n);
+            Dependency.decorate(dependency, args);
+            dependencyMap.put(n, dependency);
         }
     }
 
@@ -252,12 +250,6 @@ public class DependencyManager {
             return  (HttpURLConnection) url.openConnection();
         }
     }
-
-
-    public static File download(String uri, File outDir, String name) throws IOException {
-        return download(new URL(uri), outDir, name, null, null);
-    }
-
 
     public static File download(URL url,
                                 File outDir,
@@ -341,22 +333,11 @@ public class DependencyManager {
             }
         }
         System.out.print(" OK "+ out.getAbsolutePath() +"\n");
-        Util.close(stream);
-        Util.close(file);
+        close(stream);
+        close(file);
 
         return out;
     }
-
-
-
-
-
-
-
-
-
-
-
 
     static Map<String, Object> solve(String n) {
         Dependency d = dependencyMap.get(n);
@@ -378,17 +359,88 @@ public class DependencyManager {
         for (int i = 0; i < v.params().size(); i++){
             Map<String, String> p = (Map<String, String>) v.params().get(i);
             String key = p.get("key");
-            Object val = cmdReg.executeCmdLine(p.get("val"));
-            if (val != null){
-                res.put(key, val);
-                log.info("@dpmgmt[" + key + "]=(" + val + ")");
+            String val = p.get("val");
+            if (!hasText(val)){
+                val = p.get("value");
+            }
+            Object ret = cmdReg.executeCmdLine(val);
+            if (ret != null){
+                res.put(key, ret);
+                log.info("@dpmgmt[" + key + "]=(" + ret + ")");
             }
         }
-
         if (res.values().size() == v.params().size()){
             return res;
         }
         return null;
+    }
+
+
+    public static List<String> getProfiles(){
+        List<String> p = new ArrayList<>();
+        String m;
+        if (isWindows()){
+            p.add("win");
+            p.add("windows");
+        }
+        if (isUnix()){
+            p.add("unix");
+        }
+        if (isLinux()){
+            p.add("linux");
+        }
+        if (isMac()){
+            p.add("mac");
+        }
+
+        if (isRaspberryPI()){
+            p.add("pi");
+            p.add("raspberryPi");
+        }
+
+        if (isAndroid()){
+            p.add("android");
+        }
+
+        if (isSolaris()){
+            p.add("sunos");
+            p.add("solaris");
+        }
+
+        List<String> t = new ArrayList<>();
+        if (is32Bits()){
+            for (String s: p){
+                t.add(s + "32");
+            }
+        }
+
+        if (is64Bits()){
+            for (String s: p){
+                t.add(s + "64");
+            }
+        }
+
+        p.addAll(t);
+        p.add(getOS().getArch());
+        p.add(getOS().getName().toLowerCase());
+
+
+
+        if (hasText(getProperty(DEPENDENCY_FORCED_PROFILES))){
+            String z[] = getProperty(DEPENDENCY_FORCED_PROFILES).split(",");
+            for (String x: z){
+                p.add(x);
+            }
+        }
+        return p;
+    }
+
+    public static void main(String[] args) throws IOException {
+        log.i("sysProfiles [" + join(getProfiles(), ",") + "]");
+        DependencyManager.importDependencyRules("_cargo_/dependencies.json");
+//        for (Dependency d: DependencyManager.dependencyMap.values()){
+//            System.out.println(d.getName());
+//        }
     }
 
 

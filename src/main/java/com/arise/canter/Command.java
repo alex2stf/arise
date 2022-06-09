@@ -41,8 +41,6 @@ public abstract class Command<T> extends GenericTypeWorker {
     public String toString() {
         return StringUtil.jsonBuilder().objectStart()
                         .add("id", id)
-//                        .add("arg-names", argumentsNames, QUOTE_ITERATOR)
-//                        .add("properties", properties, QUOTE_ITERATOR)
                         .objectEnd().build();
     }
 

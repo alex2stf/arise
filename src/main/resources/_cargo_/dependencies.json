@@ -124,6 +124,23 @@
     ]
   },
 
+  "MINGW": {
+    "type": "sdk",
+    "versions": [
+      {
+        "name": "mingw-opengl",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://github.com/jonasstrandstedt/MinGW/archive/master.zip,down,mingw-opengl.zip)"
+          }
+        ]
+      }
+    ]
+
+  },
+
 
   "CHROME_DRIVER": {
     "type": "binary",
