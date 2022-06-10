@@ -50,9 +50,6 @@ import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class WelandServerHandler extends HTTPServerHandler {
 
-  private static final ProxyHttpResponse proxyHttpResponse = new ProxyHttpResponse();
-
-
   ContentInfoProvider contentInfoProvider;
   ContentHandler contentHandler;
   Whisker whisker = new Whisker()
@@ -100,28 +97,22 @@ public class WelandServerHandler extends HTTPServerHandler {
     return this;
   }
 
-
-
-
-
-
-
-
-
   @Override
   public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
 
-    if("OPTIONS".equalsIgnoreCase(request.method())){
-        return HttpResponse.oK().allowAnyOrigin();
+    if("OPTIONS".equalsIgnoreCase(request.method())) {
+      return HttpResponse.oK().allowAnyOrigin();
     }
-
 
     String correlationId = "";
     if (StringUtil.hasText(request.getHeaderParam("Correlation-Id"))){
         correlationId = request.getHeaderParam("Correlation-Id");
     }
 
-    if ("/message".equalsIgnoreCase(request.path()) && !"GET".equalsIgnoreCase(request.method())){
+    if ("/message".equalsIgnoreCase(request.path())
+            && !"get".equalsIgnoreCase(request.method())
+            && !"delete".equalsIgnoreCase(request.method())
+    ){
       Map mapObj = (Map) Groot.decodeBytes(request.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
@@ -129,7 +120,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if("/device/info".equalsIgnoreCase(request.path())){
-      return HttpResponse.json(contentHandler.getDeviceInfoJson()).allowAnyOrigin();
+        return HttpResponse.json(contentHandler.getDeviceInfoJson()).allowAnyOrigin();
     }
 
 
@@ -139,19 +130,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       Map<String, String> args = new HashMap<>();
       args.put("host", request.getQueryParamString("host", ""));
       return HttpResponse.html(whisker.compile(appContent, args));
-    }
-
-
-    if(request.path().equalsIgnoreCase("/orchestra")){
-      String orchContent = StreamUtil.toString(findStream("src/main/resources#weland/orchestra.html"));
-      Map<String, String> args = new HashMap<>();
-      args.put("host", request.getQueryParamString("host", ""));
-
-      return HttpResponse.html(whisker.compile(orchContent, args));
-    }
-
-    if(request.path().startsWith("/proxy/exec")){
-      return proxyHttpResponse;
     }
 
 
@@ -400,36 +378,10 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if ("/kontrols".equalsIgnoreCase(request.path())){
-      Map<String, Object> args = new HashMap<>();
-      return HttpResponse.html(whisker.compile(StreamUtil.toString(findStream("src/main/resources#weland/kontrols.html")), args));
-    }
-
-
-
-
-    if ("/WSKontrol".equalsIgnoreCase(request.path())){
-      Map<String, Object> args = new HashMap<>();
-      String id = request.getQueryParam("id");
-      if (!StringUtil.hasText(id)){
-        id = UUID.randomUUID().toString();
-      }
-      args.put("ipv4Addrs", StringUtil.join(DeviceStat.getInstance().getIpv4Addrs(), ",", new StringUtil.JoinIterator<String>() {
-        @Override
-        public String toString(String value) {
-          return jsonVal(value);
-        }
-      }));
-      args.put("port", server.getPort());
-      args.put("id", id);
-      args.put("protocol", server.isSecure() ? "wss" : "ws");
-      return HttpResponse.javascript(whisker.compile(StreamUtil.toString(findStream("src/main/resources#weland/WSKontrol.js")), args));
-    }
 
 
 
     if (request.pathsStartsWith("playlist")){
-      Map<String, List<String>> data = request.getQueryParams();
       String action = request.getQueryParamString("action", "xx");
       String name = request.getQueryParamString("name", null);
       String path = request.getQueryParamString("path", null);
@@ -460,7 +412,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if (request.pathsStartsWith("commands", "registry")){
-
       return HttpResponse.json(commandRegistry.toString());
     }
 

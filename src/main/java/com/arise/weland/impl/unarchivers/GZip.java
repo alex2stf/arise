@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-public class GZip implements Unarchiver {
+public class GZip extends Unarchiver {
     @Override
     public boolean extract(File source, File destination) {
         try {

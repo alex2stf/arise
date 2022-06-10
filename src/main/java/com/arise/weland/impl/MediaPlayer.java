@@ -78,29 +78,16 @@ public class MediaPlayer {
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
         if (path.endsWith(".wav")){
+            stopClips();
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
-            } catch (UnsupportedAudioFileException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-
-            try {
                 clip = AudioSystem.getClip();
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            }
-            try {
                 clip.open(audioIn);
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                clip.start();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            clip.start();
+
             return audioIn;
         }
 
@@ -158,7 +145,8 @@ public class MediaPlayer {
         proc[0] = (Process) r.getCommand("browser-open").execute(u);
     }
 
-    public void stop() {
+
+    void stopClips(){
         if (clip != null){
             try {
                 clip.stop();
@@ -169,6 +157,10 @@ public class MediaPlayer {
         if (audioIn != null){
             close(clip);
         }
+    }
+
+    public void stop() {
+        stopClips();
         if (proc[0] != null){
             proc[0].destroy();
         }

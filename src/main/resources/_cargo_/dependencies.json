@@ -4,7 +4,7 @@
     "versions": [
       {
         "name": "maven-jlayer-1.0.1.jar",
-        "condition": "always",
+        "profiles": "*",
         "disabled": false,
         "params": [
           {
@@ -15,14 +15,11 @@
       },
       {
         "name": "jlayer-1.0.1.jar",
-        "condition": "always",
-        "disabled": false,
         "params": [
           {
             "key": "jar-location",
             "val": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
           }
-
         ]
       }
     ]
@@ -32,7 +29,7 @@
     "versions": [
       {
         "name": "MediaInfo_CLI_0.7.60_Windows_i386",
-        "condition": "always",
+        "profiles": ["win", "windows"],
         "params": [
           {
             "key": "zip-location",
@@ -46,7 +43,6 @@
             "key": "binary-location",
             "val": "$file-exist( $sub-location(bin,MediaInfo_CLI_0_7_60_i386/MediaInfo.exe,r)  )"
           }
-
         ]
       }
     ]
@@ -123,7 +119,6 @@
       }
     ]
   },
-
   "MINGW": {
     "type": "sdk",
     "versions": [
@@ -138,7 +133,6 @@
         ]
       }
     ]
-
   },
 
 

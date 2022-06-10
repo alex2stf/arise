@@ -105,7 +105,7 @@ public class DependencyManager {
             }
         });
 
-        final Unarchiver unarchiver = new Zip();
+
 
         cmdReg.addCommand(new Command<String>("unzip") {
             @Override
@@ -113,7 +113,7 @@ public class DependencyManager {
                 File s = new File(x.get(0));
                 File out = Locations.forName(x.get(1));
                 log.info("$unzip " + s.getAbsolutePath() + " to " + out.getAbsolutePath());
-                unarchiver.extract(s, out);
+                Unarchiver.forName("zip").extract(s, out);
                 return out.getAbsolutePath();
             }
         });
@@ -435,12 +435,28 @@ public class DependencyManager {
         return p;
     }
 
-    public static void main(String[] args) throws IOException {
+
+    static void execProgram(String[] args) throws IOException {
         log.i("sysProfiles [" + join(getProfiles(), ",") + "]");
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
-//        for (Dependency d: DependencyManager.dependencyMap.values()){
-//            System.out.println(d.getName());
-//        }
+        if (args.length < 2){
+            System.out.println("usage");
+            return;
+        }
+        if ("--solve".equalsIgnoreCase(args[0]) || "-s".equalsIgnoreCase(args[0])){
+            for (int i = 1; i < args.length; i++){
+               String n = args[i];
+               Map<String, Object> r = DependencyManager.solve(n);
+               for (Map.Entry<String, Object> e: r.entrySet()){
+                   log.i(n + "[" + e.getKey()  + "] = " + e.getValue());
+               }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+//       execProgram(args)
+        execProgram(new String[]{"--solve", "NWJS"});
     }
 
 

@@ -7,6 +7,7 @@ import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.TypeUtil;
 import com.arise.core.tools.TypeUtil.IteratorHandler;
+import com.arise.core.tools.Util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import static com.arise.core.tools.ReflectUtil.hasAnyOfTheAnnotations;
 import static com.arise.core.tools.StringUtil.trim;
 import static com.arise.core.tools.TypeUtil.getField;
 import static com.arise.core.tools.TypeUtil.isSingleKeyIterable;
+import static com.arise.core.tools.Util.close;
 
 public class Whisker extends GenericTypeWorker {
 
@@ -210,6 +212,7 @@ public class Whisker extends GenericTypeWorker {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    close(inputStream);
   }
 
   public String compile(String input, Object context) {
@@ -235,22 +238,22 @@ public class Whisker extends GenericTypeWorker {
     }
   }
 
-  public String compilePartial(String partial, Object ctx){
-    partial = trim(partial);
-    String path = tplRoot + partial + defaultExt;
-    InputStream inputStream = FileUtil.findStream(path);
-    StringWriter stringWriter = new StringWriter();
+  public String compilePartial(String part, Object ctx){
+    part = trim(part);
+    String path = tplRoot + part + defaultExt;
+    InputStream in = FileUtil.findStream(path);
+    StringWriter sW = new StringWriter();
+    InputStreamReader ir;
     try {
-      compile(new InputStreamReader(inputStream), stringWriter, ctx);
+      ir = new InputStreamReader(in);
+      compile(ir, sW, ctx);
     } catch (Exception e) {
       throw new LogicalException("Failed to read partial " + path, e);
     }
-    try {
-      stringWriter.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return stringWriter.toString();
+    close(ir);
+    close(in);
+    close(sW);
+    return sW.toString();
 
   }
 

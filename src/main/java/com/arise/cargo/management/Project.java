@@ -20,7 +20,6 @@ import static com.arise.core.tools.CollectionUtil.isEmpty;
 public class Project {
 
     final String name;
-    private String forcedPlatform = null;
     static final Whisker whisker = new Whisker();
 
     final Mole log;
@@ -37,7 +36,6 @@ public class Project {
 
     public static Project fromMap(Map data) {
         Project project = new Project(MapUtil.getString(data, "name"));
-        project.forcedPlatform = MapUtil.getString(data, "forced-platform");
         project.includes = MapUtil.getList(data, "include");
         project.sources = MapUtil.getList(data, "sources");
         List<String> dependenciesNames = MapUtil.getList(data, "dependencies");

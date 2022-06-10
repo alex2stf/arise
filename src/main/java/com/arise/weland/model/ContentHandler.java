@@ -59,7 +59,7 @@ public abstract  class ContentHandler {
         }
     }
 
-    public abstract HttpResponse stop(String string);
+    public abstract HttpResponse stop(String x);
 
     public HttpResponse stop(ContentInfo info){
         return stop(info.getPath());
@@ -124,8 +124,6 @@ public abstract  class ContentHandler {
         for(Map.Entry<String, String> e : env.entrySet()){
             append(sb, "_env." + e.getKey(), e.getValue());
         }
-
-
 
         sb.append("\"___eof\"").append(":").append("0");
         sb.append("}");

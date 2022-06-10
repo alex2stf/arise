@@ -126,8 +126,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        log.info("init weland server");
-        log.info("SYSUtils.isLinux() " + SYSUtils.isLinux());
         detect_device_capabilities();
 
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");

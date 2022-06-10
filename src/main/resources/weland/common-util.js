@@ -279,9 +279,6 @@ function update_ui_with_device_stat_into_root(root, secondRoot, d) {
     var selected = '';
 
     if(flash_modes && flash_modes.length > 0){
-
-
-
         selected = d.pP['flash.modes.active'];
         txt = '';
         for(var i = 0; i < flash_modes.length; i++){

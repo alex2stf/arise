@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static com.arise.core.tools.Util.close;
+
 public class StreamUtil {
 
 
@@ -80,17 +82,11 @@ public class StreamUtil {
         BufferedInputStream bis = new BufferedInputStream(inputStream);
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         transfer(bis, buf);
-        try {
-            bis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            buf.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return buf.toString();
+        String r = buf.toString();
+        close(bis);
+        close(buf);
+        close(inputStream);
+        return r;
     }
 
 
