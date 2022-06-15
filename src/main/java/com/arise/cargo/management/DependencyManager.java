@@ -406,7 +406,7 @@ public class DependencyManager {
 
         for (Object v: SYSUtils.getLinuxDetails().values()){
             String x = SYSUtils.fix(v + "", "");
-            if (!x.substring("http")){
+            if (!x.startsWith("http")){
                 p.add(x);
             }
         }
