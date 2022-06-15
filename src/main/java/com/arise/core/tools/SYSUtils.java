@@ -334,8 +334,8 @@ public class SYSUtils {
                         System.out.println("lsb_release  " + cnt);
                         if (cnt.indexOf(":") > -1){
                             int dx = cnt.indexOf(":");
-                            String key = cnt.substring(0, dx);
-                            String val = cnt.substring(dx+1, cnt.length() -1);
+                            String key = cnt.substring(0, dx).trim().toLowerCase();
+                            String val = cnt.substring(dx+1, cnt.length() -1).toLowerCase().trim();
                             finalProps.put(key, val);
                             System.out.println(key + " = " + val);
                         }
