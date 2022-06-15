@@ -335,8 +335,8 @@ public class SYSUtils {
                         if (cnt.indexOf(":") > -1) {
                             int dx = cnt.indexOf(":");
                             String key = cnt.substring(0, dx).trim().toLowerCase();
-                            String val = cnt.substring(dx+1, cnt.length() -1).toLowerCase().trim();
-                            finalProps.put(key, val);
+                            String val = cnt.substring(dx + 1, cnt.length() -1).toLowerCase().trim();
+                            finalProps.put("lsb_" + key, val);
                             System.out.println(key + " = " + val);
                         }
                     }
