@@ -314,15 +314,27 @@ public class SYSUtils {
 
     public static Properties getLinuxDetails(){
         File f = new File("/etc/os-release");
+        Properties props = new Properties();
         if(f.exists()) {
             try {
-                return FileUtil.loadProps(f);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                props = FileUtil.loadProps(f);
+            } catch (Exception e) {
+                ;;
             }
         }
-        return null;
+
+        File rel = new File("/usr/bin/lsb_release");
+        if (rel.exists() ){
+            System.out.println("get release info");
+            try {
+                String out = SYSUtils.exec(rel.getAbsolutePath(), "-a").stdout();
+                System.out.println(out);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return props;
     }
 
 

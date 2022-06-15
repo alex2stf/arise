@@ -403,15 +403,7 @@ public class DependencyManager {
         }
 
 
-        File rel = new File("/usr/bin/lsb_release");
-        if (rel.exists() && CollectionUtil.isEmpty(rls)){
-            try {
-                String out = SYSUtils.exec(rel.getAbsolutePath(), "-a").stdout();
-                System.out.println(out);
-            } catch (Exception e) {
-                ;;
-            }
-        }
+
 
         List<String> t = new ArrayList<>();
         if (is32Bits()){
