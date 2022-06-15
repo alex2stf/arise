@@ -328,6 +328,26 @@ public class SYSUtils {
             System.out.println("get release info");
             try {
                 String out = SYSUtils.exec(rel.getAbsolutePath(), "-a").stdout();
+
+                SYSUtils.exec(new String[]{rel.getAbsolutePath(), "-a"}, new ProcessOutputHandler() {
+                    @Override
+                    public void handle(InputStream inputStream) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+                        try {
+                            String line;
+                            while ((line = in.readLine()) != null) {
+                                System.out.println("lsb_out: " + line);
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void handleErr(InputStream errorStream) {
+
+                    }
+                }, true, false);
                 System.out.println(out);
             } catch (Exception e) {
                 e.printStackTrace();
