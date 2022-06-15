@@ -3,6 +3,7 @@ package com.arise.cargo.management;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Unarchiver;
 import com.arise.core.tools.FileUtil;
+import com.arise.core.tools.StringUtil;
 import net.sf.sevenzipjbinding.ExtractOperationResult;
 import net.sf.sevenzipjbinding.IInArchive;
 import net.sf.sevenzipjbinding.ISequentialOutStream;
@@ -65,6 +66,12 @@ public class DependencyManagerTest {
 //
 
         importDependencyRules("_cargo_/dependencies.json");
+
+        System.out.println(
+                StringUtil.join(
+                        DependencyManager.getProfiles(), "\n"
+                )
+        );
 //        DependencyManagerTest.test1();
         Map<String, Object> res;
 //        res = DependencyManager.solve("MEDIA_INFO_CLI_WIN32");
@@ -82,7 +89,7 @@ public class DependencyManagerTest {
 
 //        res = DependencyManager.solve("MINGW");
 
-
+/*
         try {
             SevenZip.initSevenZipFromPlatformJAR();
         } catch (SevenZipNativeInitializationException e) {
@@ -154,6 +161,8 @@ public class DependencyManagerTest {
 //            }
 //        });
 //        System.out.println(res);
+
+ */
     }
 
 }

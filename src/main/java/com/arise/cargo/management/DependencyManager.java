@@ -448,6 +448,8 @@ public class DependencyManager {
     public static void main(String[] args) throws IOException {
 //       execProgram(args)
         execProgram(new String[]{"--solve", "NWJS"});
+
+
     }
 
 
