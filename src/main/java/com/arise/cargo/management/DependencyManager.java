@@ -405,7 +405,10 @@ public class DependencyManager {
         }
 
         for (Object v: SYSUtils.getLinuxDetails().values()){
-            p.add(SYSUtils.fix(v + "", ""));
+            String x = SYSUtils.fix(v + "", "");
+            if (!x.substring("http")){
+                p.add(x);
+            }
         }
 
 
@@ -425,8 +428,8 @@ public class DependencyManager {
         }
 
         p.addAll(t);
-        p.add(getOS().getArch().replaceAll("\\s+", "").toLowerCase());
-        p.add(getOS().getName().toLowerCase().replaceAll("\\s+", ""));
+        p.add(SYSUtils.fix(getOS().getArch(), ""));
+        p.add(SYSUtils.fix(getOS().getName(), ""));
 
 
 
