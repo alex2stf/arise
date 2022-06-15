@@ -6,8 +6,10 @@ import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Unarchiver;
 import com.arise.core.serializers.parser.Groot;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
 
 import java.io.File;
@@ -367,6 +369,8 @@ public class DependencyManager {
     }
 
 
+    static List<String> rls = new ArrayList<>();
+
     public static List<String> getProfiles(){
         List<String> p = new ArrayList<>();
         String m;
@@ -396,6 +400,17 @@ public class DependencyManager {
         if (isSolaris()){
             p.add("sunos");
             p.add("solaris");
+        }
+
+
+        File rel = new File("/usr/bin/lsb_release");
+        if (rel.exists() && CollectionUtil.isEmpty(rls)){
+            try {
+                String out = SYSUtils.exec(rel.getAbsolutePath(), "-a").stdout();
+                System.out.println(out);
+            } catch (Exception e) {
+                ;;
+            }
         }
 
         List<String> t = new ArrayList<>();
