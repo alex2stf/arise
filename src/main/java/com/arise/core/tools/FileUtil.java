@@ -787,18 +787,10 @@ public class FileUtil {
         try  {
             fos = new FileOutputStream(f);
             fos.write(bytes);
-            //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            if (fos != null){
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
+        close(fos);
     }
 
     public static void appendNewLineToFile(String x, File f) throws IOException {

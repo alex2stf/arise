@@ -71,6 +71,32 @@
     ]
   },
 
+  "7-ZIP": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "7-zip-win-32",
+        "profiles": [
+          "windows", "win32", "win64"
+        ],
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://www.7-zip.org/a/7za920.zip,down,7za920.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, 7za920.zip), $sub-location(bin,7za920,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,7za920/7za.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
   "MP3_PLAYER": {
     "type": "binary",
     "versions": [

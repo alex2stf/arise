@@ -1,21 +1,24 @@
 package com.arise.cargo.management;
 
-import com.arise.canter.Defaults;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Unarchiver;
-import com.arise.core.tools.Assert;
+import com.arise.core.tools.FileUtil;
+import net.sf.sevenzipjbinding.ExtractOperationResult;
 import net.sf.sevenzipjbinding.IInArchive;
+import net.sf.sevenzipjbinding.ISequentialOutStream;
 import net.sf.sevenzipjbinding.SevenZip;
+import net.sf.sevenzipjbinding.SevenZipException;
 import net.sf.sevenzipjbinding.SevenZipNativeInitializationException;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
-import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Map;
 
 import static com.arise.cargo.management.DependencyManager.importDependencyRules;
@@ -103,10 +106,53 @@ public class DependencyManagerTest {
                     item.getSize(),
                     item.getPackedSize(),
                     item.getPath()));
+            final File out = new File("firefox-portable",  item.getPath());
+            if (item.isFolder()){
+                out.mkdirs();
+                continue;
+            }
+
+            File parent = out.getParentFile();
+            if (parent != null && !parent.exists()){
+                parent.mkdirs();
+            }
+
+
+            if (!out.exists() && out.length() != item.getSize() && !item.isFolder()) {
+                final int[] hash = new int[] { 0 };
+                ExtractOperationResult result;
+                final long[] sizeArray = new long[1];
+                result = item.extractSlow(new ISequentialOutStream() {
+                    @Override
+                    public int write(byte[] bytes) throws SevenZipException {
+                        FileUtil.writeBytesToFile(bytes, out);
+                        hash[0] ^= Arrays.hashCode(bytes); // Consume data
+                        sizeArray[0] += bytes.length;
+                        return bytes.length; // Return amount of consumed data
+                    }
+                });
+                if (result == ExtractOperationResult.OK) {
+                    System.out.println(String.format("%9X | %10s | %s",
+                            hash[0], sizeArray[0], item.getPath()));
+                } else {
+                    System.err.println("Error extracting item: " + result);
+                }
+            }
         }
 
-        System.out.println("7-Zip-JBinding library was initialized");
-        Unarchiver.forName("zip").extract(new File("C:\\Users\\Tarya\\Downloads\\FirefoxPortable_101.0_English.paf.exe"), new File("firefox-portable"));
+//        System.out.println("7-Zip-JBinding library was initialized");
+        Unarchiver.forName("7zip").extract(new File("C:\\Users\\Tarya\\Downloads\\FirefoxPortable_101.0_English.paf.exe"), new File("firefox-portable"));
+//        System.out.println(res);
+
+//        res = DependencyManager.solve("7-ZIP");
+//        DependencyManager.withBinary("7-ZIP", new Handler<File>() {
+//            @Override
+//            public void handle(File file) {
+//                System.out.println(file);
+//
+//
+//            }
+//        });
 //        System.out.println(res);
     }
 

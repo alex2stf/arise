@@ -262,6 +262,9 @@ public class StringUtil {
     }
 
     public static <T> String join(Iterable<T> values, String delimiter, JoinIterator<T> iterator) {
+        if (values == null){
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         int cnt = 0;
 

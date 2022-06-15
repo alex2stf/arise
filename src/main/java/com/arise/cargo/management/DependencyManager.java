@@ -113,7 +113,7 @@ public class DependencyManager {
                 File s = new File(x.get(0));
                 File out = Locations.forName(x.get(1));
                 log.info("$unzip " + s.getAbsolutePath() + " to " + out.getAbsolutePath());
-                Unarchiver.forName("zip").extract(s, out);
+                Unarchiver.ZIP.extract(s, out);
                 return out.getAbsolutePath();
             }
         });

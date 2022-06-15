@@ -58,7 +58,7 @@ public abstract class Unarchiver {
         }
     };
 
-    private static final Unarchiver ZIP = new Unarchiver() {
+    public static final Unarchiver ZIP = new Unarchiver() {
         @Override
         public boolean extract(File src, File dest) {
             // create output directory if it doesn't exist

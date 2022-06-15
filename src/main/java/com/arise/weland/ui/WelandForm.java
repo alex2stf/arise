@@ -1,8 +1,12 @@
 package com.arise.weland.ui;
 
+import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
+import com.arise.core.models.Provider;
+import com.arise.core.models.Tuple2;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 
@@ -22,176 +26,179 @@ import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class WelandForm extends JFrame implements Runnable {
 
-    List<Provider> providers = new ArrayList<>();
+    List<TextProvider> prov = new ArrayList<>();
 
-    private static final int LARGE_FONT = 44;
-    private static final int BIG_FONT = 30;
 
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("EEEEE dd MMMMM yyyy HH:mm:ss");
+
+
+
+    List<Tuple2<ImageLabel, String>> imgs = new ArrayList<>();
 
     public WelandForm(final CommandRegistry commandRegistry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        providers.add(new Provider() {
+        addT(prov, new Provider<String>() {
             @Override
-            protected Font buildFont() {
-                return new java.awt.Font("Tahoma", Font.ITALIC, BIG_FONT);
-            }
-
-            @Override
-            public String getText(Date date) {
+            public String get() {
                 return SYSUtils.getDeviceDetailsString();
             }
         });
 
-        providers.add(new Provider() {
+        addT(prov, new Provider<String>() {
             @Override
-            public String getText(Date date) {
-                return new SimpleDateFormat("EEEEE dd MMMMM yyyy").format(date);
+            public String get() {
+                return sdf.format(new Date());
             }
         });
 
-        providers.add(new Provider() {
+
+        addT(prov, new Provider<String>() {
             @Override
-            public String getText(Date date) {
-                return new SimpleDateFormat("HH:mm:ss").format(date);
+            public String get() {
+                return "IPv4: " + join(getInstance().getIpv4Addrs(), ",");
             }
         });
 
-        final Set<String> addrs = getInstance().getIpv4Addrs();
-        if (!CollectionUtil.isEmpty(addrs)){
-            providers.add(new Provider() {
-                @Override
-                public String getText(Date date) {
-                    return "IPv4: " + join(addrs, ",");
-                }
-            });
-        }
-
-        List<String> displays = AppSettings.getListWithPrefix("ui.display");
+        List<String> displays = AppSettings.getListWithPrefix("ui.extra.line");
         for (final String d: displays){
-            providers.add(new Provider() {
+            addT(prov, new Provider<String>() {
                 @Override
-                public String getText(Date date) {
+                public String get() {
                     return "" + commandRegistry.executeCmdLine(d);
                 }
             });
         }
 
-        if (getIcon() != null) {
-            providers.add(new Provider() {
-                @Override
-                public String getText(Date date) {
-                    return null;
-                }
 
-                @Override
-                protected Container buildLabel() {
-                    ImageIcon imageIcon = new ImageIcon(getIcon().getAbsolutePath());
-                    JLabel imageLabel = new ImageLabel(imageIcon);
-                    return imageLabel;
-                }
-            });
+        getContentPane().setLayout(new GridLayout(0, 2));
+        JPanel left = new JPanel();
+        left.setLayout(new CardLayout());
+        getContentPane().add(left);
+
+        //start right pane:
+        JPanel right = new JPanel();
+        right.setLayout(new GridLayout(2, 0));
+        getContentPane().add(right);
+
+        JPanel to = new JPanel();
+        final JScrollPane tl = new JScrollPane(to);
+        tl.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        tl.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        to.setLayout(new GridLayout(prov.size(), 0));
+        right.add(tl);
+
+        //add providers
+        for (TextProvider p: prov){
+            to.add(p.get().first());
         }
 
-        final JTextArea jTextArea = new JTextArea();
-        jTextArea.setLineWrap(true);
-        jTextArea.setEditable(false);
-        jTextArea.setVisible(true);
-        final JScrollPane scrollPane = new JScrollPane(jTextArea);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+        //add logging area
+        final Tuple2<JTextArea, JScrollPane> logTuple = buildScrollableTextArea();
+        right.add(logTuple.second());
 
         final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm:ss");
         Mole.addAppender(new Mole.Appender() {
             @Override
             public void append(String id, Mole.Bag bag, String text) {
-                jTextArea.append(id + " " + bag + "] (" + sdf.format(new Date()) + " ) " + text + "\n");
-                JScrollBar vertical = scrollPane.getVerticalScrollBar();
+                logTuple.first().append(id + " " + bag + "] (" + sdf.format(new Date()) + " ) " + text + "\n");
+                JScrollBar vertical = logTuple.second().getVerticalScrollBar();
                 vertical.setValue( vertical.getMaximum()  + 1);
             }
         });
 
-        Mole.getInstance(WelandForm.class).info("form loaded");
-        providers.add(new Provider() {
-            @Override
-            public String getText(Date date) {
-                return null;
-            }
+        //add images:
 
-            @Override
-            protected Container buildLabel() {
-                return scrollPane;
-            }
-        });
+        List<String> ics = AppSettings.getListWithPrefix("ui.image.icon");
+        JTabbedPane tabs = new JTabbedPane();
 
-
-        getContentPane().setLayout(new GridLayout(providers.size(), 1));
-
-        for (Provider p: providers){
-            if (p != null){
-                getContentPane().add(p.getContainer());
-            }
+        for (int i = 0; i < ics.size(); i++){
+            File f = new File(ics.get(i));
+            ImageIcon imageIcon = new ImageIcon(f.getAbsolutePath());
+            ImageLabel imageLabel = new ImageLabel(imageIcon);
+            tabs.add("Icn" + i, imageLabel);
+            imgs.add(new Tuple2<>(imageLabel, f.getAbsolutePath()));
         }
+        left.add(tabs);
 
         pack();
         run();
     }
 
-
-    File getIcon(){
-        File f = new File(AppSettings.getProperty(AppSettings.Keys.UI_IMAGE_ICON_PATH));
-        if (f.exists()){
-            return f;
-        }
-        return null;
+    Tuple2<JTextArea, JScrollPane> buildScrollableTextArea(){
+        final JTextArea t = new JTextArea();
+        t.setLineWrap(true);
+        t.setEditable(false);
+        t.setVisible(true);
+        final JScrollPane s = new JScrollPane(t);
+        s.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        s.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        return new Tuple2<>(t, s);
     }
+
+
 
 
     @Override
     public void run() {
-        Date date = new Date();
-        for (Provider p: providers){
-            Container container = p.getContainer();
-            if(container instanceof JLabel) {
-                JLabel label = (JLabel) container;
-                String text = p.getText(date);
-                if (text != null) {
-                    label.setText(text);
-                    label.setToolTipText(text);
-                }
-                else if (label instanceof ImageLabel && AppSettings.isTrue(AppSettings.Keys.UI_IMAGE_ICON_REFRESH)) {
-                    ((ImageLabel)label).setImageIcon(getIcon().getAbsolutePath());
-                }
-            }
+        StringBuilder sb = new StringBuilder();
+
+        for (TextProvider tp: prov){
+            tp.get().first().setText(
+                    tp.get().second().get()
+            );
         }
+
+        for (Tuple2<ImageLabel, String> tpl: imgs){
+            tpl.first().setImageIcon(tpl.second());
+        }
+//        for (Provider<String> p: providers){
+//            sb.append(p.get() + "\n");
+//
+////            Container container = p.getContainer();
+////            if(container instanceof JLabel) {
+////                JLabel label = (JLabel) container;
+////                String text = p.getText(date);
+////                if (text != null) {
+////                    label.setText(text);
+////                    label.setToolTipText(text);
+////                }
+////                else if (label instanceof ImageLabel && AppSettings.isTrue(AppSettings.Keys.UI_IMAGE_ICON_REFRESH)) {
+////                    ((ImageLabel)label).setImageIcon(getIcon().getAbsolutePath());
+////                }
+////            }
+//        }
+//        System.out.println("change");
+//        jLabel.setText(sb.toString());
     }
 
-    private static abstract class Provider {
 
-        Container label;
 
-        public Provider(){
-            label = buildLabel();
+
+    private static void addT(List<TextProvider> l, final Provider<String> p){
+        l.add(new TextProvider() {
+            @Override
+            public Provider<String> getp() {
+                return p;
+            }
+        });
+    }
+
+
+    public static abstract class TextProvider implements Provider<Tuple2<JLabel, Provider<String>>> {
+
+        final JLabel l = new JLabel();
+        @Override
+        public Tuple2<JLabel, Provider<String>> get() {
+
+            l.setText(getp().get());
+            l.setHorizontalAlignment(SwingConstants.CENTER);
+            return new Tuple2<>(l, getp());
         }
 
-        protected Container buildLabel(){
-            JLabel label = new JLabel();
-            label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            label.setFont(buildFont());
-            label.setForeground(new Color(4, 2, 69));
-            return label;
-        }
 
-        protected Font buildFont(){
-            return new java.awt.Font("Tahoma", Font.BOLD, LARGE_FONT);
-        }
-
-        public  Container getContainer(){
-            return label;
-        }
-
-        public abstract String getText(Date date);
+        public abstract Provider<String> getp();
     }
 
 

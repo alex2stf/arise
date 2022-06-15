@@ -184,6 +184,12 @@ public class AppSettings {
         return applicationProperties.containsKey(key.s);
     }
 
+    /**
+     * TODO use keys
+     * @param prefix
+     * @return
+     */
+    @Deprecated
     public static List<String> getListWithPrefix(String prefix) {
 
         List<String> res = new ArrayList<>();
@@ -218,7 +224,6 @@ public class AppSettings {
         UI_ENABLED("ui.enabled", new String[]{"true", "false(default)"}),
         UI_CLOSE_ON_EXIT("ui.closeOnExit", new String[]{"true", "false(default)"}),
 
-        UI_IMAGE_ICON_PATH("ui.image.icon.path", new String[]{"/valid/path"}),
 
         //Deprecater
         TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"}),
