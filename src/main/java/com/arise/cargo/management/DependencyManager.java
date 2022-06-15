@@ -402,6 +402,10 @@ public class DependencyManager {
             p.add("solaris");
         }
 
+        for (Object v: SYSUtils.getLinuxDetails().values()){
+            p.add(String.valueOf(v));
+        }
+
 
 
 
