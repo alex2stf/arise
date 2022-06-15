@@ -323,38 +323,30 @@ public class SYSUtils {
             }
         }
 
+        final Properties finalProps = props;
         File rel = new File("/usr/bin/lsb_release");
         if (rel.exists() ){
             System.out.println("get release info");
             try {
-                String out = SYSUtils.exec(rel.getAbsolutePath(), "-a").stdout();
-
-                SYSUtils.exec(new String[]{rel.getAbsolutePath(), "-a"}, new ProcessOutputHandler() {
+                SYSUtils.exec(new String[]{rel.getAbsolutePath(), "-a"}, new ProcessLineReader() {
                     @Override
-                    public void handle(InputStream inputStream) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-                        try {
-                            String line;
-                            while ((line = in.readLine()) != null) {
-                                System.out.println("lsb_out: " + line);
-                            }
-                        } catch (Exception e){
-                            e.printStackTrace();
+                    public void onStdoutLine(int x, String cnt) {
+                        System.out.println("lsb_release  " + cnt);
+                        if (cnt.indexOf(":") > -1){
+                            int dx = cnt.indexOf(":");
+                            String key = cnt.substring(0, dx);
+                            String val = cnt.substring(dx+1, cnt.length() -1);
+                            finalProps.put(key, val);
+                            System.out.println(key + " = " + val);
                         }
                     }
-
-                    @Override
-                    public void handleErr(InputStream errorStream) {
-
-                    }
                 }, true, false);
-                System.out.println(out);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        return props;
+        return finalProps;
     }
 
 
