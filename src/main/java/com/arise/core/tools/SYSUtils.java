@@ -349,7 +349,7 @@ public class SYSUtils {
         return finalProps;
     }
 
-    static String fix(String s, String w){
+    public static String fix(String s, String w){
         String c = s.trim().toLowerCase().replaceAll("\\s+", w);
         if (c.startsWith("\"") && c.endsWith("\"")){
             return c.substring(1, c.length() -1);

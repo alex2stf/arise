@@ -405,7 +405,7 @@ public class DependencyManager {
         }
 
         for (Object v: SYSUtils.getLinuxDetails().values()){
-            p.add(String.valueOf(v));
+            p.add(SYSUtils.fix(v + "", ""));
         }
 
 
