@@ -334,8 +334,8 @@ public class SYSUtils {
                         System.out.println("lsb_release  " + cnt);
                         if (cnt.indexOf(":") > -1) {
                             int dx = cnt.indexOf(":");
-                            String key = cnt.substring(0, dx).trim().toLowerCase().replaceAll("\\s+", "_");
-                            String val = cnt.substring(dx + 1, cnt.length()).toLowerCase().trim().replaceAll("\\s+", "");
+                            String key = fix(cnt.substring(0, dx), "_");
+                            String val = fix(cnt.substring(dx + 1), "");
                             finalProps.put("lsb_" + key, val);
                             System.out.println(key + " = " + val);
                         }
@@ -349,6 +349,13 @@ public class SYSUtils {
         return finalProps;
     }
 
+    static String fix(String s, String w){
+        String c = s.trim().toLowerCase().replaceAll("\\s+", w);
+        if (c.startsWith("\"") && c.endsWith("\"")){
+            return c.substring(1, c.length() -1);
+        }
+        return c;
+    }
 
 
 
