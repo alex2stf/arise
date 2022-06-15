@@ -425,8 +425,8 @@ public class DependencyManager {
         }
 
         p.addAll(t);
-        p.add(getOS().getArch());
-        p.add(getOS().getName().toLowerCase());
+        p.add(getOS().getArch().replaceAll("\\s+", "").toLowerCase());
+        p.add(getOS().getName().toLowerCase().replaceAll("\\s+", ""));
 
 
 
