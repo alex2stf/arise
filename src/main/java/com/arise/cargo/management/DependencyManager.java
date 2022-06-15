@@ -24,8 +24,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.arise.core.AppSettings.Keys.DEPENDENCY_FORCED_PROFILES;
@@ -371,8 +373,8 @@ public class DependencyManager {
 
     static List<String> rls = new ArrayList<>();
 
-    public static List<String> getProfiles(){
-        List<String> p = new ArrayList<>();
+    public static Set<String> getProfiles(){
+        Set<String> p = new HashSet<>();
         String m;
         if (isWindows()){
             p.add("win");
