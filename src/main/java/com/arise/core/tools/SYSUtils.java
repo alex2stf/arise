@@ -3,22 +3,11 @@ package com.arise.core.tools;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 import static com.arise.core.tools.FileUtil.exists;
-import static com.arise.core.tools.StringUtil.hasText;
-import static com.arise.core.tools.StringUtil.jsonEscape;
-import static com.arise.core.tools.StringUtil.jsonVal;
+import static com.arise.core.tools.StringUtil.*;
 
 
 public class SYSUtils {

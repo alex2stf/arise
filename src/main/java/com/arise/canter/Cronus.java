@@ -2,7 +2,6 @@ package com.arise.canter;
 
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.MapUtil;

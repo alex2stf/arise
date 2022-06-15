@@ -1,6 +1,5 @@
 package com.arise.weland.impl;
 
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
@@ -9,7 +8,6 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;

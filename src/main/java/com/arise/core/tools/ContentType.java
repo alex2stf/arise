@@ -12,14 +12,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.arise.core.tools.ContentType.Location.DOCUMENTS;
-import static com.arise.core.tools.ContentType.Location.MOVIES;
-import static com.arise.core.tools.ContentType.Location.MUSIC;
-import static com.arise.core.tools.ContentType.Location.PICTURES;
+import static com.arise.core.tools.ContentType.Location.*;
 
 /**
  *

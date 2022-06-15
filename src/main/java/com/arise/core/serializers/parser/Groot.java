@@ -1,23 +1,11 @@
 package com.arise.core.serializers.parser;
 
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.TypeUtil;
+import com.arise.core.tools.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import static com.arise.core.tools.TypeUtil.IteratorHandler;
-import static com.arise.core.tools.TypeUtil.isNull;
-import static com.arise.core.tools.TypeUtil.isNumber;
-import static com.arise.core.tools.TypeUtil.isNumericSequence;
-import static com.arise.core.tools.TypeUtil.toNumber;
+import static com.arise.core.tools.TypeUtil.*;
 import static java.lang.String.valueOf;
 
 public class Groot {

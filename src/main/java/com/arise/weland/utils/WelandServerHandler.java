@@ -45,7 +45,6 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import static com.arise.core.tools.FileUtil.findStream;
-import static com.arise.core.tools.StringUtil.jsonVal;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class WelandServerHandler extends HTTPServerHandler {

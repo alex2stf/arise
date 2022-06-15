@@ -1,12 +1,9 @@
 package com.arise.weland.ui;
 
-import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
 import com.arise.core.models.Provider;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 
@@ -19,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static com.arise.core.tools.StringUtil.join;
 import static com.arise.weland.dto.DeviceStat.getInstance;
@@ -153,24 +149,6 @@ public class WelandForm extends JFrame implements Runnable {
         for (Tuple2<ImageLabel, String> tpl: imgs){
             tpl.first().setImageIcon(tpl.second());
         }
-//        for (Provider<String> p: providers){
-//            sb.append(p.get() + "\n");
-//
-////            Container container = p.getContainer();
-////            if(container instanceof JLabel) {
-////                JLabel label = (JLabel) container;
-////                String text = p.getText(date);
-////                if (text != null) {
-////                    label.setText(text);
-////                    label.setToolTipText(text);
-////                }
-////                else if (label instanceof ImageLabel && AppSettings.isTrue(AppSettings.Keys.UI_IMAGE_ICON_REFRESH)) {
-////                    ((ImageLabel)label).setImageIcon(getIcon().getAbsolutePath());
-////                }
-////            }
-//        }
-//        System.out.println("change");
-//        jLabel.setText(sb.toString());
     }
 
 

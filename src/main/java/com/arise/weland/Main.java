@@ -40,7 +40,7 @@ import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.core.AppSettings.isTrue;
-import static com.arise.core.tools.FileUtil.*;
+import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.ThreadUtil.repeatedTask;
 import static com.arise.core.tools.ThreadUtil.startThread;
 import static com.arise.weland.dto.DeviceStat.getInstance;

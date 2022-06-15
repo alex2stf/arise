@@ -3,12 +3,7 @@ package com.arise.core.tools;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.arise.core.tools.StringUtil.hasContent;
 

@@ -1,10 +1,6 @@
 package com.arise.core.tools;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 

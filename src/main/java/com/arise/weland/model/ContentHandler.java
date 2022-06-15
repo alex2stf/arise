@@ -1,6 +1,5 @@
 package com.arise.weland.model;
 
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
