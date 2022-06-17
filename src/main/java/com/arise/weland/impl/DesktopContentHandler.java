@@ -2,24 +2,16 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
-import com.arise.cargo.management.DependencyManager;
-import com.arise.core.AppSettings;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
-import com.github.sarxos.webcam.Webcam;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

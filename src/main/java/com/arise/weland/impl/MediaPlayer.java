@@ -5,7 +5,6 @@ import com.arise.core.AppSettings;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
-import com.github.sarxos.webcam.Webcam;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
