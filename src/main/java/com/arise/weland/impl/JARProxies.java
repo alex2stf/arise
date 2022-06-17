@@ -105,32 +105,12 @@ public class JARProxies {
                     camIds = unmodifiableList(tmp);
                     h.handle(camIds);
                 }
-                else if (SYSUtils.isLinux()){
-                    tryFsWebcam(h);
+                else {
+                   OSProxies.tryFsWebcam(h);
                 }
             }
         });
     }
 
-    private static void tryFsWebcam(Handler<List<Tuple2<String, String>>> h){
-        File f = new File("/usr/bin/v4l2-ctl");
-        final int[] index = {0};
-        final List<Tuple2<String, String>> list = new ArrayList<>();
-        SYSUtils.exec(new String[]{f.getAbsolutePath(), "--list-devices"}, new SYSUtils.ProcessLineReader() {
-            @Override
-            public void onStdoutLine(int line, String content) {
-                String lines[] = content.split("\n");
-                for (String x: lines){
-                    x = x.trim();
-                    if (x.startsWith("/dev")){
-                        String parts[] = x.split("/");
-                        String id = parts[parts.length - 1];
-                        System.out.println(id);
-                        list.add(new Tuple2<>(index + "", id));
-                        index[0]++;
-                    }
-                }
-            }
-        }, true, false);
-    }
+
 }

@@ -528,13 +528,14 @@ public class DependencyManager {
                }
             }
         }
+
+        if ("--test-os".equalsIgnoreCase(args[0])){
+
+        }
     }
 
     public static void main(String[] args) throws IOException {
-//       execProgram(args)
-        execProgram(new String[]{"--solve", "NWJS"});
-
-
+       execProgram(args);
     }
 
 
