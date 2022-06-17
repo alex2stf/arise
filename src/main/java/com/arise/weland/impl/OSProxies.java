@@ -20,7 +20,12 @@ public class OSProxies {
     public static void takeSnapshot(String id){
         File f = getBinary("/usr/bin/fswebcam", "apt-get install fswebcam", "dependency-manager solve fswebcam");
         String n = JARProxies.snapshotPath(id).getAbsolutePath();
-        SYSUtils.exec(new String[]{f.getAbsolutePath(), n});
+        if (null == id) {
+            SYSUtils.exec(new String[]{f.getAbsolutePath(), n});
+        }
+        else {
+            SYSUtils.exec(new String[]{f.getAbsolutePath(), "-d", id, n});
+        }
     }
 
     public static void findWebcamIds(Handler<List<Tuple2<String, String>>> h){
@@ -34,10 +39,8 @@ public class OSProxies {
                 for (String x: lines){
                     x = x.trim();
                     if (x.startsWith("/dev")){
-                        String parts[] = x.split("/");
-                        String id = parts[parts.length - 1];
-                        list.add(new Tuple2<>(index + "", id));
-                        log.info("Found webcam " + id);
+                        list.add(new Tuple2<>(index + "", x));
+                        log.info("Found webcam " + x);
                         index[0]++;
                     }
                 }

@@ -38,6 +38,8 @@ public class JARProxies {
         });
     }
 
+
+
     public static void takeSnapshot(String id) {
         if (id != null && camIds != null) {
             for (Tuple2<String, String> t : camIds) {
@@ -48,7 +50,6 @@ public class JARProxies {
         }
 
         final String fid = id;
-        final String finalId = id;
         withWebcamCapture(new Handler<Class>() {
             @Override
             public void handle(Class clz) {
@@ -61,7 +62,7 @@ public class JARProxies {
                     }
                     if (webcam == null) {
                         Mole.logWarn("No camera found");
-                        OSProxies.takeSnapshot(finalId);
+                        OSProxies.takeSnapshot(fid);
                         return;
                     }
                     boolean isOpened = getMethod(webcam, "isOpen").callForBoolean();
