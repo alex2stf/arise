@@ -200,7 +200,7 @@
           },
           {
             "key": "configure",
-            "val": "$shell-exec($sub-location(src,fs-webcam-git-src,r), null, configure )"
+            "val": "$shell-exec($sub-location(src,fs-webcam-git-src/fswebcam-master,r), null, $sub-location(src,fs-webcam-git-src/fswebcam-master/configure,r) )"
           },
           {
             "key": "make",

@@ -5,6 +5,7 @@ import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
+import com.arise.core.tools.SYSUtils;
 
 import java.awt.image.BufferedImage;
 import java.net.URLClassLoader;
@@ -104,7 +105,14 @@ public class JARProxies {
                     camIds = unmodifiableList(tmp);
                     h.handle(camIds);
                 }
+                else if (SYSUtils.isLinux()){
+                    tryFsWebcam();
+                }
             }
         });
+    }
+
+    private static void tryFsWebcam(){
+        DependencyManager.solve("FS_WEBCAM");
     }
 }

@@ -376,7 +376,7 @@ public class DependencyManager {
 
     static Map<String, Map<String, Object>> cslv = new ConcurrentHashMap<>();
 
-    static Map<String, Object> solve(String n) {
+    public static Map<String, Object> solve(String n) {
         if (cslv.containsKey(n)){
             return cslv.get(n);
         }
