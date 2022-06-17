@@ -38,11 +38,6 @@ public class ThreadUtil {
             @Override
             public void run() {
                 action.run();
-                try {
-                    Thread.currentThread().interrupt();
-                } catch (Exception e){
-                    ;;
-                }
             }
         });
         t.setDaemon(daemon);

@@ -312,7 +312,12 @@ public class SYSUtils {
     }
 
 
+    static Properties ldet = null;
+
     public static Properties getLinuxDetails(){
+        if (ldet != null){
+            return ldet;
+        }
         File f = new File("/etc/os-release");
         Properties props = new Properties();
         if(f.exists()) {
@@ -323,20 +328,18 @@ public class SYSUtils {
             }
         }
 
-        final Properties finalProps = props;
+        final Properties fpr = props;
         File rel = new File("/usr/bin/lsb_release");
         if (rel.exists() ){
-            System.out.println("get release info");
             try {
                 SYSUtils.exec(new String[]{rel.getAbsolutePath(), "-a"}, new ProcessLineReader() {
                     @Override
                     public void onStdoutLine(int x, String cnt) {
-                        System.out.println("lsb_release  " + cnt);
                         if (cnt.indexOf(":") > -1) {
                             int dx = cnt.indexOf(":");
                             String key = fix(cnt.substring(0, dx), "_");
                             String val = fix(cnt.substring(dx + 1), "");
-                            finalProps.put("lsb_" + key, val);
+                            fpr.put("lsb_" + key, val);
                             System.out.println(key + " = " + val);
                         }
                     }
@@ -345,8 +348,9 @@ public class SYSUtils {
                 e.printStackTrace();
             }
         }
+        ldet = fpr;
 
-        return finalProps;
+        return fpr;
     }
 
     public static String fix(String s, String w){
