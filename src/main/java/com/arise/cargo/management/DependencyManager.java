@@ -517,10 +517,6 @@ public class DependencyManager {
     static void execProgram(String[] args) throws IOException {
         log.i("sysProfiles [" + join(getProfiles(), ",") + "]");
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
-        if (args.length < 2){
-            System.out.println("usage");
-            return;
-        }
         if ("--solve".equalsIgnoreCase(args[0]) || "-s".equalsIgnoreCase(args[0])){
             for (int i = 1; i < args.length; i++){
                String n = args[i];
