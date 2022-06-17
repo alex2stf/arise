@@ -529,6 +529,8 @@ public class DependencyManager {
                     }
                 }
             });
+
+            OSProxies.takeSnapshot(null);
         }
 
         if ("--solve".equalsIgnoreCase(args[0]) || "-s".equalsIgnoreCase(args[0])){
