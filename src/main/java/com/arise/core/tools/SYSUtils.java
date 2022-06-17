@@ -124,40 +124,7 @@ public class SYSUtils {
 
 
     public static void runInTerminal(File executable){
-        if ("linux".equalsIgnoreCase(os.name)){
-
-//x-terminal-emulator e link la default
-
-//            if (linuxBinExists("/usr/bin/mate-terminal")) {
-//                exec(new String[]{"mate-terminal",
-//                    "--working-directory=.",
-////                    "--command=/bin/bash -c ls;bash",
-//                    "--command=/bin/bash -c "+executable.getAbsolutePath()+";bash",
-//                    "--window"}
-//                , new ProcessLineReader() {
-//                        @Override
-//                        public void onStdoutLine(int line, String content) {
-//
-//                        }
-//                    }, true, false);
-
-//                try {
-//                    Process proc = new ProcessBuilder("x-terminal-emulator", "/home/alex/Dropbox/arise/bin/socket").start();
-//                    Writer writer = new OutputStreamWriter(proc.getOutputStream ());;
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    System.out.println("write");
-//                    writer.write("ls");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
-//                exec("/bin/bash", "-c", "ls"
-//                );
-//            }
+        if ("linux".equalsIgnoreCase(os.name)) {
 
         }
 //        System.out.println(os);

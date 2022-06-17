@@ -15,6 +15,23 @@
             <version>0.9.1-r507</version>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/com.github.sarxos/webcam-capture -->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.github.sarxos/webcam-capture-driver-v4l4j -->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture-driver-v4l4j</artifactId>
+            <version>0.3.12</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
 <!--        <dependency>-->
 <!--            <groupId>javazoom</groupId>-->
