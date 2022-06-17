@@ -15,7 +15,7 @@ public class OSProxies {
     private static File getBinary(String path, String ... fixes){
         return new File(path);
     }
-    public static void tryFsWebcam(Handler<List<Tuple2<String, String>>> h){
+    public static void findWebcamIds(Handler<List<Tuple2<String, String>>> h){
         File f = getBinary("/usr/bin/v4l2-ctl", "apt-get install v4l-utils");
         final int[] index = {0};
         final List<Tuple2<String, String>> list = new ArrayList<>();

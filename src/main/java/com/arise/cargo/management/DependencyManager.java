@@ -4,12 +4,14 @@ import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
 import com.arise.core.models.Unarchiver;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
+import com.arise.weland.impl.OSProxies;
 
 import java.io.File;
 import java.io.IOException;
@@ -530,7 +532,15 @@ public class DependencyManager {
         }
 
         if ("--test-os".equalsIgnoreCase(args[0])){
-
+            log.info("OSProxies.tryFsWebcam");
+            OSProxies.findWebcamIds(new Handler<List<Tuple2<String, String>>>() {
+                @Override
+                public void handle(List<Tuple2<String, String>> tuple2s) {
+                    for (Tuple2 t: tuple2s){
+                        log.info(t.first() + " --- " + t.second());
+                    }
+                }
+            });
         }
     }
 

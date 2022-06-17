@@ -4,10 +4,8 @@ import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
-import com.arise.core.tools.SYSUtils;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +104,7 @@ public class JARProxies {
                     h.handle(camIds);
                 }
                 else {
-                   OSProxies.tryFsWebcam(h);
+                   OSProxies.findWebcamIds(h);
                 }
             }
         });
