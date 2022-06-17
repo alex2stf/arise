@@ -517,15 +517,7 @@ public class DependencyManager {
     static void execProgram(String[] args) throws IOException {
         log.i("sysProfiles [" + join(getProfiles(), ",") + "]");
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
-        if ("--solve".equalsIgnoreCase(args[0]) || "-s".equalsIgnoreCase(args[0])){
-            for (int i = 1; i < args.length; i++){
-               String n = args[i];
-               Map<String, Object> r = DependencyManager.solve(n);
-               for (Map.Entry<String, Object> e: r.entrySet()){
-                   log.i(n + "[" + e.getKey()  + "] = " + e.getValue());
-               }
-            }
-        }
+
 
         if ("--test-os".equalsIgnoreCase(args[0])){
             log.info("OSProxies.tryFsWebcam");
@@ -537,6 +529,16 @@ public class DependencyManager {
                     }
                 }
             });
+        }
+
+        if ("--solve".equalsIgnoreCase(args[0]) || "-s".equalsIgnoreCase(args[0])){
+            for (int i = 1; i < args.length; i++){
+                String n = args[i];
+                Map<String, Object> r = DependencyManager.solve(n);
+                for (Map.Entry<String, Object> e: r.entrySet()){
+                    log.i(n + "[" + e.getKey()  + "] = " + e.getValue());
+                }
+            }
         }
     }
 

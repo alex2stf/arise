@@ -4,8 +4,10 @@ import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
+import com.arise.core.tools.SYSUtils;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ public class JARProxies {
         }
 
         final String fid = id;
+        final String finalId = id;
         withWebcamCapture(new Handler<Class>() {
             @Override
             public void handle(Class clz) {
@@ -58,6 +61,7 @@ public class JARProxies {
                     }
                     if (webcam == null) {
                         Mole.logWarn("No camera found");
+                        OSProxies.takeSnapshot(finalId);
                         return;
                     }
                     boolean isOpened = getMethod(webcam, "isOpen").callForBoolean();
@@ -66,9 +70,7 @@ public class JARProxies {
                     }
                     BufferedImage buf = (BufferedImage) getMethod(webcam, "getImage").call();
                     if (buf != null) {
-                        write(buf, "jpg", snapshot(
-                                nameUUIDFromBytes((fid != null ? fid : "default").getBytes()) + ".jpg"
-                        ));
+                        write(buf, "jpg", snapshotPath(fid));
                     }
                     getMethod(webcam, "close").call();
                 } catch (Exception e) {
@@ -76,6 +78,12 @@ public class JARProxies {
                 }
             }
         });
+    }
+
+    static File snapshotPath(String id){
+        return snapshot(
+                nameUUIDFromBytes((id != null ? id : "default").getBytes()) + ".jpg"
+        );
     }
 
     static List<Tuple2<String, String>> camIds = null;

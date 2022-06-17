@@ -1,5 +1,6 @@
 package com.arise.weland.impl;
 
+import com.arise.cargo.management.Locations;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
@@ -15,6 +16,13 @@ public class OSProxies {
     private static File getBinary(String path, String ... fixes){
         return new File(path);
     }
+
+    public static void takeSnapshot(String id){
+        File f = getBinary("/usr/bin/fswebcam", "apt-get install fswebcam", "dependency-manager solve fswebcam");
+        String n = JARProxies.snapshotPath(id).getAbsolutePath();
+        SYSUtils.exec(new String[]{f.getAbsolutePath(), n});
+    }
+
     public static void findWebcamIds(Handler<List<Tuple2<String, String>>> h){
         File f = getBinary("/usr/bin/v4l2-ctl", "apt-get install v4l-utils");
         final int[] index = {0};
@@ -22,19 +30,19 @@ public class OSProxies {
         SYSUtils.exec(new String[]{f.getAbsolutePath(), "--list-devices"}, new SYSUtils.ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
-                log.info("-----------" + content);
                 String lines[] = content.split("\n");
                 for (String x: lines){
                     x = x.trim();
                     if (x.startsWith("/dev")){
                         String parts[] = x.split("/");
                         String id = parts[parts.length - 1];
-                        System.out.println(id);
                         list.add(new Tuple2<>(index + "", id));
+                        log.info("Found webcam " + id);
                         index[0]++;
                     }
                 }
             }
         }, true, false);
+        h.handle(list);
     }
 }
