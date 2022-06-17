@@ -5,8 +5,6 @@ import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.ds.v4l4j.V4l4jDriver;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
