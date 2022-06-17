@@ -1,6 +1,7 @@
 package com.arise.weland.ui;
 
 import com.arise.canter.CommandRegistry;
+import com.arise.cargo.management.Locations;
 import com.arise.core.AppSettings;
 import com.arise.core.models.Provider;
 import com.arise.core.models.Tuple2;
@@ -29,7 +30,7 @@ public class WelandForm extends JFrame implements Runnable {
 
 
 
-    List<Tuple2<ImageLabel, String>> imgs = new ArrayList<>();
+    List<ImageLabel> imgs = new ArrayList<>();
 
     public WelandForm(final CommandRegistry commandRegistry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -109,12 +110,22 @@ public class WelandForm extends JFrame implements Runnable {
         List<String> ics = AppSettings.getListWithPrefix("ui.image.icon");
         JTabbedPane tabs = new JTabbedPane();
 
+        if (AppSettings.isTrue(AppSettings.Keys.UI_INCLUDE_SNAPSHOTS)){
+            File f[] = Locations.snapshots().listFiles();
+            if (f != null && f.length > 0){
+                for (int i = 0; i < f.length; i++){
+                    ImageLabel imageLabel = new ImageLabel(f[i].getAbsolutePath());
+                    tabs.add("Snap" + i, imageLabel);
+                    imgs.add(imageLabel);
+                }
+            }
+        }
+
         for (int i = 0; i < ics.size(); i++){
             File f = new File(ics.get(i));
-            ImageIcon imageIcon = new ImageIcon(f.getAbsolutePath());
-            ImageLabel imageLabel = new ImageLabel(imageIcon);
+            ImageLabel imageLabel = new ImageLabel(f.getAbsolutePath());
             tabs.add("Icn" + i, imageLabel);
-            imgs.add(new Tuple2<>(imageLabel, f.getAbsolutePath()));
+            imgs.add(imageLabel);
         }
         left.add(tabs);
 
@@ -138,17 +149,16 @@ public class WelandForm extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        StringBuilder sb = new StringBuilder();
-
         for (TextProvider tp: prov){
             tp.get().first().setText(
                     tp.get().second().get()
             );
         }
 
-        for (Tuple2<ImageLabel, String> tpl: imgs){
-            tpl.first().setImageIcon(tpl.second());
+        for (ImageLabel l: imgs){
+            l.refresh();
         }
+        Thread.currentThread().interrupt();
     }
 
 
@@ -184,20 +194,24 @@ public class WelandForm extends JFrame implements Runnable {
         private Image _myimage;
         int iW;
         int iH;
+        final String _p;
 
-        public ImageLabel(ImageIcon _myImage){
-            setImageIcon(_myImage);
+        public ImageLabel(String p){
+            _p = p;
+            refresh();
         }
 
-        public void setImageIcon(String path){
+        public void refresh(){
             try {
-                setImageIcon(new ImageIcon(ImageIO.read(new File(path))));
-            } catch (IOException e) {
+                setImageIcon(new ImageIcon(ImageIO.read(new File(_p))));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public void setImageIcon(ImageIcon imageIcon) {
+
+
+        private void setImageIcon(ImageIcon imageIcon) {
             if (this._myimage != null){
                 this._myimage.flush();
             }

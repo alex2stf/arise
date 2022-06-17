@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.arise.core.AppSettings.Keys.LATEST_SNAPSHOT_PATH;
 import static com.arise.core.tools.SYSUtils.getLinuxDetails;
 
 public abstract  class ContentHandler {
@@ -133,30 +132,30 @@ public abstract  class ContentHandler {
 
 
 
-    public HttpResponse getLatestSnapshot() {
+//    public HttpResponse getLatestSnapshot() {
+//
+//        File file;
+//
+//        if(AppSettings.isDefined(LATEST_SNAPSHOT_PATH)){
+//            file = new File(AppSettings.getProperty(LATEST_SNAPSHOT_PATH));
+//        } else {
+//            file = new File(FileUtil.findAppDir(), "snapshot.jpeg");
+//        }
+//
+//        HttpResponse response = new HttpResponse();
+//
+//        byte[] bytes;
+//        try {
+//            bytes = FileUtil.readBytes(file);
+//        } catch (IOException e) {
+//            bytes = new byte[0];
+//        }
+//        response.setBytes(bytes)
+//                .setContentType(ContentType.IMAGE_JPEG);
+//        return response;
+//
+//    }
 
-        File file;
-
-        if(AppSettings.isDefined(LATEST_SNAPSHOT_PATH)){
-            file = new File(AppSettings.getProperty(LATEST_SNAPSHOT_PATH));
-        } else {
-            file = new File(FileUtil.findAppDir(), "snapshot.jpeg");
-        }
-
-        HttpResponse response = new HttpResponse();
-
-        byte[] bytes;
-        try {
-            bytes = FileUtil.readBytes(file);
-        } catch (IOException e) {
-            bytes = new byte[0];
-        }
-        response.setBytes(bytes)
-                .setContentType(ContentType.IMAGE_JPEG);
-        return response;
-
-    }
-
-    public abstract void takeSnapshot();
+    public abstract void takeSnapshot(String id);
 
 }

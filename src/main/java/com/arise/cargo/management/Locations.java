@@ -62,4 +62,16 @@ public class Locations {
     public static File bin() {
         return gd("bin");
     }
+
+    public static File snapshots(){
+        File sn = new File(findAppDir(), "snapshots");
+        if (!sn.exists()){
+            sn.mkdir();
+        }
+        return sn;
+    }
+
+    public static File snapshot(String name){
+        return new File(snapshots(), name);
+    }
 }

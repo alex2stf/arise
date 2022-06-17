@@ -217,7 +217,6 @@ public class AppSettings {
         PREFERRED_YOUTUBE_PLAYER("preferred.youtube.player", new String[]{"external, internal"}, "internal"),
         SERVER_PORT("server.port", new String[]{"8221 default"}),
         SINGLE_INSTANCES("single.instances", new String[]{"true (default)", "false"}),
-        LATEST_SNAPSHOT_PATH("paths.latest.snapshot", new String[]{"latest/snapshot.jpeg"}),
         KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
         CRONUS_CONFIG_FILE("cronus.config.file", new String[]{"path to cronus.json"}),
         CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
@@ -226,7 +225,6 @@ public class AppSettings {
 
 
         //Deprecater
-        TAKE_SNAPSHOT_CMD("cmd.take.snapshot", new String[]{"fswebcam out.jpeg"}),
         GET_VOLUME_CMD("cmd.get.volume", new String[]{"fswebcam out.jpeg"}),
         UI_IMAGE_ICON_REFRESH("ui.image.icon.refresh", new String[]{"true", "false(default)"} ),
         LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands.json"} ),
@@ -234,7 +232,7 @@ public class AppSettings {
         , RADIO_ENABLED("radio.enabled", new String[]{"true", "false(default)"})
         , RADIO_SHOWS_PATH("radio.shows.path", new String[]{"/path/to/local/shows.json"})
         , DEPENDENCY_FORCED_PROFILES("dependencies.forced.profiles", new String[]{})
-        ;
+        , UI_INCLUDE_SNAPSHOTS("ui.include.snapshots", new String[]{"true", "false"});
 
 
 

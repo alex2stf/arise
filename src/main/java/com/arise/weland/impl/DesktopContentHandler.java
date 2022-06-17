@@ -2,25 +2,30 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
+import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
+import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
+import com.github.sarxos.webcam.Webcam;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.arise.core.AppSettings.Keys.TAKE_SNAPSHOT_CMD;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
@@ -75,13 +80,6 @@ public class DesktopContentHandler extends ContentHandler {
             return deviceStat.toHttp();
     }
 
-    private boolean isInternal(String path) {
-        return path.startsWith("{host}");
-    }
-
-    private String fix(String data){
-        return  "http://localhost:8221" + data.substring("{host}".length());
-    }
 
 
 
@@ -176,14 +174,23 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public DeviceStat getDeviceStat() {
-        DeviceStat deviceStat = getInstance();
+        final DeviceStat deviceStat = getInstance();
+
+        JARProxies.getCamIds(new Handler<List<Tuple2<String, String>>>() {
+            @Override
+            public void handle(List<Tuple2<String, String>> camIds) {
+                deviceStat.setProp("cams.v1", camIds);
+            }
+        });
+
+
 
         deviceStat.setProp("cams.active.v", "v1");
         deviceStat.setProp("cams.active.id", "0");
         deviceStat.setProp("flash.modes.active", "off" );
 
         deviceStat.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
-        deviceStat.setProp("cams.v1", Arrays.asList(Tuple2.str("0", "Cam 1"), Tuple2.str("1", "Cam 2")));
+
 
 
         return deviceStat;
@@ -195,23 +202,14 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
     @Override
-    public void takeSnapshot() {
-        if(AppSettings.isDefined(TAKE_SNAPSHOT_CMD)){
-            String cmd = AppSettings.getProperty(TAKE_SNAPSHOT_CMD);
-            SYSUtils.exec(cmd.split(" "));
-        }
-
+    public void takeSnapshot(String id) {
+       JARProxies.takeSnapshot(id);
     }
 
-    private void execute(String args[]){
-        log.info(StringUtil.join(args, " "));
-        exes.add(new File(args[0]).getName());
-        try {
-            Runtime.getRuntime().exec(args);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
+
+
+
 
 
 }

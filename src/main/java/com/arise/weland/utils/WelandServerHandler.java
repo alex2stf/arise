@@ -224,13 +224,14 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if(request.pathsStartsWith("snapshot-get")){
-      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
-    }
+//    if(request.pathsStartsWith("snapshot-get")){
+//      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
+//    }
 
     if(request.pathsStartsWith("snapshot-make")){
-      contentHandler.takeSnapshot();
-      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
+      String id = request.getQueryParam("id");
+      contentHandler.takeSnapshot(id);
+      return DeviceStat.getInstance().toHttp();
     }
 
     //list media based on type

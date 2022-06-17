@@ -1,11 +1,25 @@
 {
+  "WEBCAM_CAPTURE": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "webcam-capture-0.3.12",
+        "profiles": ["*"],
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$download(https://repo1.maven.org/maven2/com/github/sarxos/webcam-capture/0.3.12/webcam-capture-0.3.12.jar, libs, webcam-capture-0.3.12.jar)"
+          }
+        ]
+      }
+    ]
+  },
   "JAVAZOOM_JLAYER_101": {
     "type": "jar",
     "versions": [
       {
         "name": "maven-jlayer-1.0.1.jar",
-        "profiles": "*",
-        "disabled": false,
+        "profiles": ["*"],
         "params": [
           {
             "key": "jar-location",
@@ -145,7 +159,7 @@
       }
     ]
   },
-  "MINGW": {
+  "MIN_CCOMPILER": {
     "type": "sdk",
     "versions": [
       {
@@ -155,6 +169,14 @@
           {
             "key": "zip-location",
             "val": "$download(https://github.com/jonasstrandstedt/MinGW/archive/master.zip,down,mingw-opengl.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down, mingw-opengl.zip), $sub-location(bin,mingw-opengl,rwd) )"
+          },
+          {
+            "key": "make",
+            "val": "$file-exist( $sub-location(bin,mingw-opengl/MinGW-master/MinGW/bin/mingw32-make.exe,r)  )"
           }
         ]
       }
@@ -165,8 +187,18 @@
     "type": "binary",
     "versions": [
       {
-        "profiles": ["ubuntu"],
-        "name": "fs-webcam"
+        "profiles": ["ubuntu", "ubuntu32"],
+        "name": "fs-webcam",
+        "params": [
+          {
+            "key": "git-zip-location",
+            "val": "$download(https://github.com/fsphil/fswebcam/archive/refs/heads/master.zip,down,fs-webcam-git.zip)"
+          },
+          {
+            "key": "git-unzip-location",
+            "val": "$unzip($sub-location(down, fs-webcam-git.zip), $sub-location(src,fs-webcam-git-src,rwd) )"
+          }
+        ]
       }
     ]
   },

@@ -67,14 +67,23 @@ public class DependencyManagerTest {
 
         importDependencyRules("_cargo_/dependencies.json");
 
-        System.out.println(
-                StringUtil.join(
-                        DependencyManager.getProfiles(), "\n"
-                )
-        );
-//        DependencyManagerTest.test1();
-        Map<String, Object> res;
-//        res = DependencyManager.solve("MEDIA_INFO_CLI_WIN32");
+
+        DependencyManager.solve("WEBCAM_SNAPSHOT");
+//        System.out.println(
+//                StringUtil.join(
+//                        DependencyManager.getProfiles(), "\n"
+//                )
+//        );
+//
+//        DependencyManager.withSdkTool("MIN_CCOMPILER", "make", new Handler<File>() {
+//            @Override
+//            public void handle(File file) {
+//                System.out.println(file);
+//            }
+//        });
+////        DependencyManagerTest.test1();
+//        Map<String, Object> res;
+//        res = DependencyManager.solve("MIN_CCOMPILER");
 //        res = DependencyManager.solve("MNT_CLI_WIN_32");
 //        res = DependencyManager.solve("MP3_PLAYER");
 //        res = DependencyManager.solve("NWJS");

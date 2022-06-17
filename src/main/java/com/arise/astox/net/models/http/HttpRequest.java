@@ -8,6 +8,7 @@ import com.arise.core.tools.StringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -210,7 +211,12 @@ public class HttpRequest extends ServerRequest {
 
     public String getQueryParam(String k){
         if (queryParams.get(k) != null && queryParams.get(k).size() > 0){
-            return queryParams.get(k).get(0);
+            try {
+                return URLDecoder.decode(
+                        queryParams.get(k).get(0), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                return queryParams.get(k).get(0);
+            }
         }
         return null;
     }

@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.AppSettings.Keys.DEPENDENCY_FORCED_PROFILES;
 import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.CollectionUtil.safeGetItem;
 import static com.arise.core.tools.SYSUtils.getOS;
 import static com.arise.core.tools.SYSUtils.is32Bits;
@@ -132,6 +134,14 @@ public class DependencyManager {
             }
         });
 
+
+        cmdReg.addCommand(new Command<String>("shell-exec") {
+            @Override
+            public String execute(List<String> arguments) {
+                return null;
+            }
+        });
+
     }
 
     private DependencyManager(){
@@ -152,6 +162,18 @@ public class DependencyManager {
                 }
             }
         }, "binary");
+    }
+
+    public static void withSdkTool(String n, final String t, final Handler<File> h) {
+        withDependency(n, new Handler<Map<String, Object>>() {
+            @Override
+            public void handle(Map<String, Object> res) {
+                if (res.containsKey(t)){
+                    File f = new File(res.get(t) + "");
+                    h.handle(f);
+                }
+            }
+        });
     }
 
     public static void withJar(final String n, final Handler<URLClassLoader> handler){
@@ -197,7 +219,7 @@ public class DependencyManager {
 
 
 
-    public static void importDependencyRules(String in) throws IOException {
+    public static void importDependencyRules(String in) {
         InputStream inps = FileUtil.findStream(in);
         if(inps == null){
             log.w("Could not find stream " + in);
@@ -334,19 +356,52 @@ public class DependencyManager {
         return out;
     }
 
+
+    static Map<String, Map<String, Object>> cslv = new ConcurrentHashMap<>();
+
     static Map<String, Object> solve(String n) {
+        if (cslv.containsKey(n)){
+            return cslv.get(n);
+        }
         Dependency d = dependencyMap.get(n);
         if (d == null){
             throw new LogicalException("Dependency not found");
         }
         for (Dependency.Version v: d.getVersions().values()){
             log.info("try solve dependency " + d.getName() + " version " + v.name());
-            Map<String, Object> res = parseParams(v);
+            Map<String, Object> res = null;
+            if (!isEmpty(v._f)){
+                if (contains(getProfiles(), v._f)) {
+                    res = parseParams(v);
+                }
+            } else {
+                res = parseParams(v);
+            }
+
+
             if (res != null){
+                cslv.put(n, res);
                 return res;
             }
         }
+
+        //TODO throw error based on configuration
+        log.warn("No version compatible found for "+ n);
         return null;
+    }
+
+    private static boolean contains(Set<String> x, List<String> y){
+        for (String s: y){
+            if ("*".equals(s)){
+                return true;
+            }
+            for (String z: x){
+                if (s.equalsIgnoreCase(z)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static Map<String, Object> parseParams(Dependency.Version v){
@@ -371,7 +426,6 @@ public class DependencyManager {
     }
 
 
-    static List<String> rls = new ArrayList<>();
 
     public static Set<String> getProfiles(){
         Set<String> p = new HashSet<>();
@@ -410,8 +464,6 @@ public class DependencyManager {
                 p.add(x);
             }
         }
-
-
 
 
         List<String> t = new ArrayList<>();
@@ -467,6 +519,7 @@ public class DependencyManager {
 
 
     }
+
 
 
 }

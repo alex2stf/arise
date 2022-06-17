@@ -68,7 +68,7 @@ public class WelandServerHandlerTest {
             }
 
             @Override
-            public void takeSnapshot() {
+            public void takeSnapshot(String x) {
 
             }
         });

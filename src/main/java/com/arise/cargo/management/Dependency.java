@@ -40,7 +40,7 @@ public class Dependency {
 
                 Version version = new Version();
                 version._n = MapUtil.getString(m, "name");
-                version._c = MapUtil.getString(m, "condition");
+                version._f = MapUtil.getList(m, "profiles");
                 version._p = MapUtil.getList(m, "params");
                 dependency.versions.put(version._n, version);
             }
@@ -67,18 +67,18 @@ public class Dependency {
 
     public static class Version {
        String _n;
-       String _c;
+       List<String> _f;
        List _p;
 
 
-        public List params(){
+       public List<String> profiles(){
+           return _f;
+       }
+       public List params(){
             return _p;
         }
-        public String name(){
+       public String name(){
             return _n;
-        }
-        public String condition(){
-            return _c;
         }
     }
 }

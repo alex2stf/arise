@@ -4,13 +4,18 @@ import java.util.*;
 
 public class ThreadUtil {
 
+    @Deprecated
+    public static Thread fireAndForget(Runnable action, String name){
+        return startNewThread(action, "FF-" + name, false, -1);
+    }
 
     public static Thread startDaemon(Runnable action, String name){
         return startNewThread(action, "DU-" + name, true, -1);
     }
 
+
     public static Thread startThread(Runnable action, String name){
-        return startNewThread(action, "DU-" + name, false, -1);
+        return startNewThread(action, "UT-" + name, false, -1);
     }
 
     public static Thread startJoinedThread(Runnable a, String n){
@@ -22,9 +27,7 @@ public class ThreadUtil {
     }
 
 
-    public static Thread fireAndForget(Runnable action, String name){
-        return startNewThread(action, "FF-" + name, false, -1);
-    }
+
 
     private static Thread startNewThread(final Runnable action,
                                          String name,
@@ -63,13 +66,8 @@ public class ThreadUtil {
         return t;
     }
 
-    @Deprecated
-    public static Thread fireAndForget(Runnable action){
-        return fireAndForget(action, "FireAndForget" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis());
-    }
-
     public static TimerResult repeatedTask(Runnable action, long rate){
-        Timer timer = new Timer(false);
+        Timer timer = new Timer("Repeated-Task-" + UUID.randomUUID() , false);
         TimerResult timerResult = new TimerResult(timer, action);
         timer.scheduleAtFixedRate(timerResult.getTimerTask(), 0, rate);
         return timerResult;

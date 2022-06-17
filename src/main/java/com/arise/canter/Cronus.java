@@ -23,6 +23,7 @@ import java.util.Map;
 
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 import static com.arise.core.tools.ThreadUtil.startDaemon;
+import static com.arise.core.tools.ThreadUtil.startThread;
 
 public class Cronus {
 
@@ -56,15 +57,17 @@ public class Cronus {
             public void run() {
                 for (final CronTask c : cronTasks) {
                     if (c.isMatching(Calendar.getInstance())) {
-                        startDaemon(new Runnable() {
-                            @Override
-                            public void run() {
-                                c.execute();
-                            }
-                        }, "cronus-task-" + c.name);
+//                        startDaemon(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                c.execute();
+//                            }
+//                        }, "cronus-task-" + c.name);
+                        c.execute();
                     }
                     for (Runnable x : otherTasks) {
-                        fireAndForget(x, "cronus-other-task");
+//                        startDaemon(x, "cronus-other-task");
+                        x.run();
                     }
                 }
             }
