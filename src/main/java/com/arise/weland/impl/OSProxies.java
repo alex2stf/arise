@@ -22,6 +22,7 @@ public class OSProxies {
         SYSUtils.exec(new String[]{f.getAbsolutePath(), "--list-devices"}, new SYSUtils.ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
+                log.info("-----------" + content);
                 String lines[] = content.split("\n");
                 for (String x: lines){
                     x = x.trim();
