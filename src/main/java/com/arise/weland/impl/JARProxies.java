@@ -25,9 +25,6 @@ import static javax.imageio.ImageIO.write;
 
 public class JARProxies {
 
-    static {
-        Webcam.setDriver(new V4l4jDriver());
-    }
 
     private static void withWebcamCapture(final Handler<Class> h) {
         withJar("WEBCAM_CAPTURE", new Handler<URLClassLoader>() {
@@ -119,8 +116,8 @@ public class JARProxies {
 
     private static void tryFsWebcam(Handler<List<Tuple2<String, String>>> h){
         File f = new File("/usr/bin/v4l2-ctl");
-        int index = 0;
-        List<Tuple2<String, String>> list = new ArrayList<>();
+        final int[] index = {0};
+        final List<Tuple2<String, String>> list = new ArrayList<>();
         SYSUtils.exec(new String[]{f.getAbsolutePath(), "--list-devices"}, new SYSUtils.ProcessLineReader() {
             @Override
             public void onStdoutLine(int line, String content) {
@@ -130,7 +127,9 @@ public class JARProxies {
                     if (x.startsWith("/dev")){
                         String parts[] = x.split("/");
                         String id = parts[parts.length - 1];
-
+                        System.out.println(id);
+                        list.add(new Tuple2<>(index + "", id));
+                        index[0]++;
                     }
                 }
             }
