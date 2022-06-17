@@ -191,6 +191,7 @@ public class SYSUtils {
     }
 
 
+
     /**
      * use Defaults#PROCESS_EXEC
      * @param args
@@ -198,6 +199,7 @@ public class SYSUtils {
      * @param useBuilder
      * @param async
      */
+    @Deprecated
     public static Process exec(String[] args, final ProcessOutputHandler outputHandler,
                             boolean useBuilder,
                             boolean async){
@@ -218,6 +220,7 @@ public class SYSUtils {
         } else {
             ProcessBuilder processBuilder = new ProcessBuilder(args);
             processBuilder.redirectErrorStream(true);
+//            processBuilder.directory("work-dir")
 //            String path = processBuilder.environment().get("PATH");
 //            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\bin";
 //            path+=";C:\\Users\\alexandru2.stefan\\arise-app\\dpmngmt\\out\\mingw-portable_win32\\MinGW-master\\MinGW\\msys\\1.0\\bin";

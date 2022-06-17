@@ -168,7 +168,7 @@ public class Main {
 
 
 
-        desktopContentHandler = new DesktopContentHandler(contentInfoProvider, cmdReg);
+        desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
         Cronus cronus = null;
 

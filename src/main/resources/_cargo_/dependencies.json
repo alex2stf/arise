@@ -183,7 +183,7 @@
     ]
   },
 
-  "WEBCAM_SNAPSHOT": {
+  "FS_WEBCAM": {
     "type": "binary",
     "versions": [
       {
@@ -197,6 +197,14 @@
           {
             "key": "git-unzip-location",
             "val": "$unzip($sub-location(down, fs-webcam-git.zip), $sub-location(src,fs-webcam-git-src,rwd) )"
+          },
+          {
+            "key": "configure",
+            "val": "$shell-exec($sub-location(src,fs-webcam-git-src,r), null, configure )"
+          },
+          {
+            "key": "make",
+            "val": "$shell-exec($sub-location(src,fs-webcam-git-src,r), null, make )"
           }
         ]
       }

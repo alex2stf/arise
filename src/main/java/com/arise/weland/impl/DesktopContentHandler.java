@@ -21,20 +21,15 @@ import java.util.Set;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
-//import org.openqa.selenium.WebDriver;
 
 public class DesktopContentHandler extends ContentHandler {
 
     private static final Mole log = Mole.getInstance(DesktopContentHandler.class);
 
-    private final CommandRegistry cmdReg;
-
-    Set<String> exes = new HashSet<>();
 
     private final MediaPlayer mediaPlayer;
-    public DesktopContentHandler(ContentInfoProvider contentInfoProvider, CommandRegistry cmdReg) {
+    public DesktopContentHandler(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;
-        this.cmdReg = cmdReg;
         mediaPlayer = RadioPlayer.getMediaPlayer();
     }
 

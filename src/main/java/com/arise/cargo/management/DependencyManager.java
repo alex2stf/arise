@@ -6,7 +6,6 @@ import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Unarchiver;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
@@ -135,9 +134,27 @@ public class DependencyManager {
         });
 
 
-        cmdReg.addCommand(new Command<String>("shell-exec") {
+        cmdReg.addCommand(new Command<Process>("shell-exec") {
             @Override
-            public String execute(List<String> arguments) {
+            public Process execute(List<String> args) {
+                String wdir = args.get(0);
+                String path = args.get(1);
+                String pa[] = new String[args.size() - 2];
+                for (int i = 2; i < args.size(); i++){
+                    pa[i - 2] = args.get(i);
+                }
+                ProcessBuilder pb = new ProcessBuilder(pa);
+                if (!wdir.equals("null")){
+                    pb.directory(new File(wdir));
+                }
+                if (!path.equalsIgnoreCase("null")){
+                    pb.environment().put("Path", path);
+                }
+                try {
+                    Process proc = pb.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         });

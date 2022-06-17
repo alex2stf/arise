@@ -154,11 +154,9 @@ public class WelandForm extends JFrame implements Runnable {
                     tp.get().second().get()
             );
         }
-
         for (ImageLabel l: imgs){
             l.refresh();
         }
-        Thread.currentThread().interrupt();
     }
 
 

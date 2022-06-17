@@ -66,9 +66,8 @@ public class DependencyManagerTest {
 //
 
         importDependencyRules("_cargo_/dependencies.json");
-
-
-        DependencyManager.solve("WEBCAM_SNAPSHOT");
+System.setProperty("dependencies.forced.profiles", "ubuntu");
+        DependencyManager.solve("FS_WEBCAM");
 //        System.out.println(
 //                StringUtil.join(
 //                        DependencyManager.getProfiles(), "\n"
