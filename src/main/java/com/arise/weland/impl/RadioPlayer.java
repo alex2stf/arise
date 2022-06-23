@@ -64,7 +64,7 @@ public class RadioPlayer {
         }
         Show s = getActiveShow();
         if (s == null){
-            log.warn("no valid show defined for now... retry in " + lR  + "ms");
+            log.warn("no valid show defined for now... retry in " + lR  + "ms " + new Date());
             sleep(lR);
             lR += 100;
             if (is_play || !MediaPlayer.isAppClosed) {
