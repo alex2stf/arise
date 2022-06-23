@@ -82,7 +82,7 @@ public class MediaPlayer {
             stopClips();
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
-                clip = AudioSystem.getClip();
+                clip = AudioSystem.getClip(null);
                 if (c != null) {
                     clip.addLineListener(new LineListener() {
                         @Override
@@ -98,7 +98,6 @@ public class MediaPlayer {
                 clip.start();
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
-                e.printStackTrace();
                 c.handle(path);
             }
 
