@@ -1,0 +1,28 @@
+{
+  "shows": [
+    {
+      "name": "random1",
+      "day": "DAILY",
+      "hour": "EACH_SECOND BETWEEN_06:00:00_AND_17:15:00",
+      "strategy": "sound-over-stream",
+      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "https://stream.srg-ssr.ch/m/rsj/mp3_128"]
+    },
+    {
+      "name": "random2",
+      "day": "MONDAY",
+      "hour": "EACH_SECOND BETWEEN_06:15:00_AND_21:15:00",
+      "strategy": "sound-over-music",
+      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "C:\\Users\\Tarya\\Music\\music"],
+      "delay": "1000"
+    },
+    {
+      "name": "random2",
+      "day": "MONDAY",
+      "hour": "EACH_SECOND BETWEEN_01:00:00_AND_15:49:40",
+      "strategy": "stream",
+      "on-error": "some-other-show-id",
+      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
+    }
+
+  ]
+}
