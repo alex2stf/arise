@@ -12,12 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import static com.arise.core.AppSettings.*;
+import static com.arise.core.AppSettings.isFalse;
 import static com.arise.core.tools.StringUtil.join;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
@@ -31,6 +33,7 @@ public class WelandForm extends JFrame implements Runnable {
 
 
     List<ImageLabel> imgs = new ArrayList<>();
+    JTabbedPane tabs = null;
 
     public WelandForm(final CommandRegistry commandRegistry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -57,7 +60,7 @@ public class WelandForm extends JFrame implements Runnable {
             }
         });
 
-        List<String> displays = AppSettings.getListWithPrefix("ui.extra.line");
+        List<String> displays = getListWithPrefix("ui.extra.line");
         for (final String d: displays){
             addT(prov, new Provider<String>() {
                 @Override
@@ -107,19 +110,11 @@ public class WelandForm extends JFrame implements Runnable {
 
         //add images:
 
-        List<String> ics = AppSettings.getListWithPrefix("ui.image.icon");
-        JTabbedPane tabs = new JTabbedPane();
+        List<String> ics = getListWithPrefix("ui.image.icon");
 
-        if (AppSettings.isTrue(AppSettings.Keys.UI_INCLUDE_SNAPSHOTS)){
-            File f[] = Locations.snapshots().listFiles();
-            if (f != null && f.length > 0){
-                for (int i = 0; i < f.length; i++){
-                    ImageLabel imageLabel = new ImageLabel(f[i].getAbsolutePath());
-                    tabs.add("Snap" + i, imageLabel);
-                    imgs.add(imageLabel);
-                }
-            }
-        }
+        tabs = new JTabbedPane();
+
+        refreshSnapshot();
 
         for (int i = 0; i < ics.size(); i++){
             File f = new File(ics.get(i));
@@ -169,6 +164,34 @@ public class WelandForm extends JFrame implements Runnable {
                 return p;
             }
         });
+    }
+
+    boolean tC(String t){
+        for (int i = 0; i < tabs.getTabCount(); i++){
+            if (tabs.getTitleAt(i).equalsIgnoreCase(t)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void refreshSnapshot() {
+        if (tabs == null || isFalse(Keys.UI_INCLUDE_SNAPSHOTS)){
+            return;
+        }
+        File f[] = Locations.snapshots().listFiles();
+        if (f != null && f.length > 0){
+            for (int i = 0; i < f.length; i++){
+                ImageLabel iL = new ImageLabel(f[i].getAbsolutePath());
+                if (!tC(f[i].getName())){
+                    tabs.add(f[i].getName(), iL);
+                    imgs.add(iL);
+                }
+            }
+        }
+        for (ImageLabel i: imgs){
+            i.refresh();
+        }
     }
 
 

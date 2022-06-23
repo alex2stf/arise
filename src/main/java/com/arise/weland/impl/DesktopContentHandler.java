@@ -11,6 +11,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.ui.WelandForm;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -191,12 +192,14 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public void takeSnapshot(String id) {
        JARProxies.takeSnapshot(id);
+       if (_f != null) {
+           _f.refreshSnapshot();
+       }
     }
 
+    private com.arise.weland.ui.WelandForm _f;
 
-
-
-
-
-
+    public void setForm(WelandForm _f) {
+        this._f = _f;
+    }
 }

@@ -204,6 +204,7 @@ public class Main {
                     WelandForm welandForm = new WelandForm(cmdReg);
                     welandForm.pack();
                     welandForm.setVisible(true);
+                    desktopContentHandler.setForm(welandForm);
 
                     if(finalCronus != null) {
                         finalCronus.registerTask(welandForm);

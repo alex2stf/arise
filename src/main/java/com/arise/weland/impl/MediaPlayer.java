@@ -120,10 +120,10 @@ public class MediaPlayer {
                     try {
                         winst = Class.forName("javazoom.jl.player.Player", true, classLoader).getConstructor(InputStream.class).newInstance(new BufferedInputStream(new FileInputStream(path)));
                         getMethod(winst, "play").call();
-                        c.handle(path);
                     } catch (Exception e) {
                         throw new DependencyException("javazoom.jl.player.Player failed", e);
                     }
+                    c.handle(path);
                 }
             });
         } else {

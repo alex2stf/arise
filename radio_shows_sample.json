@@ -1,18 +1,18 @@
 {
   "shows": [
     {
-      "name": "Something Local",
+      "name": "Local Music",
       "day": "THURSDAY_FRIDAY",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:46:00",
       "strategy": "play-local",
       "sources": ["{RADIO_ROOT}music"]
     },
     {
-      "name": "Relax-French Melody",
-      "day": "THURSDAY_FRIDAY",
-      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_18:15:00",
+      "name": "Radio French Melody",
+      "day": "THURSDAY",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:15:00",
       "strategy": "sound-over-stream",
-      "sources": ["${music.root}sounds", "https://str0.creacast.com/melody2"]
+      "sources": ["${RADIO_ROOT}sounds", "https://str0.creacast.com/melody2"]
     },
     {
       "name": "random2",

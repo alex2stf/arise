@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static com.arise.canter.Cronus.decorate;
 import static com.arise.canter.Cronus.fromString;
+import static com.arise.canter.Cronus.strfMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
@@ -30,6 +31,7 @@ import static com.arise.core.tools.StreamUtil.toBytes;
 import static com.arise.core.tools.ThreadUtil.closeTimer;
 import static com.arise.core.tools.ThreadUtil.delayedTask;
 import static com.arise.core.tools.ThreadUtil.sleep;
+import static com.arise.core.tools.Util.randBetween;
 import static java.util.Calendar.getInstance;
 
 public class RadioPlayer {
@@ -194,17 +196,19 @@ public class RadioPlayer {
         void psos(final String p){
             if (_o){
                 closeTimer(t);
-                int expire = Util.randBetween(1000 * 60 * 5, 1000 * 60 * 20);
-                log.info("play sound in " + Cronus.strfMillis(expire));
+                int exp = randBetween(1000 * 60 * 5, 1000 * 60 * 20);
+                log.info("sndPlay in " + strfMillis(exp));
                 t = delayedTask(new Runnable() {
                     @Override
                     public void run() {
-                        File f = getRandomFileFromDirectory(p);
-                        System.out.println("play "+f.getAbsolutePath()+" at " + new Date());
-                        MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
-                        psos(p);
+                        if (_o) {
+                            File f = getRandomFileFromDirectory(p);
+                            log.info("sndPlay " + f.getAbsolutePath() + " at " + new Date());
+                            MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
+                            psos(p);
+                        }
                     }
-                }, expire);
+                }, exp);
             }
         }
 
@@ -219,7 +223,7 @@ public class RadioPlayer {
                 if (m != null){
                     Calendar li = decorate(m, getInstance());
                     exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());
-                    log.info("show " + n + " will end in " + (exp / 1000) + " seconds");
+                    log.info("show " + n + " will end in " + strfMillis(exp) + " seconds");
                 }
             }
             mPlayer.playStream(u);
