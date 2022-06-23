@@ -5,7 +5,7 @@
       "day": "THURSDAY_FRIDAY",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:46:00",
       "strategy": "play-local",
-      "sources": ["{music_root}music"]
+      "sources": ["{RADIO_ROOT}music"]
     },
     {
       "name": "Relax-French Melody",
