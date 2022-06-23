@@ -98,7 +98,7 @@ public class JARProxies {
         withWebcamCapture(new Handler<Class>() {
             @Override
             public void handle(Class clz) {
-                List<Object> cams = (List<Object>) ReflectUtil.getStaticMethod(clz, "getWebcams").call();
+                final List<Object> cams = (List<Object>) ReflectUtil.getStaticMethod(clz, "getWebcams").call();
 
                 if (cams != null) {
                     List<Tuple2<String, String>> tmp = new ArrayList<>();
@@ -113,7 +113,13 @@ public class JARProxies {
                     h.handle(camIds);
                 }
                 else {
-                   OSProxies.findWebcamIds(h);
+                   OSProxies.findWebcamIds(new Handler<List<Tuple2<String, String>>>() {
+                       @Override
+                       public void handle(List<Tuple2<String, String>> tuple2s) {
+                           camIds = tuple2s;
+                           h.handle(camIds);
+                       }
+                   });
                 }
             }
         });

@@ -8,7 +8,6 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -20,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.arise.core.tools.ThreadUtil.repeatedTask;
 
 public class Cronus {
 
@@ -48,7 +49,7 @@ public class Cronus {
         }
 
 
-        ThreadUtil.repeatedTask(new Runnable() {
+        repeatedTask(new Runnable() {
             @Override
             public void run() {
                 for (final CronTask c : cronTasks) {

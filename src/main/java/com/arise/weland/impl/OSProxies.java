@@ -39,8 +39,9 @@ public class OSProxies {
                 for (String x: lines){
                     x = x.trim();
                     if (x.startsWith("/dev")){
-                        list.add(new Tuple2<>(index + "", x));
-                        log.info("Found webcam " + x);
+                        String id = index[0] + "";
+                        list.add(new Tuple2<>(id, x));
+                        log.info("Found webcam "+ id + " = " + index );
                         index[0]++;
                     }
                 }
