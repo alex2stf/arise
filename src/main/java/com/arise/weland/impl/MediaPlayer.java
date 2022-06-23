@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
+import com.arise.core.AppSettings.Keys;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
@@ -9,6 +10,8 @@ import com.arise.core.tools.Mole;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.cargo.management.DependencyManager.withJar;
+import static com.arise.core.AppSettings.getProperty;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 import static com.arise.core.tools.Util.close;
@@ -59,12 +63,16 @@ public class MediaPlayer {
     AudioInputStream audioIn = null;
     Clip clip = null;
 
-    public Object play(final String path) {
+    public Object play(final String p) {
+        return play(p, null);
+    }
+
+    public Object play(final String path, final Handler<String> c) {
         if (isAppClosed){
             log.warn("App received shutdown hook");
             return null;
         }
-        String strategy = AppSettings.getProperty(AppSettings.Keys.MEDIA_PLAY_STRATEGY, "vlc");
+        String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
         if (path.endsWith(".wav")){
@@ -72,6 +80,17 @@ public class MediaPlayer {
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
                 clip = AudioSystem.getClip();
+                if (c != null) {
+                    clip.addLineListener(new LineListener() {
+                        @Override
+                        public void update(LineEvent event) {
+                            if (event.getType() == LineEvent.Type.STOP) {
+                                c.handle(path);
+                                return;
+                            }
+                        }
+                    });
+                }
                 clip.open(audioIn);
                 clip.start();
             } catch (Exception e) {
@@ -88,8 +107,9 @@ public class MediaPlayer {
             if (r.containsCommand("play-media")) {
                 r.execute("play-media", new String[]{path});
             }
+            c.handle(path);
         } else if ("javazone-player".equalsIgnoreCase(strategy)) {
-
+            //TODO use JProxy
             withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
                 @Override
                 public void handle(URLClassLoader classLoader) {
@@ -99,12 +119,8 @@ public class MediaPlayer {
 
                     try {
                         winst = Class.forName("javazoom.jl.player.Player", true, classLoader).getConstructor(InputStream.class).newInstance(new BufferedInputStream(new FileInputStream(path)));
-                        fireAndForget(new Runnable() {
-                            @Override
-                            public void run() {
-                                getMethod(winst, "play").call();
-                            }
-                        }, "media-play-" + path);
+                        getMethod(winst, "play").call();
+                        c.handle(path);
                     } catch (Exception e) {
                         throw new DependencyException("javazoom.jl.player.Player failed", e);
                     }
@@ -122,6 +138,7 @@ public class MediaPlayer {
                     e.printStackTrace();
                 }
             }
+            c.handle(path);
         }
         return winst;
     }

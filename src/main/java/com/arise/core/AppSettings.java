@@ -211,6 +211,13 @@ public class AppSettings {
         return res;
     }
 
+    public static String map(String path) {
+        if (path.indexOf("{") > -1){
+            return StringUtil.map(path, applicationProperties);
+        }
+        return path;
+    }
+
 
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),

@@ -701,7 +701,7 @@ public class StringUtil {
 
 
 
-    public static String map(String value, Map<String, Object> map){
+    public static String map(String value, Map<Object, Object> map){
         return map(value, map, TypeUtil.defaultFieldFiltering, TypeUtil.getterMethodFiltering);
     }
 
@@ -711,7 +711,7 @@ public class StringUtil {
      * @param map
      * @return
      */
-    public static String map(String value, Map<String, Object> map, FilterCriteria<Field> ff, FilterCriteria<Method> mf){
+    public static String map(String value, Map<Object, Object> map, FilterCriteria<Field> ff, FilterCriteria<Method> mf){
         if (!hasText(value) || value.length() < 3 || CollectionUtil.isEmpty(map)){
             return value;
         }

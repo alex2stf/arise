@@ -1,5 +1,6 @@
 package com.arise.core.tools;
 
+import com.arise.core.AppSettings;
 import com.arise.core.models.Handler;
 
 import java.io.*;
@@ -718,6 +719,8 @@ public class FileUtil {
     }
 
     public static final File getRandomFileFromDirectory(String path){
+
+        path = AppSettings.map(path);
         if (!new File(path).exists()){
             log.w("Path " + path + " does not exist");
         } else {

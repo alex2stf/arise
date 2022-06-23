@@ -44,7 +44,7 @@ public class StringUtilTest {
     }
 
     public void testParsing(){
-        Map<String, Object> map = new HashMap<>();
+        Map<Object, Object> map = new HashMap<>();
         map.put("xxx", 1);
 
         String out;

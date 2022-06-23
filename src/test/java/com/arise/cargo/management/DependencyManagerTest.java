@@ -52,7 +52,8 @@ public class DependencyManagerTest {
 
         importDependencyRules("_cargo_/dependencies.json");
 System.setProperty("dependencies.forced.profiles", "ubuntu");
-        DependencyManager.solve("FS_WEBCAM");
+//        DependencyManager.solve("FS_WEBCAM");
+        DependencyManager.solve("MP3_PLAYER");
 //        System.out.println(
 //                StringUtil.join(
 //                        DependencyManager.getProfiles(), "\n"

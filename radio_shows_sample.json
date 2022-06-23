@@ -1,11 +1,18 @@
 {
   "shows": [
     {
+      "name": "Something Local",
+      "day": "THURSDAY_FRIDAY",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:45:00",
+      "strategy": "play-local",
+      "sources": ["{music_root}music"]
+    },
+    {
       "name": "Relax-French Melody",
       "day": "THURSDAY_FRIDAY",
-      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:15:00",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_18:15:00",
       "strategy": "sound-over-stream",
-      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "https://str0.creacast.com/melody2"]
+      "sources": ["${music.root}sounds", "https://str0.creacast.com/melody2"]
     },
     {
       "name": "random2",

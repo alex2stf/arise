@@ -139,11 +139,16 @@ public class RadioPlayer {
 
 
         public synchronized void run(final Handler<Show> c){
-            if ("media-play".equalsIgnoreCase(_m)){
+            if ("play-local".equalsIgnoreCase(_m)){
                 String p = _s.get(0);
                 File f = getRandomFileFromDirectory(p);
-                mPlayer.play(f.getAbsolutePath());
-                trigger(c);
+                mPlayer.play(f.getAbsolutePath(), new Handler<String>() {
+                    @Override
+                    public void handle(String s) {
+                        trigger(c);
+                    }
+                });
+
             }
             else if ("sound-over-music".equalsIgnoreCase(_m)){
                 String s = _s.get(0);
@@ -161,8 +166,13 @@ public class RadioPlayer {
                         MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
                     }
                 }, time);
-                mPlayer.play(mf.getAbsolutePath());
-                trigger(c);
+                mPlayer.play(mf.getAbsolutePath(), new Handler<String>() {
+                    @Override
+                    public void handle(String s) {
+                        trigger(c);
+                    }
+                });
+
             }
             else if ("sound-over-stream".equalsIgnoreCase(_m)){
                 pss(c, _s.get(1));
