@@ -63,7 +63,10 @@ public class RadioPlayer {
         if (s == null){
             log.warn("no valid show defined for now... retry in " + lR  + "ms " + new Date());
             sleep(lR);
-            lR += 100;
+            //limit to 20 minutes
+            if (lR < 1000 * 60 * 20) {
+                lR += 100;
+            }
             if (is_play || !MediaPlayer.isAppClosed) {
                 loop();
             }
