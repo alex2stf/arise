@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.canter.Cronus.decorate;
+import static com.arise.canter.Cronus.fromString;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
@@ -28,6 +30,7 @@ import static com.arise.core.tools.StreamUtil.toBytes;
 import static com.arise.core.tools.ThreadUtil.closeTimer;
 import static com.arise.core.tools.ThreadUtil.delayedTask;
 import static com.arise.core.tools.ThreadUtil.sleep;
+import static java.util.Calendar.getInstance;
 
 public class RadioPlayer {
 
@@ -127,7 +130,7 @@ public class RadioPlayer {
         }
 
         public boolean isActive() {
-            boolean act = (Cronus.matchMoment(Calendar.getInstance(), _d, _h));
+            boolean act = (Cronus.matchMoment(getInstance(), _d, _h));
             if (act){
                 log.info("show " + n + " active = " + act);
             }
@@ -202,10 +205,10 @@ public class RadioPlayer {
             String p[] = Cronus.getParts(_h);
             long exp = 4000;
             if (p.length == 3){
-                Cronus.MomentInDay m = Cronus.fromString(p[2]);
+                Cronus.MomentInDay m = fromString(p[2]);
                 if (m != null){
-                    Calendar li = Cronus.decorate(m, Calendar.getInstance());
-                    exp = Math.abs(li.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+                    Calendar li = decorate(m, getInstance());
+                    exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());
                     log.info("show " + n + " will end in " + (exp / 1000) + " seconds");
                 }
             }
