@@ -19,7 +19,7 @@
       "day": "THURSDAY",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_19:45:00",
       "strategy": "play-local",
-      "sources": ["{RADIO_ROOT}sounds"]
+      "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
     },
     {
       "name": "Alternative Nation",

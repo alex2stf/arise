@@ -7,9 +7,11 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import java.io.BufferedInputStream;
@@ -82,18 +84,20 @@ public class MediaPlayer {
             stopClips();
             try {
                 audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+//                AudioFormat format = audioIn.getFormat();
+//                DataLine.Info info = new DataLine.Info(Clip.class, format);
                 clip = AudioSystem.getClip(null);
-                if (c != null) {
-                    clip.addLineListener(new LineListener() {
-                        @Override
-                        public void update(LineEvent event) {
-                            if (event.getType() == LineEvent.Type.STOP) {
-                                c.handle(path);
-                                return;
-                            }
+//                clip = (Clip)AudioSystem.getLine(info);
+
+                clip.addLineListener(new LineListener() {
+                    @Override
+                    public void update(LineEvent event) {
+                        if (event.getType() == LineEvent.Type.STOP) {
+                            c.handle(path);
+                            return;
                         }
-                    });
-                }
+                    }
+                });
                 clip.open(audioIn);
                 clip.start();
             } catch (Exception e) {
