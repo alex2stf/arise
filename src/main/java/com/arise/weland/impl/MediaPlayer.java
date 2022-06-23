@@ -176,8 +176,10 @@ public class MediaPlayer {
 
     public void stop() {
         stopClips();
-        if (proc[0] != null){
-            proc[0].destroy();
+        for (Process p: proc){
+           if (p != null) {
+               p.destroy();
+           }
         }
         r.getCommand("browser-close").execute();
     }

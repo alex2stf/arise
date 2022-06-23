@@ -1,6 +1,14 @@
 {
   "shows": [
     {
+      "name": "Morning Glory",
+      "day": "DAILY",
+      "hour": "EACH_SECOND BETWEEN_06:45:00_AND_10:59:00",
+      "strategy": "stream",
+      "on-error": "Offline Show",
+      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
+    },
+    {
       "name": "Local Music",
       "day": "THURSDAY_FRIDAY",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:46:00",

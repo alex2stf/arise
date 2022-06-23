@@ -8,7 +8,6 @@ import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,17 +19,15 @@ import java.util.Map;
 
 import static com.arise.canter.Cronus.decorate;
 import static com.arise.canter.Cronus.fromString;
+import static com.arise.canter.Cronus.strNow;
 import static com.arise.canter.Cronus.strfMillis;
+import static com.arise.canter.Cronus.strfNowPlusMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
-import static com.arise.core.tools.MapUtil.getInt;
-import static com.arise.core.tools.MapUtil.getList;
-import static com.arise.core.tools.MapUtil.getString;
+import static com.arise.core.tools.MapUtil.*;
 import static com.arise.core.tools.StreamUtil.toBytes;
-import static com.arise.core.tools.ThreadUtil.closeTimer;
-import static com.arise.core.tools.ThreadUtil.delayedTask;
-import static com.arise.core.tools.ThreadUtil.sleep;
+import static com.arise.core.tools.ThreadUtil.*;
 import static com.arise.core.tools.Util.randBetween;
 import static java.util.Calendar.getInstance;
 
@@ -197,13 +194,13 @@ public class RadioPlayer {
             if (_o){
                 closeTimer(t);
                 int exp = randBetween(1000 * 60 * 5, 1000 * 60 * 20);
-                log.info("sndPlay in " + strfMillis(exp));
+                log.info("sndPlay scheduled at " + strfNowPlusMillis(exp));
                 t = delayedTask(new Runnable() {
                     @Override
                     public void run() {
                         if (_o) {
                             File f = getRandomFileFromDirectory(p);
-                            log.info("sndPlay " + f.getAbsolutePath() + " at " + new Date());
+                            log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
                             MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
                             psos(p);
                         }

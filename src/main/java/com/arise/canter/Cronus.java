@@ -86,6 +86,21 @@ public class Cronus {
         return c;
     }
 
+    public static String strfNowPlusMillis(long t) {
+        Date d = new Date();
+        d.setTime(d.getTime() + t);
+        return strf(d);
+    }
+
+    //TODO use more
+    public static String strf(Date d){
+        return sdf.format(d);
+    }
+
+    public static String strNow(){
+        return sdf.format(new Date());
+    }
+
     public static String strfMillis(double t) {
         if (t < 1000){
             return t + " miliseconds";
