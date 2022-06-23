@@ -223,7 +223,7 @@ public class RadioPlayer {
                 if (m != null){
                     Calendar li = decorate(m, getInstance());
                     exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());
-                    log.info("show " + n + " will end in " + strfMillis(exp) + " seconds");
+                    log.info("show " + n + " will end in " + strfMillis(exp) );
                 }
             }
             mPlayer.playStream(u);
@@ -235,7 +235,6 @@ public class RadioPlayer {
                     mPlayer.stop();
                     log.i("show "+ n + " stooped at " + new Date());
                     trigger(c);
-
                 }
             }, exp);
         }
