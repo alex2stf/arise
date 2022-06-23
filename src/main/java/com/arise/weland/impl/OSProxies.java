@@ -30,7 +30,7 @@ public class OSProxies {
 
     public static void findWebcamIds(Handler<List<Tuple2<String, String>>> h){
         File f = getBinary("/usr/bin/v4l2-ctl", "apt-get install v4l-utils");
-        final int[] index = {0};
+        final int[] idx = {0};
         final List<Tuple2<String, String>> list = new ArrayList<>();
         SYSUtils.exec(new String[]{f.getAbsolutePath(), "--list-devices"}, new SYSUtils.ProcessLineReader() {
             @Override
@@ -39,10 +39,10 @@ public class OSProxies {
                 for (String x: lines){
                     x = x.trim();
                     if (x.startsWith("/dev")){
-                        String id = index[0] + "";
+                        String id = idx[0] + "";
                         list.add(new Tuple2<>(id, x));
-                        log.info("Found webcam "+ id + " = " + index );
-                        index[0]++;
+                        log.info("Found webcam "+ id + " = " + x );
+                        idx[0]++;
                     }
                 }
             }
