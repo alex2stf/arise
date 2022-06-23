@@ -18,6 +18,13 @@
       "name": "Alternative Nation",
       "day": "THURSDAY",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_19:15:00",
+      "strategy": "play-local",
+      "sources": ["${RADIO_ROOT}sounds"]
+    },
+    {
+      "name": "Alternative Nation",
+      "day": "FRIDAY",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_19:15:00",
       "strategy": "sound-over-stream",
       "sources": ["${RADIO_ROOT}sounds", "https://ais-sa5.cdnstream1.com/b87537_128mp3"]
     },
