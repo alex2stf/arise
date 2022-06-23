@@ -12,8 +12,8 @@ import java.util.zip.ZipInputStream;
 import static com.arise.core.tools.FileUtil.hasFiles;
 import static com.arise.core.tools.Util.close;
 
-public abstract class Unarchiver {
-    public static Unarchiver forName(String n) {
+public class Archiver {
+    public static Archiver forName(String n) {
         if (n.equalsIgnoreCase("7zip")){
             return SEVEN_ZIP;
         }
@@ -21,7 +21,7 @@ public abstract class Unarchiver {
     }
 
 
-    private static final Unarchiver SEVEN_ZIP = new Unarchiver() {
+    private static final Archiver SEVEN_ZIP = new Archiver() {
         @Override
         public boolean extract(File source, File destination) {
             SevenZFile sevenZFile = null;
@@ -54,7 +54,7 @@ public abstract class Unarchiver {
         }
     };
 
-    public static final Unarchiver ZIP = new Unarchiver() {
+    public static final Archiver ZIP = new Archiver() {
         @Override
         public boolean extract(File src, File dest) {
             // create output directory if it doesn't exist
@@ -111,5 +111,10 @@ public abstract class Unarchiver {
         }
     };
 
-    public abstract boolean extract(File source, File destination);
+    public boolean extract(File source, File destination){
+        return false;
+    }
+
+
+
 }

@@ -1,6 +1,6 @@
 package com.arise.weland.impl.unarchivers;
 
-import com.arise.core.models.Unarchiver;
+import com.arise.core.models.Archiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-public class GZip extends Unarchiver {
-    @Override
+public class GZip extends Archiver {
+
     public boolean extract(File source, File destination) {
         try {
             GzipCompressorInputStream gzipIn = new GzipCompressorInputStream(new FileInputStream(source));

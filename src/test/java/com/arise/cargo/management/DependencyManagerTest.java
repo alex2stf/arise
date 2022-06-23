@@ -1,25 +1,10 @@
 package com.arise.cargo.management;
 
 import com.arise.core.models.Handler;
-import com.arise.core.models.Unarchiver;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.StringUtil;
-import net.sf.sevenzipjbinding.ExtractOperationResult;
-import net.sf.sevenzipjbinding.IInArchive;
-import net.sf.sevenzipjbinding.ISequentialOutStream;
-import net.sf.sevenzipjbinding.SevenZip;
-import net.sf.sevenzipjbinding.SevenZipException;
-import net.sf.sevenzipjbinding.SevenZipNativeInitializationException;
-import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
-import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
-import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Map;
 
 import static com.arise.cargo.management.DependencyManager.importDependencyRules;
@@ -156,7 +141,7 @@ System.setProperty("dependencies.forced.profiles", "ubuntu");
         }
 
 //        System.out.println("7-Zip-JBinding library was initialized");
-        Unarchiver.forName("7zip").extract(new File("C:\\Users\\Tarya\\Downloads\\FirefoxPortable_101.0_English.paf.exe"), new File("firefox-portable"));
+        Archiver.forName("7zip").extract(new File("C:\\Users\\Tarya\\Downloads\\FirefoxPortable_101.0_English.paf.exe"), new File("firefox-portable"));
 //        System.out.println(res);
 
 //        res = DependencyManager.solve("7-ZIP");

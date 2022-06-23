@@ -56,6 +56,10 @@ public final class Util {
     }
 
 
+    public static int randBetween(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
     public static void rejectNullArgs(Object... args) {
         for (Object arg : args) {
             rejectNull(arg);

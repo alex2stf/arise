@@ -43,11 +43,7 @@ public class MediaPlayer {
         });
     }
 
-    public static MediaPlayer getInstance(Class n, CommandRegistry r){
-        return getInstance(n + "", r);
-    }
-
-    public static MediaPlayer getInstance(String n, CommandRegistry r){
+    public static MediaPlayer getMediaPlayer(String n, CommandRegistry r){
         if (!m.containsKey(n)){
             m.put(n, new MediaPlayer(r));
         }

@@ -4,8 +4,11 @@ package com.arise.weland.impl;
 import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +25,7 @@ import static com.arise.core.tools.MapUtil.getInt;
 import static com.arise.core.tools.MapUtil.getList;
 import static com.arise.core.tools.MapUtil.getString;
 import static com.arise.core.tools.StreamUtil.toBytes;
+import static com.arise.core.tools.ThreadUtil.closeTimer;
 import static com.arise.core.tools.ThreadUtil.delayedTask;
 import static com.arise.core.tools.ThreadUtil.sleep;
 
@@ -31,7 +35,7 @@ public class RadioPlayer {
 
     private static final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
 
-    static MediaPlayer mPlayer = MediaPlayer.getInstance("radio", cmdReg);
+    static MediaPlayer mPlayer = MediaPlayer.getMediaPlayer("radio", cmdReg);
 
     private volatile boolean is_play = true;
 
@@ -110,6 +114,7 @@ public class RadioPlayer {
         List<String> _s;
         String _m;
         String n;
+        volatile boolean _o;
 
 
         public Show name(String x){
@@ -150,45 +155,74 @@ public class RadioPlayer {
                     @Override
                     public void run() {
                         log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
-                        MediaPlayer.getInstance("radio-sounds", cmdReg).play(sf.getAbsolutePath());
+                        MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
                     }
                 }, time);
                 mPlayer.play(mf.getAbsolutePath());
                 trigger(c);
             }
-            else if ("stream".equalsIgnoreCase(_m)){
-                String u = _s.get(0);
-                String p[] = Cronus.getParts(_h);
-                long exp = 4000;
-                if (p.length == 3){
-                    Cronus.MomentInDay m = Cronus.fromString(p[2]);
-
-                    if (m != null){
-                        Calendar li = Cronus.decorate(m, Calendar.getInstance());
-                        exp = Math.abs(li.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
-
-                        log.info("show " + n + " will end in " + (exp / 1000) + " seconds");
-                    }
-                }
-                mPlayer.playStream(u);
-
-
-                delayedTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPlayer.stop();
-                        log.i("show "+ n + " stooped at " + new Date());
-                        trigger(c);
-                    }
-                }, exp);
-
-
+            else if ("sound-over-stream".equalsIgnoreCase(_m)){
+                pss(c, _s.get(1));
+                psos(_s.get(0));
             }
+            else if ("stream".equalsIgnoreCase(_m)){
+                pss(c, _s.get(0));
+            }
+
+
 
             else {
-                System.out.println("wtf strategy is [" + _m + "] ?");
+                throw new SyntaxException("unknown strategy " + _m);
             }
         }
+
+        ThreadUtil.TimerResult t;
+
+        void psos(final String p){
+            if (_o){
+                closeTimer(t);
+                int expire = Util.randBetween(1000 * 60 * 5, 1000 * 60 * 20);
+                log.info("play sound in " + Cronus.strfMillis(expire));
+                t = delayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        File f = getRandomFileFromDirectory(p);
+                        System.out.println("play "+f.getAbsolutePath()+" at " + new Date());
+                        MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
+                        psos(p);
+                    }
+                }, expire);
+            }
+        }
+
+
+        void pss(final Handler<Show> c, String u){
+            _o = true;
+            log.info("Start stream show " + n);
+            String p[] = Cronus.getParts(_h);
+            long exp = 4000;
+            if (p.length == 3){
+                Cronus.MomentInDay m = Cronus.fromString(p[2]);
+                if (m != null){
+                    Calendar li = Cronus.decorate(m, Calendar.getInstance());
+                    exp = Math.abs(li.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+                    log.info("show " + n + " will end in " + (exp / 1000) + " seconds");
+                }
+            }
+            mPlayer.playStream(u);
+
+            delayedTask(new Runnable() {
+                @Override
+                public void run() {
+                    _o = false;
+                    mPlayer.stop();
+                    log.i("show "+ n + " stooped at " + new Date());
+                    trigger(c);
+
+                }
+            }, exp);
+        }
+
 
 
         void trigger(Handler<Show> c){

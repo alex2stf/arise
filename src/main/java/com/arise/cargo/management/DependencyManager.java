@@ -5,7 +5,7 @@ import com.arise.canter.CommandRegistry;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.models.Unarchiver;
+import com.arise.core.models.Archiver;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
@@ -111,7 +111,7 @@ public class DependencyManager {
                 File s = new File(x.get(0));
                 File out = Locations.forName(x.get(1));
                 log.info("$unzip " + s.getAbsolutePath() + " to " + out.getAbsolutePath());
-                Unarchiver.ZIP.extract(s, out);
+                Archiver.ZIP.extract(s, out);
                 return out.getAbsolutePath();
             }
         });

@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
-import static com.arise.core.tools.ThreadUtil.startDaemon;
-import static com.arise.core.tools.ThreadUtil.startThread;
-
 public class Cronus {
 
     private final List<CronTask> cronTasks = new ArrayList<>();
@@ -87,6 +83,30 @@ public class Cronus {
         c.set(Calendar.MINUTE, m._m);
         c.set(Calendar.SECOND, m._s);
         return c;
+    }
+
+    public static String strfMillis(double t) {
+        if (t < 1000){
+            return t + " miliseconds";
+        }
+
+        if (t >= 1000 && t <= 1000 * 60){
+            double d = t / 1000d;
+            if (Double.compare(d, 1d) == 0){
+                return "1 second";
+            }
+            return d + " seconds";
+        }
+
+        if (t > 1000 * 60 && t <= 1000 * 60 * 60){
+            return ((t / 1000) / 60) + " minutes";
+        }
+
+        if (t > 1000 * 60 * 60 && t <= 1000 * 60 * 60 * 24){
+            return ((t / 1000) / 60 / 60) + " hours";
+        }
+
+        return ((t / 1000) / 60 / 60 / 24) + " days";
     }
 
 

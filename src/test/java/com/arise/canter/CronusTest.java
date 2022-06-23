@@ -91,6 +91,16 @@ public class CronusTest {
 
     public static void main(String[] args) {
 
+        String f = Cronus.strfMillis(1000);
+        assertEquals("1 second", f);
+//        f = Cronus.strfMillis(1000 * 60);
+//        f = Cronus.strfMillis(1000 * 60);
+//        f = Cronus.strfMillis(1000 * 60 * 3.5);
+//        f = Cronus.strfMillis(1000 * 60 * 60 * 2);
+//        f = Cronus.strfMillis(1000 * 60 * 60 * 24);
+        f = Cronus.strfMillis(1000 * 60 * 60 * 25);
+        System.out.println(f);
+
         assertFalse(
                 isBetween("06:15:00", "19:02:00", "17:23:00")
         );
