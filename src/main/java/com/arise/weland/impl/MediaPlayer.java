@@ -97,7 +97,9 @@ public class MediaPlayer {
                 clip.open(audioIn);
                 clip.start();
             } catch (Exception e) {
+                log.error("Failed to play sound " + path, e);
                 e.printStackTrace();
+                c.handle(path);
             }
 
             return audioIn;
