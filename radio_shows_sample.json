@@ -17,8 +17,8 @@
     {
       "name": "Play local again",
       "day": "THURSDAY",
-      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_19:45:00",
-      "strategy": "play-local",
+      "hour": "EACH_SECOND BETWEEN_17:16:00_AND_19:45:00",
+      "strategy": "sound-over-music",
       "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
     },
     {
