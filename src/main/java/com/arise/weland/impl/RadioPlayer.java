@@ -65,7 +65,7 @@ public class RadioPlayer {
             sleep(lR);
             //limit to 20 minutes
             if (lR < 1000 * 60 * 20) {
-                lR += 100;
+                lR += 500;
             }
             if (is_play || !MediaPlayer.isAppClosed) {
                 loop();
