@@ -1,11 +1,11 @@
 {
   "shows": [
     {
-      "name": "random1",
-      "day": "DAILY",
-      "hour": "EACH_SECOND BETWEEN_06:00:00_AND_17:15:00",
+      "name": "Relax-French Melody",
+      "day": "THURSDAY_FRIDAY",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:15:00",
       "strategy": "sound-over-stream",
-      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "https://stream.srg-ssr.ch/m/rsj/mp3_128"]
+      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "https://str0.creacast.com/melody2"]
     },
     {
       "name": "random2",
