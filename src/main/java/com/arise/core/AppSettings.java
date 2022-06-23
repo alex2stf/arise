@@ -213,7 +213,7 @@ public class AppSettings {
 
     public static String map(String path) {
         if (path.indexOf("{") > -1){
-            return StringUtil.map(path, applicationProperties);
+            return StringUtil.map(path.trim(), applicationProperties);
         }
         return path;
     }

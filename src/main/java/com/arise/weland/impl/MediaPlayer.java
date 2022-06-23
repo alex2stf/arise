@@ -72,6 +72,9 @@ public class MediaPlayer {
             log.warn("App received shutdown hook");
             return null;
         }
+        if (!new File(path).exists()){
+            log.e("File " + path + " does not exists");
+        }
         String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
