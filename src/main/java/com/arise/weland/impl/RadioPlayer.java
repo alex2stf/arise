@@ -1,16 +1,20 @@
 package com.arise.weland.impl;
 
 
+import com.arise.astox.net.models.Peer;
 import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +27,7 @@ import static com.arise.canter.Cronus.strNow;
 import static com.arise.canter.Cronus.strfMillis;
 import static com.arise.canter.Cronus.strfNowPlusMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
+import static com.arise.core.tools.CollectionUtil.pickOne;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
@@ -181,7 +186,7 @@ public class RadioPlayer {
                 psos(_s.get(0));
             }
             else if ("stream".equalsIgnoreCase(_m)){
-                pss(c, _s.get(0));
+                pss(c, pickOne(_s));
             }
 
 
@@ -213,9 +218,9 @@ public class RadioPlayer {
         }
 
 
-        void pss(final Handler<Show> c, String u){
+        void pss(final Handler<Show> c, final String u){
             _o = true;
-            log.info("Start stream show " + n);
+            log.info("Start stream show [" + n + "] with url " + u);
             String p[] = Cronus.getParts(_h);
             long exp = 4000;
             if (p.length == 3){
@@ -226,7 +231,20 @@ public class RadioPlayer {
                     log.info("show " + n + " will end in " + strfMillis(exp) );
                 }
             }
-            mPlayer.playStream(u);
+
+            mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
+                @Override
+                public void handle(HttpURLConnection httpURLConnection) {
+                    mPlayer.playStream(u);
+                }
+            }, new Handler<Tuple2<Throwable, Peer>>() {
+                @Override
+                public void handle(Tuple2<Throwable, Peer> t) {
+                    t.first().printStackTrace();
+                }
+            });
+
+
 
             delayedTask(new Runnable() {
                 @Override

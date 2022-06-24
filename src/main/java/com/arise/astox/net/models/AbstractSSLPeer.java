@@ -1,6 +1,6 @@
 package com.arise.astox.net.models;
 
-public class AbstractSSLPeer extends AbstractPeer {
+public class AbstractSSLPeer extends Peer {
 
 
 

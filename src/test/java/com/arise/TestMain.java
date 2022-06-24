@@ -7,6 +7,8 @@ import com.arise.cargo.management.DependencyManagerTest;
 import com.arise.core.serializers.parser.GrootTest;
 import com.arise.core.tools.AppCacheTest;
 import com.arise.core.tools.Assert;
+import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.CollectionUtilTest;
 import com.arise.core.tools.StringUtilTest;
 import com.arise.tests.HttpBoundaryTest;
 import com.arise.weland.dto.ContentInfoTest;
@@ -25,6 +27,7 @@ public class TestMain {
         CronusTest.main(args);
         CommandRegistryTest.main(args);
         DependencyManagerTest.main(args);
+        CollectionUtilTest.main(args);
         assertTrue(true);
     }
 }

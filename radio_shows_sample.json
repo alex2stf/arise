@@ -9,6 +9,20 @@
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
     },
     {
+      "name": "Celtic sounds",
+      "day": "FRIDAY",
+      "strategy": "stream",
+      "hour": "EACH_SECOND BETWEEN_12:30:00_AND_18:46:00",
+      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
+    },
+    {
+      "name": "Celtic sounds",
+      "day": "FRIDAY",
+      "strategy": "stream",
+      "hour": "EACH_SECOND BETWEEN_18:50:00_AND_21:11:50",
+      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
+    },
+    {
       "name": "Local Music",
       "day": "THURSDAY_FRIDAY",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:46:00",

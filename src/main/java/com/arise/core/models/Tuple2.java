@@ -9,6 +9,11 @@ public class Tuple2<A, B> {
         this.b = b;
     }
 
+    //TODO make this cacheable based on hashCode
+    public static <A, B> Tuple2<A, B> of(A a, B b) {
+        return new Tuple2<>(a, b);
+    }
+
     public A first() {
         return a;
     }

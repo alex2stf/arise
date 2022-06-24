@@ -1,13 +1,14 @@
 package com.arise.astox.net.models;
 
 import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
 
 import java.util.UUID;
 
 import static com.arise.core.tools.ThreadUtil.startThread;
 
 
-public abstract class AbstractClient<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends AbstractPeer {
+public abstract class Client<I extends ServerRequest, O extends ServerResponse, CONNECTION> extends Peer {
 
 
     public abstract CONNECTION getConnection(final I request) throws Exception;
@@ -23,7 +24,7 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
                     e.printStackTrace();
                 }
             }
-        }, "AbstractClient#Connect-" + UUID.randomUUID());
+        }, "Client#Connect-" + UUID.randomUUID());
     }
 
 
@@ -55,18 +56,19 @@ public abstract class AbstractClient<I extends ServerRequest, O extends ServerRe
 
 
     protected void onError(Throwable t){
-       if (errorHandler != null){
-           errorHandler.handle(t);
+       if (erh != null){
+           erh.handle(Tuple2.<Throwable, Peer>of(t, this));
        }
     }
 
 
 
-    private Handler<Throwable> errorHandler = null;
+    private Handler<Tuple2<Throwable, Peer>> erh = null;
 
 
-    public AbstractClient setErrorHandler(Handler<Throwable> errorHandler) {
-        this.errorHandler = errorHandler;
+
+    public Client setErrorHandler(Handler<Tuple2<Throwable, Peer>> erh) {
+        this.erh = erh;
         return this;
     }
 

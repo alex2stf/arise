@@ -6,7 +6,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.Socket;
 
-public abstract class AbstractStreamedSocketClient<I extends ServerRequest, O extends ServerResponse> extends AbstractClient<I, O, Socket> {
+public abstract class AbstractStreamedSocketClient<I extends ServerRequest, O extends ServerResponse> extends Client<I, O, Socket> {
 
 
     protected static final HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder();

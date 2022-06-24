@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-public abstract class AbstractPeer {
+public abstract class Peer {
     protected String name = "service-server";
     protected String uuid;
     protected SSLContext sslContext;
@@ -43,7 +43,7 @@ public abstract class AbstractPeer {
         return uuid;
     }
 
-    public AbstractPeer setUuid(String uuid) {
+    public Peer setUuid(String uuid) {
         this.uuid = uuid;
         return this;
     }
@@ -52,19 +52,19 @@ public abstract class AbstractPeer {
         return host;
     }
 
-    public AbstractPeer setHost(String host) {
+    public Peer setHost(String host) {
         this.host = host;
         return this;
     }
 
-    public AbstractPeer setUri(URI uri){
+    public Peer setUri(URI uri){
         this.setHost(uri.getHost());
         this.setPort(uri.getPort());
         return this;
     }
 
 
-    public AbstractPeer setUri(String input){
+    public Peer setUri(String input){
         try {
             return setUri(new URI(input));
         } catch (URISyntaxException e) {
@@ -77,7 +77,7 @@ public abstract class AbstractPeer {
         return port;
     }
 
-    public AbstractPeer setPort(int port) {
+    public Peer setPort(int port) {
         this.port = port;
         return this;
     }
@@ -86,7 +86,7 @@ public abstract class AbstractPeer {
         return name;
     }
 
-    public AbstractPeer setName(String name) {
+    public Peer setName(String name) {
         this.name = name;
         return this;
     }
@@ -95,7 +95,7 @@ public abstract class AbstractPeer {
         return sslContext;
     }
 
-    public AbstractPeer setSslContext(SSLContext sslContext) {
+    public Peer setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
         return this;
     }

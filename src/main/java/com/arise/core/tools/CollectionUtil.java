@@ -2,6 +2,8 @@ package com.arise.core.tools;
 
 import java.util.*;
 
+import static com.arise.core.tools.Util.randBetween;
+
 
 public class CollectionUtil {
     public static boolean listContainsIgnorecase(String search, String[] items){
@@ -126,6 +128,10 @@ public class CollectionUtil {
             return args.get(i);
         }
         return def;
+    }
+
+    public static <T> T pickOne(List<T> s) {
+        return s.get(randBetween(0, s.size() ));
     }
 
 

@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public abstract class AbstractServer<READABLE> extends AbstractPeer {
+public abstract class AbstractServer<READABLE> extends Peer {
 
 
     protected volatile boolean running = false;

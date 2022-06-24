@@ -1,6 +1,6 @@
 package com.arise.astox.net.clients;
 
-import com.arise.astox.net.models.AbstractClient;
+import com.arise.astox.net.models.Client;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Handler;
@@ -29,10 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpURLConnection>  {
+public class JHttpClient extends Client<HttpRequest, HttpResponse, HttpURLConnection> {
 
 
     private String protocol = "http";
+
     @Override
     public JHttpClient setHost(String host) {
         return (JHttpClient) super.setHost(host);
@@ -146,10 +147,26 @@ public class JHttpClient extends AbstractClient<HttpRequest, HttpResponse, HttpU
         }
     }
 
+    private String _u;
+
+    public JHttpClient setAbsoluteUrl(String _u){
+        this._u = _u;
+        return this;
+    }
+
+
+
     public HttpURLConnection getConnection(HttpRequest request) throws Exception {
 
+        URL connectionURL;
+        if (StringUtil.hasText(_u)){
+            connectionURL = new URL(_u);
+        }
+        else {
+            connectionURL = new URL("http://" + getHost() + ":" + getPort() + request.getUri());
+        }
         //TODO url connection nu are nevoie de uri encodat
-        URL connectionURL = new URL("http://" + getHost() + ":" + getPort() + request.getUri());
+
 
         HttpURLConnection res = null;
         try {
