@@ -16,11 +16,11 @@
       "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
     },
     {
-      "name": "Celtic sounds",
+      "name": "Celtic sounds evening",
       "day": "FRIDAY",
-      "strategy": "stream",
+      "strategy": "sound-over-stream",
       "hour": "EACH_SECOND BETWEEN_18:50:00_AND_21:11:50",
-      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
+      "sources": ["{RADIO_ROOT}sounds", "http://192.111.140.11:8058/stream/1/"]
     },
     {
       "name": "Local Music",
