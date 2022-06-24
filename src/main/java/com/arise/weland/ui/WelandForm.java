@@ -7,6 +7,7 @@ import com.arise.core.models.Provider;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.weland.impl.RadioPlayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -192,6 +193,10 @@ public class WelandForm extends JFrame implements Runnable {
         for (ImageLabel i: imgs){
             i.refresh();
         }
+    }
+
+    public void setRadioPlayer(RadioPlayer rplayer) {
+
     }
 
 

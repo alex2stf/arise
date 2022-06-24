@@ -205,6 +205,9 @@ public class Main {
                     welandForm.pack();
                     welandForm.setVisible(true);
                     desktopContentHandler.setForm(welandForm);
+                    if (rplayer != null){
+                        welandForm.setRadioPlayer(rplayer);
+                    }
 
                     if(finalCronus != null) {
                         finalCronus.registerTask(welandForm);
