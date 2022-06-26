@@ -49,4 +49,33 @@ public class OSProxies {
         }, true, false);
         h.handle(list);
     }
+
+    public static String getMasterVolume() {
+        File f = getBinary("/usr/bin/amixer", "apt-get install alsa-utils");
+
+        final String r[] = new String[]{null};
+        SYSUtils.exec(new String[]{f.getAbsolutePath(), "get", "Master"}, new SYSUtils.ProcessLineReader() {
+            @Override
+            public void onStdoutLine(int line, String content) {
+                String lines[] = content.split("\n");
+                for (String x: lines){
+                    x = x.trim().toLowerCase();
+                    if (x.startsWith("mono:")){
+                        try {
+                            String pas = x.split("playback")[1].trim();
+                            r[0] = pas.split(" ")[0];
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }, true, false);
+        return r[0];
+    }
+
+    public static void setVolume(String v) {
+        File f = getBinary("/usr/bin/amixer", "apt-get install alsa-utils");
+        SYSUtils.exec(f.getAbsolutePath(), "set", "Master", v);
+    }
 }

@@ -190,17 +190,12 @@ public class MediaPlayer {
     }
 
     public String setVolume(String v) {
-        if(r.containsCommand("set-master-volume")){
-            return "" + r.execute("set-master-volume", new String[]{v});
-        }
+        OSProxies.setVolume(v);
         return getVolume();
     }
 
     public String getVolume() {
-        if(r.containsCommand("get-master-volume")){
-            return r.execute("get-master-volume", new String[]{}) + "";
-        }
-        return "";
+        return OSProxies.getMasterVolume();
     }
 
 
