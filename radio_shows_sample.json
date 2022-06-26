@@ -65,6 +65,28 @@
       "sources": ["https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"]
     },
     {
+      "name": "Exclusive Rory Gallagher",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "sound-over-stream",
+      "sources": ["{RADIO_ROOT}sounds","https://streaming.exclusive.radio/er/rorygallagher/icecast.audio"]
+    },
+    {
+      "name": "Exclusive White Stripes",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "strategy": "sound-over-stream",
+      "sources": ["{RADIO_ROOT}sounds","https://streaming.exclusive.radio/er/whitestripes/icecast.audio"]
+    },
+    {
+      "name": "Exclusive Thin Lizzy",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "stream",
+      "sources": ["https://streaming.exclusive.radio/er/thinlizzy/icecast.audio"]
+    },
+
+    {
       "name": "Celtic sounds",
       "day": "FRIDAY",
       "strategy": "stream",
