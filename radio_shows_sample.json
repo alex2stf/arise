@@ -11,9 +11,23 @@
     {
       "name": "Exclusive David Bowie",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_09:00:00_AND_11:30:00",
+      "hour": "EACH_SECOND BETWEEN_09:00:00_AND_12:30:00",
       "strategy": "stream",
       "sources": ["https://streaming.exclusive.radio/er/davidbowie/icecast.audio"]
+    },
+    {
+      "name": "Exclusive Bruce Springsteen",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_12:30:00_AND_14:30:00",
+      "strategy": "stream",
+      "sources": ["https://streaming.exclusive.radio/er/springsteen/icecast.audio"]
+    },
+    {
+      "name": "Exclusive Select",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_15:30:00_AND_19:30:00",
+      "strategy": "stream",
+      "sources": ["https://streaming.exclusive.radio/er/ledzeppelin/icecast.audio"]
     },
     {
       "name": "Celtic sounds",
