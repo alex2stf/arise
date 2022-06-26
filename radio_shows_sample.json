@@ -2,11 +2,18 @@
   "shows": [
     {
       "name": "Morning Glory",
-      "day": "DAILY",
+      "day": "MONDAY_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_06:45:00_AND_10:59:00",
       "strategy": "stream",
       "on-error": "Offline Show",
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
+    },
+    {
+      "name": "Exclusive David Bowie",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_09:00:00_AND_11:30:00",
+      "strategy": "stream",
+      "sources": ["https://streaming.exclusive.radio/er/davidbowie/icecast.audio"]
     },
     {
       "name": "Celtic sounds",
