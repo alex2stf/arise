@@ -55,7 +55,14 @@
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "stream",
-      "source": ["https://streaming.exclusive.radio/er/queen/icecast.audio" ]
+      "source": ["https://streaming.exclusive.radio/er/queen/icecast.audio"]
+    },
+    {
+      "name": "Exclusive Pink Floyd",
+      "day": "SUNDAY",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "stream",
+      "source": ["https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"]
     },
     {
       "name": "Celtic sounds",
