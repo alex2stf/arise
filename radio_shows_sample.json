@@ -34,35 +34,35 @@
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_13:30:00_AND_14:30:00",
       "strategy": "sound-over-stream",
-      "source": ["{RADIO_ROOT}sounds", "https://streaming.exclusive.radio/er/bobdylan/icecast.audio"]
+      "sources": ["{RADIO_ROOT}sounds", "https://streaming.exclusive.radio/er/bobdylan/icecast.audio"]
     },
     {
       "name": "Exclusive Rolling Stones",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_14:30:00_AND_15:30:00",
       "strategy": "stream",
-      "source": ["https://streaming.exclusive.radio/er/rollingstones/icecast.audio"]
+      "sources": ["https://streaming.exclusive.radio/er/rollingstones/icecast.audio"]
     },
     {
       "name": "Magic Gold Hits",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_15:30:00_AND_16:00:00",
       "strategy": "sound-over-stream",
-      "source": ["{RADIO_ROOT}sounds", "https://live.magicfm.ro/magic.gold.hits"]
+      "sources": ["{RADIO_ROOT}sounds", "https://live.magicfm.ro/magic.gold.hits"]
     },
     {
       "name": "Exclusive Queen",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "stream",
-      "source": ["https://streaming.exclusive.radio/er/queen/icecast.audio"]
+      "sources": ["https://streaming.exclusive.radio/er/queen/icecast.audio"]
     },
     {
       "name": "Exclusive Pink Floyd",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "stream",
-      "source": ["https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"]
+      "sources": ["https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"]
     },
     {
       "name": "Celtic sounds",
