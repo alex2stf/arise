@@ -13,35 +13,101 @@
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "stream",
-      "sources": ["https://str0.creacast.com/melody2", "https://i4.streams.ovh/sc/bluesrad/stream"]
+      "sources": [
+        "https://str0.creacast.com/melody2",
+        "https://i4.streams.ovh/sc/bluesrad/stream"
+      ]
     },
     {
       "name": "Evening relax celtic",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "stream",
-      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
+      "sources": [
+        "https://streaming.broadcastradio.com:11135/celtic",
+        "http://192.111.140.11:8058/stream/1/"
+      ]
     },
     {
       "name": "Evening relax 3 - alternative",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
       "strategy": "stream",
-      "sources": ["https://ais-sa5.cdnstream1.com/b87537_128mp3"]
+      "sources": [
+        "https://ais-sa5.cdnstream1.com/b87537_128mp3",
+        "https://streaming.exclusive.radio/er/00s/icecast.audio",
+        "https://streaming.exclusive.radio/er/softrock/icecast.audio",
+        "https://streaming.exclusive.radio/er/soul/icecast.audio"
+      ]
     },
     {
-      "name": "MagicFm friday evening",
+      "name": "Select Pick 0",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
       "strategy": "stream",
-      "sources": ["https://live.magicfm.ro/magicfm.aacp"]
+      "sources": [
+        "https://live.magicfm.ro/magicfm.aacp",
+        "https://streaming.exclusive.radio/er/90s/icecast.audio",
+        "https://streaming.exclusive.radio/er/indie/icecast.audio",
+        "https://streaming.exclusive.radio/er/love80s/icecast.audio"
+      ]
+    },
+    {
+      "name": "SelectPick 1 (Swiss Jazz)",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+        "https://streaming.exclusive.radio/er/love50s/icecast.audio",
+        "https://streaming.exclusive.radio/er/folk/icecast.audio",
+        "https://streaming.exclusive.radio/er/lovemovies/icecast.audio"
+      ]
+    },
+    {
+      "name": "SelectPick 2",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/1920/icecast.audio",
+        "https://streaming.exclusive.radio/er/1930/icecast.audio",
+        "https://streaming.exclusive.radio/er/1940/icecast.audio",
+        "https://streaming.exclusive.radio/er/50s/icecast.audio",
+        "https://streaming.exclusive.radio/er/60s/icecast.audio",
+        "https://streaming.exclusive.radio/er/blues/icecast.audio"
+      ]
+    },
+    {
+      "name": "SelectPick 3",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+        "https://streaming.exclusive.radio/er/love50s/icecast.audio",
+        "https://streaming.exclusive.radio/er/70s/icecast.audio",
+        "https://streaming.exclusive.radio/er/80s/icecast.audio",
+        "https://streaming.exclusive.radio/er/blues/icecast.audio"
+      ]
     },
     {
       "name": "Play local again",
       "day": "monday_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_17:16:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_17:10:00_AND_18:00:00",
       "strategy": "sound-over-music",
       "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
+    },
+    {
+      "name": "Exclusive mondays",
+      "day": "MONDAY",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+      ]
     },
     {
       "name": "Exclusive David Bowie",
