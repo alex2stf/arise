@@ -2,11 +2,46 @@
   "shows": [
     {
       "name": "Morning Glory",
-      "day": "MONDAY_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_06:45:00_AND_10:59:00",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_06:45:00_AND_11:00:00",
       "strategy": "stream",
       "on-error": "Offline Show",
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
+    },
+    {
+      "name": "Evening relax blues and french",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "strategy": "stream",
+      "sources": ["https://str0.creacast.com/melody2", "https://i4.streams.ovh/sc/bluesrad/stream"]
+    },
+    {
+      "name": "Evening relax celtic",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "strategy": "stream",
+      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
+    },
+    {
+      "name": "Evening relax 3 - alternative",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
+      "strategy": "stream",
+      "sources": ["https://ais-sa5.cdnstream1.com/b87537_128mp3"]
+    },
+    {
+      "name": "MagicFm friday evening",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
+      "strategy": "stream",
+      "sources": ["https://live.magicfm.ro/magicfm.aacp"]
+    },
+    {
+      "name": "Play local again",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_17:16:00_AND_20:00:00",
+      "strategy": "sound-over-music",
+      "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
     },
     {
       "name": "Exclusive David Bowie",
@@ -91,72 +126,11 @@
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_22:00:00",
       "strategy": "stream",
       "sources": ["https://streaming.exclusive.radio/er/rock/icecast.audio"]
-    },
-
-    {
-      "name": "Celtic sounds",
-      "day": "FRIDAY",
-      "strategy": "stream",
-      "hour": "EACH_SECOND BETWEEN_12:30:00_AND_14:30:00",
-      "sources": ["https://streaming.broadcastradio.com:11135/celtic", "http://192.111.140.11:8058/stream/1/"]
-    },
-    {
-      "name": "Blues Again",
-      "day": "FRIDAY",
-      "strategy": "stream",
-      "hour": "EACH_SECOND BETWEEN_14:30:00_AND_18:30:00",
-      "sources": ["https://i4.streams.ovh/sc/bluesrad/stream"]
-    },
-    {
-      "name": "MagicFm friday evening",
-      "day": "FRIDAY",
-      "hour": "EACH_SECOND BETWEEN_18:30:00_AND_21:11:50",
-      "strategy": "stream",
-      "sources": ["https://live.magicfm.ro/magicfm.aacp"]
-    },
-    {
-      "name": "Local Music",
-      "day": "THURSDAY_FRIDAY",
-      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:46:00",
-      "strategy": "play-local",
-      "sources": ["{RADIO_ROOT}music"]
-    },
-    {
-      "name": "Radio French Melody",
-      "day": "THURSDAY",
-      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:15:00",
-      "strategy": "sound-over-stream",
-      "sources": ["{RADIO_ROOT}sounds", "https://str0.creacast.com/melody2"]
-    },
-    {
-      "name": "Play local again",
-      "day": "THURSDAY",
-      "hour": "EACH_SECOND BETWEEN_17:16:00_AND_19:45:00",
-      "strategy": "sound-over-music",
-      "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
-    },
-    {
-      "name": "Alternative Nation",
-      "day": "THURSDAY",
-      "hour": "EACH_SECOND BETWEEN_19:48:00_AND_22:00:00",
-      "strategy": "sound-over-stream",
-      "sources": ["{RADIO_ROOT}sounds", "https://ais-sa5.cdnstream1.com/b87537_128mp3"]
-    },
-    {
-      "name": "random2",
-      "day": "MONDAY",
-      "hour": "EACH_SECOND BETWEEN_06:15:00_AND_21:15:00",
-      "strategy": "sound-over-music",
-      "sources": ["C:\\Users\\Tarya\\Music\\sounds", "C:\\Users\\Tarya\\Music\\music"],
-      "delay": "1000"
-    },
-    {
-      "name": "random2",
-      "day": "MONDAY",
-      "hour": "EACH_SECOND BETWEEN_01:00:00_AND_15:49:40",
-      "strategy": "stream",
-      "on-error": "some-other-show-id",
-      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
     }
+
+
+
+
+
   ]
 }
