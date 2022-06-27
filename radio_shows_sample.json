@@ -99,9 +99,42 @@
       "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
     },
     {
-      "name": "Exclusive mondays",
-      "day": "MONDAY",
+      "name": "Exclusive night 1",
+      "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+      ]
+    },
+    {
+      "name": "Exclusive night 2",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+      ]
+    },
+    {
+      "name": "Exclusive night 3",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+      ]
+    },
+    {
+      "name": "Exclusive night 3",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",
       "sources": [
         "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
