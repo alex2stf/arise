@@ -142,6 +142,9 @@
         "https://streaming.exclusive.radio/er/beatles/icecast.audio"
       ]
     },
+
+
+
     {
       "name": "Exclusive David Bowie",
       "day": "SUNDAY",
@@ -161,7 +164,10 @@
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_12:30:00_AND_13:30:00",
       "strategy": "stream",
-      "sources": ["https://streaming.exclusive.radio/er/ledzeppelin/icecast.audio", "https://streaming.exclusive.radio/er/doors/icecast.audio"]
+      "sources": [
+        "https://streaming.exclusive.radio/er/ledzeppelin/icecast.audio",
+        "https://streaming.exclusive.radio/er/doors/icecast.audio"
+      ]
     },
     {
       "name": "Exclusive Bob Dylan",
