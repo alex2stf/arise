@@ -25,6 +25,7 @@
       "strategy": "stream",
       "sources": [
         "https://streaming.broadcastradio.com:11135/celtic",
+        "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
         "http://192.111.140.11:8058/stream/1/"
       ]
     },
