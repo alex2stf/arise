@@ -26,7 +26,7 @@ import static com.arise.canter.Cronus.strNow;
 import static com.arise.canter.Cronus.strfMillis;
 import static com.arise.canter.Cronus.strfNowPlusMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
-import static com.arise.core.tools.CollectionUtil.pickOne;
+import static com.arise.core.tools.CollectionUtil.randomPick;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
@@ -186,7 +186,7 @@ public class RadioPlayer {
                 psos(_s.get(0));
             }
             else if ("stream".equalsIgnoreCase(_m)){
-                pss(c, pickOne(_s));
+                pss(c, randomPick(_s));
             }
 
 

@@ -3,6 +3,7 @@ package com.arise.core.tools;
 import java.util.*;
 
 import static com.arise.core.tools.Util.randBetween;
+import static java.util.Collections.shuffle;
 
 
 public class CollectionUtil {
@@ -130,9 +131,29 @@ public class CollectionUtil {
         return def;
     }
 
+
+
     public static <T> T pickOne(List<T> s) {
         return s.get(randBetween(0, s.size() ));
     }
+
+    public static String randomPick(List<String> s) {
+        String k = StringUtil.join(s, "x").replaceAll("http", "x")
+                .replaceAll("/", "")
+                .replaceAll("\\.", "")
+                .replaceAll(":", "");
+        k = (k.hashCode() < 0 ? "h"+Math.abs(k.hashCode()) : k.hashCode()) + "-" + UUID.nameUUIDFromBytes(k.getBytes());
+        AppCache.StoredList l = AppCache.getStoredList(k);
+        if (l.isEmpty() || l.isIndexExceeded()){
+            shuffle(s);
+            l = AppCache.storeList(k, s, 0);
+        }
+        int i = l.getIndex();
+        AppCache.storeList(k, l.getItems(), i + 1);
+        return l.getItems().get(i);
+    }
+
+
 
 
     public interface SmartHandler<T> {
