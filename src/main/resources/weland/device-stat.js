@@ -38,6 +38,10 @@ function update_ui_with_device_stat(d) {
 }
 
 
+function update_ui_with_device_info(nf){
+    // update_ui_with_device_info_into_root
+}
+
 
 
 get_device_stat();

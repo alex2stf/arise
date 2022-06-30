@@ -21,12 +21,28 @@ function __set_text(rootId, clzChild, html_text) {
     });
 }
 
+function _show_block_and_set_text(rootId, clzChild, html_text) {
+    __get_child(rootId, clzChild, function (i) {
+        i.innerHTML = html_text;
+        i.style.display = 'block'
+    });
+}
+
+function _hide_block(rootId, clzChild) {
+    __get_child(rootId, clzChild, function (i) {
+        i.style.display = 'none'
+    });
+}
+
 
 function __set_value(rootId, clzChild, txt) {
     __get_child(rootId, clzChild, function (i) {
         i.value = txt;
     });
 }
+
+
+
 
 
 
@@ -251,6 +267,8 @@ function update_ui_with_device_stat_into_root(root, secondRoot, d) {
     if(!d){
         return;
     }
+
+    console.log("received update device state with ", d)
     if (d.I4 && d.I4.length > 0){
         __set_text(root, 'sips', d.I4.join(' | ') );
     }
@@ -314,6 +332,13 @@ function update_ui_with_device_stat_into_root(root, secondRoot, d) {
         }
     } else if(typeof showCamPlayBtn != 'undefined') {
         showCamPlayBtn(d);
+    }
+
+    var ron = d.pP['rplayer.play'];
+    if ('true' == ron){
+        _show_block_and_set_text(root, 'radio-stat', '<button id="rpl24" class="btn-txt" onclick="close_radio()">Close radio</button>')
+    } else if('false' == ron) {
+        _show_block_and_set_text(root, 'radio-stat', '<button id="rpl24" class="btn-txt" onclick="start_radio()">Start radio</button>')
     }
 
 

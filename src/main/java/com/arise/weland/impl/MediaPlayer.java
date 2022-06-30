@@ -162,7 +162,7 @@ public class MediaPlayer {
     }
 
 
-    void stopClips(){
+    private void stopClips(){
         if (clip != null){
             try {
                 clip.stop();
@@ -190,12 +190,21 @@ public class MediaPlayer {
     }
 
     public String setVolume(String v) {
-        OSProxies.setVolume(v);
+        try {
+            OSProxies.setVolume(v);
+        }catch (Exception e){
+            log.e(e);
+        }
         return getVolume();
     }
 
     public String getVolume() {
-        return OSProxies.getMasterVolume();
+        try {
+            return OSProxies.getMasterVolume();
+        }catch (Exception e){
+            log.error(e);
+        }
+        return "0";
     }
 
 

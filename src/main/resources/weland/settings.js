@@ -370,4 +370,16 @@ function updateMusicVolume() {
 }
 
 
+function start_radio(){
+    send_device_update({
+        rplayer: 'play'
+    });
+}
+
+function close_radio(){
+    send_device_update({
+        rplayer: 'stop'
+    });
+}
+
 

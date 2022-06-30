@@ -2,6 +2,7 @@ package com.arise.weland.dto;
 
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.core.AppSettings;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
@@ -34,6 +35,7 @@ public class DeviceStat {
 
 
     public static final DeviceStat INSTANCE = new DeviceStat().scanIPV4();
+
 
     public static DeviceStat getInstance() {
         return INSTANCE;

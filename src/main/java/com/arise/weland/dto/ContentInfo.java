@@ -382,10 +382,16 @@ public class ContentInfo implements Serializable {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public boolean isMusic() {
         return ContentType.isMusic(path);
     }
 
+    public boolean isStream(){
+        return Playlist.STREAMS.equals(getPlaylist());
+    }
+
+    @SuppressWarnings("unused")
     public boolean isVideo() {
         return ContentType.isVideo(path);
     }

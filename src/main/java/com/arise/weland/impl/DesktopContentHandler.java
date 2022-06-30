@@ -8,6 +8,8 @@ import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.ThreadUtil;
+import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.model.ContentHandler;
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.ThreadUtil.sleep;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 
@@ -29,9 +32,16 @@ public class DesktopContentHandler extends ContentHandler {
 
 
     private final MediaPlayer mediaPlayer;
+    private RadioPlayer rplayer;
+
     public DesktopContentHandler(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;
         mediaPlayer = RadioPlayer.getMediaPlayer();
+    }
+
+    public DesktopContentHandler setRadioPlayer(RadioPlayer r){
+        this.rplayer = r;
+        return this;
     }
 
 
@@ -54,12 +64,26 @@ public class DesktopContentHandler extends ContentHandler {
            DeviceStat deviceStat = getInstance();
 
             if (isHttpPath(path)){
-                System.out.println(path);
+                ContentInfo info = contentInfoProvider.findByPath(path);
+                if (info != null && info.isStream()){
+                    if (rplayer != null && rplayer.isPlaying()){
+                        rplayer.stop();
+                    }
+
+                    mediaPlayer.stop();
+                    sleep(1000 * 8);
+                    mediaPlayer.playStream(path);
+                    return deviceStat.toHttp();
+                }
             }
             else if (isPicture(path)){
                 openPicture(path);
             }
             else if (isMedia(path)){
+                if (rplayer != null && rplayer.isPlaying()){
+                    rplayer.stop();
+                }
+                mediaPlayer.stop();
                 mediaPlayer.play(path);
             }
             else {
@@ -152,6 +176,18 @@ public class DesktopContentHandler extends ContentHandler {
             }
         }
 
+
+        if (rplayer != null && p.containsKey("rplayer") ){
+            String x = p.get("rplayer").get(0);
+            if ("play".equalsIgnoreCase(x)){
+                rplayer.play();
+                deviceStat.setProp("rplayer.play", "true");
+            }
+            if ("stop".equalsIgnoreCase(x)){
+                rplayer.stop();
+                deviceStat.setProp("rplayer.play", "false");
+            }
+        }
 
 
 

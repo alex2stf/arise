@@ -9,6 +9,7 @@ import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.AppSettings;
 import com.arise.core.AppSettings.Keys;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
@@ -17,6 +18,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -179,6 +181,20 @@ public class Main {
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
+
+            rplayer.onPlay(new Handler<RadioPlayer>() {
+                @Override
+                public void handle(RadioPlayer radioPlayer) {
+                    DeviceStat.getInstance().setProp("rplayer.play", "true");
+                }
+            });
+            rplayer.onStop(new Handler<RadioPlayer>() {
+                @Override
+                public void handle(RadioPlayer radioPlayer) {
+                    DeviceStat.getInstance().setProp("rplayer.play", "false");
+                }
+            });
+            desktopContentHandler.setRadioPlayer(rplayer);
             startThread(new Runnable() {
                 @Override
                 public void run() {

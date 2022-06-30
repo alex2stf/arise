@@ -43,7 +43,7 @@ public class RadioPlayer {
 
     static MediaPlayer mPlayer = MediaPlayer.getMediaPlayer("radio", cmdReg);
 
-    private volatile boolean is_play = true;
+    private volatile boolean is_play = false;
 
     private static final Mole log = Mole.getInstance(RadioPlayer.class);
 
@@ -52,9 +52,48 @@ public class RadioPlayer {
     }
 
 
+    private Handler<RadioPlayer> pl;
+    private Handler<RadioPlayer> st;
+
+    private Show c;
+
+    public boolean isPlaying(){
+        return is_play;
+    }
+    public RadioPlayer onPlay(Handler<RadioPlayer> pl){
+        this.pl = pl;
+        return this;
+    }
+
+    public RadioPlayer onStop(Handler<RadioPlayer> st){
+        this.st = st;
+        return this;
+    }
+
     public void play() {
+        if (is_play){
+            return;
+        }
         is_play = true;
+        if (pl != null){
+            pl.handle(this);
+        }
         loop();
+    }
+
+    public void stop(){
+        if (!is_play){
+            return;
+        }
+        if (st != null){
+            st.handle(this);
+        }
+        if (c != null){
+            c.stop();
+        }
+
+        mPlayer.stop();
+        is_play = false;
     }
 
     int lR = 1000;
@@ -90,6 +129,7 @@ public class RadioPlayer {
     private Show getActiveShow(){
         for (Show s: shows){
             if (s.isActive()){
+                c = s;
                 return s;
             }
         }
@@ -144,6 +184,7 @@ public class RadioPlayer {
         }
 
 
+
         public synchronized void run(final Handler<Show> c){
             if ("play-local".equalsIgnoreCase(_m)){
                 String p = _s.get(0);
@@ -165,7 +206,7 @@ public class RadioPlayer {
                 long max = MediaPlayer.getAudioDurationMs(mf, 3000);
                 final int time = (int) ((Math.random() * (max - 1000)) + 1000);
 
-                delayedTask(new Runnable() {
+                t = delayedTask(new Runnable() {
                     @Override
                     public void run() {
                         log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
@@ -197,6 +238,7 @@ public class RadioPlayer {
         }
 
         ThreadUtil.TimerResult t;
+
 
         void psos(final String p){
             if (_o){
@@ -246,7 +288,7 @@ public class RadioPlayer {
 
 
 
-            delayedTask(new Runnable() {
+            t = delayedTask(new Runnable() {
                 @Override
                 public void run() {
                     _o = false;
@@ -272,8 +314,12 @@ public class RadioPlayer {
         }
 
 
+        public void stop() {
 
-
+            closeTimer(t);
+            MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).stop();
+            mPlayer.stop();
+        }
     }
 
 
