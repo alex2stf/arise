@@ -62,7 +62,10 @@
         "https://stream.srg-ssr.ch/m/rsj/mp3_128",
         "https://streaming.exclusive.radio/er/love50s/icecast.audio",
         "https://streaming.exclusive.radio/er/folk/icecast.audio",
-        "https://streaming.exclusive.radio/er/lovemovies/icecast.audio"
+        "https://streaming.exclusive.radio/er/lovemovies/icecast.audio",
+        "https://streaming.exclusive.radio/er/beethoven/icecast.audio",
+        "https://streaming.exclusive.radio/er/calm/icecast.audio",
+        "https://streaming.exclusive.radio/er/classical/icecast.audio"
       ]
     },
     {
@@ -105,9 +108,10 @@
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "stream",
       "sources": [
-        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
-        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
-        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio",
+        "https://streaming.exclusive.radio/er/howlinwolf/icecast.audio",
+        "https://streaming.exclusive.radio/er/kingsofleon/icecast.audio",
+        "https://streaming.exclusive.radio/er/carpenters/icecast.audio"
       ]
     },
     {
@@ -116,9 +120,10 @@
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "stream",
       "sources": [
-        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
         "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
-        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+        "https://streaming.exclusive.radio/er/joesatriani/icecast.audio",
+        "https://streaming.exclusive.radio/er/johnleehooker/icecast.audio",
+        "https://streaming.exclusive.radio/er/billyidol/icecast.audio"
       ]
     },
     {
@@ -127,9 +132,9 @@
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "stream",
       "sources": [
-        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
-        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
-        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+        "https://streaming.exclusive.radio/er/INXS/icecast.audio",
+        "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+        "https://streaming.exclusive.radio/er/joebonamassa/icecast.audio"
       ]
     },
     {
@@ -138,20 +143,166 @@
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",
       "sources": [
-        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
-        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
-        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+        "https://streaming.exclusive.radio/er/goodnight/icecast.audio",
+        "https://streaming.exclusive.radio/er/bodiddley/icecast.audio",
+        "https://streaming.exclusive.radio/er/bobmarley/icecast.audio"
       ]
     },
 
-
-
     {
-      "name": "Exclusive David Bowie",
+      "name": "Saturday morning",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_10:00:00_AND_11:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/sleep-maxrichter/icecast.audio",
+        "https://streaming.exclusive.radio/er/goodmorning/icecast.audio",
+        "https://streaming.exclusive.radio/er/classical/icecast.audio",
+        "https://streaming.exclusive.radio/er/jazz/icecast.audio",
+        "https://streaming.exclusive.radio/er/soulroyalty/icecast.audio",
+        "https://streaming.exclusive.radio/er/bbking/icecast.audio",
+        "https://streaming.exclusive.radio/er/chopin/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday morning 2",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/northernsoul/icecast.audio",
+        "https://streaming.exclusive.radio/er/softrock/icecast.audio",
+        "https://streaming.exclusive.radio/er/abba/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday morning 3",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/bobseger/icecast.audio",
+        "https://streaming.exclusive.radio/er/catstevens/icecast.audio",
+        "https://streaming.exclusive.radio/er/direstraits/icecast.audio",
+        "https://streaming.exclusive.radio/er/genesis/icecast.audio",
+        "https://streaming.exclusive.radio/er/afternoon/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday evening",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_13:30:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/gongs/icecast.audio",
+        "https://streaming.exclusive.radio/er/goodevening/icecast.audio",
+        "https://streaming.exclusive.radio/er/vanmorrison/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_13:30:00_AND_14:30:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/gunsnroses/icecast.audio",
+        "https://streaming.exclusive.radio/er/ironmaiden/icecast.audio",
+        "https://streaming.exclusive.radio/er/blacksabbath/icecast.audio",
+        "https://streaming.exclusive.radio/er/acdc/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_14:30:00_AND_15:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/jamesblunt/icecast.audio",
+        "https://streaming.exclusive.radio/er/jamesbrown/icecast.audio",
+        "https://streaming.exclusive.radio/er/irishfolk/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+        "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
+        "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
+        "https://radio.cloud23.eu/magiainimiitale"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/thesmiths/icecast.audio",
+        "https://streaming.exclusive.radio/er/mix9/icecast.audio",
+        "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/ratpack/icecast.audio",
+        "https://streaming.exclusive.radio/er/police/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/thejesusandmarychain/icecast.audio"
+      ]
+    },
+    {
+      "name": "Beach Boys or Roy Orbison",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/beachboys/icecast.audio",
+        "https://streaming.exclusive.radio/er/royorbison/icecast.audio"
+      ]
+    },
+    {
+      "name": "Saturday afternoon",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/texas/icecast.audio",
+        "https://streaming.exclusive.radio/er/stevierayvaughan/icecast.audio"
+      ]
+    },
+    {
+      "name": "Sting or Rod Stewart",
+      "day": "SATURDAY",
+      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/sting/icecast.audio",
+        "https://streaming.exclusive.radio/er/rodstewart/icecast.audio"
+      ]
+    },
+    {
+      "name": "Exclusive David Bowie or Beatles",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_10:00:00_AND_11:30:00",
       "strategy": "stream",
-      "sources": ["https://streaming.exclusive.radio/er/davidbowie/icecast.audio"]
+      "sources": [
+        "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+        "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+      ]
     },
     {
       "name": "Exclusive Bruce Springsteen",
@@ -161,7 +312,7 @@
       "sources": ["https://streaming.exclusive.radio/er/springsteen/icecast.audio"]
     },
     {
-      "name": "Exclusive Led Zeppelin or Doors",
+      "name": "Exclusive Led Zeppelin or Doors ",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_12:30:00_AND_13:30:00",
       "strategy": "stream",
@@ -171,65 +322,78 @@
       ]
     },
     {
-      "name": "Exclusive Bob Dylan",
+      "name": "Exclusive Bob Dylan or Elvis",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_13:30:00_AND_14:30:00",
       "strategy": "sound-over-stream",
-      "sources": ["{RADIO_ROOT}sounds", "https://streaming.exclusive.radio/er/bobdylan/icecast.audio"]
+      "sources": [
+        "https://streaming.exclusive.radio/er/bobdylan/icecast.audio",
+        "https://streaming.exclusive.radio/er/elvispresley/icecast.audio"
+      ]
     },
     {
       "name": "Exclusive Rolling Stones",
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_14:30:00_AND_15:30:00",
       "strategy": "stream",
-      "sources": ["https://streaming.exclusive.radio/er/rollingstones/icecast.audio"]
+      "sources": [
+        "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+        "https://streaming.exclusive.radio/er/tompetty/icecast.audio"
+      ]
     },
     {
-      "name": "Magic Gold Hits",
+      "name": "Lana del Rey or Leonard Cohen",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_15:30:00_AND_16:00:00",
-      "strategy": "sound-over-stream",
-      "sources": ["{RADIO_ROOT}sounds", "https://live.magicfm.ro/magic.gold.hits"]
+      "hour": "EACH_SECOND BETWEEN_15:30:00_AND_16:30:00",
+      "strategy": "stream",
+      "sources": [
+        "https://streaming.exclusive.radio/er/lanadelrey/icecast.audio",
+        "https://streaming.exclusive.radio/er/leonardcohen/icecast.audio"
+      ]
     },
     {
       "name": "Exclusive Queen",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "hour": "EACH_SECOND BETWEEN_16:30:00_AND_17:30:00",
       "strategy": "stream",
       "sources": ["https://streaming.exclusive.radio/er/queen/icecast.audio"]
     },
     {
       "name": "Exclusive Pink Floyd",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "hour": "EACH_SECOND BETWEEN_17:30:00_AND_18:30:00",
       "strategy": "stream",
       "sources": ["https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"]
     },
     {
       "name": "Exclusive Rory Gallagher",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_18:30:00_AND_19:30:00",
       "strategy": "sound-over-stream",
       "sources": ["{RADIO_ROOT}sounds","https://streaming.exclusive.radio/er/rorygallagher/icecast.audio"]
     },
     {
       "name": "Exclusive White Stripes",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "hour": "EACH_SECOND BETWEEN_19:30:00_AND_20:30:00",
       "strategy": "sound-over-stream",
       "sources": ["{RADIO_ROOT}sounds","https://streaming.exclusive.radio/er/whitestripes/icecast.audio"]
     },
     {
-      "name": "Exclusive Thin Lizzy",
+      "name": "Exclusive Thin Lizzy or Deep Purple",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_20:30:00_AND_21:30:00",
       "strategy": "stream",
-      "sources": ["https://streaming.exclusive.radio/er/thinlizzy/icecast.audio"]
+      "sources": [
+        "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
+        "https://streaming.exclusive.radio/er/deeppurple/icecast.audio"
+
+      ]
     },
     {
       "name": "Exclusive Rock",
       "day": "SUNDAY",
-      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_22:00:00",
+      "hour": "EACH_SECOND BETWEEN_21:30:00_AND_22:00:00",
       "strategy": "stream",
       "sources": ["https://streaming.exclusive.radio/er/rock/icecast.audio"]
     }

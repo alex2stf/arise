@@ -48,6 +48,19 @@ function  getFileNameFromObj(obj) {
 
 
 function getFileNameFromStr(x) {
+    if(gData){
+        for(var p in gData){
+            var Z = gData[p];
+            for (var k in Z){
+                if (k == x){
+                    if (Z[k].T){
+                        return decodeURIComponent(Z[k].T).replaceAll('+', ' ');
+                    }
+                }
+            }
+        }
+    }
+
     var names = decodeURIComponent(x);
     names = names.split("/");
     var n = names[names.length -1 ];

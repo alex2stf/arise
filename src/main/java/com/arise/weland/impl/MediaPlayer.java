@@ -65,6 +65,7 @@ public class MediaPlayer {
 
     AudioInputStream audioIn = null;
     Clip clip = null;
+    private volatile boolean is_play = false;
 
     public Object play(final String p) {
         return play(p, null);
@@ -80,7 +81,7 @@ public class MediaPlayer {
         }
         String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
-
+        is_play = true;
         if (path.endsWith(".wav")){
             stopClips();
             try {
@@ -101,11 +102,12 @@ public class MediaPlayer {
                 });
                 clip.open(audioIn);
                 clip.start();
+
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
-                c.handle(path);
             }
-
+            is_play = false;
+            c.handle(path);
             return audioIn;
         }
 
@@ -117,6 +119,7 @@ public class MediaPlayer {
                 r.execute("play-media", new String[]{path});
             }
             c.handle(path);
+            is_play = false;
         } else if ("javazone-player".equalsIgnoreCase(strategy)) {
             //TODO use JProxy
             withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
@@ -133,6 +136,7 @@ public class MediaPlayer {
                         throw new DependencyException("javazoom.jl.player.Player failed", e);
                     }
                     c.handle(path);
+                    is_play = false;
                 }
             });
         } else {
@@ -147,8 +151,10 @@ public class MediaPlayer {
                     e.printStackTrace();
                 }
             }
+            is_play = false;
             c.handle(path);
         }
+
         return winst;
     }
 
@@ -158,6 +164,7 @@ public class MediaPlayer {
         if (proc[0] != null){
             proc[0].destroy();
         }
+        is_play = true;
         proc[0] = (Process) r.getCommand("browser-open").execute(u);
     }
 
@@ -183,6 +190,7 @@ public class MediaPlayer {
            }
         }
         r.getCommand("browser-close").execute();
+        is_play = false;
     }
 
     public void pause() {
@@ -218,5 +226,9 @@ public class MediaPlayer {
         c.connectSync(request, suk);
 
 
+    }
+
+    public boolean isPlaying() {
+        return is_play;
     }
 }

@@ -180,6 +180,10 @@ public class DesktopContentHandler extends ContentHandler {
         if (rplayer != null && p.containsKey("rplayer") ){
             String x = p.get("rplayer").get(0);
             if ("play".equalsIgnoreCase(x)){
+                if (mediaPlayer.isPlaying()){
+                    mediaPlayer.stop();
+                    sleep(1000 * 8);
+                }
                 rplayer.play();
                 deviceStat.setProp("rplayer.play", "true");
             }

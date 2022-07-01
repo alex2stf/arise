@@ -164,7 +164,14 @@ public class ContentInfoProvider {
                         }
                     }
                     contentInfo.setPath(MapUtil.getString(map, "path"));
-                    contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+
+                    if (map.containsKey("playlist")){
+                        contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+                    } else {
+                        contentInfo.setPlaylist(Playlist.STREAMS);
+                    }
+
+
                     contentInfo.setTitle(MapUtil.getString(map, "title"));
                     mergeContent(contentInfo, contentInfo.getPlaylist());
                 }
