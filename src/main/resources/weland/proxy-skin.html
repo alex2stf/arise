@@ -1,0 +1,36 @@
+<html>
+<style>
+    body {
+        text-align: center;
+    }
+    h1 {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 21px;
+        font-weight: bold;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 2%;
+    }
+
+    audio {
+        display: block;
+        width: 100%
+    }
+</style>
+<body>
+    {{#title}}
+        <h1><i><b>{{title}}</b></i></h1>
+    {{/title}}
+    {{#thumbnailId}}
+        <img src="/thumbnail?id={{thumbnailId}}"/>
+    {{/thumbnailId}}
+    <audio controls autoplay src="{{uri}}">
+    </audio>
+</body>
+</html>

@@ -9,6 +9,8 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
+import com.arise.weland.dto.ContentInfo;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -27,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.AppSettings.getProperty;
 import static com.arise.core.tools.ReflectUtil.getMethod;
+import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
 import static com.arise.core.tools.Util.close;
 import static java.lang.Runtime.getRuntime;
 
@@ -38,6 +41,8 @@ public class MediaPlayer {
     private CommandRegistry r;
 
     static volatile boolean isAppClosed = false;
+
+    private ContentInfoProvider cip;
 
     private MediaPlayer(CommandRegistry r){
         this.r = r;
@@ -165,7 +170,22 @@ public class MediaPlayer {
             proc[0].destroy();
         }
         is_play = true;
-        proc[0] = (Process) r.getCommand("browser-open").execute(u);
+        if (u.startsWith("https")){
+            proc[0] = (Process) r.getCommand("browser-open").execute(u);
+        } else {
+            String uri = "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(u);
+                if (cip != null){
+                ContentInfo ci = cip.findByPath(u);
+                if (ci != null && ci.getThumbnailId() != null){
+                    uri += "&thumbnailId=" + ci.getThumbnailId();
+                }
+                if (ci != null && StringUtil.hasText(ci.getTitle())){
+                    uri += "&title=" + urlEncodeUTF8(ci.getTitle());
+                }
+            }
+            proc[0] = (Process) r.getCommand("browser-open")
+                    .execute(uri);
+        }
     }
 
 
@@ -230,5 +250,10 @@ public class MediaPlayer {
 
     public boolean isPlaying() {
         return is_play;
+    }
+
+    public MediaPlayer setContentInfoProvider(ContentInfoProvider cip) {
+        this.cip = cip;
+        return this;
     }
 }

@@ -105,8 +105,8 @@ public class ServerTestHandler extends WelandServerHandler {
     }
 
     @Override
-    public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
-        HttpResponse response = super.getHTTPResponse(request, server);
+    public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
+        HttpResponse response = super.getHTTPResponse(req, server);
         if (response != null){
             return response;
         }
@@ -118,7 +118,7 @@ public class ServerTestHandler extends WelandServerHandler {
         args.put("port", String.valueOf(server.getPort()));
         args.put("test_messages", Groot.toJson(msgs));
         args.put("ws_host", server.getSslContext() != null ? "wss" : "ws");
-        args.put("request_debug", request.toString());
+        args.put("request_debug", req.toString());
 
         return HttpResponse.html(whisker.compile(text, args));
     }

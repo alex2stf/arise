@@ -45,6 +45,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import static com.arise.core.tools.FileUtil.findStream;
+import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.StringUtil.urlDecodeUTF8;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
 
 public class WelandServerHandler extends HTTPServerHandler {
@@ -97,43 +99,43 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
   @Override
-  public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server) {
+  public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
 
-    if("OPTIONS".equalsIgnoreCase(request.method())) {
+    if("OPTIONS".equalsIgnoreCase(req.method())) {
       return HttpResponse.oK().allowAnyOrigin();
     }
 
     String correlationId = "";
-    if (StringUtil.hasText(request.getHeaderParam("Correlation-Id"))){
-        correlationId = request.getHeaderParam("Correlation-Id");
+    if (hasText(req.getHeaderParam("Correlation-Id"))){
+        correlationId = req.getHeaderParam("Correlation-Id");
     }
 
-    if ("/message".equalsIgnoreCase(request.path())
-            && !"get".equalsIgnoreCase(request.method())
-            && !"delete".equalsIgnoreCase(request.method())
+    if ("/message".equalsIgnoreCase(req.path())
+            && !"get".equalsIgnoreCase(req.method())
+            && !"delete".equalsIgnoreCase(req.method())
     ){
-      Map mapObj = (Map) Groot.decodeBytes(request.payload());
+      Map mapObj = (Map) Groot.decodeBytes(req.payload());
       Message message = Message.fromMap(mapObj);
       contentHandler.onMessageReceived(message);
       return contentHandler.getDeviceStat().toHttp();
     }
 
-    if("/device/info".equalsIgnoreCase(request.path())){
+    if("/device/info".equalsIgnoreCase(req.path())){
         return HttpResponse.json(contentHandler.getDeviceInfoJson()).allowAnyOrigin();
     }
 
 
     //main html rendering
-    if ("/app".equalsIgnoreCase(request.path()) || "/app.html".equalsIgnoreCase(request.path())){
+    if ("/app".equalsIgnoreCase(req.path()) || "/app.html".equalsIgnoreCase(req.path())){
       appContent = StreamUtil.toString(findStream("src/main/resources#weland/app.html"));
       Map<String, String> args = new HashMap<>();
-      args.put("host", request.getQueryParamString("host", ""));
+      args.put("host", req.getQueryParamString("host", ""));
       return HttpResponse.html(whisker.compile(appContent, args));
     }
 
 
     //generic platform agnostic information
-    if ("/device/stat".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
+    if ("/device/stat".equals(req.path()) || "/health".equalsIgnoreCase(req.path())){
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
       simpleDateFormat.setTimeZone(TimeZone.getDefault());
       return contentHandler.getDeviceStat()
@@ -141,30 +143,40 @@ public class WelandServerHandler extends HTTPServerHandler {
               .toHttp();
     }
 
-    if ("/device/update".equals(request.path()) || "/health".equalsIgnoreCase(request.path())){
-      return contentHandler.onDeviceUpdate(request.getQueryParams()).toHttp();
+    if ("/device/update".equals(req.path()) || "/health".equalsIgnoreCase(req.path())){
+      return contentHandler.onDeviceUpdate(req.getQueryParams()).toHttp();
+    }
+    if ("/proxy-skin".equals(req.path()) ){
+
+      Map<String, String> args = new HashMap<>();
+      args.put("uri", urlDecodeUTF8(req.getQueryParamString("uri", "")));
+      args.put("thumbnailId", req.getQueryParamString("thumbnailId", ""));
+      args.put("title", urlDecodeUTF8(req.getQueryParamString("title", "")));
+      return HttpResponse.html(whisker.compile(
+              StreamUtil.toString(findStream("src/main/resources#weland/proxy-skin.html"))
+              , args));
     }
 
 
-    if (request.pathsStartsWith("device-update")){
-      String what = request.getPathAt(1);
+    if (req.pathsStartsWith("device-update")){
+      String what = req.getPathAt(1);
       Map<String, List<String>> params = new HashMap<>();
       String mode;
 
       if ("lightMode".equalsIgnoreCase(what)){
-        mode = request.getPathAt(2);
+        mode = req.getPathAt(2);
         params.put("lightMode", Arrays.asList(mode));
       }
       else if ("camId".equalsIgnoreCase(what)){
-        mode = request.getPathAt(2);
+        mode = req.getPathAt(2);
         params.put("camId", Arrays.asList(mode));
       }
       else if ("musicVolume".equalsIgnoreCase(what)){
-        mode = request.getPathAt(2);
+        mode = req.getPathAt(2);
         params.put("musicVolume", Arrays.asList(mode));
       }
       else if ("camEnabled".equalsIgnoreCase(what)){
-        mode = request.getPathAt(2);
+        mode = req.getPathAt(2);
         params.put("camEnabled", Arrays.asList(mode));
       }
       return contentHandler.onDeviceUpdate(params).toHttp();
@@ -172,8 +184,8 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if("/props/get".equals(request.path())){
-      String key = request.getQueryParam("key");
+    if("/props/get".equals(req.path())){
+      String key = req.getQueryParam("key");
 
       try {
         Properties clientProps = FileUtil.loadProps(getClientPropsFile());
@@ -186,9 +198,9 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.plainText("").allowAnyOrigin();
     }
 
-    if("/props/set".equals(request.path())){
-      String key = request.getQueryParam("key");
-      String value = request.getQueryParam("value");
+    if("/props/set".equals(req.path())){
+      String key = req.getQueryParam("key");
+      String value = req.getQueryParam("value");
 
       //TODO intelege de ce asa
       try {
@@ -216,28 +228,28 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     //fetch thumbnail
-    if (request.pathsStartsWith("thumbnail")){
-      String id = request.getQueryParam("id");
+    if (req.pathsStartsWith("thumbnail")){
+      String id = req.getQueryParam("id");
       return contentInfoProvider.getMediaPreview(id)
               .addCorelationId(correlationId).allowAnyOrigin();
     }
 
 
 
-//    if(request.pathsStartsWith("snapshot-get")){
+//    if(req.pathsStartsWith("snapshot-get")){
 //      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
 //    }
 
-    if(request.pathsStartsWith("snapshot-make")){
-      String id = request.getQueryParam("id");
+    if(req.pathsStartsWith("snapshot-make")){
+      String id = req.getQueryParam("id");
       contentHandler.takeSnapshot(id);
       return DeviceStat.getInstance().toHttp();
     }
 
     //list media based on type
-    if(request.pathsStartsWith("media", "list")){
-      Integer index = request.getQueryParamInt("index");
-      String what = request.getPathAt(2);
+    if(req.pathsStartsWith("media", "list")){
+      Integer index = req.getQueryParamInt("index");
+      String what = req.getPathAt(2);
       Playlist playlist = Playlist.find(what);
       ContentPage page = contentInfoProvider.getPage(playlist, index);
       return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();
@@ -247,17 +259,17 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     //open given path
-    if (request.pathsStartsWith("files", "open") || request.pathsStartsWith("files", "play")){
-      HttpResponse response = contentHandler.openRequest(request);
+    if (req.pathsStartsWith("files", "open") || req.pathsStartsWith("files", "play")){
+      HttpResponse response = contentHandler.openRequest(req);
       if (response != null){
         return response.allowAnyOrigin();
       }
-      return DeviceStat.getInstance().toHttp(request);
+      return DeviceStat.getInstance().toHttp(req);
     }
 
 
-    if ("/download".equals(request.path())){
-      String path = request.getQueryParam("file");
+    if ("/download".equals(req.path())){
+      String path = req.getQueryParam("file");
       File f = new File(path);
       ContentType contentType = ContentType.search(f);
       byte[] bytes;
@@ -277,16 +289,16 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if(request.pathsStartsWith("info", "persisted", "playlist", "music")){
+    if(req.pathsStartsWith("info", "persisted", "playlist", "music")){
       return HttpResponse.plainText(contentInfoProvider.getPlaylistFileContent(Playlist.MUSIC));
     }
 
-    if(request.pathsStartsWith("transfer")){
+    if(req.pathsStartsWith("transfer")){
       return HttpResponse.plainText("copied");
     }
 
-    if ("/upload/stat".equalsIgnoreCase(request.path())){
-      String fileToCheck = request.getQueryParam("name");
+    if ("/upload/stat".equalsIgnoreCase(req.path())){
+      String fileToCheck = req.getQueryParam("name");
       File f = new File(FileUtil.getUploadDir(), fileToCheck);
       if (!f.exists()){
         return HttpResponse.json("{\"exists\": false}").allowAnyOrigin();
@@ -298,9 +310,9 @@ public class WelandServerHandler extends HTTPServerHandler {
               .allowAnyOrigin();
     }
 
-    if ("/upload".equalsIgnoreCase(request.path())){
-      String path = request.getQueryParam("file");
-      final String name = request.getQueryParam("name");
+    if ("/upload".equalsIgnoreCase(req.path())){
+      String path = req.getQueryParam("file");
+      final String name = req.getQueryParam("name");
 
 
       final File f = ContentInfo.fileFromPath(path);
@@ -310,7 +322,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
       final URL url;
       try {
-        url = new URL(request.getQueryParam("destination"));
+        url = new URL(req.getQueryParam("destination"));
       } catch (MalformedURLException e) {
         e.printStackTrace();
         return HttpResponse.plainText("invalid destination");
@@ -338,23 +350,23 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
       //close || stopPreviews
-      if (request.pathsStartsWith("files", "close")){
-        contentHandler.stop(request);
-        return contentHandler.getDeviceStat().toHttp(request);
+      if (req.pathsStartsWith("files", "close")){
+        contentHandler.stop(req);
+        return contentHandler.getDeviceStat().toHttp(req);
       }
 
      //PAUSE
-      if (request.pathsStartsWith("media", "pause")){
-          HttpResponse response =  contentHandler.pauseRequest(request);
+      if (req.pathsStartsWith("media", "pause")){
+          HttpResponse response =  contentHandler.pauseRequest(req);
           if (response != null){
               return response.allowAnyOrigin();
           }
-          return DeviceStat.getInstance().toHttp(request);
+          return DeviceStat.getInstance().toHttp(req);
       }
 
       //package-info loader
-      if (request.pathsStartsWith("pack")){
-        String path = request.getQueryParam("root");
+      if (req.pathsStartsWith("pack")){
+        String path = req.getQueryParam("root");
         File f = new File(path);
         try {
           Map props = ContentInfoProvider.packageInfoProps(f);
@@ -367,13 +379,13 @@ public class WelandServerHandler extends HTTPServerHandler {
 
       }
 
-    if ("/ping".equals(request.path())){
+    if ("/ping".equals(req.path())){
       HttpResponse serverResponse = HttpResponse.oK();
-      for (Map.Entry<String, String> entry : request.getHeaders().entrySet()){
+      for (Map.Entry<String, String> entry : req.getHeaders().entrySet()){
         serverResponse.addHeader(entry.getKey() + "-Response" , entry.getValue() + "-Response");
       }
       serverResponse.setText("PONG").addCorelationId(correlationId).allowAnyOrigin();
-      return DeviceStat.getInstance().toHttp(request);
+      return DeviceStat.getInstance().toHttp(req);
     }
 
 
@@ -381,10 +393,10 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if (request.pathsStartsWith("playlist")){
-      String action = request.getQueryParamString("action", "xx");
-      String name = request.getQueryParamString("name", null);
-      String path = request.getQueryParamString("path", null);
+    if (req.pathsStartsWith("playlist")){
+      String action = req.getQueryParamString("action", "xx");
+      String name = req.getQueryParamString("name", null);
+      String path = req.getQueryParamString("path", null);
       switch (action){
         case "create":
           PlaylistWorker.createPlaylist(name);
@@ -406,24 +418,24 @@ public class WelandServerHandler extends HTTPServerHandler {
       return HttpResponse.json(PlaylistWorker.listPlaylists()).allowAnyOrigin();
     }
 
-    if ("/close-app".equals(request.path())){
+    if ("/close-app".equals(req.path())){
       contentHandler.onCloseRequested();
       return contentHandler.getDeviceStat().toHttp();
     }
 
-    if (request.pathsStartsWith("commands", "registry")){
+    if (req.pathsStartsWith("commands", "registry")){
       return HttpResponse.json(commandRegistry.toString());
     }
 
-    if (request.pathsStartsWith("commands", "exec")){
-      String commandId = request.getQueryParam("cmd");
-      String[] args = request.getQueryParamList("args");
+    if (req.pathsStartsWith("commands", "exec")){
+      String commandId = req.getQueryParam("cmd");
+      String[] args = req.getQueryParamList("args");
       Object o = commandRegistry.execute(commandId, args, null, null);
       return HttpResponse.plainText(String.valueOf(o));
     }
 
 
-    return super.getHTTPResponse(request, server).allowAnyOrigin();
+    return super.getHTTPResponse(req, server).allowAnyOrigin();
   }
 
 

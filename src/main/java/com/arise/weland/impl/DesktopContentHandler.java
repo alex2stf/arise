@@ -34,9 +34,9 @@ public class DesktopContentHandler extends ContentHandler {
     private final MediaPlayer mediaPlayer;
     private RadioPlayer rplayer;
 
-    public DesktopContentHandler(ContentInfoProvider contentInfoProvider) {
-        this.contentInfoProvider = contentInfoProvider;
-        mediaPlayer = RadioPlayer.getMediaPlayer();
+    public DesktopContentHandler(ContentInfoProvider cip) {
+        this.contentInfoProvider = cip;
+        mediaPlayer = RadioPlayer.getMediaPlayer().setContentInfoProvider(cip);
     }
 
     public DesktopContentHandler setRadioPlayer(RadioPlayer r){
