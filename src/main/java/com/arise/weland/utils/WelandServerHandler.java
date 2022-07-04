@@ -44,6 +44,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import static com.arise.astox.net.models.http.HttpResponse.oK;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.urlDecodeUTF8;
@@ -101,8 +102,8 @@ public class WelandServerHandler extends HTTPServerHandler {
   @Override
   public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
 
-    if("OPTIONS".equalsIgnoreCase(req.method())) {
-      return HttpResponse.oK().allowAnyOrigin();
+    if(req.isOptions()) {
+      return oK().allowAnyOrigin();
     }
 
     String correlationId = "";
@@ -144,10 +145,10 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if ("/device/update".equals(req.path()) || "/health".equalsIgnoreCase(req.path())){
-      return contentHandler.onDeviceUpdate(req.getQueryParams()).toHttp();
+      return contentHandler.onDeviceUpdate(req.queryParams()).toHttp();
     }
-    if ("/proxy-skin".equals(req.path()) ){
 
+    if ("/proxy-skin".equals(req.path()) ){
       Map<String, String> args = new HashMap<>();
       args.put("uri", urlDecodeUTF8(req.getQueryParamString("uri", "")));
       args.put("thumbnailId", req.getQueryParamString("thumbnailId", ""));
@@ -374,13 +375,13 @@ public class WelandServerHandler extends HTTPServerHandler {
           return HttpResponse.html(FileUtil.read(html));
         } catch (IOException e) {
           e.printStackTrace();
-          return HttpResponse.oK();
+          return oK();
         }
 
       }
 
     if ("/ping".equals(req.path())){
-      HttpResponse serverResponse = HttpResponse.oK();
+      HttpResponse serverResponse = oK();
       for (Map.Entry<String, String> entry : req.getHeaders().entrySet()){
         serverResponse.addHeader(entry.getKey() + "-Response" , entry.getValue() + "-Response");
       }

@@ -17,158 +17,163 @@ import java.util.Map;
 
 import static com.arise.astox.net.models.http.HttpReader.CRLF;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.StringUtil.toCSV;
+import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
 
 public class HttpRequest extends ServerRequest {
 
-    private List<String> pathParams;
-    private Map<String, List<String>> queryParams;
-    private Map<String, String> headers;
-    private  String _method;
+    private List<String> _pp;
+    private Map<String, List<String>> _qp;
+    private Map<String, String> _hd;
+    private String _mth;
     private HttpProtocol protocol = HttpProtocol.V1_0;
+    private byte[] bytes;
 
+    @Deprecated
+    public HttpRequest() {
 
-    public HttpRequest setProtocol(HttpProtocol protocol) {
-        this.protocol = protocol;
-        return this;
-    }
-
-    public HttpRequest setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-        return this;
     }
 
 
+    public HttpRequest(String method,
+                       List<String> pathParams,
+                       Map<String, List<String>> queryParams,
+                       Map<String, String> headers,
+                       String protocol) {
+        this._pp = pathParams;
+        this._qp = queryParams;
+        this._mth = method;
+        this.protocol = HttpProtocol.findByValue(protocol);
 
-    public byte[] getBodyBytes(){
+        if (headers != null) {
+            this._hd = headers;
+        } else {
+            this._hd = new HashMap<>();
+        }
+
+
+    }
+
+    public static HttpRequest plainText(String text) {
+        List<String> pathParams = new ArrayList<>();
+        pathParams.add(text);
+        return new HttpRequest("POST", pathParams, new HashMap<String, List<String>>(), new HashMap<String, String>(), HttpProtocol.V1_0.value());
+    }
+
+    public byte[] getBodyBytes() {
         return bytes;
     }
 
+    ;
+
     public byte[] getBytes() {
         int bodySize = 0;
-        if (bytes != null && bytes.length > 0){
+        if (bytes != null && bytes.length > 0) {
             bodySize = bytes.length;
         }
         String headerLine = headerLine();
 
-        byte [] buff = new byte[bodySize + headerLine.length() ];
+        byte[] buff = new byte[bodySize + headerLine.length()];
         int i;
-        for (i = 0; i < headerLine.length(); i++){
+        for (i = 0; i < headerLine.length(); i++) {
             buff[i] = (byte) headerLine.charAt(i);
         }
-        if(bytes != null && bytes.length > 0){
-            for(int j = 0; j < bytes.length; j++){
+        if (bytes != null && bytes.length > 0) {
+            for (int j = 0; j < bytes.length; j++) {
                 buff[i + j] = bytes[j];
             }
         }
         return buff;
     }
 
-    public boolean containsHeader(String header){
-        return headers != null && headers.containsKey(header);
-    };
+    public HttpRequest setBytes(byte[] bytes) {
+        this.bytes = bytes;
+        setHeader("Content-Length", "" + bytes.length);
+        return this;
+    }
 
-    private byte[] bytes;
+    public boolean containsHeader(String header) {
+        return _hd != null && _hd.containsKey(header);
+    }
 
-
-    public byte[] payload(){
+    public byte[] payload() {
         return bytes;
     }
 
-    public boolean hasPayload(){
+    public boolean hasPayload() {
         return bytes != null && bytes.length > 0;
     }
 
-    public InputStream inputStream(){
+    public InputStream inputStream() {
         return new ByteArrayInputStream(bytes);
     }
 
-    public HttpRequest setMethod(String method){
-        this._method = method;
+    public HttpRequest setMethod(String method) {
+        this._mth = method;
         return this;
     }
 
-    public HttpRequest setUri(String uri){
-        StringUtil.URLDecodeResult urlDecodeResult = StringUtil.urlDecode(uri);
-        pathParams = urlDecodeResult.getPaths();
-        queryParams = urlDecodeResult.getQueryParams();
-        return this;
-    }
-
-    public HttpRequest addQueryParam(String key, String ... values){
-        if (queryParams == null){
-            queryParams = new HashMap<>();
+    public HttpRequest addQueryParam(String key, String... values) {
+        if (_qp == null) {
+            _qp = new HashMap<>();
         }
-        queryParams.put(key, Arrays.asList(values));
+        _qp.put(key, Arrays.asList(values));
         return this;
-    }
-
-    public HttpRequest(){
-
-    }
-
-    public HttpRequest(String method,
-                         List<String> pathParams,
-                         Map<String, List<String>> queryParams,
-                         Map<String, String> headers,
-                         String protocol){
-        this.pathParams = pathParams;
-        this.queryParams = queryParams;
-        this._method = method;
-        this.protocol = HttpProtocol.findByValue(protocol);
-
-        if (headers != null){
-            this.headers = headers;
-        } else {
-            this.headers = new HashMap<String, String>();
-        }
-
-
-
     }
 
     public String path() {
-        if (!CollectionUtil.isEmpty(pathParams)){
-            return "/" + StringUtil.join(pathParams, "/");
+        if (!CollectionUtil.isEmpty(_pp)) {
+            return "/" + StringUtil.join(_pp, "/");
         }
         return "/";
     }
 
-
-    public List<String> getPathParams() {
-        return pathParams;
+    public List<String> pathParams() {
+        return _pp;
     }
 
-    public Map<String, List<String>> getQueryParams() {
-        return queryParams;
+    public Map<String, List<String>> queryParams() {
+        return _qp;
     }
 
     public Map<String, String> getHeaders() {
-        return headers;
+        return _hd;
     }
 
+    public HttpRequest setHeaders(Map<String, String> headers) {
+        this._hd = headers;
+        return this;
+    }
 
-
-    public String getUri(){
+    public String getUri() {
         return getUri(true);
     }
 
-    public String getUri(boolean encoded){
+    public HttpRequest setUri(String uri) {
+        StringUtil.URLDecodeResult urlDecodeResult = StringUtil.urlDecode(uri);
+        _pp = urlDecodeResult.getPaths();
+        _qp = urlDecodeResult.getQueryParams();
+        return this;
+    }
+
+    public String getUri(boolean encoded) {
         StringBuilder sb = new StringBuilder().append("/");
-        if (!isEmpty(pathParams)){
-            sb.append(StringUtil.join(pathParams, "/"));
+        if (!isEmpty(_pp)) {
+            sb.append(StringUtil.join(_pp, "/"));
         }
-        if (!isEmpty(queryParams)){
+        if (!isEmpty(_qp)) {
             sb.append("?");
             int cnt = 0;
-            for (Map.Entry<String, List<String>> e: queryParams.entrySet()){
+            for (Map.Entry<String, List<String>> e : _qp.entrySet()) {
                 sb.append(e.getKey());
-                if (!e.getValue().isEmpty()){
-                        String value = StringUtil.toCSV(e.getValue());
-                        sb.append("=").append(
-                                encoded ? StringUtil.urlEncodeUTF8(value) : value
-                        );
+                if (!e.getValue().isEmpty()) {
+                    String value = toCSV(e.getValue());
+                    sb.append("=").append(
+                            encoded ? urlEncodeUTF8(value) : value
+                    );
                 }
-                if (cnt < queryParams.size() -1 ){
+                if (cnt < _qp.size() - 1) {
                     sb.append("&");
                 }
                 cnt++;
@@ -178,15 +183,15 @@ public class HttpRequest extends ServerRequest {
 
     }
 
-    protected String headerLine(){
+    protected String headerLine() {
         StringBuilder sb = new StringBuilder();
-        sb.append(StringUtil.hasText(_method) ? _method : "GET").append(" ").append(getUri());
+        sb.append(hasText(_mth) ? _mth : "GET").append(" ").append(getUri());
         sb.append(" ").append(getProtocol().value());
 
 
-        if (!isEmpty(headers)){
+        if (!isEmpty(_hd)) {
             sb.append(CRLF);
-            for (Map.Entry<String , String> e: headers.entrySet()){
+            for (Map.Entry<String, String> e : _hd.entrySet()) {
                 sb.append(e.getKey()).append(":").append(e.getValue()).append(CRLF);
             }
         } else {
@@ -211,137 +216,124 @@ public class HttpRequest extends ServerRequest {
         return sb.toString();
     }
 
-    public String getQueryParam(String k){
-        if (queryParams.get(k) != null && queryParams.get(k).size() > 0){
+    public String getQueryParam(String k) {
+        if (_qp.get(k) != null && _qp.get(k).size() > 0) {
             try {
                 return URLDecoder.decode(
-                        queryParams.get(k).get(0), "UTF-8");
+                        _qp.get(k).get(0), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                return queryParams.get(k).get(0);
+                return _qp.get(k).get(0);
             }
         }
         return null;
     }
 
-    public String[] getQueryParamList(String k){
-        if (queryParams.get(k) != null && queryParams.get(k).size() > 0){
-            return CollectionUtil.toArray(queryParams.get(k));
+    public String[] getQueryParamList(String k) {
+        if (_qp.get(k) != null && _qp.get(k).size() > 0) {
+            return CollectionUtil.toArray(_qp.get(k));
 
         }
         return new String[]{};
     }
 
     public String getHeaderParam(String k) {
-        if (CollectionUtil.isEmpty(headers)){
+        if (CollectionUtil.isEmpty(_hd)) {
             return null;
         }
-        if (headers.containsKey(k) && headers.get(k) != null){
-            return headers.get(k);
+        if (_hd.containsKey(k) && _hd.get(k) != null) {
+            return _hd.get(k);
         }
 
         k = k.toLowerCase();
-        if (headers.containsKey(k) && headers.get(k) != null){
-            return headers.get(k);
+        if (_hd.containsKey(k) && _hd.get(k) != null) {
+            return _hd.get(k);
         }
         return null;
     }
 
-    public String getPathAt(int index){
-        if (index < pathParams.size()){
-            return pathParams.get(index);
+    public String getPathAt(int index) {
+        if (index < _pp.size()) {
+            return _pp.get(index);
         }
         return null;
     }
 
-    public int contentLength(){
+    public int contentLength() {
         Integer response = null;
         String val = getHeaderParam("Content-Length");
         try {
             response = Integer.valueOf(val);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             response = null;
         }
         return response != null ? response.intValue() : 0;
     }
 
+    public boolean isOptions() {
+        return "OPTIONS".equalsIgnoreCase(_mth);
+    }
+
     public String method() {
-        return _method;
+        return _mth;
     }
 
     public HttpProtocol getProtocol() {
         return protocol;
     }
 
-    public HttpRequest setBytes(byte[] bytes) {
-        this.bytes = bytes;
-        setHeader("Content-Length", "" + bytes.length);
+    public HttpRequest setProtocol(HttpProtocol protocol) {
+        this.protocol = protocol;
         return this;
     }
 
-    public HttpRequest setHeader(String key, String value){
-        if (headers == null){
-            headers = new HashMap<>();
+    public HttpRequest setHeader(String key, String value) {
+        if (_hd == null) {
+            _hd = new HashMap<>();
         }
-        headers.put(key, value);
+        _hd.put(key, value);
         return this;
     }
 
-
-    public String contentType(){
-        if (headers.containsKey("content-type")){
-            return headers.get("content-type");
+    public String contentType() {
+        if (_hd.containsKey("content-type")) {
+            return _hd.get("content-type");
         }
         return null;
     }
-
-
 
     public Integer getQueryParamInt(String arg) {
         String element = getQueryParam(arg);
         Integer response = null;
         try {
             response = Integer.valueOf(element);
-        } catch (Exception e){
-            return  null;
+        } catch (Exception e) {
+            return null;
         }
 
         return response;
     }
 
-
-    public int getQueryParamInt(String arg, int defaultValue){
+    public int getQueryParamInt(String arg, int defaultValue) {
         Integer x = getQueryParamInt(arg);
-        if (x == null){
+        if (x == null) {
             return defaultValue;
         }
         return x;
     }
 
-
-
     public boolean hasContent() {
         return contentLength() > 0;
     }
 
-
-
-
-    public static HttpRequest plainText(String text){
-        List<String> pathParams = new ArrayList<>();
-        pathParams.add(text);
-        return new HttpRequest("POST",  pathParams, new HashMap<String, List<String>>(), new HashMap<String, String>(), HttpProtocol.V1_0.value());
-    }
-
-
-    public boolean pathsStartsWith(String ... s) {
-        if (CollectionUtil.isEmpty(pathParams)){
+    public boolean pathsStartsWith(String... s) {
+        if (CollectionUtil.isEmpty(_pp)) {
             return false;
         }
-        if (pathParams.size() < s.length){
+        if (_pp.size() < s.length) {
             return false;
         }
-        for (int i = 0; i < s.length; i++){
-            if (!pathParams.get(i).equals(s[i])){
+        for (int i = 0; i < s.length; i++) {
+            if (!_pp.get(i).equals(s[i])) {
                 return false;
             }
         }
@@ -349,49 +341,45 @@ public class HttpRequest extends ServerRequest {
     }
 
     public String pathAt(int i) {
-        return pathParams.get(i);
+        return _pp.get(i);
     }
 
     public HttpRequest addHeader(String key, String value) {
-        if (headers == null){
-            headers = new HashMap<>();
+        if (_hd == null) {
+            _hd = new HashMap<>();
         }
-        headers.put(key, value);
+        _hd.put(key, value);
         return this;
     }
 
     public String getQueryParamString(String key, String defaultVal) {
         String x = getQueryParam(key);
-        if (x == null){
+        if (x == null) {
             return defaultVal;
         }
         return x;
     }
 
 
-
-
-
-
-    public boolean isMultipartFormData(){
+    public boolean isMultipartFormData() {
         String contentType = getHeaderParam("Content-Type");
-        if (!StringUtil.hasText(contentType)){
+        if (!hasText(contentType)) {
             return false;
         }
         return contentType.indexOf("multipart/form-data") > -1;
     }
 
-    public String getBoundary(){
+    public String getBoundary() {
         String contentType = getHeaderParam("Content-Type");
-        if (!StringUtil.hasText(contentType)){
+        if (!hasText(contentType)) {
             return null;
         }
         String parts[] = contentType.split(";");
-        for (String s: parts){
+        for (String s : parts) {
             s = s.trim();
-            if (s.startsWith("boundary=")){
+            if (s.startsWith("boundary=")) {
                 String kv[] = s.split("=");
-                if (kv.length == 2){
+                if (kv.length == 2) {
                     return kv[1];
                 }
             }
