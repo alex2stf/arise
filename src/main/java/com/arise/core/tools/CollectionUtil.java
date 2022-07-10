@@ -176,10 +176,4 @@ public class CollectionUtil {
         void same(T t);
     }
 
-    public static abstract class DiffHandler<T> implements  Handler<T> {
-        @Override
-        public void same(T t) {
-            ;;
-        }
-    }
 }

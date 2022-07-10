@@ -361,12 +361,13 @@ public class HttpRequest extends ServerRequest {
     }
 
 
+    @SuppressWarnings("unused")
     public boolean isMultipartFormData() {
-        String contentType = getHeaderParam("Content-Type");
-        if (!hasText(contentType)) {
+        String ct = getHeaderParam("Content-Type");
+        if (!hasText(ct)) {
             return false;
         }
-        return contentType.indexOf("multipart/form-data") > -1;
+        return ct.indexOf("multipart/form-data") > -1;
     }
 
     public String getBoundary() {

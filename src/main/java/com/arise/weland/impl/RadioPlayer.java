@@ -250,9 +250,13 @@ public class RadioPlayer {
                     public void run() {
                         if (_o) {
                             File f = getRandomFileFromDirectory(p);
-                            log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
-                            MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
-                            psos(p);
+                            try {
+                                log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
+                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
+                                psos(p);
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }, exp);

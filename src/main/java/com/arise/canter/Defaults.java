@@ -111,9 +111,6 @@ public class Defaults {
 
 
     public static final Command<Process> PROCESS_EXEC = new Command<Process>("process-exec") {
-
-
-
         @Override
         public Process execute(List<String> args) {
             try {

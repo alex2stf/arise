@@ -9,7 +9,7 @@
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
     },
     {
-      "name": "Evening relax blues and french",
+      "name": "Morning relax blues and french",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "stream",
@@ -115,8 +115,17 @@
       ]
     },
     {
+      "name": "19-21-monday-tuesday",
+      "day": "monday_tuesday",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
+      "strategy": "stream",
+      "sources": [
+        "https://live.rockfm.ro:8443/rockfm.aacp"
+      ]
+    },
+    {
       "name": "Exclusive night 2",
-      "day": "monday_tuesday_wednesday_thursday_friday",
+      "day": "wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "stream",
       "sources": [
@@ -128,7 +137,7 @@
     },
     {
       "name": "Exclusive night 3",
-      "day": "monday_tuesday_wednesday_thursday_friday",
+      "day": "wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "stream",
       "sources": [
