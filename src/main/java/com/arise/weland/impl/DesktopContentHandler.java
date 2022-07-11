@@ -65,7 +65,7 @@ public class DesktopContentHandler extends ContentHandler {
 
             if (isHttpPath(path)){
                 ContentInfo info = contentInfoProvider.findByPath(path);
-                if (info != null && info.isStream()){
+                if (info != null && info.isStream() || path.indexOf("youtube") > -1){
                     if (rplayer != null && rplayer.isPlaying()){
                         rplayer.stop();
                     }
@@ -74,6 +74,8 @@ public class DesktopContentHandler extends ContentHandler {
                     sleep(1000 * 8);
                     mediaPlayer.playStream(path);
                     return deviceStat.toHttp();
+                } else {
+                    System.out.println("WTF????");
                 }
             }
             else if (isPicture(path)){
