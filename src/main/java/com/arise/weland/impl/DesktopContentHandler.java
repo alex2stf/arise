@@ -33,6 +33,8 @@ public class DesktopContentHandler extends ContentHandler {
 
     private final MediaPlayer mediaPlayer;
     private RadioPlayer rplayer;
+    private com.arise.weland.ui.WelandForm _f;
+
 
     public DesktopContentHandler(ContentInfoProvider cip) {
         this.contentInfoProvider = cip;
@@ -72,7 +74,20 @@ public class DesktopContentHandler extends ContentHandler {
 
                     mediaPlayer.stop();
                     sleep(1000 * 8);
+                    if (_f != null) {
+                        ThreadUtil.delayedTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                _f.toFront();
+                                _f.repaint();
+                            }
+                        }, 12 * 1000);
+
+                    }
                     mediaPlayer.playStream(path);
+
+
+
                     return deviceStat.toHttp();
                 } else {
                     System.out.println("WTF????");
@@ -86,7 +101,12 @@ public class DesktopContentHandler extends ContentHandler {
                     rplayer.stop();
                 }
                 mediaPlayer.stop();
+                if (_f != null) {
+                    _f.toFront();
+                }
+
                 mediaPlayer.play(path);
+
             }
             else {
                 SYSUtils.open(path);
@@ -239,7 +259,6 @@ public class DesktopContentHandler extends ContentHandler {
        }
     }
 
-    private com.arise.weland.ui.WelandForm _f;
 
     public void setForm(WelandForm _f) {
         this._f = _f;

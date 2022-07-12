@@ -127,6 +127,7 @@ public class WelandForm extends JFrame implements Runnable {
 
         pack();
         run();
+        toFront();
     }
 
     Tuple2<JTextArea, JScrollPane> buildScrollableTextArea(){

@@ -209,5 +209,13 @@
   {
     "title": "Slow thoughts",
     "path": "https://www.youtube.com/watch?v=2AMMb9CiScI&list=PL4zZspbjJ-iSCt7mrNwafc_r0hr-9YN-R"
+  },
+  {
+    "title": "Meat Loaf Exclusive FM",
+    "path": "https://streaming.exclusive.radio/er/meatloaf/icecast.audio"
+  },
+  {
+    "title": "Pixies Exclusive FM",
+    "path": "https://streaming.exclusive.radio/er/pixies/icecast.audio"
   }
 ]
