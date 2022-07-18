@@ -1,5 +1,8 @@
 package com.arise.core.tools;
 
+import com.arise.astox.net.models.ServerRequestBuilder;
+import com.arise.core.exceptions.LogicalException;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Assert {
@@ -60,7 +63,7 @@ public class Assert {
         }
     }
 
-    public static void assertEquals(int s1, int s2){
+    public static void assertIntEquals(int s1, int s2){
         if (s1 != s2){
             throwException(s1, s2);
         }
@@ -131,6 +134,12 @@ public class Assert {
     public static void assertFailed(Exception e) {
         e.printStackTrace();
         System.exit(-1);
+    }
+
+    public static void expectNotNull(Object o, String msg) {
+        if (null == o){
+            throw new LogicalException(msg);
+        }
     }
 
     public static final class AssertException extends RuntimeException {

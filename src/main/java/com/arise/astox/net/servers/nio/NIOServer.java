@@ -498,7 +498,7 @@ public class NIOServer extends AbstractServer<SocketChannel> {
             response = requestHandler.getResponse(this, channelData.getRequest());
         }
         else if(!channelData.getDuplexState().equals(NIOChannelData.DuplexState.CONNECTING)){
-            response = requestHandler.getDefaultResponse(this);
+            response = requestHandler.getExceptionResponse(this, null);
         }
         channelData.setResponse(response);
 

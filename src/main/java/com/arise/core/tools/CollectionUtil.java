@@ -1,5 +1,7 @@
 package com.arise.core.tools;
 
+import com.arise.core.exceptions.LogicalException;
+
 import java.util.*;
 
 import static com.arise.core.tools.AppCache.storeList;
@@ -137,6 +139,27 @@ public class CollectionUtil {
 
     public static <T> T pickOne(List<T> s) {
         return s.get(randBetween(0, s.size() ));
+    }
+
+    public static <T> List<T> removeFirst(int s, List<T> x){
+        return sublist(s, x.size(), x);
+    }
+
+    public static <T> List<T> sublist(int s, int e, List<T> x){
+        if(isEmpty(x) || x.size() == 1){
+            return x;
+        }
+        List<T> cp = new ArrayList<>();
+        if (s < 0 ){
+            throw new LogicalException("List size(" + x.size() + ") not in range (" + s + "," + e + ")" );
+        }
+        if (e > x.size()){
+            e = x.size();
+        }
+        for(int i = s; i < e; i++){
+            cp.add(x.get(i));
+        }
+        return cp;
     }
 
     public static String randomPick(List<String> s) {

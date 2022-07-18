@@ -1,5 +1,6 @@
 package com.arise.astox.net.servers;
 
+import com.arise.astox.net.HttpServerTest;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
@@ -8,6 +9,7 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
+import com.arise.core.tools.Assert;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
@@ -33,9 +35,9 @@ public class ServerTestHandler extends WelandServerHandler {
 
     private final SSLContext sslContext;
 
-    public ServerTestHandler(SSLContext sslContext) {
+    public ServerTestHandler() {
         super(null);
-        this.sslContext = sslContext;
+        this.sslContext = null;
     }
 
     @Override
@@ -48,80 +50,33 @@ public class ServerTestHandler extends WelandServerHandler {
 
     @Override
     public void postInit(AbstractServer server) {
-        System.out.println(server + "post init");
-//        super.postInit(server);
-//        HttpClient httpClient = null;
-//        try {
-//            httpClient = new HttpClient("localhost", 9221);
-//                //HttpClient.httpClientWithSslTrustAll("localhost", 9222);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        List<String> pathParams = new ArrayList<>();
-//        pathParams.add("ping");
-//
-//        HttpRequest httpRequest = new HttpRequest("GET", pathParams, new HashMap<String, List<String>>(), new HashMap<String, String>(), Protocol.HTTP_1_1.text());
-//
-
-
-//        JHttpClient.disableSSL();
-//
-//        JHttpClient JHttpClient = new JHttpClient();
-//        JHttpClient.setUrl(rootInfo + "ping");
-//        JHttpClient.setMethod("POST");
-//        JHttpClient.addHeader("Custom-Request-Header", "custom-header-value");
-//        JHttpClient.execute(null, new JHttpClient.RequestHandler() {
-//            @Override
-//            public void handle(int responseCode, Map<String, List<String>> headers, InputStream stream, InputStream errorStream) {
-//                boolean responseExists = false;
-//                for (Map.Entry<String, List<String>> entry: headers.entrySet()){
-//                    if ("Custom-Request-Header-Response".equals(entry.getKey())
-//                            && "custom-header-value-Response".equals(entry.getValue().get(0))){
-//                        responseExists = true;
-//                        break;
-//                    }
-//                }
-//                Assert.isTrue(responseExists);
-//            }
-//
-//            @Override
-//            public void err(Throwable error) {
-//
-//            }
-//        });
-
-
-
-
-
-
-    }
+        Assert.assertNotNull(server);
+        Assert.assertIntEquals(HttpServerTest.TEST_PORT, server.getPort());
+   }
 
     @Override
     public void onDuplexConnect(AbstractServer ioHttp, ServerRequest request,  DuplexDraft.Connection connection) {
         log.info("Duplex connection: " + connection);
     }
 
-    @Override
-    public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
-        HttpResponse response = super.getHTTPResponse(req, server);
-        if (response != null){
-            return response;
-        }
-        
-        String text = StreamUtil.toString(FileUtil.findStream("src/main/resources#common/websock.html"));
-        Whisker whisker = new Whisker();
-
-        Map<String, String> args = new HashMap<String, String>();
-        args.put("port", String.valueOf(server.getPort()));
-        args.put("test_messages", Groot.toJson(msgs));
-        args.put("ws_host", server.getSslContext() != null ? "wss" : "ws");
-        args.put("request_debug", req.toString());
-
-        return HttpResponse.html(whisker.compile(text, args));
-    }
+//    @Override
+//    public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
+//        HttpResponse response = super.getHTTPResponse(req, server);
+//        if (response != null){
+//            return response;
+//        }
+//
+//        String text = StreamUtil.toString(FileUtil.findStream("src/main/resources#common/websock.html"));
+//        Whisker whisker = new Whisker();
+//
+//        Map<String, String> args = new HashMap<String, String>();
+//        args.put("port", String.valueOf(server.getPort()));
+//        args.put("test_messages", Groot.toJson(msgs));
+//        args.put("ws_host", server.getSslContext() != null ? "wss" : "ws");
+//        args.put("request_debug", req.toString());
+//
+//        return HttpResponse.html(whisker.compile(text, args));
+//    }
 
     @Override
     public void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection) {

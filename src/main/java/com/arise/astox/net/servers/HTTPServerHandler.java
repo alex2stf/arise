@@ -7,6 +7,8 @@ import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +58,7 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
                 return entry.getValue().build(request);
             }
         }
-        return HttpResponse.oK();
+        return null;
     }
 
     @Override
@@ -76,9 +78,13 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
     }
 
     @Override
-    public ServerResponse getDefaultResponse(AbstractServer server) {
-        return null;
+    public ServerResponse getExceptionResponse(AbstractServer s, Throwable t) {
+        if (t != null) {
+            return HttpResponse.plainText(StringUtil.dump(t));
+        }
+        return HttpResponse.plainText("null response");
     }
+
 
     @Override
     public void onDuplexClose(DuplexDraft.Connection c) {

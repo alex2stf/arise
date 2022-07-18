@@ -1,6 +1,7 @@
 package com.arise.astox.net.models;
 
 import com.arise.core.models.Handler;
+import com.arise.core.tools.Assert;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
@@ -93,6 +94,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
 
         InputStream inputStream = getInputStream(connection);
 
+        Assert.expectNotNull(this.serverRequestBuilder, "ServerRequestBuilder should not be null");
         this.serverRequestBuilder
                 .withConnection(connection)
                 .readInputStream(inputStream, new Handler<ServerRequest>() {
@@ -190,8 +192,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
         try {
             response = requestHandler.getResponse(this, serverRequest);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            response = requestHandler.getDefaultResponse(this);
+            response = requestHandler.getExceptionResponse(this, ex);
         }
 //        log.trace("Response " + response);
         if (response != null) {
@@ -221,7 +222,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                 Thread.currentThread().interrupt();
             }
         } else {
-            outputStream.write(requestHandler.getDefaultResponse(this).bytes());
+            outputStream.write(requestHandler.getExceptionResponse(this, null).bytes());
             close(connection);
             Thread.currentThread().interrupt();
         }

@@ -203,7 +203,7 @@ public abstract class AbstractServer<READABLE> extends Peer {
         boolean validate(ServerRequest request);
         void onDuplexConnect(AbstractServer ioHttp, ServerRequest request, DuplexDraft.Connection connection);
         void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection);
-        ServerResponse getDefaultResponse(AbstractServer server);
+        ServerResponse getExceptionResponse(AbstractServer s, Throwable t);
         void onDuplexClose(DuplexDraft.Connection c);
 
 //        ServerResponse serverError(Exception ex);

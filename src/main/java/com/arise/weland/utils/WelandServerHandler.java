@@ -455,11 +455,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     duplexConnections.remove(c);
   }
 
-  @Override
-  public ServerResponse getDefaultResponse(AbstractServer server) {
-    return HttpResponse.plainText("bad request");
-  }
-
 
 
 

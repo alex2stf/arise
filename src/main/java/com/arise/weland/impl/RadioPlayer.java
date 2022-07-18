@@ -8,6 +8,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
+import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 
@@ -27,6 +28,7 @@ import static com.arise.canter.Cronus.strfMillis;
 import static com.arise.canter.Cronus.strfNowPlusMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.CollectionUtil.randomPick;
+import static com.arise.core.tools.CollectionUtil.removeFirst;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
@@ -45,6 +47,9 @@ public class RadioPlayer {
 
     private volatile boolean is_play = false;
 
+
+    private volatile String _cpath = "";
+
     private static final Mole log = Mole.getInstance(RadioPlayer.class);
 
     public static MediaPlayer getMediaPlayer() {
@@ -60,6 +65,11 @@ public class RadioPlayer {
     public boolean isPlaying(){
         return is_play;
     }
+
+    public String getCurrentPath(){
+        return _cpath;
+    }
+
     public RadioPlayer onPlay(Handler<RadioPlayer> pl){
         this.pl = pl;
         return this;
@@ -69,6 +79,7 @@ public class RadioPlayer {
         this.st = st;
         return this;
     }
+
 
     public void play() {
         if (is_play){
@@ -94,6 +105,7 @@ public class RadioPlayer {
 
         mPlayer.stop();
         is_play = false;
+        _cpath = "";
     }
 
     int lR = 1000;
@@ -116,6 +128,7 @@ public class RadioPlayer {
             return;
         }
         lR = 1000;
+        s.p = this;
         s.run(new Handler<Show>() {
             @Override
             public void handle(Show show) {
@@ -164,7 +177,7 @@ public class RadioPlayer {
         String _m;
         String n;
         volatile boolean _o;
-
+        RadioPlayer p;
 
         public Show name(String x){
             this.n = x;
@@ -183,19 +196,24 @@ public class RadioPlayer {
             return act;
         }
 
+        void scp(String x){
+            if (p != null){
+                p._cpath = x;
+            }
+        }
 
 
         public synchronized void run(final Handler<Show> c){
             if ("play-local".equalsIgnoreCase(_m)){
                 String p = _s.get(0);
                 File f = getRandomFileFromDirectory(p);
+                scp(f.getAbsolutePath());
                 mPlayer.play(f.getAbsolutePath(), new Handler<String>() {
                     @Override
                     public void handle(String s) {
                         trigger(c);
                     }
                 });
-
             }
             else if ("sound-over-music".equalsIgnoreCase(_m)){
                 String s = _s.get(0);
@@ -213,6 +231,7 @@ public class RadioPlayer {
                         MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
                     }
                 }, time);
+                scp(mf.getAbsolutePath());
                 mPlayer.play(mf.getAbsolutePath(), new Handler<String>() {
                     @Override
                     public void handle(String s) {
@@ -220,11 +239,11 @@ public class RadioPlayer {
                     }
                 });
 
+
             }
             else if ("sound-over-stream".equalsIgnoreCase(_m)){
-
-                pss(c, _s.get(1));
-                psos(_s.get(0));
+                pss(c, randomPick(removeFirst(1, _s)));
+                psos(_s.get(0)); //sound
             }
             else if ("stream".equalsIgnoreCase(_m)){
                 pss(c, randomPick(_s));
@@ -281,6 +300,7 @@ public class RadioPlayer {
             mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
                 @Override
                 public void handle(HttpURLConnection httpURLConnection) {
+                    scp(u);
                     mPlayer.playStream(u);
                 }
             }, new Handler<Tuple2<Throwable, Peer>>() {

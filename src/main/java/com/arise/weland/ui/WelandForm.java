@@ -3,6 +3,7 @@ package com.arise.weland.ui;
 import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.Locations;
 import com.arise.core.AppSettings;
+import com.arise.core.models.Handler;
 import com.arise.core.models.Provider;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
@@ -35,6 +36,7 @@ public class WelandForm extends JFrame implements Runnable {
 
     List<ImageLabel> imgs = new ArrayList<>();
     JTabbedPane tabs = null;
+    private RadioPlayer rplayer;
 
     public WelandForm(final CommandRegistry commandRegistry){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -50,6 +52,16 @@ public class WelandForm extends JFrame implements Runnable {
             @Override
             public String get() {
                 return sdf.format(new Date());
+            }
+        });
+
+        addT(prov, new Provider<String>() {
+            @Override
+            public String get() {
+                if (rplayer != null) {
+                    return "Radio source: " + rplayer.getCurrentPath();
+                }
+                return "Radio Player disabled";
             }
         });
 
@@ -197,7 +209,7 @@ public class WelandForm extends JFrame implements Runnable {
     }
 
     public void setRadioPlayer(RadioPlayer rplayer) {
-
+        this.rplayer = rplayer;
     }
 
 

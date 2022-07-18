@@ -2,13 +2,28 @@ package com.arise.core.tools;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.tools.Assert.assertEquals;
 
 
 public class StringUtilTest {
+
+    public void testStringUtilToCSV(){
+        List<String> xxx = new ArrayList<>();
+        xxx.add("1");
+        xxx.add("3333");
+        xxx.add("434343");
+
+        Assert.assertEquals(StringUtil.toCSV(xxx), "1,3333,434343");
+        Assert.assertEquals(
+                StringUtil.toCSV(new String[]{"1", "3333", "434343"}),
+                StringUtil.toCSV(xxx)
+        );
+    }
 
     public void testQuote(){
         String r =StringUtil.quote("\"");
@@ -108,11 +123,12 @@ public class StringUtilTest {
 
 
     public static void main(String[] args) {
-        StringUtilTest stringUtilTest = new StringUtilTest();
-        stringUtilTest.testDecode();
-        stringUtilTest.testParsing();
-        stringUtilTest.testQuote();
-        stringUtilTest.testToNumber();
+        StringUtilTest sut = new StringUtilTest();
+        sut.testDecode();
+        sut.testParsing();
+        sut.testQuote();
+        sut.testToNumber();
+        sut.testStringUtilToCSV();
 
     }
 

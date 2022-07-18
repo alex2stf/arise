@@ -492,7 +492,14 @@
       "day": "SUNDAY",
       "hour": "EACH_SECOND BETWEEN_19:30:00_AND_20:30:00",
       "strategy": "sound-over-stream",
-      "sources": ["{RADIO_ROOT}sounds","https://streaming.exclusive.radio/er/whitestripes/icecast.audio"]
+      "sources": [
+        "{RADIO_ROOT}sounds",
+        "https://streaming.exclusive.radio/er/whitestripes/icecast.audio",
+        "http://91.121.59.45:8013/stream",
+        "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
+        "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
+        "https://www.youtube.com/watch?v=8lD6WkAP64o"
+      ]
     },
     {
       "name": "Exclusive Thin Lizzy or Deep Purple",
