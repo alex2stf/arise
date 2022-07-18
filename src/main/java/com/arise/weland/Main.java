@@ -184,13 +184,13 @@ public class Main {
 
             rplayer.onPlay(new Handler<RadioPlayer>() {
                 @Override
-                public void handle(RadioPlayer radioPlayer) {
+                public void handle(RadioPlayer rpl) {
                     DeviceStat.getInstance().setProp("rplayer.play", "true");
                 }
             });
             rplayer.onStop(new Handler<RadioPlayer>() {
                 @Override
-                public void handle(RadioPlayer radioPlayer) {
+                public void handle(RadioPlayer rpl) {
                     DeviceStat.getInstance().setProp("rplayer.play", "false");
                 }
             });

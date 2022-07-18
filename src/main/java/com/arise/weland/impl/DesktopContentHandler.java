@@ -224,26 +224,24 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public DeviceStat getDeviceStat() {
-        final DeviceStat deviceStat = getInstance();
+        final DeviceStat dS = getInstance();
 
         JARProxies.getCamIds(new Handler<List<Tuple2<String, String>>>() {
             @Override
             public void handle(List<Tuple2<String, String>> camIds) {
-                deviceStat.setProp("cams.v1", camIds);
+                dS.setProp("cams.v1", camIds);
             }
         });
 
-
-
-        deviceStat.setProp("cams.active.v", "v1");
-        deviceStat.setProp("cams.active.id", "0");
-        deviceStat.setProp("flash.modes.active", "off" );
-
-        deviceStat.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
-
-
-
-        return deviceStat;
+        if(rplayer != null) {
+            dS.setProp("rplayer.path", rplayer.getCurrentPath());
+        }
+//        dS.setProp("cams.active.v", "v1");
+//        dS.setProp("cams.active.id", "0");
+//        dS.setProp("flash.modes.active", "off" );
+//
+//        dS.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
+        return dS;
     }
 
     @Override
