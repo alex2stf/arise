@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.Util.close;
 import static java.util.Collections.shuffle;
 
@@ -148,7 +149,7 @@ public class FileUtil {
         }
         File rootDir = null;
         for (String s: usrLocs){
-            if (StringUtil.hasText(s)) {
+            if (hasText(s)) {
                 rootDir = new File(s);
                 if (rootDir != null && rootDir.exists()) {
                     break;
@@ -167,7 +168,7 @@ public class FileUtil {
 
     public static File findOrCreateUserDirectory(String name){
         String usrHome = System.getProperty("user.home");
-        if (!StringUtil.hasText(usrHome)){
+        if (!hasText(usrHome)){
             usrHome = "usr_dir";
         }
         if (!usrHome.endsWith(File.separator)){
@@ -369,7 +370,7 @@ public class FileUtil {
             }
             List<String> n = new ArrayList<>();
             for (int i = 0; i < p.length; i++){
-                if(StringUtil.hasText(p[i])){
+                if(hasText(p[i])){
                     n.add(p[i].trim());
                 }
             }
@@ -698,7 +699,7 @@ public class FileUtil {
 
         File resp;
         String path = storage.getPath() + File.separator;
-        if (StringUtil.hasText(child)){
+        if (hasText(child)){
             path += child;
             resp = new File(path);
             if (!resp.exists()){
@@ -779,8 +780,15 @@ public class FileUtil {
         close(bw);
     }
 
-    public static boolean exists(String s) {
-        return new File(s).exists();
+    public static boolean fileExists(String s) {
+        if (hasText(s)) {
+            return exists(new File(s));
+        }
+        return false;
+    }
+
+    public static boolean exists(File f) {
+        return f != null && f.exists();
     }
 
     public static String getNameFromPath(String path) {

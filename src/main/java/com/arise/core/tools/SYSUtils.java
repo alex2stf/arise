@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 
 import static com.arise.core.tools.FileUtil.exists;
+import static com.arise.core.tools.FileUtil.fileExists;
 import static com.arise.core.tools.StringUtil.*;
 
 
@@ -374,7 +375,7 @@ public class SYSUtils {
         }
 
 
-        if(exists("/lib/systemd/systemd") && isUnix()){
+        if(fileExists("/lib/systemd/systemd") && isUnix()){
             Result r = exec("file", "/lib/systemd/systemd");
             if (hasText(r.stdout())){
                 boolean is32 = r.stdout().indexOf("32-bit") > -1;

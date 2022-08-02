@@ -4,6 +4,7 @@ import com.arise.cargo.management.Locations;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StreamUtil;
@@ -60,6 +61,10 @@ public class OSProxies {
 
     public static String getMasterVolume() {
         File f = getBinary("/usr/bin/amixer", "apt-get install alsa-utils");
+        if (!FileUtil.exists(f)){
+            log.error("Cannot read volume from empty file");
+            return "0";
+        }
 
         final String r[] = new String[]{null};
         SYSUtils.exec(new String[]{f.getAbsolutePath(), "get", "Master"}, new SYSUtils.ProcessLineReader() {
@@ -72,7 +77,7 @@ public class OSProxies {
                         try {
                             String pas = x.split("playback")[1].trim();
                             r[0] = pas.split(" ")[0];
-                        }catch (Exception e){
+                        } catch (Exception e){
                             e.printStackTrace();
                         }
                     }
@@ -84,6 +89,12 @@ public class OSProxies {
 
     public static void setVolume(String v) {
         File f = getBinary("/usr/bin/amixer", "apt-get install alsa-utils");
+        if (f == null || !f.exists()){
+            log.error("Cannot set volume on empty file");
+            return;
+        }
         SYSUtils.exec(f.getAbsolutePath(), "set", "Master", v);
     }
+
+
 }

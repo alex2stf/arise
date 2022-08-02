@@ -1,9 +1,6 @@
 package com.arise.core.models;
 
 import com.arise.core.tools.StreamUtil;
-import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZFile;
-import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
@@ -24,6 +21,7 @@ public class Archiver {
     private static final Archiver SEVEN_ZIP = new Archiver() {
         @Override
         public boolean extract(File source, File destination) {
+           /*
             SevenZFile sevenZFile = null;
             try {
                 sevenZFile = new SevenZFile(new SeekableInMemoryByteChannel(StreamUtil.fullyReadFileToBytes(source)));
@@ -49,6 +47,8 @@ public class Archiver {
                 e.printStackTrace();
                 return false;
             }
+
+            */
 
             return hasFiles(destination);
         }

@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+
+        maven {
+            url "http://plugins.gradle.org/m2/"
+//            allowInsecureProtocol = true
+        }
+        maven {
+            url "http://packages.confluent.io/maven/"
+//            allowInsecureProtocol = true
+        }
+        maven {
+            url 'https://dl.google.com/dl/android/maven2'
+        }
+
+        mavenLocal()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

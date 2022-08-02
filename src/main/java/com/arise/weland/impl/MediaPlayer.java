@@ -1,5 +1,13 @@
 package com.arise.weland.impl;
 
+import static com.arise.cargo.management.DependencyManager.withJar;
+import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.tools.ReflectUtil.getClassByName;
+import static com.arise.core.tools.ReflectUtil.getMethod;
+import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
+import static com.arise.core.tools.Util.close;
+import static java.lang.Runtime.getRuntime;
+
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.http.HttpRequest;
@@ -9,29 +17,23 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.arise.cargo.management.DependencyManager.withJar;
-import static com.arise.core.AppSettings.getProperty;
-import static com.arise.core.tools.ReflectUtil.getMethod;
-import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
-import static com.arise.core.tools.Util.close;
-import static java.lang.Runtime.getRuntime;
 
 public class MediaPlayer {
 
@@ -49,8 +51,8 @@ public class MediaPlayer {
         getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-            isAppClosed = true;
-            log.warn("Close all media player instances");
+                isAppClosed = true;
+                log.warn("Close all media player instances");
             }
         });
     }
@@ -68,8 +70,8 @@ public class MediaPlayer {
         return len;
     }
 
-    AudioInputStream audioIn = null;
-    Clip clip = null;
+    Object audioInputStream = null;
+    Object javaxClip = null;
     private volatile boolean is_play = false;
 
     public Object play(final String p) {
@@ -90,30 +92,49 @@ public class MediaPlayer {
         if (path.endsWith(".wav")){
             stopClips();
             try {
-                audioIn = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+                audioInputStream = ReflectUtil.getStaticMethod(
+                        getClassByName("javax.sound.sampled.AudioSystem"),
+                        "getAudioInputStream",
+                        URL.class
+                ).call(new File(path).toURI().toURL());
+//                        AudioSystem.getAudioInputStream(new File("C:\\Users\\Tarya\\Music\\sounds\\Dinica - 6.wav").toURI().toURL());
 //                AudioFormat format = audioIn.getFormat();
 //                DataLine.Info info = new DataLine.Info(Clip.class, format);
-                clip = AudioSystem.getClip(null);
+                javaxClip = ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem", "getClip").call(null);
+                        //AudioSystem.getClip(null);
 //                clip = (Clip)AudioSystem.getLine(info);
 
-                clip.addLineListener(new LineListener() {
-                    @Override
-                    public void update(LineEvent event) {
-                        if (event.getType() == LineEvent.Type.STOP) {
-                            c.handle(path);
-                            return;
+                Class lineListenerClass = getClassByName("javax.sound.sampled.LineListener");
+                Object lineListener = Proxy.newProxyInstance(
+                        lineListenerClass.getClassLoader(),
+                        new Class[]{ lineListenerClass },
+                        new InvocationHandler() {
+                            @Override
+                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                                if ("update".equals(method.getName())){
+//                                    Object stopEvent = ReflectUtil.getStaticObjectProperty()
+//                                    if (LineEvent.Type.STOP.equals(getMethod(args[0], "getType").call() )) {
+                                    if ("Stop".equals(getMethod(args[0], "getType").call() + "" )) {
+                                        c.handle(path);
+                                    }
+                                }
+                                return null;
+                            }
                         }
-                    }
-                });
-                clip.open(audioIn);
-                clip.start();
+                );
+                getMethod(javaxClip, "addLineListener", lineListenerClass).call(lineListener);
+//                getMethod(javaxClip, "open", AudioInputStream.class).call(audioInputStream);
+                getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
+                getMethod(javaxClip, "start").call();
 
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
             }
             is_play = false;
-            c.handle(path);
-            return audioIn;
+            if (c != null) {
+                c.handle(path);
+            }
+            return audioInputStream;
         }
 
         if ("commands".equalsIgnoreCase(strategy)) {
@@ -190,15 +211,15 @@ public class MediaPlayer {
 
 
     private void stopClips(){
-        if (clip != null){
+        if (javaxClip != null){
             try {
-                clip.stop();
+                getMethod(javaxClip, "stop").call();
             }catch (Exception e){
             }
-            close(clip);
+            close(javaxClip);
         }
-        if (audioIn != null){
-            close(clip);
+        if (audioInputStream != null){
+            close(audioInputStream);
         }
     }
 

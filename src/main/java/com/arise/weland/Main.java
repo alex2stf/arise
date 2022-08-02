@@ -49,36 +49,17 @@ import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
 
-    private static final SSLContext context;
     private static final Mole log = Mole.getInstance(Main.class);
 
-    static {
-//        String protocol = "TLSv1.2";
-//        SSLContext localContext = null;
-//        try {
-//            localContext = SSLContext.getInstance(protocol);
-//            localContext.init(
-//                    NioSslPeer.createKeyManagers("./src/main/resources/weland/certificates/server.jks", "storepass", "keypass"),
-//                    NioSslPeer.createTrustManagers("./src/main/resources/weland/certificates/trustedCerts.jks", "storepass"), new SecureRandom());
-//        } catch (Exception e) {
-////            e.printStackTrace();
-////            Mole.getInstance(Main.class).error(e);
+
+//    private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
+//        @Override
+//        public String execute(List<String> arguments) {
+//            String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
+//            File f = getRandomFileFromDirectory(path);
+//            return f.getAbsolutePath();
 //        }
-//        context = localContext;
-        context = null;
-    }
-
-
-
-
-    private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
-        @Override
-        public String execute(List<String> arguments) {
-            String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
-            File f = getRandomFileFromDirectory(path);
-            return f.getAbsolutePath();
-        }
-    };
+//    };
 
 
     private static final Command<String> MOUSE_PING = new Command<String>("mouse-ping") {
@@ -143,8 +124,7 @@ public class Main {
 
         final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
         cmdReg.addCommand(PROCESS_EXEC)
-                .addCommand(MOUSE_PING)
-                .addCommand(PLAY_MP3_RANDOM_CMD);
+                .addCommand(MOUSE_PING);
 
 
         String cmds = AppSettings.getProperty(Keys.LOCAL_COMANDS_FILE);

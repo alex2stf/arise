@@ -1,0 +1,15 @@
+{
+  "shows": [
+
+    {
+      "name": "Play local again",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_17:10:00_AND_24:00:00",
+      "strategy": "sound-over-music",
+      "sources": ["{RADIO_ROOT}sounds", "{RADIO_ROOT}muzica"]
+    }
+
+
+
+  ]
+}

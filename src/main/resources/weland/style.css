@@ -496,3 +496,25 @@ body {
     font-size: 18px;
     overflow: hidden;
 }
+
+
+input[type=number] {
+    color: #031f00;
+    width: 68px;
+    height: 68px;
+    font-size: 30px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    background: #a8daa9;
+    border-radius: 10px;
+    border: none;
+    margin: 0 !important;
+    padding: 2px !important;
+    vertical-align: bottom;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    width: 20px;
+    height: 40px;
+    background: #7ab41b;
+}

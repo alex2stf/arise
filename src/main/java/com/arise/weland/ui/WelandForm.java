@@ -10,15 +10,11 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.weland.impl.RadioPlayer;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static com.arise.core.AppSettings.*;
 import static com.arise.core.AppSettings.isFalse;
@@ -244,7 +240,7 @@ public class WelandForm extends JFrame implements Runnable {
             try {
                 setImageIcon(new ImageIcon(ImageIO.read(new File(_p))));
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
 

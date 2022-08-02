@@ -13,6 +13,7 @@ import java.util.*;
 
 public class ReflectUtil {
 
+    private static final Mole log = Mole.getInstance(ReflectUtil.class);
 
     public static synchronized URLClassLoader loadJars(List<File> jars){
 
@@ -123,6 +124,7 @@ public class ReflectUtil {
             try {
                 m = clz.getDeclaredMethod(mn, pt);
             } catch (NoSuchMethodException ex) {
+                log.trace("Cannot find with search method " + clz + "#" + mn);
                 m = null;
             }
         }
@@ -392,6 +394,18 @@ public class ReflectUtil {
         return null;
     }
 
+    public static Object getStaticObjectProperty(Object o, String value) {
+        if (o != null){
+            try {
+                return o.getClass().getField(value).get(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
     public static boolean objectIsInstanceOf(Object worker, String className) {
         if (TypeUtil.isNull(worker)){
             return false;
@@ -502,18 +516,15 @@ public class ReflectUtil {
             if (method == null){
                 return null;
             }
+            //TODO optional setAccesible
+            method.setAccessible(true);
             try {
                 return method.invoke(instance, args);
-            } catch (IllegalAccessException e) {
-                method.setAccessible(true);
-                try {
-                    return method.invoke(instance, args);
-                } catch (Exception e1) {
-                    return null;
-                }
-            } catch (InvocationTargetException e) {
-                return null;
+            } catch (Exception e) {
+                //TODO optional log
+              e.printStackTrace();
             }
+            return null;
         }
 
         public Integer callForInteger(Object ... args) {

@@ -4,9 +4,7 @@ import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
-import com.arise.core.tools.SYSUtils;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -19,7 +17,6 @@ import static com.arise.core.tools.ReflectUtil.getStaticMethod;
 import static java.lang.Class.forName;
 import static java.util.Collections.unmodifiableList;
 import static java.util.UUID.nameUUIDFromBytes;
-import static javax.imageio.ImageIO.write;
 
 public class JARProxies {
 
@@ -69,9 +66,20 @@ public class JARProxies {
                     if (!isOpened) {
                         getMethod(webcam, "open").call();
                     }
-                    BufferedImage buf = (BufferedImage) getMethod(webcam, "getImage").call();
-                    if (buf != null) {
-                        write(buf, "jpg", snapshotPath(fid));
+
+                    //$Refl
+                    Class rimg = ReflectUtil.getClassByName("java.awt.image.RenderedImage");
+                    if (rimg != null){
+                        Object buf = getMethod(webcam, "getImage").call();
+                        if (buf != null) {
+                            getStaticMethod(
+                                    "javax.imageio.ImageIO",
+                                    "write",
+                                    rimg, String.class, File.class
+                            ).call(buf, "jpg", snapshotPath(fid));
+                        }
+                    } else {
+                        System.out.println("WTF??????");
                     }
                     getMethod(webcam, "close").call();
                 } catch (Exception e) {
@@ -98,7 +106,7 @@ public class JARProxies {
         withWebcamCapture(new Handler<Class>() {
             @Override
             public void handle(Class clz) {
-                final List<Object> cams = (List<Object>) ReflectUtil.getStaticMethod(clz, "getWebcams").call();
+                final List<Object> cams = (List<Object>) getStaticMethod(clz, "getWebcams").call();
 
                 if (cams != null) {
                     List<Tuple2<String, String>> tmp = new ArrayList<>();

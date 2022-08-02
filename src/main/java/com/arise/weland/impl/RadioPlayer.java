@@ -221,23 +221,44 @@ public class RadioPlayer {
                 final File sf = getRandomFileFromDirectory(s);
                 File mf = getRandomFileFromDirectory(m);
 
-                long max = MediaPlayer.getAudioDurationMs(mf, 3000);
-                final int time = (int) ((Math.random() * (max - 1000)) + 1000);
+                if (mf != null && mf.exists()){
+                    long max = MediaPlayer.getAudioDurationMs(mf, 3000);
+                    final int time = (int) ((Math.random() * (max - 1000)) + 1000);
 
-                t = delayedTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
-                        MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
+                    if (sf != null && sf.exists()) {
+                        t = delayedTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
+                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
+                            }
+                        }, time);
+                    } else {
+                        log.info(sf != null ? "Snd file " + sf.getAbsolutePath() + " not found" : "No snd file found in " + s);
                     }
-                }, time);
-                scp(mf.getAbsolutePath());
-                mPlayer.play(mf.getAbsolutePath(), new Handler<String>() {
-                    @Override
-                    public void handle(String s) {
-                        trigger(c);
-                    }
-                });
+
+                    scp(mf.getAbsolutePath());
+                    mPlayer.play(mf.getAbsolutePath(), new Handler<String>() {
+                        @Override
+                        public void handle(String s) {
+                            trigger(c);
+                        }
+                    });
+                } else {
+                    log.info(mf != null ? "File " + mf.getAbsolutePath() + " not found" : " No file found in " + m);
+                    scp("");
+                    t = delayedTask(new Runnable() {
+                        @Override
+                        public void run() {
+                            trigger(c);
+                        }
+                    }, 1000 * 3);
+                }
+
+
+
+
+
 
 
             }

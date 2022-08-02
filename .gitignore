@@ -2,6 +2,9 @@ build-info.properties
 /build
 *.iml
 .idea
+.gradle
+src/main/android/gradle
+src/main/android/local.properties
 application.properties
 cronus_pi.json
 commands_pi.json
