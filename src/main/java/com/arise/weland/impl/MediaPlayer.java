@@ -73,8 +73,8 @@ public class MediaPlayer {
         return len;
     }
 
-    Object audioInputStream = null;
-    Object javaxClip = null;
+    AudioInputStream audioInputStream = null;
+    Clip javaxClip = null;
     private volatile boolean is_play = false;
 
     public Object play(final String p) {
@@ -95,7 +95,7 @@ public class MediaPlayer {
         if (path.endsWith(".wav")){
             stopClips();
             try {
-                audioInputStream = ReflectUtil.getStaticMethod(
+                audioInputStream = (AudioInputStream) ReflectUtil.getStaticMethod(
                         getClassByName("javax.sound.sampled.AudioSystem"),
                         "getAudioInputStream",
                         URL.class
@@ -103,9 +103,9 @@ public class MediaPlayer {
 //                        AudioSystem.getAudioInputStream(new File("C:\\Users\\Tarya\\Music\\sounds\\Dinica - 6.wav").toURI().toURL());
 //                AudioFormat format = audioIn.getFormat();
 //                DataLine.Info info = new DataLine.Info(Clip.class, format);
-                javaxClip = ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem", "getClip").call(null);
+//                javaxClip = (Clip) ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem", "getClip").call(null);
                         //AudioSystem.getClip(null);
-//                clip = (Clip)AudioSystem.getLine(info);
+                javaxClip = AudioSystem.getClip(null);
 
                 Class lineListenerClass = getClassByName("javax.sound.sampled.LineListener");
                 Object lineListener = Proxy.newProxyInstance(
@@ -126,11 +126,12 @@ public class MediaPlayer {
                         }
                 );
                 getMethod(javaxClip, "addLineListener", lineListenerClass).call(lineListener);
-                ((Clip)javaxClip).open((AudioInputStream) audioInputStream);
+                javaxClip.open(audioInputStream);
+                javaxClip.start();
 //                AudioSystem.getClip().open((AudioInputStream) audioInputStream);
 //                getMethod(javaxClip, "open", AudioInputStream.class).call(audioInputStream);
 //                getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
-                getMethod(javaxClip, "start").call();
+//                getMethod(javaxClip, "start").call();
 
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
