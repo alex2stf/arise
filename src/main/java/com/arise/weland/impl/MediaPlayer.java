@@ -13,6 +13,7 @@ import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
+import javax.sound.sampled.AudioSystem;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,12 +101,11 @@ public class MediaPlayer {
 //                        AudioSystem.getAudioInputStream(new File("C:\\Users\\Tarya\\Music\\sounds\\Dinica - 6.wav").toURI().toURL());
 //                AudioFormat format = audioIn.getFormat();
 //                DataLine.Info info = new DataLine.Info(Clip.class, format);
-                javaxClip = ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem",
-                        "getClip",
-                        ReflectUtil.getClassByName("javax.sound.sampled.Mixer$Info")
-                ).call(null);
-                        //AudioSystem.getClip(null);
-//                javaxClip = AudioSystem.getClip(null);
+//                javaxClip = ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem",
+//                        "getClip",
+//                        ReflectUtil.getClassByName("javax.sound.sampled.Mixer$Info")
+//                ).call(null);
+                javaxClip = AudioSystem.getClip(null);
 //
                 Class lineListenerClass = getClassByName("javax.sound.sampled.LineListener");
                 Object lineListener = Proxy.newProxyInstance(
@@ -126,10 +126,6 @@ public class MediaPlayer {
                         }
                 );
                 getMethod(javaxClip, "addLineListener", lineListenerClass).call(lineListener);
-//                javaxClip.open(audioInputStream);
-//                javaxClip.start();
-//                AudioSystem.getClip().open((AudioInputStream) audioInputStream);
-//                getMethod(javaxClip, "open", AudioInputStream.class).call(audioInputStream);
                 getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
                 getMethod(javaxClip, "start").call();
 
