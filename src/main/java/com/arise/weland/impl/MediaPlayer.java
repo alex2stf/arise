@@ -21,6 +21,9 @@ import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,8 +126,10 @@ public class MediaPlayer {
                         }
                 );
                 getMethod(javaxClip, "addLineListener", lineListenerClass).call(lineListener);
+                ((Clip)javaxClip).open((AudioInputStream) audioInputStream);
+//                AudioSystem.getClip().open((AudioInputStream) audioInputStream);
 //                getMethod(javaxClip, "open", AudioInputStream.class).call(audioInputStream);
-                getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
+//                getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
                 getMethod(javaxClip, "start").call();
 
             } catch (Exception e) {

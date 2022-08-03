@@ -256,14 +256,18 @@ public class WelandForm extends JFrame implements Runnable {
             this._myimage = imageIcon.getImage();
             iW = imageIcon.getIconWidth();
             iH = imageIcon.getIconHeight();
-            this.revalidate();
-            this.repaint();
+            if (iH > 0) {
+                this.revalidate();
+                this.repaint();
+            }
         }
 
         @Override
         public void paint(Graphics g){
             int ph = this.getHeight();
-            g.drawImage(_myimage, 0, 0, iW * ph / iH, ph , null);
+            if (iH > 0){
+                g.drawImage(_myimage, 0, 0, iW * ph / iH, ph , null);
+            }
         }
     }
 

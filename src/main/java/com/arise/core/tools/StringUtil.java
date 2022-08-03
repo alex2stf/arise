@@ -153,6 +153,16 @@ public class StringUtil {
         return s.endsWith("\n") || s.endsWith("\r\n");
     }
 
+    public static boolean isUrlFormat(String s){
+        URL url;
+        try {
+            url = new URL(s);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return url != null;
+    }
+
 
 
 
