@@ -1,4 +1,4 @@
-package com.arise.weland.impl;
+package com.arise.weland.desk;
 
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
@@ -12,8 +12,15 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.OSProxies;
+import com.arise.weland.model.MediaPlayer;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,43 +43,37 @@ import static com.arise.core.tools.Util.close;
 import static java.lang.Runtime.getRuntime;
 
 
-public class MediaPlayer {
+public class DeskMPlayer extends MediaPlayer {
 
-    public static final Map<String, MediaPlayer> m = new ConcurrentHashMap<>();
-    private static final Mole log = Mole.getInstance(MediaPlayer.class);
+
+    private static final Mole log = Mole.getInstance(DeskMPlayer.class);
     Object winst = null;
     private CommandRegistry r;
 
-    static volatile boolean isAppClosed = false;
+
 
     private ContentInfoProvider cip;
 
-    private MediaPlayer(CommandRegistry r){
+    public DeskMPlayer(CommandRegistry r){
         this.r = r;
         getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
+
                 isAppClosed = true;
+
+                DeskMPlayer.this.stop();
                 log.warn("Close all media player instances");
             }
         });
     }
 
-    public static MediaPlayer getMediaPlayer(String n, CommandRegistry r){
-        if (!m.containsKey(n)){
-            m.put(n, new MediaPlayer(r));
-        }
-        return m.get(n);
-    }
 
-    public static long getAudioDurationMs(File f, long dv) {
-        long len = (f.length() / 152) / 10;
-        Mole.todo(f.getName() + " len=" + (len / 1000) + "sec");
-        return len;
-    }
 
-    Object audioInputStream = null;
-    Object javaxClip = null;
+
+
+    AudioInputStream audioInputStream = null;
+    Clip clip = null;
     private volatile boolean is_play = false;
 
     public Object play(final String p) {
@@ -93,42 +94,19 @@ public class MediaPlayer {
         if (path.endsWith(".wav")){
             stopClips();
             try {
-                audioInputStream = ReflectUtil.getStaticMethod(
-                        getClassByName("javax.sound.sampled.AudioSystem"),
-                        "getAudioInputStream",
-                        URL.class
-                ).call(new File(path).toURI().toURL());
-//                        AudioSystem.getAudioInputStream(new File("C:\\Users\\Tarya\\Music\\sounds\\Dinica - 6.wav").toURI().toURL());
-//                AudioFormat format = audioIn.getFormat();
-//                DataLine.Info info = new DataLine.Info(Clip.class, format);
-//                javaxClip = ReflectUtil.getStaticMethod("javax.sound.sampled.AudioSystem",
-//                        "getClip",
-//                        ReflectUtil.getClassByName("javax.sound.sampled.Mixer$Info")
-//                ).call(null);
-                javaxClip = AudioSystem.getClip(null);
-//
-                Class lineListenerClass = getClassByName("javax.sound.sampled.LineListener");
-                Object lineListener = Proxy.newProxyInstance(
-                        lineListenerClass.getClassLoader(),
-                        new Class[]{ lineListenerClass },
-                        new InvocationHandler() {
-                            @Override
-                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                                if ("update".equals(method.getName())){
-//                                    Object stopEvent = ReflectUtil.getStaticObjectProperty()
-//                                    if (LineEvent.Type.STOP.equals(getMethod(args[0], "getType").call() )) {
-                                    if ("Stop".equals(getMethod(args[0], "getType").call() + "" )) {
-                                        c.handle(path);
-                                    }
-                                }
-                                return null;
-                            }
+                audioInputStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+                Clip clip = AudioSystem.getClip(null);
+                clip.addLineListener(new LineListener() {
+                    @Override
+                    public void update(LineEvent event) {
+                        if (LineEvent.Type.STOP.equals(event.getType())){
+                            c.handle(path);
                         }
-                );
-                getMethod(javaxClip, "addLineListener", lineListenerClass).call(lineListener);
-                getMethod(javaxClip, "open", getClassByName("javax.sound.sampled.AudioInputStream")).call(audioInputStream);
-                getMethod(javaxClip, "start").call();
+                    }
+                });
 
+                clip.open(audioInputStream);
+                clip.start();
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
             }
@@ -213,16 +191,14 @@ public class MediaPlayer {
 
 
     private void stopClips(){
-        if (javaxClip != null){
+        if (clip != null){
             try {
-                getMethod(javaxClip, "stop").call();
+               clip.stop();
             }catch (Exception e){
             }
-            close(javaxClip);
+            close(clip);
         }
-        if (audioInputStream != null){
-            close(audioInputStream);
-        }
+        close(audioInputStream);
     }
 
     public void stop() {
@@ -275,7 +251,7 @@ public class MediaPlayer {
         return is_play;
     }
 
-    public MediaPlayer setContentInfoProvider(ContentInfoProvider cip) {
+    public DeskMPlayer setContentInfoProvider(ContentInfoProvider cip) {
         this.cip = cip;
         return this;
     }

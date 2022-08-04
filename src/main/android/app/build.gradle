@@ -41,7 +41,7 @@ android {
                 exclude '**/DesktopContentHandler.java'
                 exclude '**/VLCPlayer.java'
                 exclude '**/Main.java'
-                exclude '**/desktop/*'
+                exclude '**/desk/*'
                 exclude '**/unarchivers/*'
                 exclude '**/MirceaFateCaLucrezi.java'
                 exclude '**/DesktopCamStream.java'

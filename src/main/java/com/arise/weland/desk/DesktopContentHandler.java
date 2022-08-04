@@ -1,7 +1,6 @@
-package com.arise.weland.impl;
+package com.arise.weland.desk;
 
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.ContentType;
@@ -12,14 +11,15 @@ import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
+import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.JARProxies;
+import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.model.MediaPlayer;
 import com.arise.weland.ui.WelandForm;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.sleep;
@@ -31,14 +31,14 @@ public class DesktopContentHandler extends ContentHandler {
     private static final Mole log = Mole.getInstance(DesktopContentHandler.class);
 
 
-    private final MediaPlayer mediaPlayer;
+    private final MediaPlayer deskMPlayer;
     private RadioPlayer rplayer;
     private com.arise.weland.ui.WelandForm _f;
 
 
     public DesktopContentHandler(ContentInfoProvider cip) {
         this.contentInfoProvider = cip;
-        mediaPlayer = RadioPlayer.getMediaPlayer().setContentInfoProvider(cip);
+        deskMPlayer = RadioPlayer.getMediaPlayer().setContentInfoProvider(cip);
     }
 
     public DesktopContentHandler setRadioPlayer(RadioPlayer r){
@@ -56,7 +56,7 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     protected HttpResponse pause(String path) {
-        mediaPlayer.pause();
+        deskMPlayer.pause();
         return HttpResponse.oK();
     }
 
@@ -72,7 +72,7 @@ public class DesktopContentHandler extends ContentHandler {
                         rplayer.stop();
                     }
 
-                    mediaPlayer.stop();
+                    deskMPlayer.stop();
                     sleep(1000 * 8);
                     if (_f != null) {
                         ThreadUtil.delayedTask(new Runnable() {
@@ -84,7 +84,7 @@ public class DesktopContentHandler extends ContentHandler {
                         }, 12 * 1000);
 
                     }
-                    mediaPlayer.playStream(path);
+                    deskMPlayer.playStream(path);
 
 
 
@@ -100,12 +100,12 @@ public class DesktopContentHandler extends ContentHandler {
                 if (rplayer != null && rplayer.isPlaying()){
                     rplayer.stop();
                 }
-                mediaPlayer.stop();
+                deskMPlayer.stop();
                 if (_f != null) {
                     _f.toFront();
                 }
 
-                mediaPlayer.play(path);
+                deskMPlayer.play(path);
 
             }
             else {
@@ -156,7 +156,7 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
-        mediaPlayer.stop();
+        deskMPlayer.stop();
         return null;
     }
 
@@ -188,11 +188,11 @@ public class DesktopContentHandler extends ContentHandler {
         }
 
         if(hasText(mVol)) {
-            mVol = mediaPlayer.setVolume(mVol);
+            mVol = deskMPlayer.setVolume(mVol);
             getInstance().setProp("audio.music.volume", mVol);
         }
         else {
-            mVol = mediaPlayer.getVolume();
+            mVol = deskMPlayer.getVolume();
             if (StringUtil.hasText(mVol)){
                 getInstance().setProp("audio.music.volume", mVol);
             }
@@ -202,8 +202,8 @@ public class DesktopContentHandler extends ContentHandler {
         if (rplayer != null && p.containsKey("rplayer") ){
             String x = p.get("rplayer").get(0);
             if ("play".equalsIgnoreCase(x)){
-                if (mediaPlayer.isPlaying()){
-                    mediaPlayer.stop();
+                if (deskMPlayer.isPlaying()){
+                    deskMPlayer.stop();
                     sleep(1000 * 8);
                 }
                 rplayer.play();

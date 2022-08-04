@@ -22,7 +22,7 @@ import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.DesktopContentHandler;
+import com.arise.weland.desk.DesktopContentHandler;
 import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
@@ -30,19 +30,17 @@ import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.ui.WelandForm;
 import com.arise.weland.utils.WelandServerHandler;
 
-import javax.net.ssl.SSLContext;
 import javax.swing.*;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.core.AppSettings.isTrue;
-import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.ThreadUtil.repeatedTask;
 import static com.arise.core.tools.ThreadUtil.startThread;
 import static com.arise.weland.dto.DeviceStat.getInstance;
