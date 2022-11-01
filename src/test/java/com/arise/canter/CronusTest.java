@@ -93,11 +93,6 @@ public class CronusTest {
 
         String f = Cronus.strfMillis(1000);
         assertEquals("1 second", f);
-//        f = Cronus.strfMillis(1000 * 60);
-//        f = Cronus.strfMillis(1000 * 60);
-//        f = Cronus.strfMillis(1000 * 60 * 3.5);
-//        f = Cronus.strfMillis(1000 * 60 * 60 * 2);
-//        f = Cronus.strfMillis(1000 * 60 * 60 * 24);
         f = Cronus.strfMillis(1000 * 60 * 60 * 25);
         System.out.println(f);
 
@@ -218,7 +213,7 @@ public class CronusTest {
         assertEquals("2003-02-18", ref);
     }
 
-    private static  Calendar buildMock(){
+    public static  Calendar buildMock(){
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, 2003);
         c.set(Calendar.MONTH, 5);

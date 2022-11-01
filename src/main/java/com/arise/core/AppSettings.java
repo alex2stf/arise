@@ -42,49 +42,30 @@ public class AppSettings {
             }
             expect = new File(path);
         }
-
-        Properties binProps = null;
-        try {
-            binProps = FileUtil.loadProps(FileUtil.findStream("weland/app-default.properties"));
-        } catch (IOException e) {
-            log.error("Binary corrupted, default properties not found", e);
-            binProps = new Properties();
-        }
-
+        Properties tmpProps = null;
         if (!expect.exists()){
-            FileUtil.saveProps(binProps, expect, "weland first props save");
-            applicationProperties = binProps;
+            tmpProps = new Properties();
+            tmpProps.put("server.port", "8221");
+
+            if (SYSUtils.isAndroid()) {
+                tmpProps.put("radio.enabled", "true");
+                tmpProps.put("radio.shows.path", "#radio_shows.json");
+                tmpProps.put("scan.locations", "Music,Videos,Documents,webapp");
+            } else {
+                tmpProps.put("scan.locations", "Music,Videos,webapp");
+            }
+            FileUtil.saveProps(tmpProps, expect, "weland first props save");
             log.info("Init application properties 1st time");
         }
         else {
-            Properties tmpProps;
             try {
                 log.info("Loading properties from " + expect.getAbsolutePath());
-                Properties svdProps = FileUtil.loadProps(expect);
-                Enumeration<String> enums = (Enumeration<String>) binProps.propertyNames();
-                boolean updated = false;
-                while (enums.hasMoreElements()) {
-                    String key = enums.nextElement();
-                    if (!svdProps.containsKey(key)){
-                        String value = binProps.getProperty(key);
-                        svdProps.put(key, value);
-                        log.info("Build offer new application property " + key + "=" + value);
-                        updated = true;
-                    }
-                }
-
-                if (updated){
-                    FileUtil.saveProps(svdProps, expect, "updated at " + new Date());
-                    log.info("Saved updated properties file");
-                }
-                tmpProps = svdProps;
-            } catch (IOException e) {
+                tmpProps = FileUtil.loadProps(expect);
+            } catch (Exception e) {
                 log.error("Failed to load application properties from file " + expect.getAbsolutePath(), e);
-                tmpProps = binProps;
             }
-            applicationProperties = tmpProps;
-
         }
+        applicationProperties = tmpProps;
     }
 
 

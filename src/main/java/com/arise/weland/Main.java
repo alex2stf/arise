@@ -19,7 +19,6 @@ import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.DeviceStat;
-import com.arise.weland.impl.BluecoveServer;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.desk.DesktopContentHandler;
@@ -86,11 +85,12 @@ public class Main {
             GraphicsDevice[] devices = env.getScreenDevices();
 
             int gdTotal = devices.length;
-            getInstance().setProp("gd_total", gdTotal + "");
+
+            getInstance().setSysProp("gd.total" , "Graphic devices", "The number of graphic devices", gdTotal);
 
             for(GraphicsDevice gd: devices){
                 String id = gd.getIDstring();
-                getInstance().setProp("gd_" + id + "_type", gd.getType() + "");
+                getInstance().setSysProp("gd." + id, "Graphic device " + id, "Display mode " + gd.getDisplayMode(), gd.getType());
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -100,7 +100,6 @@ public class Main {
 
 
 
-    static BluecoveServer bluecoveServer;
     static AbstractServer ioServer;
     static  DesktopContentHandler desktopContentHandler;
     static  RadioPlayer rplayer;
@@ -267,9 +266,6 @@ public class Main {
 
     private void stopAll() {
         ioServer.stop();
-        if ( bluecoveServer != null){
-            bluecoveServer.stop();
-        }
     }
 
 

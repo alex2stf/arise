@@ -341,8 +341,45 @@ function update_ui_with_device_stat_into_root(root, secondRoot, d) {
         _show_block_and_set_text(root, 'radio-stat', '<button id="rpl24" class="btn-txt" onclick="start_radio()">Start radio</button>')
     }
 
+    var sh = d.pP['rplayer.show.name'];
+    if ('true' == ron){
+        _show_block_and_set_text(root, 'radio-show', '<span>'+sh+'</span>');
+    } else {
+        _hide_block(root, 'radio-show');
+    }
+
+    var sys = {};
+    for(var lk in d.pP){
+        if((lk+'').indexOf('sys[') == 0){
+            var kn = lk.substring(4, lk.length - 3);
+            var pr = lk.substring(lk.length - 1);
+            if(!sys[kn]){
+                sys[kn] = {};
+            }
+            sys[kn][pr] = d.pP[lk];
+        }
+    }
+
+    var txt = '<tr><td>Name</td><td>Description</td><td>Value</td></tr>';
+    for (var p in sys){
+        txt +='<tr id="'+p.replace(/./g, '_').replace(/\\/g, 'x')+'">' +
+            '<td>'+sys[p].n +'</td>' +
+            '<td>'+_fixQP(sys[p].i) +'</td>' +
+            '<td>'+sys[p].v +'</td>' +
+            '</tr>'
+    }
+    _g('device-data').innerHTML = txt;
+
+    console.log(sys)
+
 
     update_sensor_data(d.pP);
+}
+
+function _fixQP(qp){
+    if (qp.indexOf('&') > -1){
+        return qp.replace(/&/g, '</br>');
+    }
 }
 
 

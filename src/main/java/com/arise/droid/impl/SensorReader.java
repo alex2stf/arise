@@ -53,21 +53,19 @@ public class SensorReader implements SensorEventListener {
 
                 //StringEncoder.MESSAGE_DIGEST.encode((sensor.getName() + sensor.getVendor() + sensor.getVersion()), "MD5");
 
-        DeviceStat deviceStat = DeviceStat.getInstance();
-        deviceStat.setProp(id + ".N", sensor.getName());
-        deviceStat.setProp(id + ".P", String.valueOf(sensor.getPower()));
-        deviceStat.setProp(id + ".V", String.valueOf(sensor.getVersion()));
-        deviceStat.setProp(id + ".mD", String.valueOf(sensor.getMinDelay()));
-        deviceStat.setProp(id + ".vd", sensor.getVendor() + "");
-        deviceStat.setProp(id + ".T", sensor.getType() + "");
-        deviceStat.setProp(id + ".TN", getTypeName(sensor.getType()) + "");
+            DeviceStat.getInstance()
+                    .setSysProp(
+                            id,
+                            sensor.getName(),
+                            "version=" + sensor.getVersion() +
+                                    "&type=" + getTypeName(sensor) +
+                                    "&power=" + sensor.getPower() +
+                                    "&minDelay=" + sensor.getMinDelay() +
+                                    ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ? "&maxDelay=" + sensor.getMaxDelay() : "" ) +
+                                    "&vendor="+ sensor.getVendor(),
+                            accuracy != null ? accuracy + "" : "N/A"
+                    );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            deviceStat.setProp(id + ".sT", String.valueOf(sensor.getStringType()));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            deviceStat.setProp(id + ".Md", String.valueOf(sensor.getMaxDelay()));
-        }
 
         if (sensorEvent != null){
 
@@ -79,19 +77,24 @@ public class SensorReader implements SensorEventListener {
                 sb.append(sensorEvent.values[i]);
             }
 
-            deviceStat.setProp(id + ".A", String.valueOf(sensorEvent.accuracy));
-            deviceStat.setProp(id + ".Ti", String.valueOf(sensorEvent.timestamp));
-            deviceStat.setProp(id + ".L", sb.toString());
+            DeviceStat.getInstance().setSysProp(
+                    "sensor.evt." + id,
+                    sensorEvent.sensor.getName() + " event",
+                    "timestamp=" + sensorEvent.timestamp + "&accuracy=" + sensorEvent.accuracy,
+                    sb.toString()
+            );
+
         }
 
-        if (accuracy != null){
-            deviceStat.setProp(id + ".A", String.valueOf(accuracy));
-        }
+
 
     }
 
-    private static String getTypeName(int n){
-        switch (n){
+    private static String getTypeName(Sensor sensor){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            return String.valueOf(sensor.getStringType());
+        }
+        switch (sensor.getType()){
             case Sensor.TYPE_AMBIENT_TEMPERATURE:
                 return "TYPE_AMBIENT_TEMPERATURE";
 
@@ -106,8 +109,6 @@ public class SensorReader implements SensorEventListener {
 
             case Sensor.TYPE_PRESSURE:
                 return "TYPE_PRESSURE"; //event.values[0]	hPa or mbar	Ambient air pressure.
-
-
             case Sensor.TYPE_ACCELEROMETER:
                 return "TYPE_ACCELEROMETER";
             case Sensor.TYPE_ACCELEROMETER_UNCALIBRATED:
@@ -115,7 +116,7 @@ public class SensorReader implements SensorEventListener {
             case Sensor.TYPE_MAGNETIC_FIELD:
                 return "TYPE_MAGNETIC_FIELD";
         }
-        return n + "";
+        return sensor.getType() + "";
     }
 
     @Override

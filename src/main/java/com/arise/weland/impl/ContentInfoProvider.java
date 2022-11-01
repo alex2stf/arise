@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.arise.weland.dto.Playlist.MUSIC;
@@ -197,7 +199,7 @@ public class ContentInfoProvider {
             return;
         }
 
-        List<File> dirs = new ArrayList<>();
+        Set<File> dirs = new HashSet<>();
         for (File f: innerFiles){
             if (f.getName().startsWith(".")){
                 continue;
@@ -209,7 +211,6 @@ public class ContentInfoProvider {
             }
         }
 
-//        System.out.println(root.getAbsolutePath() + " has " + innerFiles.length + " files fh " + dirs.size());
         if (!CollectionUtil.isEmpty(dirs)){
             if (fcnt > lsc){
                 log.info(fcnt + " scanned files...");

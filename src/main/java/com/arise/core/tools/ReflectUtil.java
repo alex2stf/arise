@@ -1,6 +1,8 @@
 package com.arise.core.tools;
 
 
+import com.arise.core.exceptions.DependencyException;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -427,6 +429,15 @@ public class ReflectUtil {
                 || className.equals(clazz.getCanonicalName());
     }
 
+    public static ClazzHelper getClass(String className, boolean initialize, URLClassLoader urlClassLoader) {
+        try {
+            return new ClazzHelper(Class.forName(className, initialize, urlClassLoader));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ClazzHelper(null);
+        }
+    }
+
     public abstract static class IMethod<T>{
 
         private final String methodName;
@@ -440,6 +451,96 @@ public class ReflectUtil {
         }
 
         public abstract T getValue(Object [] args);
+    }
+
+    public static class ClazzHelper {
+        private static final ClazzHelper NIL = new ClazzHelper(null);
+        private Class clz;
+
+
+        public Class getClazz(){
+            return clz;
+        }
+
+        public ClazzHelper(Class clz) {
+            this.clz = clz;
+        }
+
+        public InvokeHelper getStaticMethod(String name, Class... types){
+            if(clz != null){
+                try {
+                    return new InvokeHelper(clz.getMethod(name, types), null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return InvokeHelper.NULL;
+                }
+            }
+
+            return InvokeHelper.NULL;
+        }
+
+        public ConstructorHelper getConstructor(Class ... params) {
+            if (clz != null){
+                try {
+                    return new ConstructorHelper(clz.getConstructor(params));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return ConstructorHelper.NIL;
+                }
+            }
+            return ConstructorHelper.NIL;
+        }
+
+        public ClazzHelper getNestedClass(String n) {
+            if (clz != null){
+                if (clz.getClasses() != null){
+                    for (Class c: clz.getClasses()){
+                        if (n.equalsIgnoreCase(c.getName())){
+                            return new ClazzHelper(c);
+                        }
+                    }
+                }
+            }
+            return ClazzHelper.NIL;
+        }
+
+
+
+        public Object getEnumValue(String v) {
+            if (clz != null){
+                for (Object o: clz.getEnumConstants()){
+                    String n = getMethod(o, "name").callForString();
+                    if (v.equals(n)){
+                        return o;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+
+    public static class ConstructorHelper {
+        public static final ConstructorHelper NIL = new ConstructorHelper(null);
+        private final Constructor c;
+
+        public ConstructorHelper(Constructor c) {
+            this.c = c;
+        }
+
+
+
+        public Object newInstance(Object ... args) {
+            if (c != null){
+                try {
+                    return c.newInstance(args);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            return null;
+        }
     }
 
     public static class InvokeHelper{
@@ -521,10 +622,8 @@ public class ReflectUtil {
             try {
                 return method.invoke(instance, args);
             } catch (Exception e) {
-                //TODO optional log
-              e.printStackTrace();
+                throw new DependencyException("Unable to invoke method " + method, e);
             }
-            return null;
         }
 
         public Integer callForInteger(Object ... args) {
@@ -533,6 +632,14 @@ public class ReflectUtil {
             }catch (Exception e){
                 return null;
             }
+        }
+
+        public Collection<Object> callForCollection(Object ... args) {
+            return (Collection<Object>) call(args);
+        }
+
+        public Map callForMap(Object ... args) {
+            return (Map) call(args);
         }
     }
 }

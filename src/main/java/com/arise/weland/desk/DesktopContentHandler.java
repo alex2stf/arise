@@ -173,53 +173,15 @@ public class DesktopContentHandler extends ContentHandler {
         System.out.println("TO DO");
     }
 
-
-
-
     @Override
-    public DeviceStat onDeviceUpdate(Map<String, List<String>> p) {
-
-        DeviceStat deviceStat = getDeviceStat();
-
-
-        String mVol = null;
-        if(p.containsKey("musicVolume")) {
-            mVol = p.get("musicVolume").get(0);
-        }
-
-        if(hasText(mVol)) {
-            mVol = deskMPlayer.setVolume(mVol);
-            getInstance().setProp("audio.music.volume", mVol);
-        }
-        else {
-            mVol = deskMPlayer.getVolume();
-            if (StringUtil.hasText(mVol)){
-                getInstance().setProp("audio.music.volume", mVol);
-            }
-        }
-
-
-        if (rplayer != null && p.containsKey("rplayer") ){
-            String x = p.get("rplayer").get(0);
-            if ("play".equalsIgnoreCase(x)){
-                if (deskMPlayer.isPlaying()){
-                    deskMPlayer.stop();
-                    sleep(1000 * 8);
-                }
-                rplayer.play();
-                deviceStat.setProp("rplayer.play", "true");
-            }
-            if ("stop".equalsIgnoreCase(x)){
-                rplayer.stop();
-                deviceStat.setProp("rplayer.play", "false");
-            }
-        }
-
-
-
-        return deviceStat;
+    public MediaPlayer mPlayer() {
+        return deskMPlayer;
     }
 
+    @Override
+    public RadioPlayer rPlayer() {
+        return rplayer;
+    }
 
 
     @Override
@@ -233,9 +195,7 @@ public class DesktopContentHandler extends ContentHandler {
             }
         });
 
-        if(rplayer != null) {
-            dS.setProp("rplayer.path", rplayer.getCurrentPath());
-        }
+        decorateStandard(dS);
 //        dS.setProp("cams.active.v", "v1");
 //        dS.setProp("cams.active.id", "0");
 //        dS.setProp("flash.modes.active", "off" );
@@ -243,6 +203,8 @@ public class DesktopContentHandler extends ContentHandler {
 //        dS.setProp("flash.modes.v1", Arrays.asList(new Tuple2<>("0", "ON"), new Tuple2<>("1", "OFF")));
         return dS;
     }
+
+
 
     @Override
     public void onCloseRequested() {

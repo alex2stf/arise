@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import static java.lang.Class.forName;
@@ -70,6 +73,8 @@ public class Mole {
 
     private Delegate delegate;
     private String id;
+
+    private static final Map<String, Boolean> oncs = new ConcurrentHashMap<>();
 
     public Mole(String name){
         searchDelegate();
@@ -212,6 +217,14 @@ public class Mole {
         trace(args);
     }
 
+    public void once(Bag level, Object ... args) {
+        String id = UUID.nameUUIDFromBytes(StringUtil.join(args, "").getBytes()).toString();
+        if (oncs.containsKey(id)){
+            return;
+        }
+        info(args);
+        oncs.put(id, true);
+    }
 
 
     public enum Bag {

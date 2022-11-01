@@ -1,5 +1,9 @@
 package com.arise.droid;
 
+import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
+import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
+import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.AppSettings.isTrue;
 import static com.arise.droid.AppUtil.ON_START;
 
 import android.app.IntentService;
@@ -23,16 +27,19 @@ import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
 import com.arise.droid.impl.AndroidContentHandler;
+import com.arise.droid.impl.AndroidMediaPlayer;
 import com.arise.droid.impl.SensorReader;
 import com.arise.droid.tools.NotificationOps;
 import com.arise.droid.tools.RAPDUtils;
 import com.arise.weland.dto.DeviceStat;
+import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.utils.WelandServerHandler;
 
@@ -52,11 +59,6 @@ public class ServerService extends Service {
 
     AndroidContentHandler androidContentHandler;
 
-//    public ServerService(String name) {
-//        super(name);
-//    }
-
-
 
 
     public void prepareServer() {
@@ -68,18 +70,40 @@ public class ServerService extends Service {
         }
 
         androidContentHandler = new AndroidContentHandler(this);
+        AndroidMediaPlayer.getInstance().setContentInfoProvider(
+                AppUtil.contentInfoProvider
+        );
 
-//        requestBuilder = new WelandRequestBuilder(new IDeviceController() {
-//            @Override
-//            public void digestBytes(byte[] x) {
-//
-//            }
-//        });
         requestBuilder = new WelandRequestBuilder();
         final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
         serverHandler = new WelandServerHandler(cmdReg)
                 .setContentProvider(AppUtil.contentInfoProvider)
                 .setContentHandler(androidContentHandler);
+        setupRadioIfRequired();
+    }
+
+
+
+    private void setupRadioIfRequired(){
+        if (isTrue(RADIO_ENABLED)){
+            AppUtil.rPlayer = new RadioPlayer();
+            RadioPlayer rPlayer = AppUtil.rPlayer;
+            rPlayer.loadShowsResourcePath(getProperty(RADIO_SHOWS_PATH));
+
+            rPlayer.onPlay(new Handler<RadioPlayer>() {
+                @Override
+                public void handle(RadioPlayer rpl) {
+                    DeviceStat.getInstance().setProp("rplayer.play", "true");
+                }
+            });
+            rPlayer.onStop(new Handler<RadioPlayer>() {
+                @Override
+                public void handle(RadioPlayer rpl) {
+                    DeviceStat.getInstance().setProp("rplayer.play", "false");
+                }
+            });
+            rPlayer.play();
+        }
     }
 
     @Nullable
@@ -87,15 +111,6 @@ public class ServerService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-
-
-//    @Override
-//    protected void onHandleIntent(@Nullable Intent intent) {
-//        prepareServer();
-//        startServer();
-//    }
-
 
 
 

@@ -13,6 +13,11 @@ import static android.Manifest.permission_group.CAMERA;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
+import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
+import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.AppSettings.isTrue;
+import static com.arise.droid.AppUtil.APP_STATE;
 import static com.arise.droid.AppUtil.ON_START;
 import static com.arise.droid.AppUtil.OPEN_PATH;
 import static com.arise.droid.AppUtil.PATH;
@@ -23,8 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -34,19 +42,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.arise.core.AppSettings;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.Util;
 import com.arise.droid.fragments.AppFragment;
+import com.arise.droid.fragments.BrowserFragment;
+import com.arise.droid.fragments.MediaPlaybackFragment;
 import com.arise.droid.tools.AppPageAdapter;
 import com.arise.droid.tools.AppViewPager;
 import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.dto.DeviceStat;
+import com.arise.weland.impl.RadioPlayer;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     public static volatile boolean IS_RUNNING = true;
 
     private static final Mole log = Mole.getInstance(MainActivity.class);
+
+    private static Context ctx;
+
+
+    public static Context getStaticAppContext(){
+        return ctx;
+    }
     AppFragment appFragment;
+    MediaPlaybackFragment mediaPlaybackFragment;
+    BrowserFragment browserFragment;
 
     protected String[] permissions() {
         return new String[]{
@@ -84,11 +107,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        IS_RUNNING = true;
-        super.onCreate(savedInstanceState);
-        Util.registerContext(this);
+    private void startBackgroundService(){
         if (!isMyServiceRunning(ServerService.class)) {
             startService(new Intent(MainActivity.this, ServerService.class));
             log.info("Service started");
@@ -96,11 +115,32 @@ public class MainActivity extends AppCompatActivity {
         else {
             log.info("Service already started");
         }
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        IS_RUNNING = true;
+        super.onCreate(savedInstanceState);
+        ctx = getApplicationContext();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Util.registerContext(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
+
+
         if (arePermissionsGranted()){
             this.withPermissionsGranted();
         }
         else {
-            ActivityCompat.requestPermissions(this, permissions(), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            System.out.println(Build.VERSION.SDK_INT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityCompat.requestPermissions(this, permissions(), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            } else {
+                this.withPermissionsGranted();
+            }
         }
     }
 
@@ -118,23 +158,15 @@ public class MainActivity extends AppCompatActivity {
         }
         AppPageAdapter appPageAdapter;
         appPageAdapter = new AppPageAdapter(getSupportFragmentManager(), this);
-
-//        pages = new Object[][]{
-//                {mediaCenterFragment, "", Icons.tab1Background, R.drawable.ic_tab_playlists, R.drawable.ic_tab_playlists_disabled},
-//                {browserFragment, "", Icons.tab2Background, R.drawable.ic_tab_web, R.drawable.ic_tab_web_disabled },
-//                {cameraFragment, "", Icons.tab3Background, R.drawable.ic_tab_chat, R.drawable.ic_tab_chat_disabled },
-//                {mediaPlaybackFragment, "", Color.BLACK, R.drawable.ic_tab_media, R.drawable.ic_tab_media_disabled },
-//                {logFragment, "!", Icons.tab7Background}
-//        };
-
         appFragment = new AppFragment();
+        mediaPlaybackFragment = new MediaPlaybackFragment();
+        browserFragment = new BrowserFragment();
         appPageAdapter.add(appFragment, "App");
+        appPageAdapter.add(mediaPlaybackFragment, "Media");
+        appPageAdapter.add(browserFragment, "Browse");
 
-//        for (int i = 0; i < pages.length; i++){
-//            androidx.fragment.app.Fragment fragment = (androidx.fragment.app.Fragment) pages[i][0];
-//            String title = (String) pages[i][1];
-//            appPageAdapter.add(fragment, title);
-//        }
+
+
         AppViewPager viewPager = new AppViewPager(this){};
         viewPager.setId(viewPager.hashCode());
 
@@ -155,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(root,new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
         __register_receivers();
+
+        this.startBackgroundService();
         _app_started = true;
     }
 
@@ -212,5 +246,12 @@ public class MainActivity extends AppCompatActivity {
         }catch (Throwable t){
 
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        log.info("App onDestroy");
     }
 }

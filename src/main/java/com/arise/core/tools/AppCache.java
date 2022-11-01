@@ -2,6 +2,7 @@ package com.arise.core.tools;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -160,7 +161,29 @@ public class AppCache {
         if (res != null){
             ReflectUtil.getMethod(res, "putString", String.class, String.class).call(key, value);
             ReflectUtil.getMethod(res, "commit").call();
+        } else {
+            storeLocal(key, value);
         }
+    }
+
+    private static String getLocal(String key, String dV) {
+        File loc = new File(FileUtil.findAppDir(), "app-cache.properties");
+        Properties pr;
+        try {
+            pr = FileUtil.loadProps(loc);
+            String r = pr.getProperty(key);
+            return r != null ? r : dV;
+        } catch (Exception e) {
+            return dV;
+        }
+
+    }
+
+    private static void storeLocal(String key, String val){
+        File loc = new File(FileUtil.findAppDir(), "app-cache.properties");
+        Properties pr = FileUtil.loadProps(loc);
+        pr.put(key, val);
+        FileUtil.saveProps(pr, loc, new Date() + "");
     }
 
     public static void putInt(String key, int value){
@@ -172,15 +195,29 @@ public class AppCache {
         if (res != null){
             ReflectUtil.getMethod(res, "putInt", String.class, int.class).call(key, value);
             ReflectUtil.getMethod(res, "commit").call();
+        } else {
+            storeLocal(key, value + "");
         }
     }
 
-    private static String workerGetString(String key, String defaultValue){
-        return (String) ReflectUtil.getMethod(worker, "getString", String.class, String.class).call(key, defaultValue);
+    private static String workerGetString(String key, String dV){
+        if (worker != null) {
+            return (String) ReflectUtil.getMethod(worker, "getString", String.class, String.class).call(key, dV);
+        }
+        return getLocal(key, dV);
     }
 
+
+
     private static int workerGetInt(String key, int defaultValue){
-        return (int) ReflectUtil.getMethod(worker, "getInt", String.class, int.class).call(key, defaultValue);
+        if (worker != null) {
+            return (int) ReflectUtil.getMethod(worker, "getInt", String.class, int.class).call(key, defaultValue);
+        }
+        try {
+            return Integer.valueOf(getLocal(key, null));
+        } catch (Exception e){
+            return defaultValue;
+        }
     }
 
     public static void setWorker(Object worker) {

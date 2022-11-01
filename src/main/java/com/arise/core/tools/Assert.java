@@ -11,10 +11,21 @@ public class Assert {
 
     private  static final AtomicInteger cnt = new AtomicInteger();
 
+
+    public static void assertEquals(double a, double b){
+        if (!(Double.compare(a, b) == 0)){
+            throwException(a, b);
+        }
+        tick();
+    }
+
     public static void assertEquals(Object s1, Object s2){
         try {
-            assert s1.equals(s2);
+            if (s1 == null || !s1.equals(s2)){
+                throwException(s1, s2);
+            }
             tick();
+
         } catch (Throwable e){
             throwException(s1, s2, e);
         }
@@ -81,6 +92,20 @@ public class Assert {
 
     public static void throwException(Object a, Object b, Throwable c){
         System.out.println("Expected " + a + " given " + b);
+        AssertException assertException = new AssertException(a, b, c);
+
+        StackTraceElement[] ste = assertException.getStackTrace();
+
+
+//        if (ste.length > 2) {
+//            StackTraceElement as = ste[2];
+//            StackTraceElement cm = ste[3];
+//
+//            log.info(
+//                    "T(" + c + ") " + as.getMethodName() + " FAILED at " + cm.getClassName() + "#" + cm.getMethodName()
+//            );
+//        }
+
         throw new AssertException(a, b, c);
     }
 

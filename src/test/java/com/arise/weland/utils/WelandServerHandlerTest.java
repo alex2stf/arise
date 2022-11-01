@@ -10,6 +10,7 @@ import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.util.List;
@@ -50,6 +51,16 @@ public class WelandServerHandlerTest {
             @Override
             public void onPlaylistPlay(String name) {
 
+            }
+
+            @Override
+            public MediaPlayer mPlayer() {
+                return null;
+            }
+
+            @Override
+            public RadioPlayer rPlayer() {
+                return null;
             }
 
             @Override

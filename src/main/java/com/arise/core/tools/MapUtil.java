@@ -1,5 +1,6 @@
 package com.arise.core.tools;
 
+
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -94,6 +95,16 @@ public class MapUtil {
         }
 
         return getString(map, null);
+    }
+
+    public static short getShort(Map m, String k, short i) {
+        if (m == null){
+            return i;
+        }
+        if (m.containsKey(k)){
+            return Short.valueOf(String.valueOf(m.get(k)));
+        }
+        return i;
     }
 
 

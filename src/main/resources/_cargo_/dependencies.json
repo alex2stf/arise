@@ -14,6 +14,45 @@
       }
     ]
   },
+  "KAFKA_2_8_0": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "kafka_2.8.0-0.8.0.jar",
+        "profiles": ["*"],
+        "params": [ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/org/apache/kafka/kafka_2.8.0/0.8.0/kafka_2.8.0-0.8.0.jar, libs, kafka_2.8.0-0.8.0.jar)"
+        } ]
+      }
+    ]
+  },
+  "ZK_CLIENT_11": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "zkclient-0.11.jar",
+        "profiles": ["*"],
+        "params": [ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/com/101tec/zkclient/0.11/zkclient-0.11.jar, libs, zkclient-0.11.jar)"
+        }]
+      }
+    ]
+  },
+  "KAFKA_CLIENT": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "kafka-clients-3.2.1.jar",
+        "profiles": ["*"],
+        "params":[ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.2.1/kafka-clients-3.2.1.jar, libs, kafka-clients-3.2.1.jar)"
+        }]
+      }
+    ]
+  },
   "JAVAZOOM_JLAYER_101": {
     "type": "jar",
     "versions": [

@@ -9,13 +9,16 @@ import com.arise.core.tools.Mole;
 import com.arise.droid.impl.AndroidContentDecoder;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.RadioPlayer;
 
 public class AppUtil {
 
 
     public static final String APP_STATE = "app-state-1275";
     public static final AndroidContentDecoder DECODER = new AndroidContentDecoder();
-   
+
+    public static RadioPlayer rPlayer;
+
     public static final ContentInfoProvider contentInfoProvider
             = new ContentInfoProvider(DECODER)
             .addRoot(FileUtil.findMusicDir())

@@ -1,6 +1,8 @@
 package com.arise.core.tools;
 
 import com.arise.core.AppSettings;
+import com.arise.core.exceptions.DependencyException;
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 
 import java.io.*;
@@ -182,6 +184,9 @@ public class FileUtil {
         }
         return f;
     }
+
+
+
 
     public static File findAppDir(){
         Object context = Util.getContext(ANDROID_OS_CONTEXT_WRAPPER);
@@ -438,6 +443,23 @@ public class FileUtil {
 
 
 
+    public static String fileToString(File file) {
+        final StringBuilder sb = new StringBuilder();
+        try {
+            readLineByLine(file, new Handler<String>() {
+                @Override
+                public void handle(String s) {
+                    sb.append(s).append("\n");
+                }
+            });
+        } catch (IOException e) {
+            throw new LogicalException("Something wrong with file " + file, e);
+        }
+        return sb.toString();
+    }
+
+
+
 
 
     private static boolean fileExists(File f){
@@ -512,16 +534,19 @@ public class FileUtil {
 //    }
 
 
-    public static void saveProps(Properties props, File f, String comment) {
+    public static void saveProps(Properties p, File f){
+        saveProps(p, f, null);
+    }
+
+    public static void saveProps(Properties p, File f, String c) {
 
         try {
-            OutputStream out = new FileOutputStream( f );
-            if (comment != null){
-                props.store(out, comment);
+            OutputStream o = new FileOutputStream( f );
+            if (StringUtil.hasText(c)){
+                p.store(o, c);
             } else {
-                props.store(out, "generated at "+new Date() + " by " + FileUtil.class.getCanonicalName());
+                p.store(o, "generated at "+new Date() + " by " + FileUtil.class.getCanonicalName());
             }
-
         }
         catch (Exception e ) {
             //TODO throw runtime exception
@@ -532,8 +557,18 @@ public class FileUtil {
 
 
 
-    public static Properties loadProps(File file) throws IOException {
-        return loadProps(new FileInputStream(file));
+
+
+    public static Properties loadProps(File f)  {
+        if (f.exists()) {
+            try {
+                return loadProps(new FileInputStream(f));
+            } catch (IOException e) {
+                Mole.getInstance(FileUtil.class).error(e);
+                return new Properties();
+            }
+        }
+        return new Properties();
     }
 
     public static Properties loadProps(InputStream inputStream) throws IOException {
@@ -544,16 +579,7 @@ public class FileUtil {
     }
 
 
-    public static Properties loadPropsIfExists(File file){
-        if (file.exists()){
-            try {
-                return loadProps(file);
-            } catch (IOException e) {
-                return new Properties();
-            }
-        }
-        return new Properties();
-    }
+
 
     public static <T extends Serializable> T serializableRead(File input){
         if (!input.exists()){
@@ -607,6 +633,7 @@ public class FileUtil {
      * @param loutFile
      * @return
      */
+    @Deprecated
     public static boolean changesDetected(File file, File loutFile) {
         if (!loutFile.exists()){
             return true;
@@ -619,16 +646,8 @@ public class FileUtil {
             return true;
         }
 
-        Properties cache;
-        try {
-            cache = loadProps(propsFile);
-        } catch (IOException e) {
-            return true;
-        }
+        Properties cache = loadProps(propsFile);
 
-        if (cache == null){
-            return true;
-        }
 
         String key = file.getAbsolutePath() + ":" + "LM3102";
 

@@ -43,7 +43,7 @@ public class RadioPlayer {
 
     private static final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
 
-    static MediaPlayer mPlayer = MediaPlayer.getMediaPlayer("radio", cmdReg);
+    static MediaPlayer mPlayer = null;
 
     private volatile boolean is_play = false;
 
@@ -53,9 +53,16 @@ public class RadioPlayer {
     private static final Mole log = Mole.getInstance(RadioPlayer.class);
 
     public static MediaPlayer getMediaPlayer() {
+        if (mPlayer == null){
+           mPlayer = MediaPlayer.getMediaPlayer("radio", cmdReg);
+        }
         return mPlayer;
     }
 
+
+    public RadioPlayer(){
+        getMediaPlayer();
+    }
 
     private Handler<RadioPlayer> pl;
     private Handler<RadioPlayer> st;
@@ -139,7 +146,7 @@ public class RadioPlayer {
         });
     }
 
-    private Show getActiveShow(){
+    public Show getActiveShow(){
         for (Show s: shows){
             if (s.isActive()){
                 c = s;
@@ -179,11 +186,6 @@ public class RadioPlayer {
         volatile boolean _o;
         RadioPlayer p;
 
-        public Show name(String x){
-            this.n = x;
-            return this;
-        }
-
         public String name(){
             return n;
         }
@@ -222,7 +224,7 @@ public class RadioPlayer {
                 File mf = getRandomFileFromDirectory(m);
 
                 if (mf != null && mf.exists()){
-                    long max = MediaPlayer.getAudioDurationMs(mf, 3000);
+                    long max = mPlayer.getAudioDurationMs(mf, 3000);
                     final int time = (int) ((Math.random() * (max - 1000)) + 1000);
 
                     if (sf != null && sf.exists()) {
@@ -307,10 +309,10 @@ public class RadioPlayer {
         void pss(final Handler<Show> c, final String u){
             _o = true;
             log.info("Start stream show [" + n + "] with url " + u);
-            String p[] = Cronus.getParts(_h);
+            Map<Integer, List<String>> parts = Cronus.getParts(_h);
             long exp = 4000;
-            if (p.length == 3){
-                Cronus.MomentInDay m = fromString(p[2]);
+            if (parts.containsKey(2)){
+                Cronus.MomentInDay m = fromString(parts.get(2).get(1));
                 if (m != null){
                     Calendar li = decorate(m, getInstance());
                     exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());

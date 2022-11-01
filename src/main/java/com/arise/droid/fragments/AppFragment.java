@@ -152,7 +152,7 @@ public class AppFragment extends ContextFragment {
 
     public void reloadApp() {
         if (root != null){
-            root.reload();
+            root.loadUrl("http://localhost:8221/app");
         }
     }
 

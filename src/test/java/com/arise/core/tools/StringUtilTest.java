@@ -124,12 +124,21 @@ public class StringUtilTest {
 
     public static void main(String[] args) {
         StringUtilTest sut = new StringUtilTest();
-        sut.testDecode();
-        sut.testParsing();
-        sut.testQuote();
-        sut.testToNumber();
-        sut.testStringUtilToCSV();
+//        sut.testDecode();
+//        sut.testParsing();
+//        sut.testQuote();
+//        sut.testToNumber();
+//        sut.testStringUtilToCSV();
+        sut.testJoinMaps();
 
+    }
+
+    private void testJoinMaps() {
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "unu");
+        map.put("2", "doi");
+
+        Assert.assertEquals(StringUtil.join(map), "1=unu\n2=doi");
     }
 
     class TestClass {

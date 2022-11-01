@@ -222,5 +222,9 @@
     "title": "Radio DOR",
     "path": "http://zuicast.digitalag.ro:9420/dor",
     "thumbnail": "https://radiodor.net/templates/default/img/logo.png"
+  },
+  {
+    "title": "Elvis",
+    "path": "https://streaming.exclusive.radio/er/elvispresley/icecast.audio"
   }
 ]

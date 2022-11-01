@@ -3,17 +3,14 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.RadioPlayer;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -22,6 +19,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.arise.core.tools.SYSUtils.getLinuxDetails;
+import static com.arise.core.tools.StringUtil.hasText;
+import static com.arise.core.tools.ThreadUtil.sleep;
+import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public abstract  class ContentHandler {
     protected ContentInfoProvider contentInfoProvider;
@@ -67,7 +67,68 @@ public abstract  class ContentHandler {
 
     public abstract void onPlaylistPlay(String name);
 
-    public abstract DeviceStat onDeviceUpdate(Map<String, List<String>> params);
+
+    public abstract MediaPlayer mPlayer();
+
+    public abstract RadioPlayer rPlayer();
+
+    public DeviceStat onDeviceUpdate(Map<String, List<String>> p) {
+
+        DeviceStat deviceStat = getDeviceStat();
+
+
+        String mVol = null;
+        if(p.containsKey("musicVolume")) {
+            mVol = p.get("musicVolume").get(0);
+        }
+
+        if(hasText(mVol)) {
+            mVol = mPlayer().setVolume(mVol);
+            getInstance().setProp("audio.music.volume", mVol);
+        }
+        else {
+            mVol = mPlayer().getVolume();
+            if (StringUtil.hasText(mVol)){
+                getInstance().setProp("audio.music.volume", mVol);
+            }
+        }
+
+
+        if (rPlayer() != null && p.containsKey("rplayer") ){
+            String x = p.get("rplayer").get(0);
+
+            if ("play".equalsIgnoreCase(x)){
+                if (mPlayer().isPlaying()){
+                    mPlayer().stop();
+                    sleep(1000 * 8);
+                }
+                rPlayer().play();
+                deviceStat.setProp("rplayer.play", "true");
+            }
+            if ("stop".equalsIgnoreCase(x)){
+                rPlayer().stop();
+                deviceStat.setProp("rplayer.play", "false");
+            }
+
+
+        }
+
+
+
+        return deviceStat;
+    }
+
+
+    protected void decorateStandard(DeviceStat dS) {
+        if(rPlayer() != null) {
+            dS.setProp("rplayer.path", rPlayer().getCurrentPath());
+
+            RadioPlayer.Show sh = rPlayer().getActiveShow();
+            if (sh != null) {
+                dS.setProp("rplayer.show.name", rPlayer().getActiveShow().name());
+            }
+        }
+    }
 
     public abstract DeviceStat getDeviceStat();
 

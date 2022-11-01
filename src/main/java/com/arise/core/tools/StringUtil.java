@@ -827,33 +827,55 @@ public class StringUtil {
                                      JoinIterator keyIterator,
                                      JoinIterator valueIterator,
                                      String mapDelimiter,
+                                     String keyValEnd,
                                      String listDelimiter,
                                      String listBegin,
                                      String listEnd){
         if (o instanceof Iterable) {
             return listBegin + join((Iterable) o, listDelimiter, valueIterator) + listEnd;
         } else if (o instanceof Map) {
-            return join((Map)o, keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
+            return join((Map)o, keyIterator, valueIterator, mapDelimiter, keyValEnd, listDelimiter, listBegin, listEnd);
         }
         return valueIterator.toString(o);
+    }
+
+    public static <K, V> String join(Map<K, V> map){
+        return join(map, DEFAULT_ITERATOR, DEFAULT_ITERATOR, "=", "\n", ",", "[", "]");
+    }
+
+    public static Properties loadProps(String cnt){
+        Properties p = new Properties();
+        try {
+            p.load(new StringReader(cnt));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return p;
     }
 
     public static <K, V> String join(Map<K, V> map,
                                      JoinIterator<K> keyIterator,
                                      JoinIterator<V> valueIterator,
                                      String mapDelimiter,
+                                     String kayValEnd,
                                      String listDelimiter,
                                      String listBegin,
                                      String listEnd){
         StringBuilder sb = new StringBuilder();
+        int cnt = 0;
+        int sz = map.entrySet().size();
         for(Map.Entry<K, V> entry: map.entrySet()) {
-            String right = anyToString(entry.getValue(), keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
-            String left = anyToString(entry.getKey(), keyIterator, valueIterator, mapDelimiter, listDelimiter, listBegin, listEnd);
+            String right = anyToString(entry.getValue(), keyIterator, valueIterator, mapDelimiter, kayValEnd, listDelimiter, listBegin, listEnd);
+            String left = anyToString(entry.getKey(), keyIterator, valueIterator, mapDelimiter, kayValEnd, listDelimiter, listBegin, listEnd);
 
             sb.append(left)
                     .append(mapDelimiter)
                     .append(right);
 
+            if (cnt < sz - 1){
+                sb.append(kayValEnd);
+            }
+            cnt++;
         }
         return sb.toString();
 

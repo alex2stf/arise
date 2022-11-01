@@ -21,7 +21,9 @@ import com.arise.droid.MainActivity;
 import com.arise.droid.tools.AndroidUrlSolver;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
+import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.model.ContentHandler;
+import com.arise.weland.model.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,21 +37,9 @@ public class AndroidContentHandler extends ContentHandler {
     private static final Mole log = Mole.getInstance(AndroidContentHandler.class);
 
 
-
-
-
-
     public AndroidContentHandler(Service service) {
         this.service = service;
     }
-
-
-//    @Override
-//    protected HttpResponse openInfo(ContentInfo info) {
-//        return openPath(info.getPath());
-//    }
-
-
 
 
 
@@ -84,12 +74,16 @@ public class AndroidContentHandler extends ContentHandler {
                 e.printStackTrace();
             }
         }
+        broadcastOpenPathIntent(service, path);
 
+        return null;
+    }
+
+    public static void broadcastOpenPathIntent(Service s, String path){
         Intent brodcastMsg = new Intent();
         brodcastMsg.setAction(OPEN_PATH);
         brodcastMsg.putExtra(AppUtil.PATH, path);
-        service.sendBroadcast(brodcastMsg);
-        return null;
+        s.sendBroadcast(brodcastMsg);
     }
 
     @Override
@@ -99,13 +93,17 @@ public class AndroidContentHandler extends ContentHandler {
 
 
     @Override
-    public HttpResponse stop(String string) {
-        log.info("received stopPreviews " + string);
+    public HttpResponse stop(String s) {
+        log.info("received stopPreviews " + s);
+        broadcastStopIntent(service, s);
+        return null;
+    }
+
+    public static void broadcastStopIntent(Service s, String p){
         Intent brodcastMsg = new Intent();
         brodcastMsg.setAction("weland.closeFile");
-        brodcastMsg.putExtra("path", string);
-        service.sendBroadcast(brodcastMsg);
-        return null;
+        brodcastMsg.putExtra("path", p);
+        s.sendBroadcast(brodcastMsg);
     }
 
 
@@ -131,13 +129,26 @@ public class AndroidContentHandler extends ContentHandler {
 
 
 
+    @Override
+    public MediaPlayer mPlayer() {
+        return RadioPlayer.getMediaPlayer();
+    }
 
-
+    @Override
+    public RadioPlayer rPlayer() {
+        return AppUtil.rPlayer;
+    }
 
 
     @Override
     public DeviceStat getDeviceStat() {
         DeviceStat deviceStat = DeviceStat.getInstance();
+
+        decorateStandard(deviceStat);
+
+        if (!deviceStat.hasProp("audio.music.volume")){
+            deviceStat.setProp("audio.music.volume",  AndroidMediaPlayer.getInstance().getVolume());
+        }
 
         int numberOfCameras = Camera.getNumberOfCameras();
         List<Tuple2<String, String>> ids = new ArrayList<>();
@@ -176,64 +187,6 @@ public class AndroidContentHandler extends ContentHandler {
     public void takeSnapshot(String id) {
         log.info("TODO");
     }
-
-//    @Override
-//    public void takeSnapshot() {
-//        Intent brodcastMsg = new Intent();
-//        brodcastMsg.setAction("weland.onDeviceUpdate");
-//        brodcastMsg.putExtra("takeSnapshot", new Date() + "");
-//        service.sendBroadcast(brodcastMsg);
-//    }
-
-
-    @Override
-    public DeviceStat onDeviceUpdate(Map params) {
-
-        int now = (int) System.currentTimeMillis();
-        int lastUpdate = AppCache.getInt("crmfx", (now - 3004));
-        int diff = now - lastUpdate;
-        if (diff < 3000) {
-            log.info("Need to wait more than " + (3000 - diff) + " miliseconds");
-            return getDeviceStat();
-        }
-
-        AppCache.putInt("crmfx", (int) System.currentTimeMillis());
-
-        String musicVolume = MapUtil.findQueryParamString(params, "musicVolume");
-        String camId = MapUtil.findQueryParamString(params, "camId");
-        String camEnabled = MapUtil.findQueryParamString(params, "camEnabled");
-        String lightMode = MapUtil.findQueryParamString(params, "lightMode");
-
-
-        Intent brodcastMsg = new Intent();
-        brodcastMsg.setAction("weland.onDeviceUpdate");
-        brodcastMsg.putExtra("camId", camId);
-        brodcastMsg.putExtra("camEnabled", camEnabled + "");
-        brodcastMsg.putExtra("lightMode", lightMode);
-        brodcastMsg.putExtra("musicVolume", musicVolume);
-        service.sendBroadcast(brodcastMsg);
-
-
-
-
-
-        DeviceStat deviceStat = getDeviceStat();
-
-        if (StringUtil.hasText(musicVolume)){
-            try {
-                Integer.valueOf(musicVolume);
-                deviceStat.setProp("audio.music.volume",  musicVolume);
-            }catch (Exception e){
-
-            }
-        }
-
-
-
-
-        return deviceStat;
-    }
-
 
 
 

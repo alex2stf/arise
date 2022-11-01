@@ -2,7 +2,6 @@ package com.arise.weland.dto;
 
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.core.AppSettings;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.NetworkUtil;
 import com.arise.core.tools.SYSUtils;
@@ -31,7 +30,7 @@ public class DeviceStat {
     private String serverUUID;
 
 
-    private Map<String, Object> props = new ConcurrentHashMap<>();
+    private Map<String, Object> pps = new ConcurrentHashMap<>();
 
 
     public static final DeviceStat INSTANCE = new DeviceStat().scanIPV4();
@@ -74,10 +73,10 @@ public class DeviceStat {
             sb.append("\"I4\":").append(jsonVal(ipv4Addrs)).append(",");
         }
 
-        if (!isEmpty(props)){
+        if (!isEmpty(pps)){
             sb.append("\"pP\": {");
             int cxx = 0;
-            for (Map.Entry<String, Object> e: props.entrySet()){
+            for (Map.Entry<String, Object> e: pps.entrySet()){
                 if (cxx > 0){
                     sb.append(",");
                 }
@@ -206,19 +205,19 @@ public class DeviceStat {
     }
 
     public DeviceStat setProp(String key, String val) {
-        props.put(key, val);
+        pps.put(key, val);
         return this;
     }
 
     public DeviceStat setProp(String key, Tuple2<String, String> val) {
-        props.put(key, val);
+        pps.put(key, val);
         return this;
     }
 
 
 
     public DeviceStat setProp(String key, List<Tuple2<String, String>> val) {
-        props.put(key, val);
+        pps.put(key, val);
         return this;
     }
 
@@ -232,6 +231,15 @@ public class DeviceStat {
         return HttpResponse.json(toJson()).allowAnyOrigin();
     }
 
+    public boolean hasProp(String k) {
+        return pps != null && pps.containsKey(k);
+    }
+
+    public void setSysProp(String key, String name, String description, Object value) {
+        setProp("sys["+key+"].v", value + "");
+        setProp("sys["+key+"].n", name);
+        setProp("sys["+key+"].i", description);
+    }
 
 
     @Deprecated

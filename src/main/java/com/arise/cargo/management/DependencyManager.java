@@ -384,7 +384,7 @@ public class DependencyManager {
         }
         Dependency d = dependencyMap.get(n);
         if (d == null){
-            throw new LogicalException("Dependency not found");
+            throw new LogicalException("Dependency " + n + "not found");
         }
         for (Dependency.Version v: d.getVersions().values()){
             log.info("try solve dependency " + d.getName() + " version " + v.name());

@@ -9,7 +9,6 @@ import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -25,18 +24,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.AppSettings.getProperty;
-import static com.arise.core.tools.ReflectUtil.getClassByName;
 import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
 import static com.arise.core.tools.Util.close;
@@ -47,12 +39,13 @@ public class DeskMPlayer extends MediaPlayer {
 
 
     private static final Mole log = Mole.getInstance(DeskMPlayer.class);
+    final Process proc[] = new Process[]{null};
     Object winst = null;
+    AudioInputStream aStream = null;
+    Clip clip = null;
     private CommandRegistry r;
-
-
-
     private ContentInfoProvider cip;
+    private volatile boolean is_play = false;
 
     public DeskMPlayer(CommandRegistry r){
         this.r = r;
@@ -67,14 +60,6 @@ public class DeskMPlayer extends MediaPlayer {
             }
         });
     }
-
-
-
-
-
-    AudioInputStream audioInputStream = null;
-    Clip clip = null;
-    private volatile boolean is_play = false;
 
     public Object play(final String p) {
         return play(p, null);
@@ -94,7 +79,7 @@ public class DeskMPlayer extends MediaPlayer {
         if (path.endsWith(".wav")){
             stopClips();
             try {
-                audioInputStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+                aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
                 Clip clip = AudioSystem.getClip(null);
                 clip.addLineListener(new LineListener() {
                     @Override
@@ -105,7 +90,7 @@ public class DeskMPlayer extends MediaPlayer {
                     }
                 });
 
-                clip.open(audioInputStream);
+                clip.open(aStream);
                 clip.start();
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
@@ -114,7 +99,7 @@ public class DeskMPlayer extends MediaPlayer {
             if (c != null) {
                 c.handle(path);
             }
-            return audioInputStream;
+            return aStream;
         }
 
         if ("commands".equalsIgnoreCase(strategy)) {
@@ -164,8 +149,6 @@ public class DeskMPlayer extends MediaPlayer {
         return winst;
     }
 
-    final Process proc[] = new Process[]{null};
-
     public void playStream(String u) {
         if (proc[0] != null){
             proc[0].destroy();
@@ -198,7 +181,7 @@ public class DeskMPlayer extends MediaPlayer {
             }
             close(clip);
         }
-        close(audioInputStream);
+        close(aStream);
     }
 
     public void stop() {
@@ -237,12 +220,7 @@ public class DeskMPlayer extends MediaPlayer {
 
     public void validateStreamUrl(String u, Handler<HttpURLConnection> suk, Handler<Tuple2<Throwable, Peer>> erh) {
 
-        JHttpClient c = new JHttpClient();
-        c.setAbsoluteUrl(u);
-        HttpRequest request = new HttpRequest();
-        request.setMethod("GET");
-        c.setErrorHandler(erh);
-        c.connectSync(request, suk);
+        this.validateSync(u, suk, erh);
 
 
     }
