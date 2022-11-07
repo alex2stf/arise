@@ -3,30 +3,52 @@
     {
       "name": "Morning Glory",
       "day": "monday_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_06:45:00_AND_11:00:00",
+      "hour": "EACH_SECOND BETWEEN_06:45:00_AND_10:40:00",
       "strategy": "stream",
       "on-error": "Offline Show",
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"]
     },
     {
-      "name": "Morning relax blues and french",
-      "day": "monday_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "name": "chill and work",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:november,december",
+      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_12:00:00",
       "strategy": "stream",
       "sources": [
         "https://str0.creacast.com/melody2",
-        "https://i4.streams.ovh/sc/bluesrad/stream"
+        "https://i4.streams.ovh/sc/bluesrad/stream",
+        "https://live.rockfm.ro/ballads.rock",
+        "https://live.rockfm.ro/blues",
+        "https://live.rockfm.ro/kiss.energy",
+        "https://live.rockfm.ro/hard.rock",
+
+        "http://www.clasicradio.ro:7100/stream",
+        "http://89.39.189.22:2222/;",
+        "http://stream.darkedge.ro:8000/stream/2/",
+        "https://web.smartradio.ro:8443/smartnroll",
+        "http://www.clasicradio.ro:8032/stream",
+        "http://s3.myradiostream.com:7022/;",
+        "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053"
+      ]
+    },
+    {
+      "name": "winter chill",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october",
+      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_16:24:00",
+      "strategy": "stream",
+      "sources": [
+        "https://christmasfm.cdnstream1.com/2549_128.mp3"
       ]
     },
     {
       "name": "Evening relax celtic",
       "day": "monday_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "hour": "EACH_SECOND BETWEEN_12:24:00_AND_13:59:00",
       "strategy": "stream",
       "sources": [
         "https://streaming.broadcastradio.com:11135/celtic",
         "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
-        "http://192.111.140.11:8058/stream/1/"
+        "http://192.111.140.11:8058/stream/1/",
+        "https://asculta.radioromanian.net/8800/stream?ver=587047"
       ]
     },
     {

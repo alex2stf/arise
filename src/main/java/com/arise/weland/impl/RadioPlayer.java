@@ -257,19 +257,13 @@ public class RadioPlayer {
                     }, 1000 * 3);
                 }
 
-
-
-
-
-
-
             }
             else if ("sound-over-stream".equalsIgnoreCase(_m)){
-                pss(c, randomPick(removeFirst(1, _s)));
-                psos(_s.get(0)); //sound
+                play_stream_sound(c, removeFirst(1, _s), 0);
+//                psos(_s.get(0)); //sound
             }
             else if ("stream".equalsIgnoreCase(_m)){
-                pss(c, randomPick(_s));
+                play_stream_sound(c, _s, 0);
             }
 
 
@@ -282,33 +276,44 @@ public class RadioPlayer {
         ThreadUtil.TimerResult t;
 
 
-        void psos(final String p){
-            if (_o){
-                closeTimer(t);
-                int exp = randBetween(1000 * 60 * 5, 1000 * 60 * 20);
-                log.info("sndPlay scheduled at " + strfNowPlusMillis(exp));
-                t = delayedTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (_o) {
-                            File f = getRandomFileFromDirectory(p);
-                            try {
-                                log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
-                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
-                                psos(p);
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, exp);
-            }
+//        void psos(final String p){
+//            if (_o){
+//                closeTimer(t); //aici nu e bine, anulezi expire-ul la stream
+//                int exp = randBetween(1000 * 60 * 5, 1000 * 60 * 20);
+//                log.info("sndPlay scheduled at " + strfNowPlusMillis(exp));
+//                t = delayedTask(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (_o) {
+//                            File f = getRandomFileFromDirectory(p);
+//                            try {
+//                                log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
+//                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
+//                                psos(p);
+//                            } catch (Exception e){
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }, exp);
+//            }
+//        }
+
+        void setup_stream_close(final Handler<Show> c, long ex){
+            t = delayedTask(new Runnable() {
+                @Override
+                public void run() {
+                    _o = false;
+                    mPlayer.stop();
+                    log.i("Show ["+ n + "] stooped at " + new Date());
+                    trigger(c);
+                }
+            }, ex);
         }
 
 
-        void pss(final Handler<Show> c, final String u){
-            _o = true;
-            log.info("Start stream show [" + n + "] with url " + u);
+        void play_stream_sound(final Handler<Show> c, List<String> urls, int retryIndex){
+
             Map<Integer, List<String>> parts = Cronus.getParts(_h);
             long exp = 4000;
             if (parts.containsKey(2)){
@@ -316,34 +321,41 @@ public class RadioPlayer {
                 if (m != null){
                     Calendar li = decorate(m, getInstance());
                     exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());
-                    log.info("show " + n + " will end in " + strfMillis(exp) );
+                    log.info("Show [" + n + "] should end in " + strfMillis(exp) );
                 }
             }
 
+            if (retryIndex > urls.size()){
+                log.error("Urls list iteration complete. Are you connected to the internet?");
+                setup_stream_close(c, exp);
+                return;
+            }
+
+            _o = true;
+            String u = randomPick(urls);
+            long finalExp = exp;
             mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
                 @Override
                 public void handle(HttpURLConnection httpURLConnection) {
+                    log.info("Start stream show [" + n + "] with url " + u);
                     scp(u);
                     mPlayer.playStream(u);
+                    setup_stream_close(c, finalExp);
                 }
             }, new Handler<Tuple2<Throwable, Peer>>() {
                 @Override
-                public void handle(Tuple2<Throwable, Peer> t) {
-                    t.first().printStackTrace();
+                public void handle(Tuple2<Throwable, Peer> errTpl) {
+                    log.error("Check url " + u + " failed", errTpl.first());
+                    mPlayer.stop();
+                    closeTimer(t);
+                    _o = false;
+                    play_stream_sound(c, urls, retryIndex + 1);
                 }
             });
 
 
 
-            t = delayedTask(new Runnable() {
-                @Override
-                public void run() {
-                    _o = false;
-                    mPlayer.stop();
-                    log.i("show "+ n + " stooped at " + new Date());
-                    trigger(c);
-                }
-            }, exp);
+
         }
 
 

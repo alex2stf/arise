@@ -4,6 +4,7 @@ import com.arise.core.tools.Assert;
 
 import java.util.Calendar;
 
+import static com.arise.canter.Cronus.nilh;
 import static com.arise.canter.Cronus.parseHourRef;
 
 public class CronusTest2 {
@@ -16,8 +17,21 @@ public class CronusTest2 {
         String expect;
 //        expect = Cronus.parseDayRef("DAILY between_10_and_12", calendar);
 //
-//        Assert.assertEquals("2003-02-11", expect);
+//
         expect = Cronus.parseDayRef("DAILY between_10_and_12 EXCEPT:FEBRUARY", calendar);
+        Assert.assertEquals(nilh, expect);
+
+        calendar.set(Calendar.MONTH, 2);
+        expect = Cronus.parseDayRef("DAILY between_10_and_12 EXCEPT:FEBRUARY", calendar);
+        Assert.assertEquals("2003-03-11", expect);
+
+        expect = Cronus.parseDayRef("DAILY between_10_and_12 EXCEPT:FEBRUARY,MARCH", calendar);
+        Assert.assertEquals(nilh, expect);
+
+
+        expect = Cronus.parseDayRef("DAILY EXCEPT:FEBRUARY,MARCH", calendar);
+        Assert.assertEquals(nilh, expect);
+
         System.out.println(expect);
 
     }

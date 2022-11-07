@@ -8,7 +8,6 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
-import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -32,6 +31,23 @@ public class Cronus {
     private CommandRegistry commandRegistry;
     private List<Runnable> otherTasks = new ArrayList<>();
 
+
+    private static final Map<String, Integer> wk = Collections.unmodifiableMap(new HashMap<String, Integer>() {{
+        put("monday", 1);
+        put("tuesday", 2);
+        put("wednesday", 3);
+        put("thursday", 4);
+        put("friday", 5);
+        put("saturday", 6);
+        put("sunday", 7);
+    }});
+
+   private static final SimpleDateFormat EXTFMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+    private static final SimpleDateFormat WKDAYFMT = new SimpleDateFormat("EEEE", Locale.US);
+    private static final SimpleDateFormat MNTHFMT = new SimpleDateFormat("MMMM", Locale.US);
+    public static final String nilh = "xx:xx:xx";
+    private static final SimpleDateFormat STDFMT = new SimpleDateFormat("yyyy-MM-dd");
 
     public Cronus(CommandRegistry commandRegistry, String path) {
         this.commandRegistry = commandRegistry;
@@ -97,11 +113,11 @@ public class Cronus {
 
     //TODO use more
     public static String strf(Date d){
-        return sdf.format(d);
+        return EXTFMT.format(d);
     }
 
     public static String strNow(){
-        return sdf.format(new Date());
+        return EXTFMT.format(new Date());
     }
 
     public static String strfMillis(double t) {
@@ -225,15 +241,14 @@ public class Cronus {
         Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + new Date());
     }
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     public static boolean matchMoment(Calendar c, String d, String h) {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
-        return moment.equalsIgnoreCase(sdf.format(c.getTime()));
+        return moment.equalsIgnoreCase(EXTFMT.format(c.getTime()));
     }
 
 
-    private static final String nilh = "xx:xx:xx";
+
 
     public static Map<Integer, List<String>> getParts(String x) {
         int i = x.indexOf(" ");
@@ -257,18 +272,21 @@ public class Cronus {
 
         res.put(1, Arrays.asList(a));
 
-        if (null != b) {
-            if (b.startsWith("between_")) {
-                String substr = b.substring("between_".length());
-                String p[] = substr.split("_and_");
-                res.put(2, Arrays.asList(p[0], p[1]));
-            }
+        if (null != b && b.startsWith("between_")) {
+            String substr = b.substring("between_".length());
+            String p[] = substr.split("_and_");
+            res.put(2, Arrays.asList(p[0], p[1]));
         }
-        if (null != c){
-            if (c.startsWith("except:")){
-                String d = c.substring("except:".length());
-                res.put(3, Arrays.asList(d));
-            }
+
+        if (null != b && b.startsWith("except:")) {
+            String d = b.substring("except:".length());
+            res.put(3, Arrays.asList(d));
+            return res;
+        }
+
+        if (null != c && c.startsWith("except:")){
+            String d = c.substring("except:".length());
+            res.put(3, Arrays.asList(d));
         }
         return res;
     }
@@ -288,24 +306,24 @@ public class Cronus {
 
         if (parts.containsKey(3)){  //except
             String except = parts.get(3).get(0);
-//            if (isException(except, c)){
-//
-//            }
+            if (isException(except, c)){
+                return nilh;
+            }
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         if ("DAILY".equalsIgnoreCase(moment)) {
-            return sdf.format(c.getTime());
+            return STDFMT.format(c.getTime());
         }
 
         if (moment.indexOf("_") > -1 || isWeekdayFormat(moment)){
             String dwd[] = moment.toLowerCase().split("_");
             if (isWeekdayFormat(dwd)){
                 Date d = c.getTime();
-                String n = new SimpleDateFormat("EEEE", Locale.US).format(d).toLowerCase();
+                String n = WKDAYFMT.format(d).toLowerCase();
                 for (String s: dwd){
                     if (n.equals(s)){
-                        return sdf.format(d);
+                        return STDFMT.format(d);
                     }
                 }
                 return nilh;
@@ -313,14 +331,28 @@ public class Cronus {
             return nilh;
         }
         try {
-            Date d = sdf.parse(moment);
-            return sdf.format(d);
+            Date d = STDFMT.parse(moment);
+            return STDFMT.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+
+
+    private static boolean isException(String s, Calendar c) {
+        String p[] = s.split(",");
+        String w = WKDAYFMT.format(c.getTime()).toLowerCase();
+        String m = MNTHFMT.format(c.getTime()).toLowerCase();
+
+        for (String x: p){
+            if (w.equalsIgnoreCase(x) || m.equalsIgnoreCase(x)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public static String parseHourRef(String input, Calendar calendar) {
@@ -401,15 +433,7 @@ public class Cronus {
     }
 
 
-    private static final Map<String, Integer> wk = Collections.unmodifiableMap(new HashMap<String, Integer>() {{
-        put("monday", 1);
-        put("tuesday", 2);
-        put("wednesday", 3);
-        put("thursday", 4);
-        put("friday", 5);
-        put("saturday", 6);
-        put("sunday", 7);
-    }});
+
 
 
     public static boolean isWeekdayFormat(String... args) {

@@ -6,6 +6,7 @@ import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.canter.CommandRegistry;
+import com.arise.core.exceptions.CommunicationException;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
@@ -16,11 +17,14 @@ import com.arise.core.tools.Util;
 import com.arise.weland.impl.ContentInfoProvider;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MediaPlayer {
+
+    private static final Mole log = Mole.getInstance(MediaPlayer.class);
 
     public static volatile boolean isAppClosed = false;
 
@@ -82,6 +86,7 @@ public abstract class MediaPlayer {
 
     public abstract void validateStreamUrl(String u, Handler<HttpURLConnection> handler, Handler<Tuple2<Throwable, Peer>> tuple2Handler);
 
+
     protected void validateSync(String u, final Handler<HttpURLConnection> suk, final Handler<Tuple2<Throwable, Peer>> erh) {
 
         final JHttpClient c = new JHttpClient();
@@ -98,18 +103,66 @@ public abstract class MediaPlayer {
         c.connectSync(request, new Handler<HttpURLConnection>() {
             @Override
             public void handle(HttpURLConnection x) {
-                suk.handle(x);
+
+                int code = -1;
+                Throwable err = null;
+                try {
+                    code = x.getResponseCode();
+                } catch (Exception e) {
+                    err = new CommunicationException("Get response code failed for " + u, e);
+                }
                 close(c);
+
                 try {
                     x.disconnect();
-                    close(x.getInputStream());
-                    close(x.getErrorStream());
-                    close(x.getOutputStream());
-                } catch (Exception e){
+                }catch (Exception e){
+                    if (err == null){
+                        err = new CommunicationException("Http disconnect failed for " + u, e);
+                    }
+                }
 
+                try {
+                    close(x.getInputStream());
+                } catch (Exception e) {
+                    if (err == null){
+                        err = new CommunicationException("InputStream close failed for " + u, e);
+                    }
+                }
+
+                try {
+                    close(x.getErrorStream());
+                } catch (Exception e) {
+                    if (err == null){
+                        err = new CommunicationException("ErrorStream close failed for " + u, e);
+                    }
+                }
+
+                try {
+                    close(x.getOutputStream());
+                } catch (Exception e) {
+                    if (err == null){
+                        err = new CommunicationException("OutputStream close failed for " + u, e);
+                    }
+                }
+
+                try {
+                    x.disconnect();
+                } catch (Exception e){
+                    if (err == null){
+                        err = new CommunicationException("HttpConnection disconnect failed for " + u, e);
+                    }
+                }
+
+                if (code > 199 && code < 299){
+                    suk.handle(x);
+                } else {
+                    erh.handle(new Tuple2<>(err, c));
                 }
 
             }
         });
     }
+
+
+
 }
