@@ -417,7 +417,7 @@ public class StringUtil {
         if ("LAYNEE_WALL".equals(s)){
             return s;
         }
-        return  ("" + s).replaceAll("\\s+","")
+        return  ("" + s).toLowerCase(Locale.ROOT).replaceAll("\\s+","")
                 .replaceAll("http:", "L")
                 .replaceAll("https:", "U")
                 .replaceAll(":", "Q")
@@ -444,6 +444,7 @@ public class StringUtil {
                 .replaceAll("/", "7")
                 .replaceAll("mate", "M3")
                 .replaceAll("generic", "89")
+                .replaceAll("htchtchtc", "3htc")
                 .replaceAll("alex", "SAP");
     }
 

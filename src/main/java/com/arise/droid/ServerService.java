@@ -4,6 +4,7 @@ import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
 import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
 import static com.arise.core.AppSettings.getProperty;
 import static com.arise.core.AppSettings.isTrue;
+import static com.arise.core.tools.ThreadUtil.startThread;
 import static com.arise.droid.AppUtil.ON_START;
 
 import android.app.IntentService;
@@ -88,7 +89,10 @@ public class ServerService extends Service {
         if (isTrue(RADIO_ENABLED)){
             AppUtil.rPlayer = new RadioPlayer();
             RadioPlayer rPlayer = AppUtil.rPlayer;
-            rPlayer.loadShowsResourcePath(getProperty(RADIO_SHOWS_PATH));
+
+
+
+
 
             rPlayer.onPlay(new Handler<RadioPlayer>() {
                 @Override
@@ -102,7 +106,14 @@ public class ServerService extends Service {
                     DeviceStat.getInstance().setProp("rplayer.play", "false");
                 }
             });
-            rPlayer.play();
+            startThread(new Runnable() {
+                @Override
+                public void run() {
+//                    rPlayer.loadTestData();
+                    rPlayer.loadShowsResourcePath(getProperty(RADIO_SHOWS_PATH));
+                    rPlayer.play();
+                }
+            }, "Radio-Thread");
         }
     }
 
@@ -129,8 +140,7 @@ public class ServerService extends Service {
 
 
     private void startServer() {
-        log.info("Server service started");
-        prepareServer();
+        log.info("Server service starting");
 
         server = new IOServer()
                 .setPort(8221)
@@ -242,6 +252,8 @@ public class ServerService extends Service {
         log("ON CREATE");
 
         _cmd_create_recv = true;
+
+
         super.onCreate();
     }
 
@@ -289,7 +301,7 @@ public class ServerService extends Service {
     }
 
     private void log(String text) {
-        log.info(".........................................SRVLOG\n " + text + "\n\n\n\n");
+        log.info("\n\t      " + text + "\n\n\n\n");
     }
 
 }

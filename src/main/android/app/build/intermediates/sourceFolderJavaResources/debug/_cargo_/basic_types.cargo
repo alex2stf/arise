@@ -1,0 +1,50 @@
+#using [context:optional_conf] ?iterable type <type_name> <lang type>
+
+using java type string java.lang.String
+using java type int java.lang.Integer
+using java type double java.lang.Double
+using java type bool boolean
+using java type char char
+using java type long java.lang.Long
+using java type float java.lang.Float
+using java type date java.util.Date
+using java type file java.io.File
+using java type blob java.sql.Blob
+using java type timestamp java.sql.Timestamp
+
+using java iterable type list java.util.List<?>
+using java iterable type set java.util.Set<?>
+using java iterable type arraylist java.util.ArrayList<?>
+using java iterable type map java.util.Map<?,?>
+using java type cloneable java.lang.Cloneable
+using java type serializable java.io.Serializable
+
+
+using cpp type int int
+using cpp type bool bool
+using cpp type char char
+using cpp type long long
+using cpp type date int
+using cpp type double double
+using cpp type file double
+using cpp type blob double
+using cpp type timestamp double
+
+using cpp iterable type list std.list<?>
+using cpp iterable type map std.map<?,?>
+using cpp iterable type set std.set<?>
+using cpp require iostream type string std.string
+
+using sql-ora type char CHAR
+using sql-ora type string VARCHAR
+using sql-ora type long LONG
+using sql-ora type int NUMBER
+using sql-ora type date DATE
+using sql-ora type double NUMBER
+using sql-ora type bool NUMBER
+using sql-ora type file BFILE
+using sql-ora type blob BLOB
+using sql-ora type timestamp TIMESTAMP
+
+
+#using date format dd-mm-YYYY

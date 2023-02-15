@@ -72,7 +72,12 @@ public class DesktopContentHandler extends ContentHandler {
                         rplayer.stop();
                     }
 
-                    deskMPlayer.stop();
+                    deskMPlayer.stop(new Handler<MediaPlayer>() {
+                        @Override
+                        public void handle(MediaPlayer mediaPlayer) {
+
+                        }
+                    });
                     sleep(1000 * 8);
                     if (_f != null) {
                         ThreadUtil.delayedTask(new Runnable() {
@@ -100,7 +105,7 @@ public class DesktopContentHandler extends ContentHandler {
                 if (rplayer != null && rplayer.isPlaying()){
                     rplayer.stop();
                 }
-                deskMPlayer.stop();
+                deskMPlayer.stop(null);
                 if (_f != null) {
                     _f.toFront();
                 }
@@ -156,7 +161,7 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
-        deskMPlayer.stop();
+        deskMPlayer.stop(null);
         return null;
     }
 

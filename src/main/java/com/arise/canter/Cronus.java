@@ -8,6 +8,7 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -23,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.arise.core.tools.ThreadUtil.repeatedTask;
+import static com.arise.core.tools.Util.EXTFMT;
 
 public class Cronus {
 
@@ -42,7 +44,6 @@ public class Cronus {
         put("sunday", 7);
     }});
 
-   private static final SimpleDateFormat EXTFMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     private static final SimpleDateFormat WKDAYFMT = new SimpleDateFormat("EEEE", Locale.US);
     private static final SimpleDateFormat MNTHFMT = new SimpleDateFormat("MMMM", Locale.US);
@@ -106,7 +107,7 @@ public class Cronus {
     }
 
     public static String strfNowPlusMillis(long t) {
-        Date d = new Date();
+        Date d = Util.now();
         d.setTime(d.getTime() + t);
         return strf(d);
     }
@@ -117,7 +118,7 @@ public class Cronus {
     }
 
     public static String strNow(){
-        return EXTFMT.format(new Date());
+        return EXTFMT.format(Util.now());
     }
 
     public static String strfMillis(double t) {
@@ -238,7 +239,7 @@ public class Cronus {
 
 
     public static void main(String[] args) {
-        Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + new Date());
+        Mole.getInstance(Cronus.class).log("Cronus instance started standalone at " + Util.now());
     }
 
 

@@ -183,7 +183,7 @@ public class AppCache {
         File loc = new File(FileUtil.findAppDir(), "app-cache.properties");
         Properties pr = FileUtil.loadProps(loc);
         pr.put(key, val);
-        FileUtil.saveProps(pr, loc, new Date() + "");
+        FileUtil.saveProps(pr, loc, Util.now() + "");
     }
 
     public static void putInt(String key, int value){

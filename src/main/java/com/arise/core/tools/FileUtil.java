@@ -545,7 +545,7 @@ public class FileUtil {
             if (StringUtil.hasText(c)){
                 p.store(o, c);
             } else {
-                p.store(o, "generated at "+new Date() + " by " + FileUtil.class.getCanonicalName());
+                p.store(o, "generated at "+ Util.now() + " by " + FileUtil.class.getCanonicalName());
             }
         }
         catch (Exception e ) {
@@ -714,7 +714,7 @@ public class FileUtil {
     public static File getNextFile(ContentType contentType, String child) {
         ContentType.Location location = contentType.location();
         File storage = findDir(location);
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Util.now());
 
         File resp;
         String path = storage.getPath() + File.separator;

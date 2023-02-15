@@ -55,7 +55,11 @@ public class DeskMPlayer extends MediaPlayer {
 
                 isAppClosed = true;
 
-                DeskMPlayer.this.stop();
+                try {
+                    DeskMPlayer.this.stop(null);
+                }catch (Exception e){
+
+                }
                 log.warn("Close all media player instances");
             }
         });
@@ -154,7 +158,7 @@ public class DeskMPlayer extends MediaPlayer {
             proc[0].destroy();
         }
         is_play = true;
-        if (u.startsWith("https")){
+        if (u.startsWith("https") ){
             proc[0] = (Process) r.getCommand("browser-open").execute(u);
         } else {
             String uri = "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(u);
@@ -184,15 +188,20 @@ public class DeskMPlayer extends MediaPlayer {
         close(aStream);
     }
 
-    public void stop() {
+    public void stop(Handler<MediaPlayer> comp) {
         stopClips();
         for (Process p: proc){
            if (p != null) {
                p.destroy();
            }
         }
-        r.getCommand("browser-close").execute();
+        if(r.containsCommand("browser-close")) {
+            r.getCommand("browser-close").execute();
+        }
         is_play = false;
+        if(comp != null){
+            comp.handle(this);
+        }
     }
 
     public void pause() {
@@ -215,6 +224,11 @@ public class DeskMPlayer extends MediaPlayer {
             log.error(e);
         }
         return "0";
+    }
+
+    @Override
+    public String getMaxVolume() {
+        return null;
     }
 
 

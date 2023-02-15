@@ -1,0 +1,20 @@
+[
+  {
+    "name": "open RockFm",
+    "day": "DAILY",
+    "hour": "07:00:00",
+    "cmd": {
+      "id": "browserOpen",
+      "args": ["https://live.rockfm.ro:8443/rockfm.aacp"]
+    }
+  },
+  {
+    "name": "open Jazz",
+    "day": "DAILY",
+    "hour": "19:27:40",
+    "cmd": {
+      "id": "browserOpen",
+      "args": ["https://stream.srg-ssr.ch/m/rsj/mp3_128"]
+    }
+  }
+]

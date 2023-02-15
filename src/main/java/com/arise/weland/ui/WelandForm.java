@@ -8,6 +8,7 @@ import com.arise.core.models.Provider;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
+import com.arise.core.tools.Util;
 import com.arise.weland.impl.RadioPlayer;
 
 import javax.imageio.ImageIO;
@@ -22,6 +23,7 @@ import java.util.List;
 import static com.arise.core.AppSettings.*;
 import static com.arise.core.AppSettings.isFalse;
 import static com.arise.core.tools.StringUtil.join;
+import static com.arise.core.tools.Util.now;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class WelandForm extends JFrame implements Runnable {
@@ -50,7 +52,7 @@ public class WelandForm extends JFrame implements Runnable {
         addT(prov, new Provider<String>() {
             @Override
             public String get() {
-                return sdf.format(new Date());
+                return sdf.format(now());
             }
         });
 
@@ -114,7 +116,7 @@ public class WelandForm extends JFrame implements Runnable {
         Mole.addAppender(new Mole.Appender() {
             @Override
             public void append(String id, Mole.Bag bag, String text) {
-                logTuple.first().append(id + " " + bag + "] (" + sdf.format(new Date()) + " ) " + text + "\n");
+                logTuple.first().append(id + " " + bag + "] (" + sdf.format(now()) + " ) " + text + "\n");
                 JScrollBar vertical = logTuple.second().getVerticalScrollBar();
                 vertical.setValue( vertical.getMaximum()  + 1);
             }

@@ -70,7 +70,7 @@ public abstract class MediaPlayer {
 
     public abstract Object play(String path, final Handler<String> c);
 
-    public abstract void stop();
+    public abstract void stop(Handler<MediaPlayer> onComplete);
 
     public abstract MediaPlayer setContentInfoProvider(ContentInfoProvider cip);
 
@@ -81,6 +81,8 @@ public abstract class MediaPlayer {
     public abstract String setVolume(String mVol);
 
     public abstract String getVolume();
+
+    public abstract String getMaxVolume();
 
     public abstract boolean isPlaying();
 

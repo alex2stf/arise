@@ -1,5 +1,8 @@
 package com.arise.droid.impl;
 
+import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
+import static com.arise.core.tools.ThreadUtil.startThread;
+
 import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
@@ -14,6 +17,7 @@ import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
 import com.arise.droid.MainActivity;
 import com.arise.droid.fragments.BrowserFragment;
+import com.arise.droid.fragments.MediaPlaybackFragment;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.model.MediaPlayer;
 
@@ -27,21 +31,29 @@ public class AndroidMediaPlayer extends MediaPlayer {
 
 
 
+    private volatile boolean is_play = false;
 
     public static MediaPlayer getInstance(){
         return instance;
     }
 
     @Override
-    public Object play(String path, Handler<String> c) {
-        c.handle(path);
+    public Object play(String path, Handler<String> next) {
+
+        MediaPlaybackFragment.playPath(path, next);
         return null;
     }
 
     @Override
-    public void stop() {
-
-       BrowserFragment.stopWebViewOnMainThread();
+    public void stop(Handler<MediaPlayer> onComplete) {
+        final MediaPlayer self = this;
+       BrowserFragment.stopWebViewOnMainThread(new Handler() {
+           @Override
+           public void handle(Object any) {
+               is_play = false;
+               onComplete.handle(self);
+           }
+       });
     }
 
     @Override
@@ -56,7 +68,14 @@ public class AndroidMediaPlayer extends MediaPlayer {
 
     @Override
     public void playStream(String path) {
-        BrowserFragment.openUrlOnMainThread(path);
+        if (path.startsWith("http:")) {
+            BrowserFragment.openUrlOnMainThread(
+                    "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(path)
+            );
+        } else {
+            BrowserFragment.openUrlOnMainThread(path);
+        }
+        is_play = true;
     }
 
     @Override
@@ -94,17 +113,35 @@ public class AndroidMediaPlayer extends MediaPlayer {
         return lV + "";
     }
 
+    String maxVol = null;
+
+    @Override
+    public String getMaxVolume() {
+        if (null == maxVol) {
+            AudioManager audioManager = (AudioManager) MainActivity.getStaticAppContext().getSystemService(Context.AUDIO_SERVICE);
+            maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) + "";
+        }
+        return maxVol;
+    }
+
     @Override
     public boolean isPlaying() {
-        return false;
+        return is_play;
     }
 
     @Override
     public void validateStreamUrl(String u, Handler<HttpURLConnection> suk, Handler<Tuple2<Throwable, Peer>> erh) {
-        ThreadUtil.startThread(new Runnable() {
+        String fU = u.trim();
+
+        if (fU.startsWith("html-content:")){
+            suk.handle(null);
+            return;
+        }
+
+        startThread(new Runnable() {
             @Override
             public void run() {
-                validateSync(u, suk, erh);
+                validateSync(fU, suk, erh);
             }
         }, "validate-stream-" + u);
     }

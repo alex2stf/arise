@@ -16,12 +16,15 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.arise.core.models.Handler;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.droid.AppUtil;
 import com.arise.droid.AppUtil.MediaState;
 import com.arise.droid.MainActivity;
+import com.arise.droid.impl.AndroidContentDecoder;
+import com.arise.droid.impl.AndroidContentHandler;
 import com.arise.droid.tools.ContextFragment;
 
 import com.arise.droid.views.MediaControls;
@@ -69,8 +72,44 @@ public class MediaPlaybackFragment extends ContextFragment {
     };
     private int numErrors =  0;
 
+    static MediaPlaybackFragment staticMediaPlaybackFragment;
 
+    public static void playPath(String path, Handler<String> c) {
+        ContentInfo contentInfo = contentInfoProvider.findByPath(path);
+        if (contentInfo == null){
+            File f = new File(path);
+            if (!f.exists()){
+                log.info("File " + f.getAbsolutePath() + " not found");
+                c.handle(path);
+                return;
+            }
 
+            contentInfo = AppUtil.DECODER.decode(f);
+        }
+
+        if (staticMediaPlaybackFragment == null){
+            log.info("Wait for ui to show...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            c.handle(path);
+            return;
+        }
+        final ContentInfo fci = contentInfo;
+        staticMediaPlaybackFragment.play(contentInfo, new Handler<ContentInfo>() {
+            @Override
+            public void handle(ContentInfo y) {
+                c.handle(fci.getPath());
+            }
+        }, new Handler<ContentInfo>() {
+            @Override
+            public void handle(ContentInfo x) {
+                c.handle(fci.getPath());
+            }
+        });
+    }
 
 
     private RelativeLayout.LayoutParams getParams(){
@@ -151,7 +190,7 @@ public class MediaPlaybackFragment extends ContextFragment {
                    else {
                        stopPlayer();
                        AppUtil.clearState();
-                       play(AppUtil.getState().getInfo());
+                       play(AppUtil.getState().getInfo(), null, null);
                    }
                    showMediaControls();
                }
@@ -174,6 +213,8 @@ public class MediaPlaybackFragment extends ContextFragment {
 
            //this is only internal
            restoreMediaPlaybackFragment();
+
+           staticMediaPlaybackFragment = this;
        }
        return root;
     }
@@ -187,7 +228,7 @@ public class MediaPlaybackFragment extends ContextFragment {
             mediaState = null;
         }
         if (mediaState != null && mediaState.getInfo() != null  && mediaState.isPlaying() ){
-            play(mediaState.getInfo());
+            play(mediaState.getInfo(), null, null);
             showPauseButton();
             updateSeekBar();
 //            focusCurrentTab();
@@ -230,7 +271,7 @@ public class MediaPlaybackFragment extends ContextFragment {
 
 
 
-    public void play(final ContentInfo info) {
+    public void play(final ContentInfo info, Handler<ContentInfo> onCompleteSucess, Handler<ContentInfo> onError) {
         if (info == null){
             return;
         }
@@ -285,6 +326,9 @@ public class MediaPlaybackFragment extends ContextFragment {
                             stopPlayer();
                             AppUtil.clearState();
                             numErrors = 0;
+                            if (onError != null){
+                                onError.handle(info);
+                            }
                         }
                         return true;
                     }
@@ -292,12 +336,17 @@ public class MediaPlaybackFragment extends ContextFragment {
                 videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
+
                         stopPlayer();
                         updateSeekBar();
                         clearState();
                         showMediaControls();
                         numErrors = 0;
-                        playNextFromPlaylist();
+                        if (onCompleteSucess != null){
+                            onCompleteSucess.handle(info);
+                        } else {
+                            playNextFromPlaylist();
+                        }
                     }
                 });
                 videoView.setVideoPath(info.getPath());
@@ -425,10 +474,10 @@ public class MediaPlaybackFragment extends ContextFragment {
         if (contentInfo == null){
             contentInfo = contentInfoProvider.findByPath(ContentInfo.decodePath(path));
             if(contentInfo != null){
-                play(contentInfo);
+                play(contentInfo, null, null);
             }
         } else {
-            play(contentInfo);
+            play(contentInfo, null, null);
         }
     }
 

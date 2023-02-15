@@ -18,6 +18,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StandardCacheWorker;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
@@ -65,7 +66,7 @@ public class Main {
             try {
                 new Robot().mouseMove(-2, -2);
                 if ("debug".equalsIgnoreCase(arguments.get(0))) {
-                    log.info("MOUSE_PING at " + new Date());
+                    log.info("MOUSE_PING at " + Util.now());
                 }
             } catch (AWTException e) {
                 e.printStackTrace();

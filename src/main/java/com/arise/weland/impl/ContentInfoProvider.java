@@ -11,6 +11,7 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
 import com.arise.weland.dto.Playlist;
@@ -353,7 +354,7 @@ public class ContentInfoProvider {
 
         log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scannedOnce){
-            log.info("Fetch complete " + playlist.name() + "  at " + new Date());
+            log.info("Fetch complete " + playlist.name() + "  at " + Util.now());
             return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
 
         }

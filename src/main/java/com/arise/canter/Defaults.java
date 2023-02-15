@@ -62,12 +62,12 @@ public class Defaults {
             if (!isEmpty(args) && hasText(args.get(0))){
                 SimpleDateFormat sdf = new SimpleDateFormat(args.get(0));
                 try {
-                    return sdf.format(new Date());
+                    return sdf.format(Util.now());
                 } catch (Exception e){
-                    return new Date() + "";
+                    return Util.now() + "";
                 }
             }
-            return new Date() + "";
+            return Util.now() + "";
         }
 
     };

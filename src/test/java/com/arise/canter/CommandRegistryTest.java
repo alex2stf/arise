@@ -16,32 +16,32 @@ public class CommandRegistryTest {
         commandRegistry.addCommand(Defaults.PROCESS_EXEC);
         commandRegistry.addCommand(Defaults.PROCESS_EXEC);
 
-        String test;
+        Object result;
 
         if (SYSUtils.isWindows()) {
-            test = (String) commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "hi"});
-            Assert.assertEquals("hi", test);
+            result = commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "hi"});
+            Assert.assertEquals("hi", result);
 
-            test = (String) commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "$sum(1,2)"});
-            Assert.assertEquals("3", test);
+            result =  commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "$sum(1,2)"});
+            Assert.assertEquals("3", result);
 
 
             String id = UUID.randomUUID() + "-test-file.test-file";
             File f = new File(id);
             f.deleteOnExit();
             FileUtil.writeStringToFile(f, id);
-            test = (String) commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "$valid-file("+id+",other.sh)"});
-            Assert.assertEquals(id, new File(test).getName());
+            result = (String) commandRegistry.execute("process-exec", new String[]{"cmd.exe", "/c", "echo", "$valid-file("+id+",other.sh)"});
+            Assert.assertEquals(id, new File(result + "").getName());
             f.delete();
         }
 
-        test = (String) commandRegistry.execute("get-date", new String[]{});
-        System.out.println("get-date cmd default" + test);
-        Assert.assertNotNull(test);
+        result = commandRegistry.execute("get-date", new String[]{});
+        System.out.println("get-date cmd default" + result);
+        Assert.assertNotNull(result);
 
-        test = (String) commandRegistry.execute("get-date", new String[]{"yyyy-MM-dd"});
-        System.out.println("get-date cmd custom" + test);
-        Assert.assertNotNull(test);
+        result = commandRegistry.execute("get-date", new String[]{"yyyy-MM-dd"});
+        System.out.println("get-date cmd custom" + result);
+        Assert.assertNotNull(result);
     }
 
     public static void test_2(){

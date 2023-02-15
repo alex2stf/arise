@@ -12,6 +12,7 @@ import com.arise.core.tools.CollectionUtilTest;
 import com.arise.core.tools.StringUtilTest;
 import com.arise.tests.HttpBoundaryTest;
 import com.arise.weland.dto.ContentInfoTest;
+import com.arise.weland.impl.RadioPlayerTest;
 
 import static com.arise.core.tools.Assert.assertTrue;
 
@@ -28,6 +29,7 @@ public class TestMain {
         CommandRegistryTest.main(args);
         DependencyManagerTest.main(args);
         CollectionUtilTest.main(args);
+        RadioPlayerTest.main(args);
         assertTrue(true);
     }
 }

@@ -7,6 +7,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -157,6 +159,8 @@ public final class Util {
     }
 
 
+
+
     /**
      *
      * <code>
@@ -198,7 +202,35 @@ public final class Util {
     }
 
 
-    
+    public static final SimpleDateFormat EXTFMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+
+    public static Date now(){
+
+        String f = System.getProperty("arise.forced.now", null);
+        if (StringUtil.hasText(f)){
+            try {
+                return EXTFMT.parse(f);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Date();
+    }
+
+    public static Calendar nowCalendar() {
+        String f = System.getProperty("arise.forced.now", null);
+        if (StringUtil.hasText(f)){
+            try {
+                Calendar c = Calendar.getInstance();
+                c.setTime(EXTFMT.parse(f));
+                return c;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return Calendar.getInstance();
+    }
 
 
 

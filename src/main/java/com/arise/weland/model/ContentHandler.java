@@ -3,6 +3,7 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
+import com.arise.core.models.Handler;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
@@ -99,7 +100,7 @@ public abstract  class ContentHandler {
 
             if ("play".equalsIgnoreCase(x)){
                 if (mPlayer().isPlaying()){
-                    mPlayer().stop();
+                    mPlayer().stop(null);
                     sleep(1000 * 8);
                 }
                 rPlayer().play();

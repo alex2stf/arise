@@ -40,7 +40,7 @@ public class Assert {
         StackTraceElement cm = ste[3];
         int c = cnt.incrementAndGet();
         log.info(
-                "T(" + c + ") " + as.getMethodName() + " passed at " + cm.getClassName() + "#" + cm.getMethodName()
+                "T(" + c + ") " + as.getMethodName() + " passed at " + cm.getClassName() + "#" + cm.getMethodName() + " line:" + cm.getLineNumber()
         );
 
         /*

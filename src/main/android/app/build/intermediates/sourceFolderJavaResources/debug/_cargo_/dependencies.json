@@ -1,0 +1,356 @@
+{
+  "WEBCAM_CAPTURE": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "webcam-capture-0.3.12",
+        "profiles": ["*"],
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$download(https://repo1.maven.org/maven2/com/github/sarxos/webcam-capture/0.3.12/webcam-capture-0.3.12.jar, libs, webcam-capture-0.3.12.jar)"
+          }
+        ]
+      }
+    ]
+  },
+  "KAFKA_2_8_0": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "kafka_2.8.0-0.8.0.jar",
+        "profiles": ["*"],
+        "params": [ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/org/apache/kafka/kafka_2.8.0/0.8.0/kafka_2.8.0-0.8.0.jar, libs, kafka_2.8.0-0.8.0.jar)"
+        } ]
+      }
+    ]
+  },
+  "ZK_CLIENT_11": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "zkclient-0.11.jar",
+        "profiles": ["*"],
+        "params": [ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/com/101tec/zkclient/0.11/zkclient-0.11.jar, libs, zkclient-0.11.jar)"
+        }]
+      }
+    ]
+  },
+  "KAFKA_CLIENT": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "kafka-clients-3.2.1.jar",
+        "profiles": ["*"],
+        "params":[ {
+          "key": "jar-location",
+          "val": "$download(https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.2.1/kafka-clients-3.2.1.jar, libs, kafka-clients-3.2.1.jar)"
+        }]
+      }
+    ]
+  },
+  "JAVAZOOM_JLAYER_101": {
+    "type": "jar",
+    "versions": [
+      {
+        "name": "maven-jlayer-1.0.1.jar",
+        "profiles": ["*"],
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$file-exist($maven-repo(javazoom/jlayer/1.0.1/jlayer-1.0.1.jar))"
+          }
+        ]
+      },
+      {
+        "name": "jlayer-1.0.1.jar",
+        "params": [
+          {
+            "key": "jar-location",
+            "val": "$download(https://repo1.maven.org/maven2/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar, libs, jlayer-1.0.1.jar)"
+          }
+        ]
+      }
+    ]
+  },
+  "MEDIA_INFO_CLI_WIN32": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "MediaInfo_CLI_0.7.60_Windows_i386",
+        "profiles": ["win", "windows"],
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://mediaarea.net/download/binary/mediainfo/0.7.60/MediaInfo_CLI_0.7.60_Windows_i386.zip, downloads, MediaInfo_CLI_0.7.60_Windows_i386.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down,MediaInfo_CLI_0.7.60_Windows_i386.zip), $sub-location(bin,MediaInfo_CLI_0_7_60_i386,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,MediaInfo_CLI_0_7_60_i386/MediaInfo.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+  "MNT_CLI_WIN_32": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "mnt_cli_32",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://netix.dl.sourceforge.net/project/moviethumbnail/movie%20thumbnailer%20win32%20binary/mtn-200808a-win32/mtn-200808a-win32.zip, down, mtn-200808a-win32.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, mtn-200808a-win32.zip), $sub-location(bin,mnt_cli_32,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,mnt_cli_32/mtn-200808a-win32/mtn.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+  "7-ZIP": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "7-zip-win-32",
+        "profiles": [
+          "windows", "win32", "win64"
+        ],
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://www.7-zip.org/a/7za920.zip,down,7za920.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, 7za920.zip), $sub-location(bin,7za920,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,7za920/7za.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+  "MP3_PLAYER": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "mp3_player_mpg123_1_14_0",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(http://www.mpg123.de/download/win64/mpg123-1.14.0-x86-64.zip, down, mpg123-1.14.0-x86-64.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(download, mpg123-1.14.0-x86-64.zip), $sub-location(bin,mp3_player_mpg123_1_14_0,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,mp3_player_mpg123_1_14_0/mpg123-1.14.0-x86-64/mpg123.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "NWJS": {
+    "type": "binary",
+    "versions": [
+      {
+        "name": "nwjs_win32",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(http://dl.nwjs.io/v0.12.0/nwjs-v0.12.0-win-ia32.zip, down, nwjs-v0.12.0-win-ia32.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down, nwjs-v0.12.0-win-ia32.zip), $sub-location(bin,nwjs-v0.12.0-win-ia32,rwd) )"
+          },
+          {
+            "key": "binary-location",
+            "val": "$file-exist( $sub-location(bin,nwjs-v0.12.0-win-ia32/nwjs-v0.12.0-win-ia32/nw.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+  "MIN_CCOMPILER": {
+    "type": "sdk",
+    "versions": [
+      {
+        "name": "mingw-opengl",
+        "condition": "always",
+        "params": [
+          {
+            "key": "zip-location",
+            "val": "$download(https://github.com/jonasstrandstedt/MinGW/archive/master.zip,down,mingw-opengl.zip)"
+          },
+          {
+            "key": "unzip-location",
+            "val": "$unzip($sub-location(down, mingw-opengl.zip), $sub-location(bin,mingw-opengl,rwd) )"
+          },
+          {
+            "key": "make",
+            "val": "$file-exist( $sub-location(bin,mingw-opengl/MinGW-master/MinGW/bin/mingw32-make.exe,r)  )"
+          }
+        ]
+      }
+    ]
+  },
+
+  "FS_WEBCAM": {
+    "type": "binary",
+    "versions": [
+      {
+        "profiles": ["ubuntu", "ubuntu32"],
+        "name": "fs-webcam",
+        "params": [
+          {
+            "key": "git-zip-location",
+            "val": "$download(https://github.com/fsphil/fswebcam/archive/refs/heads/master.zip,down,fs-webcam-git.zip)"
+          },
+          {
+            "key": "git-unzip-location",
+            "val": "$unzip($sub-location(down, fs-webcam-git.zip), $sub-location(src,fs-webcam-git-src,rwd) )"
+          },
+          {
+            "key": "configure",
+            "val": "$shell-exec($sub-location(src,fs-webcam-git-src/fswebcam-master,r), null, $sub-location(src,fs-webcam-git-src/fswebcam-master/configure,r) )"
+          },
+          {
+            "key": "make",
+            "val": "$shell-exec($sub-location(src,fs-webcam-git-src,r), null, make )"
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "CHROME_DRIVER": {
+    "type": "binary",
+    "versions": [
+      {
+        "id": "chrome-driver-v93.0.4577.63",
+        "platform-match": "WINDOWS",
+        "executable": "chromedriver.exe",
+        "urls": [
+          "https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_win32.zip"
+        ]
+      },
+      {
+        "id":"chrome-driver-86.0.4240.22",
+        "platform-match": "LINUX",
+        "executable": "chromedriver",
+          "urls" : [
+            "https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip"
+          ]
+      }
+    ]
+  },
+  "SELENIUM_JAR": {
+    "type": "jar",
+    "versions": [
+      {
+        "id": "selenium-driver",
+        "urls": [
+          "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.0.0/selenium-server-4.0.0.jar"
+        ]
+      }
+    ]
+  },
+  "CURL": {
+    "type": "sources",
+    "versions": [
+      {
+        "id": "curl_7-sources",
+        "platform-match": "*",
+        "urls": [
+          "https://curl.se/download/curl-7.79.1.zip"
+        ]
+      }
+    ]
+  },
+  "ORACLE_CLIENT": {
+    "type": "library",
+    "options": [
+      {
+        "for-ids":["ora_client_19_x86", "ora_client_19_x64"]
+      }
+    ],
+    "versions": [
+      {
+        "id": "ora_client_19_x86",
+        "platform-match": "WIN32",
+        "urls": [
+          "internal://oracle_instantclient_win32_19_13.zip"
+        ],
+        "lib-paths": [
+          "sdk/lib/msvc"
+        ],
+        "dynamic-libs": [
+          "oci.lib"
+        ],
+        "static-libs": [
+          "oci.dll",
+          "oraocci19.dll",
+          "oraocci19d.dll",
+          "oraociei19.dll",
+          "oraons.dll",
+          "orasql19.dll"
+        ],
+        "includes": [
+          "sdk/include"
+        ]
+      },
+      {
+        "id": "ora_client_19_x64",
+        "platform-match": "WIN64",
+        "urls": [
+          "internal://oracle_instantclient_win64_19_12.zip"
+        ],
+        "lib-paths": [
+          "sdk/lib/msvc"
+        ],
+        "dynamic-libs": [
+          "oci.lib"
+        ],
+        "static-libs": [
+          "oci.dll",
+          "oraocci19.dll",
+          "oraocci19d.dll",
+          "oraociei19.dll",
+          "oraons.dll",
+          "orasql19.dll"
+        ],
+        "includes": [
+          "sdk/include"
+        ]
+      }
+    ]
+  }
+}

@@ -5,28 +5,34 @@ import com.arise.astox.net.models.Peer;
 import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.cargo.management.DependencyManager;
+import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.arise.canter.Cronus.decorate;
 import static com.arise.canter.Cronus.fromString;
-import static com.arise.canter.Cronus.strNow;
 import static com.arise.canter.Cronus.strfMillis;
-import static com.arise.canter.Cronus.strfNowPlusMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
+import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.CollectionUtil.randomPick;
 import static com.arise.core.tools.CollectionUtil.removeFirst;
 import static com.arise.core.tools.FileUtil.findStream;
@@ -34,8 +40,9 @@ import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
 import static com.arise.core.tools.StreamUtil.toBytes;
 import static com.arise.core.tools.ThreadUtil.*;
-import static com.arise.core.tools.Util.randBetween;
-import static java.util.Calendar.getInstance;
+import static com.arise.core.tools.Util.mathMax;
+import static com.arise.core.tools.Util.nowCalendar;
+
 
 public class RadioPlayer {
 
@@ -110,9 +117,14 @@ public class RadioPlayer {
             c.stop();
         }
 
-        mPlayer.stop();
-        is_play = false;
-        _cpath = "";
+        mPlayer.stop(new Handler<MediaPlayer>() {
+            @Override
+            public void handle(MediaPlayer mediaPlayer) {
+                is_play = false;
+                _cpath = "";
+            }
+        });
+
     }
 
     int lR = 1000;
@@ -123,7 +135,7 @@ public class RadioPlayer {
         }
         Show s = getActiveShow();
         if (s == null){
-            log.warn("no valid show defined for now... retry in " + lR  + "ms " + new Date());
+            log.warn("no valid show defined for now... retry in " + lR  + "ms " + Util.now());
             sleep(lR);
             //limit to 20 minutes
             if (lR < 1000 * 60 * 20) {
@@ -156,17 +168,103 @@ public class RadioPlayer {
         return null;
     }
 
+    public void loadTestData(){
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR_OF_DAY, 24);
+
+
+        Map m = null;
+        try {
+            m = (Map) decodeBytes(toBytes(findStream("#radio_shows.json")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Map<String, List<String>> lx = getMap(m, "lists");
+        List<String> x = new ArrayList<>();
+        for (Map.Entry<String, List<String>> e: lx.entrySet()){
+            for (String s : e.getValue()) {
+                x.add(s);
+            }
+        }
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        int dex = 0;
+        for (Date date = start.getTime(); start.before(end); start.add(Calendar.SECOND, 10), date = start.getTime()) {
+            // Do your job here with `date`.
+
+            if (dex > x.size() - 1){
+                dex = 0;
+            }
+
+
+            Show s = new Show();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.MINUTE, -1);
+
+            String hh = "EACH_SECOND BETWEEN_" + sdf.format(cal.getTime()) + "_AND_" + sdf.format(date);
+            s.n = "Test show " + hh;
+            s._h = hh;
+            s._d = "monday_tuesday_wednesday_thursday_friday_sunday_saturday";
+
+            String xx =
+                    "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/lJlEQim-yMo?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+            s._s = Arrays.asList(xx);
+            s._m = "stream";
+            shows.add(s);
+            dex++;
+
+            System.out.println(s._h);
+        }
+
+
+    }
+
+
+    public void addShow(Show s){
+        shows.add(s);
+    }
+
     public void loadShowsResourcePath(String p) {
         try {
+
+
             Map m = (Map) decodeBytes(toBytes(findStream(p)));
+            Map<Object, Object> lx = getMap(m, "lists");
+            Map<String, List<String>> lists = new HashMap<>();
+
+            if (!isEmpty(lx)){
+                for (Map.Entry<Object, Object> e: lx.entrySet()){
+                    if (e.getValue() instanceof List){
+                        List<String> c = new ArrayList<>();
+                        for (Object zz: ((List)e.getValue())){
+                            if (zz instanceof String){
+                               c.add(zz + "");
+                            }
+                        }
+                        String k = e.getKey() + "";
+                        if(!lists.containsKey(k)){
+                            lists.put(k, c);
+                        }
+                    }
+                }
+            }
+
             List<Map> x = getList(m, "shows");
             for (Map h: x){
                 Show s = new Show();
                 s.n = getString(h, "name");
                 s._h = getString(h, "hour");
                 s._d = getString(h, "day");
-                s._s = getList(h, "sources");
+                s._s = merge(getList(h, "sources"), lists);
                 s._m = getString(h, "strategy");
+                s._f = getString(h, "fallback");
+                s._v = getString(h, "volume");
                 s._t = getInt(h, "delay", 0);
                 shows.add(s);
             }
@@ -176,10 +274,33 @@ public class RadioPlayer {
 
     }
 
+    private List<String> merge(List<String> src, Map<String, List<String>> buf){
+        if (isEmpty(buf)){
+            return src;
+        }
+
+        List<String> res = new ArrayList<>();
+
+        for (String s: src){
+            if (s.startsWith("${") && s.endsWith("}")){
+                String key = s.substring(2, s.length() - 1);
+                for (String u: buf.get(key)){
+                    res.add(u);
+                }
+            } else {
+                res.add(s);
+            }
+        }
+
+        return res;
+    }
+
     public static class Show {
         int _t;
         String _d;
         String _h;
+        String _f;
+        String _v;
         List<String> _s;
         String _m;
         String n;
@@ -191,10 +312,11 @@ public class RadioPlayer {
         }
 
         public boolean isActive() {
-            boolean act = (Cronus.matchMoment(getInstance(), _d, _h));
+            boolean act = (Cronus.matchMoment(nowCalendar(), _d, _h));
             if (act){
-                log.info("show " + n + " active = " + act);
+                log.info("Show [" + n + "] active = " + act);
             }
+
             return act;
         }
 
@@ -206,122 +328,71 @@ public class RadioPlayer {
 
 
         public synchronized void run(final Handler<Show> c){
-            if ("play-local".equalsIgnoreCase(_m)){
-                String p = _s.get(0);
-                File f = getRandomFileFromDirectory(p);
-                scp(f.getAbsolutePath());
-                mPlayer.play(f.getAbsolutePath(), new Handler<String>() {
-                    @Override
-                    public void handle(String s) {
-                        trigger(c);
+
+            if (StringUtil.hasText(_v)){
+                if (_v.endsWith("%") && StringUtil.hasText(mPlayer.getMaxVolume())){
+                    String num = _v.substring(0, _v.length() - 1);
+                    try {
+                        Integer max = Integer.parseInt(mPlayer.getMaxVolume());
+                        Integer percent = Integer.parseInt(num);
+                        mPlayer.setVolume( (max / (100 / percent) + ""));
+                    } catch (Exception e){
+                        log.warn("Unable to set volume because", e);
                     }
-                });
-            }
-            else if ("sound-over-music".equalsIgnoreCase(_m)){
-                String s = _s.get(0);
-                String m = _s.get(1);
-                final File sf = getRandomFileFromDirectory(s);
-                File mf = getRandomFileFromDirectory(m);
-
-                if (mf != null && mf.exists()){
-                    long max = mPlayer.getAudioDurationMs(mf, 3000);
-                    final int time = (int) ((Math.random() * (max - 1000)) + 1000);
-
-                    if (sf != null && sf.exists()) {
-                        t = delayedTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                log.info("snd " + sf.getAbsolutePath() + " delayed " + time);
-                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(sf.getAbsolutePath());
-                            }
-                        }, time);
-                    } else {
-                        log.info(sf != null ? "Snd file " + sf.getAbsolutePath() + " not found" : "No snd file found in " + s);
-                    }
-
-                    scp(mf.getAbsolutePath());
-                    mPlayer.play(mf.getAbsolutePath(), new Handler<String>() {
-                        @Override
-                        public void handle(String s) {
-                            trigger(c);
-                        }
-                    });
-                } else {
-                    log.info(mf != null ? "File " + mf.getAbsolutePath() + " not found" : " No file found in " + m);
-                    scp("");
-                    t = delayedTask(new Runnable() {
-                        @Override
-                        public void run() {
-                            trigger(c);
-                        }
-                    }, 1000 * 3);
                 }
-
             }
-            else if ("sound-over-stream".equalsIgnoreCase(_m)){
-                play_stream_sound(c, removeFirst(1, _s), 0);
-//                psos(_s.get(0)); //sound
-            }
-            else if ("stream".equalsIgnoreCase(_m)){
-                play_stream_sound(c, _s, 0);
-            }
-
-
-
-            else {
-                throw new SyntaxException("unknown strategy " + _m);
-            }
+            play_from_list_of_strings(c, _s, 0);
         }
 
         ThreadUtil.TimerResult t;
 
 
-//        void psos(final String p){
-//            if (_o){
-//                closeTimer(t); //aici nu e bine, anulezi expire-ul la stream
-//                int exp = randBetween(1000 * 60 * 5, 1000 * 60 * 20);
-//                log.info("sndPlay scheduled at " + strfNowPlusMillis(exp));
-//                t = delayedTask(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (_o) {
-//                            File f = getRandomFileFromDirectory(p);
-//                            try {
-//                                log.info("sndPlay " + f.getAbsolutePath() + " at " + strNow());
-//                                MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).play(f.getAbsolutePath());
-//                                psos(p);
-//                            } catch (Exception e){
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }, exp);
-//            }
-//        }
+
 
         void setup_stream_close(final Handler<Show> c, long ex){
             t = delayedTask(new Runnable() {
                 @Override
                 public void run() {
                     _o = false;
-                    mPlayer.stop();
-                    log.i("Show ["+ n + "] stooped at " + new Date());
-                    trigger(c);
+                    mPlayer.stop(new Handler<MediaPlayer>() {
+                        @Override
+                        public void handle(MediaPlayer mediaPlayer) {
+                            log.i("Show ["+ n + "] stooped at " + Util.now());
+                            trigger(c);
+                        }
+                    });
+
                 }
             }, ex);
         }
 
+        void close_all_resources(){
+            if (_o) {
+                closeTimer(t);
+                _o = false;
 
-        void play_stream_sound(final Handler<Show> c, List<String> urls, int retryIndex){
 
+                mPlayer.stop(new Handler<MediaPlayer>() {
+                    @Override
+                    public void handle(MediaPlayer mediaPlayer) {
+                        closeTimer(t);
+                        _o = false;
+                        log.info("Closing show [" + n + "] resources");
+                    }
+                });
+
+            }
+        }
+
+        void play_from_list_of_strings(final Handler<Show> c, List<String> urls, int retryIndex){
+            close_all_resources();
             Map<Integer, List<String>> parts = Cronus.getParts(_h);
             long exp = 4000;
             if (parts.containsKey(2)){
                 Cronus.MomentInDay m = fromString(parts.get(2).get(1));
                 if (m != null){
-                    Calendar li = decorate(m, getInstance());
-                    exp = Math.abs(li.getTimeInMillis() - getInstance().getTimeInMillis());
-                    log.info("Show [" + n + "] should end in " + strfMillis(exp) );
+                    Calendar li = decorate(m, Util.nowCalendar());
+                    exp = Math.abs(li.getTimeInMillis() - nowCalendar().getTimeInMillis());
                 }
             }
 
@@ -331,25 +402,64 @@ public class RadioPlayer {
                 return;
             }
 
-            _o = true;
+
             String u = randomPick(urls);
+
+            if (u.startsWith("file:")){
+                String path = u.substring("file:".length());
+                File root = new File(path);
+                if (!root.exists() && !root.isDirectory()){
+                    log.warn("Directory " + root.getAbsolutePath() + " does not exist");
+
+                    if (StringUtil.hasText(_f)){
+                        log.info("Using fallback " + _f);
+                        p.forceStartActiveShow(_f, c);
+                    } else {
+                        play_from_list_of_strings(c, urls, retryIndex + 1);
+                    }
+                    return;
+                }
+                File f = getRandomFileFromDirectory(root.getAbsolutePath());
+                log.info("Play " + f.getAbsolutePath());
+                if (f == null){
+                    if (StringUtil.hasText(_f)){
+                        log.info("Using fallback " + _f);
+                        p.forceStartActiveShow(_f, c);
+                    } else {
+                        play_from_list_of_strings(c, urls, retryIndex + 1);
+                    }
+                    return;
+                }
+                scp(f.getAbsolutePath());
+                mPlayer.play(f.getAbsolutePath(), new Handler<String>() {
+                    @Override
+                    public void handle(String s) {
+                        trigger(c);
+                    }
+                });
+                return;
+            }
+
+
             long finalExp = exp;
+            log.info("Show [" + n + "] should end in " + strfMillis(finalExp) );
+
             mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
                 @Override
-                public void handle(HttpURLConnection httpURLConnection) {
+                public void handle(HttpURLConnection huc) {
                     log.info("Start stream show [" + n + "] with url " + u);
                     scp(u);
                     mPlayer.playStream(u);
                     setup_stream_close(c, finalExp);
+                    _o = true;
                 }
             }, new Handler<Tuple2<Throwable, Peer>>() {
                 @Override
                 public void handle(Tuple2<Throwable, Peer> errTpl) {
                     log.error("Check url " + u + " failed", errTpl.first());
-                    mPlayer.stop();
-                    closeTimer(t);
+                    close_all_resources();
+                    play_from_list_of_strings(c, urls, retryIndex + 1);
                     _o = false;
-                    play_stream_sound(c, urls, retryIndex + 1);
                 }
             });
 
@@ -376,11 +486,25 @@ public class RadioPlayer {
         public void stop() {
 
             closeTimer(t);
-            MediaPlayer.getMediaPlayer("radio-sounds", cmdReg).stop();
-            mPlayer.stop();
+            mPlayer.stop(new Handler<MediaPlayer>() {
+                @Override
+                public void handle(MediaPlayer mediaPlayer) {
+
+                }
+            });
         }
     }
 
+    private void forceStartActiveShow(String name, Handler<Show> c) {
+        stop();
+        for (Show s: shows){
+            if (name.equalsIgnoreCase(s.n)){
+                s.run(c);
+                return;
+            }
+        }
+        throw new LogicalException("At least one valid fallback should be defined");
+    }
 
 
 }

@@ -54,7 +54,7 @@ public abstract class Command<T> extends GenericTypeWorker {
 
     public T execute(String ... args){
         return execute(asList(args));
-    };
+    }
 
     public abstract T execute(List<String> arguments);
 

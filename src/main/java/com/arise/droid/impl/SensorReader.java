@@ -78,16 +78,12 @@ public class SensorReader implements SensorEventListener {
             }
 
             DeviceStat.getInstance().setSysProp(
-                    "sensor.evt." + id,
+                    id + ".E",
                     sensorEvent.sensor.getName() + " event",
                     "timestamp=" + sensorEvent.timestamp + "&accuracy=" + sensorEvent.accuracy,
                     sb.toString()
             );
-
         }
-
-
-
     }
 
     private static String getTypeName(Sensor sensor){

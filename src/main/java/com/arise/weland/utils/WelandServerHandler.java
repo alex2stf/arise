@@ -18,6 +18,7 @@ import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
 import com.arise.weland.PlaylistWorker;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.ContentPage;
@@ -49,6 +50,7 @@ import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.urlDecodeUTF8;
 import static com.arise.core.tools.ThreadUtil.fireAndForget;
+import static com.arise.core.tools.Util.now;
 
 public class WelandServerHandler extends HTTPServerHandler {
 
@@ -140,7 +142,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
       simpleDateFormat.setTimeZone(TimeZone.getDefault());
       return contentHandler.getDeviceStat()
-              .setProp("JT", simpleDateFormat.format(new Date()))
+              .setProp("JT", simpleDateFormat.format(now()))
               .toHttp();
     }
 
