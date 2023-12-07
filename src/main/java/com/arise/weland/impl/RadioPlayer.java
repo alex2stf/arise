@@ -35,6 +35,7 @@ import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
 import static com.arise.core.tools.StreamUtil.toBytes;
 import static com.arise.core.tools.ThreadUtil.*;
+import static com.arise.core.tools.Util.EXTFMT;
 import static com.arise.core.tools.Util.mathMax;
 import static com.arise.core.tools.Util.nowCalendar;
 
@@ -130,7 +131,7 @@ public class RadioPlayer {
         }
         Show s = getActiveShow();
         if (s == null){
-            log.warn("no valid show defined for now... retry in " + lR  + "ms " + Util.now());
+            log.warn("no valid show defined for now... retry in " + lR  + "ms " + EXTFMT.format(Util.now());
             sleep(lR);
             //limit to 20 minutes
             if (lR < 1000 * 60 * 20) {

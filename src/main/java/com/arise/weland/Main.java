@@ -1,5 +1,6 @@
 package com.arise.weland;
 
+import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
@@ -99,13 +100,13 @@ public class Main {
     }
 
 
-
-
     static AbstractServer ioServer;
     static  DesktopContentHandler desktopContentHandler;
     static  RadioPlayer rplayer;
 
     public static void main(String[] args) throws IOException {
+
+        JHttpClient.disableSSL();
 
         detect_device_capabilities();
 
@@ -123,7 +124,6 @@ public class Main {
         final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
         cmdReg.addCommand(PROCESS_EXEC)
                 .addCommand(MOUSE_PING);
-
 
         String cmds = AppSettings.getProperty(Keys.LOCAL_COMANDS_FILE);
         if (StringUtil.hasText(cmds) && new File(cmds).exists()){
@@ -145,8 +145,6 @@ public class Main {
         }
 
         contentInfoProvider.get();
-
-
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
