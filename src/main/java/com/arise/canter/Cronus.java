@@ -246,7 +246,7 @@ public class Cronus {
     public static boolean matchMoment(Calendar c, String d, String h) {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
         String oth = EXTFMT.format(c.getTime());
-        Mole.getInstance(">>>>>>>>  ").info(moment + " ==  " + oth);
+        Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
         return moment.equalsIgnoreCase(oth);
     }
 

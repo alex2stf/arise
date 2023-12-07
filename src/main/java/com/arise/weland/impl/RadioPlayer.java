@@ -164,62 +164,64 @@ public class RadioPlayer {
         return null;
     }
 
-    public void loadTestData(){
-        Calendar start = Calendar.getInstance();
-        start.set(Calendar.HOUR_OF_DAY, 0);
-        start.set(Calendar.MINUTE, 0);
-        start.set(Calendar.SECOND, 0);
-        Calendar end = Calendar.getInstance();
-        end.set(Calendar.HOUR_OF_DAY, 24);
 
-
-        Map m = null;
-        try {
-            m = (Map) decodeBytes(toBytes(findStream("#radio_shows.json")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Map<String, List<String>> lx = getMap(m, "lists");
-        List<String> x = new ArrayList<>();
-        for (Map.Entry<String, List<String>> e: lx.entrySet()){
-            for (String s : e.getValue()) {
-                x.add(s);
-            }
-        }
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
-        int dex = 0;
-        for (Date date = start.getTime(); start.before(end); start.add(Calendar.SECOND, 10), date = start.getTime()) {
-            // Do your job here with `date`.
-
-            if (dex > x.size() - 1){
-                dex = 0;
-            }
-
-
-            Show s = new Show();
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            cal.add(Calendar.MINUTE, -1);
-
-            String hh = "EACH_SECOND BETWEEN_" + sdf.format(cal.getTime()) + "_AND_" + sdf.format(date);
-            s.n = "Test show " + hh;
-            s._h = hh;
-            s._d = "monday_tuesday_wednesday_thursday_friday_sunday_saturday";
-
-            String xx =
-                    "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/lJlEQim-yMo?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
-            s._s = Arrays.asList(xx);
-            s._m = "stream";
-            shows.add(s);
-            dex++;
-
-            System.out.println(s._h);
-        }
-
-
-    }
+//
+//    public void loadTestData(){
+//        Calendar start = Calendar.getInstance();
+//        start.set(Calendar.HOUR_OF_DAY, 0);
+//        start.set(Calendar.MINUTE, 0);
+//        start.set(Calendar.SECOND, 0);
+//        Calendar end = Calendar.getInstance();
+//        end.set(Calendar.HOUR_OF_DAY, 24);
+//
+//
+//        Map m = null;
+//        try {
+//            m = (Map) decodeBytes(toBytes(findStream("#radio_shows.json")));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Map<String, List<String>> lx = getMap(m, "lists");
+//        List<String> x = new ArrayList<>();
+//        for (Map.Entry<String, List<String>> e: lx.entrySet()){
+//            for (String s : e.getValue()) {
+//                x.add(s);
+//            }
+//        }
+//
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+//        int dex = 0;
+//        for (Date date = start.getTime(); start.before(end); start.add(Calendar.SECOND, 10), date = start.getTime()) {
+//            // Do your job here with `date`.
+//
+//            if (dex > x.size() - 1){
+//                dex = 0;
+//            }
+//
+//
+//            Show s = new Show();
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(date);
+//            cal.add(Calendar.MINUTE, -1);
+//
+//            String hh = "EACH_SECOND BETWEEN_" + sdf.format(cal.getTime()) + "_AND_" + sdf.format(date);
+//            s.n = "Test show " + hh;
+//            s._h = hh;
+//            s._d = "monday_tuesday_wednesday_thursday_friday_sunday_saturday";
+//
+//            String xx =
+//                    "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/lJlEQim-yMo?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+//            s._s = Arrays.asList(xx);
+//            s._m = "stream";
+//            shows.add(s);
+//            dex++;
+//
+//            System.out.println(s._h);
+//        }
+//
+//
+//    }
 
 
     public void addShow(Show s){
