@@ -93,6 +93,7 @@ public class DeskMPlayer extends MediaPlayer {
                             c.handle(path);
                             is_play = false;
                         }
+                        log.trace(event.getType() + " for " + path);
                     }
                 });
 
