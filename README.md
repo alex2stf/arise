@@ -2,6 +2,12 @@
 package-based autonomous framework on demand
 
 
+Quick start:
+1. At first run a default application.properties file is generated
+2. Create a folder called local_env
+
+
+
 arise is a monolith package-based solution framework
 
 

@@ -6,10 +6,7 @@ import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -48,12 +45,13 @@ public class AppSettings {
             tmpProps.put("server.port", "8221");
 
             if (SYSUtils.isAndroid()) {
-                tmpProps.put("radio.enabled", "true");
-                tmpProps.put("radio.shows.path", "#radio_shows.json");
                 tmpProps.put("scan.locations", "Music,Videos,Documents,webapp");
             } else {
                 tmpProps.put("scan.locations", "Music,Videos,webapp");
+
             }
+            tmpProps.put("radio.enabled", "true");
+            tmpProps.put("radio.shows.path", "#radio_shows.json");
             FileUtil.saveProps(tmpProps, expect, "weland first props save");
             log.info("Init application properties 1st time");
         }
