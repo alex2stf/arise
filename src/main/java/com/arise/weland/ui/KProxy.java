@@ -10,7 +10,7 @@ import com.arise.core.tools.ReflectUtil.ClazzHelper;
 import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
-import org.apache.kafka.clients.admin.Config;
+//import org.apache.kafka.clients.admin.Config;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.core.tools.ReflectUtil.getMethod;
@@ -41,7 +39,7 @@ public class KProxy {
     List<String> topics = new ArrayList<>();
     private static final Mole log = Mole.getInstance(KProxy.class);
 
-    public KProxy(Properties props){
+    public KProxy(final Properties props){
         this.props = props;
         DependencyManager.withJar(KAFKA_CLIENT_JAR, new Handler<URLClassLoader>() {
             @Override
@@ -77,16 +75,13 @@ public class KProxy {
                 Object cluster = getMethod(admin, "describeCluster").call();
                 Object nodes = getMethod(cluster, "nodes").call();
                 Collection<Object> result = getMethod(nodes, "get").callForCollection();
-                result.forEach(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        String id = getMethod(o, "idString").callForString();
-                        if (!StringUtil.hasText(id)){
-                            id = getMethod(o, "id").call() + "";
-                        }
-                        brokers.add(id);
+                for(Object o: result)  {
+                    String id = getMethod(o, "idString").callForString();
+                    if (!StringUtil.hasText(id)){
+                        id = getMethod(o, "id").call() + "";
                     }
-                });
+                    brokers.add(id);
+                }
             }
         });
 //        AdminClient adminClient = AdminClient.create(props);
@@ -282,6 +277,13 @@ public class KProxy {
                         .call(Collections.singletonList(configResource));
                Object res2 = getMethod(res1, "all").call();
                Map res3 = getMethod(res2, "get").callForMap();
+
+
+                  /**
+                for(Map.Entry<Object, Object> e: res3.entrySet()) {
+                    Object o = e.getKey();
+                    Object config = e.getValue();
+                }
                res3.forEach(new BiConsumer<Object, Object>() {
                    @Override
                    public void accept(Object o, Object config) {
@@ -298,6 +300,8 @@ public class KProxy {
                        });
                    }
                });
+                   **/
+                //TDO Fix this to java 7
             }
         });
 

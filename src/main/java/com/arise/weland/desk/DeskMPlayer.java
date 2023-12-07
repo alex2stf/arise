@@ -3,11 +3,13 @@ package com.arise.weland.desk;
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings.Keys;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
+import com.arise.core.tools.AppCache;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
@@ -77,10 +79,9 @@ public class DeskMPlayer extends MediaPlayer {
         if (!new File(path).exists()){
             log.e("File " + path + " does not exists");
         }
-        String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
-        log.info("Open media " + path + " using strategy [" + strategy + "]");
+
         is_play = true;
-        if (path.endsWith(".wav")){
+        if (path.endsWith(".wav") || path.endsWith(".wma")){
             stopClips();
             try {
                 aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
@@ -90,6 +91,7 @@ public class DeskMPlayer extends MediaPlayer {
                     public void update(LineEvent event) {
                         if (LineEvent.Type.STOP.equals(event.getType())){
                             c.handle(path);
+                            is_play = false;
                         }
                     }
                 });
@@ -99,12 +101,12 @@ public class DeskMPlayer extends MediaPlayer {
             } catch (Exception e) {
                 log.error("Failed to play sound " + path, e);
             }
-            is_play = false;
-            if (c != null) {
-                c.handle(path);
-            }
+
             return aStream;
         }
+
+        String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
+        log.info("Open media " + path + " using strategy [" + strategy + "]");
 
         if ("commands".equalsIgnoreCase(strategy)) {
             if (r.containsCommand("close-media-player")) {
@@ -115,7 +117,7 @@ public class DeskMPlayer extends MediaPlayer {
             }
             c.handle(path);
             is_play = false;
-        } else if ("javazone-player".equalsIgnoreCase(strategy)) {
+        } else if ((strategy + "").indexOf("javazone-player") > -1) {
             //TODO use JProxy
             withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
                 @Override
@@ -138,7 +140,13 @@ public class DeskMPlayer extends MediaPlayer {
             if (winst != null && winst instanceof Process) {
                 ((Process) winst).destroy();
             }
-            winst = r.getCommand("play-media").execute(path);
+            Command playCmd = r.getCommand("play-media");
+            if (null == playCmd) {
+                AppCache.throwOrExit("No play-media command found");
+            }
+
+            winst = playCmd.execute(path);
+
             if (winst instanceof Process){
                 try {
                     ((Process) winst).waitFor();
@@ -233,10 +241,7 @@ public class DeskMPlayer extends MediaPlayer {
 
 
     public void validateStreamUrl(String u, Handler<HttpURLConnection> suk, Handler<Tuple2<Throwable, Peer>> erh) {
-
         this.validateSync(u, suk, erh);
-
-
     }
 
     public boolean isPlaying() {

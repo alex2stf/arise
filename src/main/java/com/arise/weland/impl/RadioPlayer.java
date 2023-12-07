@@ -9,10 +9,7 @@ import com.arise.core.exceptions.LogicalException;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
@@ -32,9 +29,7 @@ import static com.arise.canter.Cronus.decorate;
 import static com.arise.canter.Cronus.fromString;
 import static com.arise.canter.Cronus.strfMillis;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
-import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.CollectionUtil.randomPick;
-import static com.arise.core.tools.CollectionUtil.removeFirst;
+import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
@@ -327,7 +322,7 @@ public class RadioPlayer {
         }
 
 
-        public synchronized void run(final Handler<Show> c){
+        public synchronized void run(final Handler<Show> c) {
 
             if (StringUtil.hasText(_v)){
                 if (_v.endsWith("%") && StringUtil.hasText(mPlayer.getMaxVolume())){
@@ -345,9 +340,6 @@ public class RadioPlayer {
         }
 
         ThreadUtil.TimerResult t;
-
-
-
 
         void setup_stream_close(final Handler<Show> c, long ex){
             t = delayedTask(new Runnable() {
@@ -384,7 +376,7 @@ public class RadioPlayer {
             }
         }
 
-        void play_from_list_of_strings(final Handler<Show> c, List<String> urls, int retryIndex){
+        void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex){
             close_all_resources();
             Map<Integer, List<String>> parts = Cronus.getParts(_h);
             long exp = 4000;
@@ -402,9 +394,14 @@ public class RadioPlayer {
                 return;
             }
 
+            final String u;
+            if(_m.indexOf("linear-pick") > -1) {
+                u = pickFromList(urls, false);
+            }  else {
+                u = randomPick(urls);
+            }
 
-            String u = randomPick(urls);
-
+            //daca e fisier local
             if (u.startsWith("file:")){
                 String path = u.substring("file:".length());
                 File root = new File(path);
@@ -441,9 +438,10 @@ public class RadioPlayer {
             }
 
 
-            long finalExp = exp;
+            final long finalExp = exp;
             log.info("Show [" + n + "] should end in " + strfMillis(finalExp) );
 
+            //default consideram ca e URL
             mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
                 @Override
                 public void handle(HttpURLConnection huc) {

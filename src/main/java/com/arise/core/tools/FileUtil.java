@@ -763,7 +763,7 @@ public class FileUtil {
             shuffle(items);
 
             storedList = AppCache.storeList(listId, items, 0);
-            log.info("reshuffled list " + listId);
+            log.info("reshuffled list " + listId + " from directory " + path);
         }
 
         List<String> saved = storedList.getItems();

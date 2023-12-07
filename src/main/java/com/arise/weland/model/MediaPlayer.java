@@ -89,7 +89,7 @@ public abstract class MediaPlayer {
     public abstract void validateStreamUrl(String u, Handler<HttpURLConnection> handler, Handler<Tuple2<Throwable, Peer>> tuple2Handler);
 
 
-    protected void validateSync(String u, final Handler<HttpURLConnection> suk, final Handler<Tuple2<Throwable, Peer>> erh) {
+    protected void validateSync(final String u, final Handler<HttpURLConnection> suk, final Handler<Tuple2<Throwable, Peer>> erh) {
 
         final JHttpClient c = new JHttpClient();
         c.setAbsoluteUrl(u);
@@ -99,7 +99,7 @@ public abstract class MediaPlayer {
             @Override
             public void handle(Tuple2<Throwable, Peer> c) {
                 erh.handle(c);
-                close(c);
+                close(c.second());
             }
         });
         c.connectSync(request, new Handler<HttpURLConnection>() {
@@ -158,7 +158,7 @@ public abstract class MediaPlayer {
                 if (code > 199 && code < 299){
                     suk.handle(x);
                 } else {
-                    erh.handle(new Tuple2<>(err, c));
+                    erh.handle(new Tuple2<Throwable, Peer>(err, c));
                 }
 
             }

@@ -126,7 +126,7 @@ public class ReflectUtil {
             try {
                 m = clz.getDeclaredMethod(mn, pt);
             } catch (NoSuchMethodException ex) {
-                log.trace("Cannot find with search method " + clz + "#" + mn);
+                //log.trace("Cannot find with search method " + clz + "#" + mn);
                 m = null;
             }
         }
