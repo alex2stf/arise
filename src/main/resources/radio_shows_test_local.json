@@ -4,7 +4,7 @@
     {
       "name": "test 1",
       "day": "monday_tuesday_wednesday_thursday_friday_sunday_saturday",
-      "hour": "EACH_SECOND BETWEEN_00:00:00_AND_23:59:00",
+      "hour": "EACH_SECOND BETWEEN_10:15:00_AND_22:30:00",
       "strategy": "linear-pick",
       "sources": ["file:D:\MUSIC\\SARBATORI_DE_IARNA\\colinde_copii", "file:D:\MUSIC\\SARBATORI_DE_IARNA\\greatest_singers", "file:D:\MUSIC\\SARBATORI_DE_IARNA\\\\johnny_cash", "file:D:\MUSIC\\SARBATORI_DE_IARNA\\\romanesti_diverse", "file:D:\MUSIC\\SARBATORI_DE_IARNA\\\various_artists", "file:D:\MUSIC\\SARBATORI_DE_IARNA\\\\winter_songs"]
     }
