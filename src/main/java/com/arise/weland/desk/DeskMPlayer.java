@@ -85,15 +85,16 @@ public class DeskMPlayer extends MediaPlayer {
             stopClips();
             try {
                 aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
-                Clip clip = AudioSystem.getClip(null);
+                final Clip clip = AudioSystem.getClip(null);
                 clip.addLineListener(new LineListener() {
                     @Override
                     public void update(LineEvent event) {
                         if (LineEvent.Type.STOP.equals(event.getType())){
+                            close(clip);
                             c.handle(path);
                             is_play = false;
                         }
-                        log.trace(event.getType() + " for " + path);
+                        log.trace("LINE_EVENT " + event.getType() + " for " + path);
                     }
                 });
 
