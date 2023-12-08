@@ -168,25 +168,42 @@ public class AppSettings {
      * @param prefix
      * @return
      */
-    @Deprecated
     public static List<String> getListWithPrefix(String prefix) {
 
         List<String> res = new ArrayList<>();
         int index = 0;
         while(true){
 
-            String key = prefix + "." + index;
-            if (!applicationProperties.containsKey(key)){
-                break;
+            String fileKey = prefix + "." + index;
+            String dirKey = prefix + ".srcDir." + index;
+            if (applicationProperties.containsKey(fileKey)){
+                String value = applicationProperties.getProperty(fileKey);
+                if (null != value) {
+                    res.add(index, value);
+                }
             }
-            String value = applicationProperties.getProperty(key);
 
-            if (null == value){
+            if (applicationProperties.containsKey(dirKey)){
+                String dirPath = applicationProperties.getProperty(dirKey);
+                File dir = new File(dirPath);
+                if (dir.exists()) {
+                   File [] inner = dir.listFiles();
+                   if (null != inner) {
+                       for(File f: inner){
+                           if (f.exists() && !f.isDirectory() && !f.isHidden())    {
+                               res.add(index, f.getAbsolutePath());
+                           }
+                       }
+                   }
+                }
+                
+            }
+            if (!applicationProperties.containsKey(fileKey) && !applicationProperties.containsKey(dirKey)){
                 break;
             }
-            res.add(index, value);
             index++;
         }
+
         return res;
     }
 
