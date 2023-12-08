@@ -100,7 +100,8 @@ public class DeskMPlayer extends MediaPlayer {
                 clip.open(aStream);
                 clip.start();
             } catch (Exception e) {
-                log.error("Failed to play sound " + path, e);
+                log.error("Failed to play sound " + path + " go next", e);
+                c.handle(path);
             }
 
             return aStream;
