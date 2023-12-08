@@ -74,16 +74,9 @@ public class Cronus {
             public void run() {
                 for (final CronTask c : cronTasks) {
                     if (c.isMatching(Calendar.getInstance())) {
-//                        startDaemon(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                c.execute();
-//                            }
-//                        }, "cronus-task-" + c.name);
                         c.execute();
                     }
                     for (Runnable x : otherTasks) {
-//                        startDaemon(x, "cronus-other-task");
                         x.run();
                     }
                 }
@@ -246,7 +239,7 @@ public class Cronus {
     public static boolean matchMoment(Calendar c, String d, String h) {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
         String oth = EXTFMT.format(c.getTime());
-        Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
+     //   Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
         return moment.equalsIgnoreCase(oth);
     }
 
