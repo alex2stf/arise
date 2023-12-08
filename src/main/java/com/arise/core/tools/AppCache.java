@@ -16,10 +16,7 @@ public class AppCache {
     private static final Set<URL> urlsCache = new HashSet<>();
     private static Object worker;
 
-    public static void throwOrExit(String s) {
-        Mole.getLogger(AppCache.class).error(s);
-        throw new RuntimeException(s);
-    }
+
 
 
     public static class StoredList {

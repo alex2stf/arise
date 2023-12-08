@@ -8,6 +8,13 @@ Quick start:
 
 
 
+
+Development notes:
+- use AppSetting.throwOrExit instead of throwing random exceptions. If app.onerror.exit is defined as "true" application will close when exception is met.
+
+
+
+
 arise is a monolith package-based solution framework
 
 

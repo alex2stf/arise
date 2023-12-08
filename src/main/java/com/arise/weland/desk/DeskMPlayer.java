@@ -5,6 +5,7 @@ import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
+import com.arise.core.AppSettings;
 import com.arise.core.AppSettings.Keys;
 import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
@@ -145,7 +146,7 @@ public class DeskMPlayer extends MediaPlayer {
             }
             Command playCmd = r.getCommand("play-media");
             if (null == playCmd) {
-                AppCache.throwOrExit("No play-media command found");
+                AppSettings.throwOrExit("No play-media command found");
             }
 
             winst = playCmd.execute(path);
@@ -170,6 +171,9 @@ public class DeskMPlayer extends MediaPlayer {
         }
         is_play = true;
         if (u.startsWith("https") ){
+            if (!r.containsCommand("browser-open")){
+                 AppSettings.throwOrExit("no browser-open command defined");
+            }
             proc[0] = (Process) r.getCommand("browser-open").execute(u);
         } else {
             String uri = "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(u);

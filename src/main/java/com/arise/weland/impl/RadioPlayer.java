@@ -76,6 +76,14 @@ public class RadioPlayer {
         return is_play;
     }
 
+    public String getCurrentDisplayName(){
+        File f = new File(_cpath);
+        if(f.exists()){
+            return f.getName();
+        }
+        return _cpath;
+    }
+
     public String getCurrentPath(){
         return _cpath;
     }

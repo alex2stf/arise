@@ -198,6 +198,15 @@ public class AppSettings {
     }
 
 
+    public static void throwOrExit(String s) {
+        Mole.getLogger(AppSettings.class).error(s);
+        if (isTrue(Keys.APP_ON_ERROR_EXIT)) {
+            System.exit(-1);
+        }
+        throw new RuntimeException(s);
+    }
+
+
     public enum Keys {
         PREFERRED_BROWSER("preferred.browser", new String[]{"selenium"}),
         PREFERRED_YOUTUBE_PLAYER("preferred.youtube.player", new String[]{"external, internal"}, "internal"),
@@ -218,6 +227,7 @@ public class AppSettings {
         , RADIO_ENABLED("radio.enabled", new String[]{"true", "false(default)"})
         , RADIO_SHOWS_PATH("radio.shows.path", new String[]{"/path/to/local/shows.json"})
         , DEPENDENCY_FORCED_PROFILES("dependencies.forced.profiles", new String[]{})
+        , APP_ON_ERROR_EXIT("app.onerror.exit", new String[]{"true", "false(default)"})
         , UI_INCLUDE_SNAPSHOTS("ui.include.snapshots", new String[]{"true", "false"});
 
 

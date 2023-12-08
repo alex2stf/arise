@@ -60,7 +60,7 @@ public class WelandForm extends JFrame implements Runnable {
             @Override
             public String get() {
                 if (rplayer != null) {
-                    return "Radio source: " + rplayer.getCurrentPath();
+                    return "Radio source: " + rplayer.getCurrentDisplayName();
                 }
                 return "Radio Player disabled";
             }
