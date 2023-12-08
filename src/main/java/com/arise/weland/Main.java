@@ -148,6 +148,7 @@ public class Main {
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
+        final WelandForm[] welandForm = {null};
         Cronus cronus = null;
 
         if (!AppSettings.isFalse(Keys.CRONUS_ENABLED)){
@@ -168,6 +169,17 @@ public class Main {
                 @Override
                 public void handle(RadioPlayer rpl) {
                     DeviceStat.getInstance().setProp("rplayer.play", "false");
+                }
+            });
+
+            rplayer.onStreamChanged(new Handler<RadioPlayer.Show>() {
+                @Override
+                public void handle(RadioPlayer.Show show) {
+                    if (welandForm[0] != null){
+                        welandForm[0].showNextIcon();
+                    }
+                    log.info("Stream changed");
+
                 }
             });
             desktopContentHandler.setRadioPlayer(rplayer);
@@ -193,23 +205,24 @@ public class Main {
                 @Override
                 public void run() {
 
-                    WelandForm welandForm = new WelandForm(cmdReg);
-                    welandForm.pack();
-                    welandForm.setVisible(true);
-                    desktopContentHandler.setForm(welandForm);
+
+                    welandForm[0] = new WelandForm(cmdReg);
+                    welandForm[0].pack();
+                    welandForm[0].setVisible(true);
+                    desktopContentHandler.setForm(welandForm[0]);
                     if (rplayer != null){
-                        welandForm.setRadioPlayer(rplayer);
+                        welandForm[0].setRadioPlayer(rplayer);
                     }
 
                     if(finalCronus != null) {
-                        finalCronus.registerTask(welandForm);
+                        finalCronus.registerTask(welandForm[0]);
                     }
                     else {
-                        repeatedTask(welandForm, 1000);
+                        repeatedTask(welandForm[0], 1000);
                     }
 
                     if(isTrue(Keys.UI_CLOSE_ON_EXIT)){
-                        welandForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        welandForm[0].setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     }
                 }
             }, "ui-thread");

@@ -82,7 +82,7 @@ public class DeskMPlayer extends MediaPlayer {
         }
 
         is_play = true;
-        if (path.endsWith(".wav") || path.endsWith(".wma")){
+        if (path.endsWith(".wav")){
             stopClips();
             try {
                 aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());

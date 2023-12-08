@@ -213,6 +213,20 @@ public class WelandForm extends JFrame implements Runnable {
         this.rplayer = rplayer;
     }
 
+    public void showNextIcon() {
+
+        if (tabs != null && tabs.getTabCount() > 1) {
+            int ctab = tabs.getSelectedIndex();
+            int next = ctab + 1;
+            if (next > tabs.getTabCount() - 1){
+                next = 0;
+            }
+            tabs.setSelectedIndex(next);
+
+        }
+
+    }
+
 
     public static abstract class TextProvider implements Provider<Tuple2<JLabel, Provider<String>>> {
 
