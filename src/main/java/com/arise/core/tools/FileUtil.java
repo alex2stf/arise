@@ -219,7 +219,7 @@ public class FileUtil {
 
     public static InputStream findStream(String path) {
         InputStream stream = null;
-        if (path.indexOf("#") > -1){
+        if (path.indexOf("#") > -1) {
             String[] parts = path.split("#");
             String sysRoot = parts[0];
             String classPathRoot = parts[1];
@@ -228,12 +228,18 @@ public class FileUtil {
             if (stream == null){
                 stream = findInResOrAssets(classPathRoot);
             }
+            if(stream == null){
+                log.error("FATAL: Null stream for "  + classPathRoot);
+            }
             return stream;
 
         }
         stream = findInFS(path);
         if (stream == null){
             stream = findInResOrAssets(path);
+        }
+        if(stream == null){
+            log.error("FATAL: NUll stream for "  + path);
         }
         return stream;
     }
