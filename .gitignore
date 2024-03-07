@@ -5,7 +5,6 @@ build-info.properties
 .gradle
 src/main/android/gradle
 src/main/android/local.properties
-application.properties
 local_env/
 cronus_pi.json
 commands_pi.json

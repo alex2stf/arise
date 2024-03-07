@@ -160,7 +160,7 @@ public class RadioPlayerTest {
             }
         });
 
-        DependencyManager.getCommandRegistry().addCommand(new Command<Object>("ciobrowser-open") {
+        DependencyManager.getCommandRegistry().addCommand(new Command<Object>("browser-open") {
             @Override
             public Object execute(List<String> arguments) {
                 System.out.println("Opened " + StringUtil.join(arguments, ""));
