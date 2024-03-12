@@ -6,8 +6,6 @@ build-info.properties
 src/main/android/gradle
 src/main/android/local.properties
 local_env/
-cronus_pi.json
-commands_pi.json
 Bunga_and_Kion.png
 arch/
 scripts/

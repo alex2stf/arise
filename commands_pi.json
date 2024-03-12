@@ -1,0 +1,72 @@
+[
+  {
+    "id":"get-master-volume",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(/usr/bin/python3)",
+          "$find-file-stream(#python_scripts/alsaaudio_read_volume.py)"
+        ],
+        "store-key": "device-master-volume"
+      }
+    ],
+    "return-value": "$read-storage(device-master-volume)"
+  },
+  {
+    "id": "set-master-volume",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(/usr/bin/python3)",
+          "$find-file-stream(#python_scripts/alsaaudio_write_volume.py)",
+          "{0}"
+        ],
+        "store-key": "device-master-volume"
+      },
+      {
+        "id": "print",
+        "args": [
+          "$read-storage(device-master-volume)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "close-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/pkill", "mpg321"]
+      }
+    ]
+  },
+  {
+    "id": "play-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/mpg321", "{0}"]
+      }
+    ]
+  },
+  {
+    "id": "browser-open",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/firefox", "{0}"]
+      }
+    ]
+  },
+  {
+    "id": "browser-close",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/pkill", "firefox"]
+      }
+    ]
+  }
+]

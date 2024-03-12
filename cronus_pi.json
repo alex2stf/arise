@@ -1,0 +1,54 @@
+[
+  {
+    "name": "take-screenshot",
+    "day": "DAILY",
+    "hour": "EACH_4_SECONDS",
+    "disable": true,
+    "cmd": {
+      "id": "process-exec",
+      "args": ["$valid-file(/usr/bin/fswebcam)" , "--rotate", "0", "/home/pi/arise-app/snapshot.jpeg" ]
+    }
+  },
+  {
+    "name": "senzor-1-data",
+    "day": "DAILY",
+    "hour": "EACH_5_SECONDS",
+    "store-key": "senzor-data-1",
+    "disable": true,
+    "cmd": {
+      "id": "process-exec",
+      "args": ["$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)" ,"$find-file-stream(#python_scripts/read_sensor_data.py)", "4", "DHT22(1): %d*C - %d%%"]
+    }
+  },
+  {
+    "name": "senzor-2-data",
+    "day": "DAILY",
+    "hour": "EACH_22_SECONDS",
+    "store-key": "senzor-data-2",
+    "disable": true,
+    "cmd": {
+      "id": "process-exec",
+      "args": ["$valid-file(/usr/bin/python3,C:\\Users\\Tarya\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)" ,"$find-file-stream(#python_scripts/read_sensor_data.py)", "10", "DHT22(2): %d*C - %d%%"]
+    }
+  },
+  {
+    "name": "play-random-1",
+    "day": "DAILY",
+    "hour": "EACH_10_SECONDS BETWEEN_06:00:00_AND_23:45:00",
+    "disable": true,
+    "cmd": {
+      "id": "play-music-random",
+      "args": ["D:\\muzica"]
+    }
+  },
+  {
+    "name": "mouse-move-task",
+    "day": "DAILY",
+    "hour": "EACH_200_SECONDS",
+    "disable": false,
+    "cmd": {
+      "id": "mouse-ping",
+      "args": ["xx"]
+    }
+  }
+]
