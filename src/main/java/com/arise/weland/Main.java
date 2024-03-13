@@ -103,15 +103,21 @@ public class Main {
         System.out.println("hi");
 
         int u = 0;
-        for(File f: File.listRoots()){
-            String desc = FileSystemView.getFileSystemView().getSystemTypeDescription(f);
-            if(desc.toLowerCase().indexOf("usb ") > -1) {
-                String k = "usb.drive." + u;
-                String v = f.getAbsolutePath();
-                System.setProperty(k, v);
-                log.info("Set " + k + " = " + v);
-                u++;
+        File[] rts = File.listRoots();
+        if(rts != null && rts.length > 0) {
+            for (File f : File.listRoots()) {
+                FileSystemView view = FileSystemView.getFileSystemView();
+                if(view != null) {
+                    String desc = view.getSystemTypeDescription(f);
+                    if (StringUtil.hasContent(desc) && desc.toLowerCase().indexOf("usb ") > -1) {
+                        String k = "usb.drive." + u;
+                        String v = f.getAbsolutePath();
+                        System.setProperty(k, v);
+                        log.info("Set " + k + " = " + v);
+                        u++;
 
+                    }
+                }
             }
         }
 

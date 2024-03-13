@@ -87,7 +87,10 @@
       "file:${usb_drive_0}/Music/mixed",
       "file:${usb_drive_0}/Music/sounds",
       "file:${usb_drive_0}/Music/dance",
-      "file:${usb_drive_0}/Music/clasic"
+      "file:/media/kids/407B-B087/Music/mixed",
+      "file:/media/kids/407B-B087/Music/sounds",
+      "file:/media/kids/407B-B087/Music/dance",
+      "file:/media/kids/7CB607A1B6075B52/Music/dance"
     ],
     "weekdays-list": [
       "https://streaming.exclusive.radio/er/goodnight/icecast.audio",
@@ -193,11 +196,7 @@
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
       "https://streaming.exclusive.radio/er/pretenders/icecast.audio",
-      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio",
-      "file:${music_dir}/mixed",
-      "file:${usb_drive_0}/Music/mixed",
-      "file:${usb_drive_0}/Music/sounds",
-      "file:${usb_drive_0}/Music/dance"
+      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio"
     ],
     "weekend-list": [
       "https://streaming.exclusive.radio/er/rock/icecast.audio",
@@ -300,12 +299,7 @@
       "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
       "https://streaming.exclusive.radio/er/pulp/icecast.audio",
       "https://streaming.exclusive.radio/er/radiohead/icecast.audio",
-      "https://streaming.exclusive.radio/er/rem/icecast.audio",
-      "file:${music_dir}/mixed",
-      "file:${usb_drive_0}/Music/mixed",
-      "file:${usb_drive_0}/Music/sounds",
-      "file:${usb_drive_0}/Music/clasic",
-      "file:${usb_drive_0}/Music/dance"
+      "https://streaming.exclusive.radio/er/rem/icecast.audio"
     ]
   },
   "shows": [
@@ -322,8 +316,8 @@
       "name": "weekdays_show_part_I",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_10:40:00_AND_12:00:00",
-      "strategy": "stream",
-      "sources": ["${generic-radios}"]
+      "strategy": "local-first",
+      "sources": ["${generic-radios}", "${local-paths-mixed}"]
     },
     {
       "name": "weekdays_carols_1",
@@ -347,7 +341,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
       "strategy": "local-first",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
     {
@@ -365,7 +359,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
       "strategy": "stream-first",
-      "sources": ["${weekdays-list}"],
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"],
       "volume": "50%"
     },
     {
@@ -396,7 +390,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "local-first",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekdays_carols_16_17",
@@ -410,7 +404,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekdays_carols_17_18",
@@ -425,7 +419,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "stream",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
     {
@@ -442,8 +436,7 @@
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "linear-pick",
       "sources": [
-        "https://live.rockfm.ro:8443/rockfm.aacp",
-        "file:C:\\Users\\Public\\Music"
+        "https://live.rockfm.ro:8443/rockfm.aacp"
       ]
     },
 
@@ -451,8 +444,8 @@
       "name": "weekdays_19_20_wednesday_thursday_friday",
       "day": "wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
-      "strategy": "stream",
-      "sources": ["${weekdays-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
     {
@@ -460,7 +453,7 @@
       "day": "wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "stream",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
     {
@@ -468,7 +461,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:october,november,december,january,february,march",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",
-      "sources": ["${weekdays-list}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
     {
@@ -492,120 +485,95 @@
       "strategy": "stream",
       "sources": ["${christmas}", "${christmas-romanian}"]
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     {
       "name": "weekend_10-11",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_09:25:00_AND_11:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"],
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"],
       "volume": "50%"
     },
     {
       "name": "weekend_11_12",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_12-13",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_13-14",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_14-15",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "loal-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_15-16",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_16-17",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_17-18",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_18-19",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_19-20",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": [
         "${weekend-list}",
         "${youtubes}",
-        "${generic-radios}"
+        "${generic-radios}",
+        "${local-paths-mixed}"
       ]
     },
     {
       "name": "weekend_20-21",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekend_21-22",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
-      "strategy": "stream",
-      "sources": ["${weekend-list}"]
+      "strategy": "local-first",
+      "sources": ["${weekend-list}", "${local-paths-mixed}"]
     }
   ]
 }
