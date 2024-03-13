@@ -1,0 +1,39 @@
+[
+  {
+    "id": "browser-open",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "{0}"]
+      }
+    ]
+  },
+  {
+    "id": "browser-close",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["taskkill", "/F", "/IM", "msedge.exe"]
+
+      }
+    ]
+  },
+  {
+    "id": "close-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["taskkill", "/F", "/IM", "wmplayer.exe"]
+      }
+    ]
+  },
+  {
+    "id": "play-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["C:\\Program Files\\Windows Media Player\\wmplayer.exe", "/close", "{0}"]
+      }
+    ]
+  }
+]

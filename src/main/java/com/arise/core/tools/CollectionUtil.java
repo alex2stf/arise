@@ -122,10 +122,11 @@ public class CollectionUtil {
 
     }
 
-    public static <T> void concat(List<T> a, List<T> b) {
+    public static <T> List<T> concat(List<T> a, List<T> b) {
         for (T i: b){
             a.add(i);
         }
+        return a;
     }
 
     public static <T> T safeGetItem(List<T> args, int i, T def) {

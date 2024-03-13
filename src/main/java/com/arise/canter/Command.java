@@ -2,6 +2,7 @@ package com.arise.canter;
 
 import com.arise.core.tools.GenericTypeWorker;
 import com.arise.core.tools.MapUtil;
+import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 
 import java.util.ArrayList;
@@ -46,8 +47,10 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
     public void dispatchError(Throwable e){
-        e.printStackTrace();
+//        e.printStackTrace();
+        Mole.getInstance(Command.class).e("Supressed error " + e.getMessage());
     }
+
 
 
 

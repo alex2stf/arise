@@ -223,9 +223,11 @@ public class FileUtil {
             String[] parts = path.split("#");
             String sysRoot = parts[0];
             String classPathRoot = parts[1];
-            stream = findInFS(sysRoot + File.separator + classPathRoot);
+            String fsPath = sysRoot + File.separator + classPathRoot;
+            stream = findInFS(fsPath);
 
             if (stream == null){
+                log.trace(fsPath + "] not found in FS" + new File(".").getAbsolutePath());
                 stream = findInResOrAssets(classPathRoot);
             }
             if(stream == null){
@@ -758,7 +760,12 @@ public class FileUtil {
         if (storedList.isEmpty() || storedList.isIndexExceeded()){
 
             File dir = new File(path);
-            File[] files = dir.listFiles();
+            File[] files = dir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return (!name.endsWith(".ini") && !name.startsWith("."));
+                }
+            });
             if (files == null || files.length == 0){
                 return null;
             }

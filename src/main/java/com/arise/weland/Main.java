@@ -28,14 +28,17 @@ import com.arise.weland.impl.PCDecoder;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
+import com.arise.weland.model.MediaPlayer;
 import com.arise.weland.ui.WelandForm;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -51,14 +54,6 @@ public class Main {
     private static final Mole log = Mole.getInstance(Main.class);
 
 
-//    private static final Command<String> PLAY_MP3_RANDOM_CMD = new Command<String>("play-music-random") {
-//        @Override
-//        public String execute(List<String> arguments) {
-//            String path = Paths.get(arguments.get(0)).normalize().toAbsolutePath().toString();
-//            File f = getRandomFileFromDirectory(path);
-//            return f.getAbsolutePath();
-//        }
-//    };
 
 
     private static final Command<String> MOUSE_PING = new Command<String>("mouse-ping") {
@@ -105,6 +100,21 @@ public class Main {
     static  RadioPlayer rplayer;
 
     public static void main(String[] args) throws IOException {
+        System.out.println("hi");
+
+        int u = 0;
+        for(File f: File.listRoots()){
+            String desc = FileSystemView.getFileSystemView().getSystemTypeDescription(f);
+            if(desc.toLowerCase().indexOf("usb ") > -1) {
+                String k = "usb.drive." + u;
+                String v = f.getAbsolutePath();
+                System.setProperty(k, v);
+                log.info("Set " + k + " = " + v);
+                u++;
+
+            }
+        }
+
 
         JHttpClient.disableSSL();
 
@@ -126,7 +136,7 @@ public class Main {
                 .addCommand(MOUSE_PING);
 
         String cmds = AppSettings.getProperty(Keys.LOCAL_COMANDS_FILE);
-        if (StringUtil.hasText(cmds) && new File(cmds).exists()){
+        if (StringUtil.hasText(cmds)){
             cmdReg.loadJsonResource(cmds);
         }
 
@@ -158,6 +168,15 @@ public class Main {
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
+
+            if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){
+                RadioPlayer.getMediaPlayer().stop(new Handler<MediaPlayer>() {
+                    @Override
+                    public void handle(MediaPlayer mediaPlayer) {
+                        log.info("Force close media player");
+                    }
+                });
+            }
 
             rplayer.onPlay(new Handler<RadioPlayer>() {
                 @Override
@@ -253,25 +272,6 @@ public class Main {
                 }
             }
         }, "Main#startServer");
-
-        //DO NOT DELETE BluecoveServer
-//        ThreadUtil.fireAndForget(new Runnable() {
-//            @Override
-//            public void run() {
-//                bluecoveServer = new BluecoveServer();
-//                bluecoveServer.setDeviceController(deviceController);
-//                bluecoveServer.setStateObserver(welandServerHandler)
-//                        .setRequestBuilder(requestBuilder)
-//                        .setRequestHandler(welandServerHandler)
-//                        .setName("CB_" + SYSUtils.getDeviceName());
-//
-//                try {
-//                    bluecoveServer.start();
-//                } catch (Exception e) {
-//                    log.error("Failed to start bluetooth server because", e);
-//                }
-//            }
-//        });
 
 
     }

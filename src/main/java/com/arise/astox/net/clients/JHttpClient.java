@@ -4,11 +4,7 @@ import com.arise.astox.net.models.Client;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Handler;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -44,6 +40,7 @@ public class JHttpClient extends Client<HttpRequest, HttpResponse, HttpURLConnec
         return (JHttpClient) super.setPort(port);
     }
 
+    private static final Mole log = Mole.getInstance(JHttpClient.class);
 
 
 
@@ -121,7 +118,9 @@ public class JHttpClient extends Client<HttpRequest, HttpResponse, HttpURLConnec
             try {
                 con.setRequestMethod(request.method());
             } catch (ProtocolException e) {
+                log.error("Protocol exception at " + _u);
                 onError(e);
+                return;
             }
 
             if (!CollectionUtil.isEmpty(request.getHeaders())){
@@ -137,13 +136,14 @@ public class JHttpClient extends Client<HttpRequest, HttpResponse, HttpURLConnec
                 con.connect();
                 completionHandler.handle(con);
             } catch (Throwable e) {
-                e.printStackTrace();
+                log.error("Failed to connect to " + _u);
                 onError(e);
             }
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Generic failed to connect " + _u);
+            onError(e);
         }
     }
 

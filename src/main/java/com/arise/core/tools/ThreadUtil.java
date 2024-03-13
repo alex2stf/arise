@@ -53,8 +53,8 @@ public class ThreadUtil {
                     e.printStackTrace();
                 }
             }
-        } catch (OutOfMemoryError error){
-            error.printStackTrace();
+        } catch (OutOfMemoryError e){
+            e.printStackTrace();
             t.run();
         }
 

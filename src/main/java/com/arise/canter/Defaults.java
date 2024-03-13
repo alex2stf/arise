@@ -20,6 +20,8 @@ import static java.lang.Runtime.getRuntime;
 
 public class Defaults {
 
+
+
     public static final Command<String> CMD_PRINT = new Command<String>("print") {
         @Override
         public String execute(List<String> arguments) {
@@ -114,6 +116,7 @@ public class Defaults {
         @Override
         public Process execute(List<String> args) {
             try {
+                Mole.getInstance("PROC-EXEC").trace(join(args, " "));
                 return getRuntime().exec(toArray(args));
             } catch (Exception e) {
                 e.printStackTrace();

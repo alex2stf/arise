@@ -239,13 +239,15 @@ public class AppSettings {
         //Deprecater
         GET_VOLUME_CMD("cmd.get.volume", new String[]{"fswebcam out.jpeg"}),
         UI_IMAGE_ICON_REFRESH("ui.image.icon.refresh", new String[]{"true", "false(default)"} ),
-        LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands.json"} ),
+        LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands_win_edge.json"} ),
         MEDIA_PLAY_STRATEGY("media.play.strategy", new String[]{"commands", "javafx"})
         , RADIO_ENABLED("radio.enabled", new String[]{"true", "false(default)"})
         , RADIO_SHOWS_PATH("radio.shows.path", new String[]{"/path/to/local/shows.json"})
         , DEPENDENCY_FORCED_PROFILES("dependencies.forced.profiles", new String[]{})
         , APP_ON_ERROR_EXIT("app.onerror.exit", new String[]{"true", "false(default)"})
-        , UI_INCLUDE_SNAPSHOTS("ui.include.snapshots", new String[]{"true", "false"});
+        , UI_INCLUDE_SNAPSHOTS("ui.include.snapshots", new String[]{"true", "false"})
+        , FORCE_CLOSE_ON_STARTUP("radio.force.close.on.startup", new String[]{"true", "false"}, "false")
+        , FORCED_NOW("arise.forced.now", new String[]{"2024-03-12 21:35:32"} );
 
 
 

@@ -1,5 +1,7 @@
 package com.arise.core.tools;
 
+import com.arise.core.AppSettings;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -219,7 +221,8 @@ public final class Util {
     }
 
     public static Calendar nowCalendar() {
-        String f = System.getProperty("arise.forced.now", null);
+        String f = AppSettings.getProperty(AppSettings.Keys.FORCED_NOW);
+
         if (StringUtil.hasText(f)){
             try {
                 Calendar c = Calendar.getInstance();

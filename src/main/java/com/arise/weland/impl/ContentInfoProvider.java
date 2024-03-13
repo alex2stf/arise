@@ -194,7 +194,7 @@ public class ContentInfoProvider {
     private int lsc = 0;
 
     private void scanRoot(File root){
-        log.trace("scan root " + root.getAbsolutePath());
+//        log.trace("scan root " + root.getAbsolutePath());
         File [] innerFiles = root.listFiles();
         if (innerFiles == null || innerFiles.length == 0){
             return;
@@ -214,7 +214,7 @@ public class ContentInfoProvider {
 
         if (!CollectionUtil.isEmpty(dirs)){
             if (fcnt > lsc){
-                log.info(fcnt + " scanned files...");
+//                log.info(fcnt + " scanned files...");
                 lsc = fcnt;
             }
             for (File f: dirs){

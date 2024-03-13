@@ -186,8 +186,7 @@ public class DeskMPlayer extends MediaPlayer {
                     uri += "&title=" + urlEncodeUTF8(ci.getTitle());
                 }
             }
-            proc[0] = (Process) r.getCommand("browser-open")
-                    .execute(uri);
+            proc[0] = (Process) r.getCommand("browser-open").execute(uri);
         }
     }
 

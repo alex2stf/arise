@@ -82,6 +82,13 @@
     "youtubes": [
       "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/-yFeZekJxZ8?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
     ],
+    "local-paths-mixed": [
+      "file:${music_dir}/mixed",
+      "file:${usb_drive_0}/Music/mixed",
+      "file:${usb_drive_0}/Music/sounds",
+      "file:${usb_drive_0}/Music/dance",
+      "file:${usb_drive_0}/Music/clasic"
+    ],
     "weekdays-list": [
       "https://streaming.exclusive.radio/er/goodnight/icecast.audio",
       "https://streaming.exclusive.radio/er/stonetemplepilots/icecast.audio",
@@ -186,7 +193,11 @@
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
       "https://streaming.exclusive.radio/er/pretenders/icecast.audio",
-      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio"
+      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio",
+      "file:${music_dir}/mixed",
+      "file:${usb_drive_0}/Music/mixed",
+      "file:${usb_drive_0}/Music/sounds",
+      "file:${usb_drive_0}/Music/dance"
     ],
     "weekend-list": [
       "https://streaming.exclusive.radio/er/rock/icecast.audio",
@@ -289,7 +300,12 @@
       "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
       "https://streaming.exclusive.radio/er/pulp/icecast.audio",
       "https://streaming.exclusive.radio/er/radiohead/icecast.audio",
-      "https://streaming.exclusive.radio/er/rem/icecast.audio"
+      "https://streaming.exclusive.radio/er/rem/icecast.audio",
+      "file:${music_dir}/mixed",
+      "file:${usb_drive_0}/Music/mixed",
+      "file:${usb_drive_0}/Music/sounds",
+      "file:${usb_drive_0}/Music/clasic",
+      "file:${usb_drive_0}/Music/dance"
     ]
   },
   "shows": [
@@ -330,7 +346,7 @@
       "name": "weekdays_12_13",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}"]
     },
 
@@ -338,7 +354,7 @@
       "name": "weekdays_carols_12_13",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
     },
 
@@ -348,7 +364,7 @@
       "name": "weekdays_13_14",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "stream",
+      "strategy": "stream-first",
       "sources": ["${weekdays-list}"],
       "volume": "50%"
     },
@@ -356,7 +372,7 @@
       "name": "weekdays_carols_13_14",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "stream",
+      "strategy": "stream-first",
       "sources": ["${christmas}", "${christmas-romanian}"],
       "volume": "50%"
     },
@@ -364,7 +380,7 @@
       "name": "relax_14_15",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${relax}"]
     },
 
@@ -372,35 +388,35 @@
       "name": "relax_15_16",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${relax}"]
     },
     {
       "name": "weekdays_16_17",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}"]
     },
     {
       "name": "weekdays_carols_16_17",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${christmas}"]
     },
     {
       "name": "weekdays_17_18",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}"]
     },
     {
       "name": "weekdays_carols_17_18",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
     },
 
@@ -421,17 +437,18 @@
     },
 
     {
-      "name": "radio_shows_nightly",
+      "name": "radio_shows_nightly_monday_tuesday",
       "day": "monday_tuesday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
-      "strategy": "stream",
+      "strategy": "linear-pick",
       "sources": [
-        "https://live.rockfm.ro:8443/rockfm.aacp"
+        "https://live.rockfm.ro:8443/rockfm.aacp",
+        "file:C:\\Users\\Public\\Music"
       ]
     },
 
     {
-      "name": "weekdays_19_20",
+      "name": "weekdays_19_20_wednesday_thursday_friday",
       "day": "wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "stream",
@@ -439,7 +456,7 @@
     },
 
     {
-      "name": "weekdays_20_21",
+      "name": "weekdays_20_21_wednesday_thursday_friday",
       "day": "wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "stream",
@@ -447,7 +464,7 @@
     },
 
     {
-      "name": "weekdays_21-22",
+      "name": "weekdays_21_22_april_may_june_jul_aug_sept",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:october,november,december,january,february,march",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",

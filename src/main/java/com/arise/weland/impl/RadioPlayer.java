@@ -8,10 +8,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
@@ -21,7 +18,6 @@ import java.util.*;
 
 import static com.arise.canter.Cronus.*;
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
-import static com.arise.core.serializers.parser.Groot.decodeFile;
 import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
@@ -138,7 +134,7 @@ public class RadioPlayer {
         }
         Show s = getActiveShow();
         if (s == null) {
-            log.warn("no valid show defined for now... retry in " + lR + "ms " + EXTFMT.format(Util.now()));
+            log.warn("no valid show defined for now... retry in " + lR + "ms at " + EXTFMT.format(Util.now()));
             sleep(lR);
             //limit to 20 minutes
             if (lR < 1000 * 60 * 20) {
@@ -347,23 +343,30 @@ public class RadioPlayer {
                 }
             }
 
-            if (retryIndex > urls.size()) {
+            if (retryIndex > urls.size() + 1) {
                 log.error("Urls list iteration complete. Are you connected to the internet?");
                 setup_stream_close(c, exp);
                 return;
             }
 
-            final String u;
-            if (_m.indexOf("linear-pick") > -1) {
-                u = pickFromList(urls, false);
-            } else {
-                u = randomPick(urls);
+            final String pdir;
+            if (_m.toLowerCase().indexOf("linear-pick") > -1) {
+                pdir = pickFromList(urls, false);
+            }
+            else if(_m.toLowerCase().indexOf("stream-first") > -1) {
+                pdir = smartPick(urls, true);
+            }
+            else if(_m.toLowerCase().indexOf("local-first") > -1) {
+                pdir = smartPick(urls, false);
+            }
+            else {
+                pdir = randomPick(urls);
             }
 
             //daca e fisier local
-            if (u.startsWith("file:")) {
-                String path = u.substring("file:".length());
-                File root = new File(path);
+            if (pdir.startsWith("file:")) {
+                String path = pdir.substring("file:".length());
+                File root = new File(apply_variables(path));
                 if (!root.exists() && !root.isDirectory()) {
                     log.warn("Directory " + root.getAbsolutePath() + " does not exist");
 
@@ -375,9 +378,9 @@ public class RadioPlayer {
                     }
                     return;
                 }
-                File f = getRandomFileFromDirectory(root.getAbsolutePath());
-                log.info("Play " + f.getAbsolutePath());
-                if (f == null) {
+                File pfl = getRandomFileFromDirectory(root.getAbsolutePath());
+                log.info("Play " + pfl.getAbsolutePath());
+                if (pfl == null) {
                     if (StringUtil.hasText(_f)) {
                         log.info("Using fallback " + _f);
                         p.forceStartActiveShow(_f, c);
@@ -386,9 +389,9 @@ public class RadioPlayer {
                     }
                     return;
                 }
-                scp(f.getAbsolutePath());
+                scp(pfl.getAbsolutePath());
                 final Show self = this;
-                mPlayer.play(f.getAbsolutePath(), new Handler<String>() {
+                mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                     @Override
                     public void handle(String s) {
                         _osc.handle(self);
@@ -403,27 +406,37 @@ public class RadioPlayer {
             log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
 
             //default consideram ca e URL
-            mPlayer.validateStreamUrl(u, new Handler<HttpURLConnection>() {
+            mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
                         @Override
                         public void handle(HttpURLConnection huc) {
-                            log.info("Start stream show [" + n + "] with url " + u);
-                            scp(u);
-                            mPlayer.playStream(u);
+                            log.info("Start stream show [" + n + "] with url " + pdir);
+                            scp(pdir);
+                            mPlayer.playStream(pdir);
                             setup_stream_close(c, finalExp);
                             _o = true;
                         }
                     }, new Handler<Tuple2<Throwable, Peer>>() {
                 @Override
                 public void handle(Tuple2<Throwable, Peer> errTpl) {
-                    log.error("Check url " + u + " failed", errTpl.first());
+                    log.error(retryIndex + ") iteration check url " + pdir + " failed");
                     close_all_resources();
                     play_from_list_of_strings(c, urls, retryIndex + 1);
                     _o = false;
                 }
+            });
+
+
+        }
+
+        private String apply_variables(String path) {
+            if(path.indexOf("${music_dir}") > -1) {
+                path = path.replace("${music_dir}", FileUtil.findMusicDir().getAbsolutePath());
             }
-            );
 
-
+            if(path.indexOf("${usb_drive_0}") > -1 && StringUtil.hasContent(System.getProperty("usb.drive.0"))) {
+                path = path.replace("${usb_drive_0}", System.getProperty("usb.drive.0"));
+            }
+            return path;
         }
 
 
@@ -463,5 +476,25 @@ public class RadioPlayer {
         throw new LogicalException("At least one valid fallback should be defined");
     }
 
+    private static String smartPick(List<String> urls, boolean streamsFirst){
+        List<String> strms = new ArrayList<>();
+        List<String> lcls = new ArrayList<>();
+
+        for (String s: urls){
+            if(s.startsWith("file:")) {
+                lcls.add(s);
+            } else {
+                strms.add(s);
+            }
+        }
+
+        List<String> lstr;
+        if(streamsFirst) {
+            lstr = CollectionUtil.concat(strms, lcls);
+        } else {
+            lstr = CollectionUtil.concat(lcls, strms);
+        }
+        return CollectionUtil.pickFromList(lstr, false);
+    }
 
 }

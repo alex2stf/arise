@@ -191,12 +191,14 @@ public final class CommandRegistry extends GenericTypeWorker {
     }
 
     public CommandRegistry loadJsonResource(String s) {
+        log.info("loading commands from json file " + s);
         InputStream inputStream = FileUtil.findStream(s);
         String content = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
         return loadJsonString(content);
     }
 
     public CommandRegistry loadJsonString(String content) {
+
         List arr = (List) Groot.decodeBytes(content);
         for (Object obj: arr){
             importJsonObject((Map) obj);
