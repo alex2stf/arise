@@ -20,12 +20,8 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.core.tools.Util;
 import com.arise.weland.dto.DeviceStat;
-import com.arise.weland.impl.ContentInfoDecoder;
-import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.*;
 import com.arise.weland.desk.DesktopContentHandler;
-import com.arise.weland.impl.PCDecoder;
-import com.arise.weland.impl.RadioPlayer;
-import com.arise.weland.impl.WelandRequestBuilder;
 import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.model.MediaPlayer;
 import com.arise.weland.ui.WelandForm;
@@ -196,9 +192,9 @@ public class Main {
                 }
             });
 
-            rplayer.onStreamChanged(new Handler<RadioPlayer.Show>() {
+            rplayer.onStreamChanged(new Handler<Show>() {
                 @Override
-                public void handle(RadioPlayer.Show show) {
+                public void handle(Show show) {
                     if (welandForm[0] != null){
                         welandForm[0].showNextIcon();
                     }

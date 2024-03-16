@@ -6,7 +6,7 @@ import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.impl.RadioPlayer.Show;
+import com.arise.weland.impl.Show;
 import com.arise.weland.model.MediaPlayer;
 
 import java.util.Arrays;

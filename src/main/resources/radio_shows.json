@@ -358,7 +358,7 @@
       "name": "weekdays_13_14",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "stream-first",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}", "${local-paths-mixed}"],
       "volume": "50%"
     },
@@ -366,7 +366,7 @@
       "name": "weekdays_carols_13_14",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "stream-first",
+      "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"],
       "volume": "50%"
     },
@@ -404,7 +404,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
+      "sources": ["${local-paths-mixed}"]
     },
     {
       "name": "weekdays_carols_17_18",

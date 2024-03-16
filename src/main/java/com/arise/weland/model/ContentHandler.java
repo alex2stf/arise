@@ -12,6 +12,7 @@ import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.RadioPlayer;
+import com.arise.weland.impl.Show;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -121,7 +122,7 @@ public abstract  class ContentHandler {
         if(rPlayer() != null) {
             dS.setProp("rplayer.path", rPlayer().getCurrentPath());
 
-            RadioPlayer.Show sh = rPlayer().getActiveShow();
+            Show sh = rPlayer().getActiveShow();
             if (sh != null) {
                 dS.setProp("rplayer.show.name", rPlayer().getActiveShow().name());
             }

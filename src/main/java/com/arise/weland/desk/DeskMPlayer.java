@@ -153,7 +153,8 @@ public class DeskMPlayer extends MediaPlayer {
 
             if (winst instanceof Process){
                 try {
-                    ((Process) winst).waitFor();
+                    int i = ((Process) winst).waitFor();
+                    System.out.println("exit with " + i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
