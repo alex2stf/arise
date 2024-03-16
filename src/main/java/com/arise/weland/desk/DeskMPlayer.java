@@ -212,6 +212,9 @@ public class DeskMPlayer extends MediaPlayer {
         if(r.containsCommand("browser-close")) {
             r.getCommand("browser-close").execute();
         }
+        if(r.containsCommand("close-media")) {
+            r.getCommand("close-media").execute();
+        }
         is_play = false;
         if(comp != null){
             comp.handle(this);
