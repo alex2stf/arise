@@ -1,7 +1,5 @@
 package com.arise.astox.net.models;
 
-import com.arise.astox.net.servers.nio.NIOServer;
-import com.arise.astox.net.servers.nio.NioSslPeer;
 import com.arise.core.tools.Util;
 
 import javax.net.ssl.SSLEngine;
@@ -117,9 +115,6 @@ public class ConnectionSolver {
 
     public void closeStreamables() {
         Util.close(_socket);
-        if (_abstractServer instanceof NIOServer){
-            NioSslPeer.closeConnection(_socketChannel, _sslEngine, _selectionKey, (NIOServer) _abstractServer);
-        }
     }
 
 }

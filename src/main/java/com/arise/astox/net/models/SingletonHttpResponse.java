@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+@Deprecated
 public class SingletonHttpResponse extends HttpResponse {
 
     private static final Mole log = Mole.getInstance(SingletonHttpResponse.class);

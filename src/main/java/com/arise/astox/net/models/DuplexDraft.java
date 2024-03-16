@@ -3,6 +3,8 @@ package com.arise.astox.net.models;
 import java.io.Closeable;
 import java.io.InputStream;
 
+
+@Deprecated
 public abstract class DuplexDraft<RequestDataType extends ServerRequest, ResponseDataType extends ServerResponse> {
     public  abstract Connection createConnection(AbstractServer server, Object transporter, Object wrapper, Object key);
     public  abstract boolean isValidHandshakeRequest(RequestDataType request);

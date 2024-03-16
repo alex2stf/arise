@@ -2,7 +2,6 @@ package com.arise.weland;
 
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
@@ -266,7 +265,6 @@ public class Main {
                         .setName("DR_" + SYSUtils.getDeviceName())
                         .setUuid(UUID.randomUUID().toString())
                         .setRequestBuilder(requestBuilder)
-                        .addDuplexDraft(new WSDraft6455())
                         .setHost("localhost")
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);

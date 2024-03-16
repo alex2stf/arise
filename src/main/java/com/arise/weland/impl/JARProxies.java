@@ -29,7 +29,7 @@ public class JARProxies {
                     Class webcam = forName("com.github.sarxos.webcam.Webcam", true, classLoader);
                     h.handle(webcam);
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    Mole.getInstance(JARProxies.class).error("NOT FOUND CLASS com.github.sarxos.webcam.Webcam");
                 }
             }
         });

@@ -23,9 +23,11 @@ import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.MapUtil.*;
 import static com.arise.core.tools.StreamUtil.toBytes;
+import static com.arise.core.tools.StringUtil.hasContent;
 import static com.arise.core.tools.ThreadUtil.*;
 import static com.arise.core.tools.Util.EXTFMT;
 import static com.arise.core.tools.Util.nowCalendar;
+import static java.lang.System.getProperty;
 
 
 public class RadioPlayer {
@@ -104,7 +106,21 @@ public class RadioPlayer {
         loop();
     }
 
+
+    public void restart(){
+        stop(new Handler<RadioPlayer>() {
+            @Override
+            public void handle(RadioPlayer r) {
+                r.play();
+            }
+        });
+    }
+
     public void stop() {
+        stop(null);
+    }
+
+    public void stop(final Handler<RadioPlayer> h) {
         if (!is_play) {
             return;
         }
@@ -115,14 +131,17 @@ public class RadioPlayer {
             c.stop();
         }
 
+        final RadioPlayer self = this;
         mPlayer.stop(new Handler<MediaPlayer>() {
             @Override
             public void handle(MediaPlayer mediaPlayer) {
-                is_play = false;
-                _cpath = "";
+            is_play = false;
+            _cpath = "";
+            if(h != null) {
+                h.handle(self);
+            }
             }
         });
-
     }
 
     int lR = 1000;
@@ -291,7 +310,10 @@ public class RadioPlayer {
                     }
                 }
             }
+
+
             play_from_list_of_strings(c, _s, 0);
+
         }
 
 
@@ -331,6 +353,20 @@ public class RadioPlayer {
             }
         }
 
+        void continue_pick(final Handler<Show> c, final List<String> urls, final int retryIndex){
+            clear_sys_props();
+            if (StringUtil.hasText(_f)) {
+                log.info("Using fallback " + _f);
+                p.forceStartActiveShow(_f, c);
+            } else {
+                play_from_list_of_strings(c, urls, retryIndex);
+            }
+        }
+
+        void clear_sys_props(){
+            System.clearProperty("radio.forced.path");
+        }
+
         void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex) {
             close_all_resources();
             Map<Integer, List<String>> parts = Cronus.getParts(_h);
@@ -350,7 +386,12 @@ public class RadioPlayer {
             }
 
             final String pdir;
-            if (_m.toLowerCase().indexOf("linear-pick") > -1) {
+
+            if(hasContent(getProperty("radio.forced.path"))) {
+                pdir = getProperty("radio.forced.path");
+                clear_sys_props();
+            }
+            else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
                 pdir = pickFromList(urls, false);
             }
             else if(_m.toLowerCase().indexOf("stream-first") > -1) {
@@ -364,29 +405,41 @@ public class RadioPlayer {
             }
 
             //daca e fisier local
-            if (pdir.startsWith("file:")) {
-                String path = pdir.substring("file:".length());
-                File root = new File(apply_variables(path));
-                if (!root.exists() && !root.isDirectory()) {
-                    log.warn("Directory " + root.getAbsolutePath() + " does not exist");
-
-                    if (StringUtil.hasText(_f)) {
-                        log.info("Using fallback " + _f);
-                        p.forceStartActiveShow(_f, c);
-                    } else {
-                        play_from_list_of_strings(c, urls, retryIndex + 1);
+            if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
+                File pflf = new File(pdir);
+                scp(pflf.getAbsolutePath());
+                final Show self = this;
+                mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
+                    @Override
+                    public void handle(String s) {
+                        clear_sys_props();
+                        _osc.handle(self);
+                        trigger(c);
                     }
+                });
+                return;
+            }
+
+            //daca e format file:
+            else if (pdir.startsWith("file:")) {
+                String path = pdir.substring("file:".length());
+                File file = new File(apply_variables(path));
+                if (!file.exists()) {
+                    log.warn("File " + file.getAbsolutePath() + " does not exist");
+                    continue_pick(c, urls, retryIndex + 1);
                     return;
                 }
-                File pfl = getRandomFileFromDirectory(root.getAbsolutePath());
+
+                File pfl;
+                if(ContentType.isMedia(file)) {
+                    pfl = file.getAbsoluteFile();
+                } else {
+                    pfl = getRandomFileFromDirectory(file.getAbsolutePath());
+                }
+
                 log.info("Play " + pfl.getAbsolutePath());
                 if (pfl == null) {
-                    if (StringUtil.hasText(_f)) {
-                        log.info("Using fallback " + _f);
-                        p.forceStartActiveShow(_f, c);
-                    } else {
-                        play_from_list_of_strings(c, urls, retryIndex + 1);
-                    }
+                    continue_pick(c, urls, retryIndex + 1);
                     return;
                 }
                 scp(pfl.getAbsolutePath());
@@ -399,31 +452,37 @@ public class RadioPlayer {
                     }
                 });
                 return;
+            } else if(ContentType.isHttpPath(pdir)) {
+                final long finalExp = exp;
+                log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
+
+                //default consideram ca e URL
+                mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
+                    @Override
+                    public void handle(HttpURLConnection huc) {
+                        log.info("Start stream show [" + n + "] with url " + pdir);
+                        clear_sys_props();
+                        scp(pdir);
+                        mPlayer.playStream(pdir);
+                        setup_stream_close(c, finalExp);
+                        _o = true;
+                    }
+                }, new Handler<Tuple2<Throwable, Peer>>() {
+                    @Override
+                    public void handle(Tuple2<Throwable, Peer> errTpl) {
+                        log.error(retryIndex + ") iteration check url " + pdir + " failed");
+                        clear_sys_props();
+                        close_all_resources();
+                        play_from_list_of_strings(c, urls, retryIndex + 1);
+                        _o = false;
+                    }
+                });
+            } else {
+                log.info("WTF faci cu " + pdir + "??????");
             }
 
 
-            final long finalExp = exp;
-            log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
 
-            //default consideram ca e URL
-            mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
-                        @Override
-                        public void handle(HttpURLConnection huc) {
-                            log.info("Start stream show [" + n + "] with url " + pdir);
-                            scp(pdir);
-                            mPlayer.playStream(pdir);
-                            setup_stream_close(c, finalExp);
-                            _o = true;
-                        }
-                    }, new Handler<Tuple2<Throwable, Peer>>() {
-                @Override
-                public void handle(Tuple2<Throwable, Peer> errTpl) {
-                    log.error(retryIndex + ") iteration check url " + pdir + " failed");
-                    close_all_resources();
-                    play_from_list_of_strings(c, urls, retryIndex + 1);
-                    _o = false;
-                }
-            });
 
 
         }
@@ -433,8 +492,8 @@ public class RadioPlayer {
                 path = path.replace("${music_dir}", FileUtil.findMusicDir().getAbsolutePath());
             }
 
-            if(path.indexOf("${usb_drive_0}") > -1 && StringUtil.hasContent(System.getProperty("usb.drive.0"))) {
-                path = path.replace("${usb_drive_0}", System.getProperty("usb.drive.0"));
+            if(path.indexOf("${usb_drive_0}") > -1 && hasContent(getProperty("usb.drive.0"))) {
+                path = path.replace("${usb_drive_0}", getProperty("usb.drive.0"));
             }
             return path;
         }

@@ -21,6 +21,8 @@ import com.arise.weland.ui.WelandForm;
 import java.util.List;
 import java.util.Map;
 
+import static com.arise.core.tools.ContentType.isHttpPath;
+import static com.arise.core.tools.ContentType.isMedia;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.sleep;
 import static com.arise.weland.dto.DeviceStat.getInstance;
@@ -62,61 +64,68 @@ public class DesktopContentHandler extends ContentHandler {
 
     //TODO fa stopPreviews mai destept
     private HttpResponse openString(final String path){
-           log.info("OPEN " + path);
-           DeviceStat deviceStat = getInstance();
+        log.info("OPEN " + path);
+        DeviceStat deviceStat = getInstance();
 
-            if (isHttpPath(path)){
-                ContentInfo info = contentInfoProvider.findByPath(path);
-                if (info != null && info.isStream() || path.indexOf("youtube") > -1){
-                    if (rplayer != null && rplayer.isPlaying()){
-                        rplayer.stop();
+        if (rplayer != null && rplayer.isPlaying()){
+
+            if(isHttpPath(path) || isLocalFileRadioFormat(path) || isMedia(path)) {
+                log.info("RESTARTING RADIO for " + path);
+                System.setProperty("radio.forced.path", path);
+                ThreadUtil.delayedTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        rplayer.restart();
                     }
+                }, 1000 * 3);
+                return deviceStat.toHttp();
+            } else {
+                rplayer.stop();
+            }
+        }
 
-                    deskMPlayer.stop(new Handler<MediaPlayer>() {
-                        @Override
-                        public void handle(MediaPlayer mediaPlayer) {
 
-                        }
-                    });
-                    sleep(1000 * 8);
-                    if (_f != null) {
-                        ThreadUtil.delayedTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                _f.toFront();
-                                _f.repaint();
-                            }
-                        }, 12 * 1000);
+
+        if (isHttpPath(path)){
+            ContentInfo info = contentInfoProvider.findByPath(path);
+            if (info != null && info.isStream() || path.indexOf("youtube") > -1){
+                deskMPlayer.stop(new Handler<MediaPlayer>() {
+                    @Override
+                    public void handle(MediaPlayer mediaPlayer) {
 
                     }
-                    deskMPlayer.playStream(path);
-
-
-
-                    return deviceStat.toHttp();
-                } else {
-                    System.out.println("WTF????");
-                }
-            }
-            else if (isPicture(path)){
-                openPicture(path);
-            }
-            else if (isMedia(path)){
-                if (rplayer != null && rplayer.isPlaying()){
-                    rplayer.stop();
-                }
-                deskMPlayer.stop(null);
+                });
+                sleep(1000 * 8);
                 if (_f != null) {
-                    _f.toFront();
+                    ThreadUtil.delayedTask(new Runnable() {
+                        @Override
+                        public void run() {
+                            _f.toFront();
+                            _f.repaint();
+                        }
+                    }, 12 * 1000);
+
                 }
-
-                deskMPlayer.play(path);
-
+                deskMPlayer.playStream(path);
+                return deviceStat.toHttp();
+            } else {
+                System.out.println("WTF????");
             }
-            else {
-                SYSUtils.open(path);
+        }
+        else if (isPicture(path)){
+            openPicture(path);
+        }
+        else if (isMedia(path)){
+            deskMPlayer.stop(null);
+            if (_f != null) {
+                _f.toFront();
             }
-            return deviceStat.toHttp();
+            deskMPlayer.play(path);
+        }
+        else {
+            SYSUtils.open(path);
+        }
+        return deviceStat.toHttp();
     }
 
 
@@ -125,9 +134,7 @@ public class DesktopContentHandler extends ContentHandler {
 
 
 
-    private boolean isMedia(String path) {
-        return ContentType.isMusic(path) || ContentType.isVideo(path);
-    }
+
 
 
 

@@ -4,6 +4,7 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
 import com.arise.core.models.Handler;
+import com.arise.core.tools.ContentType;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
@@ -48,14 +49,10 @@ public abstract  class ContentHandler {
         return stop(request.getQueryParam("path"));
     }
 
-    public boolean isHttpPath(String in){
-        try {
-            URL uri = new URL(in);
-            return uri != null
-                    && (uri.getProtocol().startsWith("http") );
-        }  catch (MalformedURLException e) {
-            return false;
-        }
+
+
+    public boolean isLocalFileRadioFormat(String in){
+        return in.startsWith("file:");
     }
 
     public abstract HttpResponse stop(String x);
@@ -219,5 +216,8 @@ public abstract  class ContentHandler {
 //    }
 
     public abstract void takeSnapshot(String id);
+
+
+
 
 }

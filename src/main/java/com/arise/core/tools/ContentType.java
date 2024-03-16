@@ -282,6 +282,20 @@ public enum ContentType  {
                 name.endsWith(".aacp");
     }
 
+    public static boolean isHttpPath(String in){
+        try {
+            URL uri = new URL(in);
+            return uri != null
+                    && (uri.getProtocol().startsWith("http") );
+        }  catch (MalformedURLException e) {
+            return false;
+        }
+    }
+
+    public static boolean isMedia(String path) {
+        return ContentType.isMusic(path) || ContentType.isVideo(path);
+    }
+
     public static boolean isPicture(File f) {
         return isPicture(f.getAbsolutePath());
     }
