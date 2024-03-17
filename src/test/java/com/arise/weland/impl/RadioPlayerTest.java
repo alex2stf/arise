@@ -2,18 +2,13 @@ package com.arise.weland.impl;
 
 
 import com.arise.canter.Command;
-import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
-import com.arise.core.models.Handler;
 import com.arise.core.tools.StringUtil;
-import com.arise.weland.impl.Show;
-import com.arise.weland.model.MediaPlayer;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.arise.canter.Defaults.PROCESS_EXEC;
 import static com.arise.core.tools.Assert.assertEquals;
 import static java.lang.System.setProperty;
 

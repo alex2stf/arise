@@ -13,9 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import static com.arise.canter.Cronus.decorate;
-import static com.arise.canter.Cronus.fromString;
-import static com.arise.canter.Cronus.strfMillis;
+import static com.arise.canter.Cronus.*;
 import static com.arise.core.tools.CollectionUtil.pickFromList;
 import static com.arise.core.tools.CollectionUtil.randomPick;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;

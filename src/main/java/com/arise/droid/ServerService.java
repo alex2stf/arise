@@ -1,13 +1,5 @@
 package com.arise.droid;
 
-import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
-import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
-import static com.arise.core.AppSettings.getProperty;
-import static com.arise.core.AppSettings.isTrue;
-import static com.arise.core.tools.ThreadUtil.startThread;
-import static com.arise.droid.AppUtil.ON_START;
-
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -17,23 +9,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.os.BatteryManager;
 import android.os.IBinder;
-
 import androidx.annotation.Nullable;
-
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.servers.draft_6455.WSDraft6455;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.models.Handler;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.droid.impl.AndroidContentHandler;
 import com.arise.droid.impl.AndroidMediaPlayer;
 import com.arise.droid.impl.SensorReader;
@@ -46,6 +31,13 @@ import com.arise.weland.utils.WelandServerHandler;
 
 import java.util.Date;
 import java.util.UUID;
+
+import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
+import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
+import static com.arise.core.AppSettings.getProperty;
+import static com.arise.core.AppSettings.isTrue;
+import static com.arise.core.tools.ThreadUtil.startThread;
+import static com.arise.droid.AppUtil.ON_START;
 
 
 public class ServerService extends Service {

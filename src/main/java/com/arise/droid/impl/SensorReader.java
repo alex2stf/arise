@@ -5,7 +5,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
-
 import com.arise.weland.dto.DeviceStat;
 
 import java.util.List;

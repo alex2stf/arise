@@ -11,8 +11,6 @@ import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import androidx.core.app.NotificationCompat;
-
-
 import com.arise.droid.MainActivity;
 
 import java.util.Map;
