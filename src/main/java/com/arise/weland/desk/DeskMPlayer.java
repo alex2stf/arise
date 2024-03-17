@@ -114,9 +114,11 @@ public class DeskMPlayer extends MediaPlayer {
 
         if ("commands".equalsIgnoreCase(strategy)) {
             if (r.containsCommand("close-media-player")) {
+                System.out.println("intai close");
                 r.execute("close-media-player", new String[]{});
             }
             if (r.containsCommand("play-media")) {
+                System.out.println("acum oplay");
                 r.execute("play-media", new String[]{path});
             }
             c.handle(path);
@@ -151,19 +153,25 @@ public class DeskMPlayer extends MediaPlayer {
 
             winst = playCmd.execute(path);
 
-            if (winst instanceof Process){
-                try {
-                    int i = ((Process) winst).waitFor();
-                    System.out.println("exit with " + i);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            wait_to_execute(winst);
             is_play = false;
             c.handle(path);
         }
 
         return winst;
+    }
+
+    void wait_to_execute(Object o){
+        if(o instanceof Process){
+            try {
+                int i = ((Process) o).waitFor();
+                log.info("process " + o + " exited with " + i);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void playStream(String u) {
@@ -204,6 +212,7 @@ public class DeskMPlayer extends MediaPlayer {
     }
 
     public void stop(Handler<MediaPlayer> comp) {
+        log.info("Stop called");
         stopClips();
         for (Process p: proc){
            if (p != null) {
@@ -211,10 +220,14 @@ public class DeskMPlayer extends MediaPlayer {
            }
         }
         if(r.containsCommand("browser-close")) {
-            r.getCommand("browser-close").execute();
+            wait_to_execute(
+                    r.getCommand("browser-close").execute()
+            );
         }
         if(r.containsCommand("close-media")) {
-            r.getCommand("close-media").execute();
+            wait_to_execute(
+                    r.getCommand("close-media").execute()
+            );
         }
         is_play = false;
         if(comp != null){

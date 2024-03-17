@@ -1,0 +1,39 @@
+[
+  {
+    "id": "browser-open",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "{0}"]
+      }
+    ]
+  },
+  {
+    "id": "browser-close",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["taskkill", "/F", "/IM", "msedge.exe"]
+
+      }
+    ]
+  },
+  {
+    "id": "close-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["taskkill", "/F", "/IM", "mpg123.exe"]
+      }
+    ]
+  },
+  {
+    "id": "play-media",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": ["C:\\Applications\\mpg123-1.32.4-static-x86\\mpg123.exe",  "{0}"]
+      }
+    ]
+  }
+]

@@ -132,14 +132,15 @@ public class RadioPlayer {
         }
 
         final RadioPlayer self = this;
+        log.info("Radio stop");
         mPlayer.stop(new Handler<MediaPlayer>() {
             @Override
             public void handle(MediaPlayer mediaPlayer) {
-            is_play = false;
-            _cpath = "";
-            if(h != null) {
-                h.handle(self);
-            }
+                is_play = false;
+                _cpath = "";
+                if(h != null) {
+                    h.handle(self);
+                }
             }
         });
     }
@@ -170,6 +171,7 @@ public class RadioPlayer {
             @Override
             public void handle(Show show) {
                 if (is_play || !MediaPlayer.isAppClosed) {
+                    log.info("Entering loop");
                     loop();
                 }
             }

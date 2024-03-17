@@ -94,11 +94,12 @@ public class Show {
             @Override
             public void run() {
                 _up = false;
+                log.info("setup_stream_close media.stop()");
                 mPlayer.stop(new Handler<MediaPlayer>() {
                     @Override
                     public void handle(MediaPlayer mediaPlayer) {
                         log.i("Show [" + n + "] stooped at " + Util.now());
-                        trigger(c);
+                        c.handle(null);
                     }
                 });
 
@@ -106,25 +107,29 @@ public class Show {
         }, ex);
     }
 
-    void close_all_resources() {
+    void close_all_resources(final Handler<Object> onComplete) {
         if (_up) {
             closeTimer(t);
             _up = false;
 
-
+            log.info("close_all_resources media.stop()");
             mPlayer.stop(new Handler<MediaPlayer>() {
                 @Override
                 public void handle(MediaPlayer mediaPlayer) {
                     closeTimer(t);
                     _up = false;
-                    log.info("Closing show [" + n + "] resources");
+                    log.info("Show [" + n + "] resources closed");
+                    onComplete.handle(this);
                 }
             });
-
+        } else {
+            log.info("Nothing to close");
+            onComplete.handle(this);
         }
     }
 
     void continue_pick(final Handler<Show> c, final List<String> urls, final int retryIndex){
+        log.info("continue_pick " + retryIndex);
 //        _up = false;
         clear_sys_props();
         if (StringUtil.hasText(_f)) {
@@ -143,126 +148,137 @@ public class Show {
         clear_sys_props();
 //        if(_up) {
             _osc.handle(this);
-            trigger(c);
+            c.handle(this);
 //        }
     }
 
     void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex) {
-        close_all_resources();
-        Map<Integer, List<String>> parts = Cronus.getParts(_h);
-        long exp = 4000;
-        if (parts.containsKey(2)) {
-            Cronus.MomentInDay m = fromString(parts.get(2).get(1));
-            if (m != null) {
-                Calendar li = decorate(m, Util.nowCalendar());
-                exp = Math.abs(li.getTimeInMillis() - nowCalendar().getTimeInMillis());
-            }
-        }
+        close_all_resources(new Handler<Object>() {
+            @Override
+            public void handle(Object o) {
+                //init functie
+                log.info("Entring play_from_list_of_strings iteration " + retryIndex);
 
-        if (retryIndex > urls.size() + 1) {
-            log.error("Urls list iteration complete. Are you connected to the internet?");
-            setup_stream_close(c, exp);
-            return;
-        }
-
-        final String pdir;
-
-        if(hasContent(getProperty("radio.forced.path"))) {
-            pdir = getProperty("radio.forced.path");
-            clear_sys_props();
-        }
-        else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
-            pdir = pickFromList(urls, false);
-        }
-        else if(_m.toLowerCase().indexOf("stream-first") > -1) {
-            pdir = smartPick(urls, true);
-        }
-        else if(_m.toLowerCase().indexOf("local-first") > -1) {
-            pdir = smartPick(urls, false);
-        }
-        else {
-            pdir = randomPick(urls);
-        }
-
-        //daca e fisier local
-        if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
-            File pflf = new File(pdir);
-            scp(pflf.getAbsolutePath());
-//            _up = true;
-            mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
-                @Override
-                public void handle(String s) {
-                    handle_local_finished(c);
+                Map<Integer, List<String>> parts = Cronus.getParts(_h);
+                long exp = 4000;
+                if (parts.containsKey(2)) {
+                    Cronus.MomentInDay m = fromString(parts.get(2).get(1));
+                    if (m != null) {
+                        Calendar li = decorate(m, Util.nowCalendar());
+                        exp = Math.abs(li.getTimeInMillis() - nowCalendar().getTimeInMillis());
+                    }
                 }
-            });
-            return;
-        }
 
-        //daca e format file:
-        else if (pdir.startsWith("file:")) {
-            String path = pdir.substring("file:".length());
-            File file = new File(apply_variables(path));
-            if (!file.exists()) {
-                log.warn("File " + file.getAbsolutePath() + " does not exist");
-                continue_pick(c, urls, retryIndex + 1);
-                return;
-            }
-
-            File pfl;
-            if(ContentType.isMedia(file)) {
-                pfl = file.getAbsoluteFile();
-            } else {
-                pfl = getRandomFileFromDirectory(file.getAbsolutePath());
-            }
-
-
-            if (pfl == null) {
-                log.info("NULL AT: " + pfl.getAbsolutePath());
-                continue_pick(c, urls, retryIndex + 1);
-                return;
-            }
-            log.info("Play " + pfl.getAbsolutePath());
-            scp(pfl.getAbsolutePath());
-//            _up = true;
-            mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
-                @Override
-                public void handle(String s) {
-                    handle_local_finished(c);
+                if (retryIndex > urls.size() + 1) {
+                    log.error("Urls list iteration complete. Are you connected to the internet?");
+                    setup_stream_close(c, exp);
+                    return;
                 }
-            });
-            return;
-        } else if(ContentType.isHttpPath(pdir)) {
-            final long finalExp = exp;
-            log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
-            _up = false;
 
-            //default consideram ca e URL
-            mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
-                @Override
-                public void handle(HttpURLConnection huc) {
-                    log.info("Start stream show [" + n + "] with url " + pdir);
+                final String pdir;
+
+                if(hasContent(getProperty("radio.forced.path"))) {
+                    pdir = getProperty("radio.forced.path");
                     clear_sys_props();
-                    scp(pdir);
-                    mPlayer.playStream(pdir);
-                    setup_stream_close(c, finalExp);
-                    _up = true;
                 }
-            }, new Handler<Tuple2<Throwable, Peer>>() {
-                @Override
-                public void handle(Tuple2<Throwable, Peer> errTpl) {
-                    log.error(retryIndex + ") iteration check url " + pdir + " failed");
-                    clear_sys_props();
-                    close_all_resources();
-                    play_from_list_of_strings(c, urls, retryIndex + 1);
+                else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
+                    pdir = pickFromList(urls, false);
+                }
+                else if(_m.toLowerCase().indexOf("stream-first") > -1) {
+                    pdir = smartPick(urls, true);
+                }
+                else if(_m.toLowerCase().indexOf("local-first") > -1) {
+                    pdir = smartPick(urls, false);
+                }
+                else {
+                    pdir = randomPick(urls);
+                }
+
+                //daca e fisier local
+                if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
+                    File pflf = new File(pdir);
+                    scp(pflf.getAbsolutePath());
+//               _up = true;
+                    mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
+                        @Override
+                        public void handle(String s) {
+                            handle_local_finished(c);
+                        }
+                    });
+                    return;
+                }
+
+                //daca e format file:
+                else if (pdir.startsWith("file:")) {
+                    String path = pdir.substring("file:".length());
+                    File file = new File(apply_variables(path));
+                    if (!file.exists()) {
+                        log.warn("File " + file.getAbsolutePath() + " does not exist");
+                        continue_pick(c, urls, retryIndex + 1);
+                        return;
+                    }
+
+                    File pfl;
+                    if(ContentType.isMedia(file)) {
+                        pfl = file.getAbsoluteFile();
+                    } else {
+                        pfl = getRandomFileFromDirectory(file.getAbsolutePath());
+                    }
+
+
+                    if (pfl == null) {
+                        log.info("NULL AT: " + pfl.getAbsolutePath());
+                        continue_pick(c, urls, retryIndex + 1);
+                        return;
+                    }
+                    log.info("Play " + pfl.getAbsolutePath());
+                    scp(pfl.getAbsolutePath());
+//                   _up = true;
+                    mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
+                        @Override
+                        public void handle(String s) {
+                            handle_local_finished(c);
+                        }
+                    });
+                    return;
+                } else if(ContentType.isHttpPath(pdir)) {
+                    final long finalExp = exp;
+                    log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
                     _up = false;
+
+                    //default consideram ca e URL
+                    mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
+                        @Override
+                        public void handle(HttpURLConnection huc) {
+                            log.info("Start stream show [" + n + "] with url " + pdir);
+                            clear_sys_props();
+                            scp(pdir);
+                            mPlayer.playStream(pdir);
+                            setup_stream_close(c, finalExp);
+                            _up = true;
+                        }
+                    }, new Handler<Tuple2<Throwable, Peer>>() {
+                        @Override
+                        public void handle(Tuple2<Throwable, Peer> errTpl) {
+                            log.error(retryIndex + ") iteration check url " + pdir + " failed");
+                            clear_sys_props();
+                            close_all_resources(new Handler<Object>() {
+                                @Override
+                                public void handle(Object o) {
+                                    play_from_list_of_strings(c, urls, retryIndex + 1);
+                                    _up = false;
+                                }
+                            });
+
+                        }
+                    });
+                } else {
+                    log.info("WTF faci cu " + pdir + "??????");
                 }
-            });
-        } else {
-            log.info("WTF faci cu " + pdir + "??????");
-        }
 
-
-
+                //final de functie
+            }
+        });
 
 
     }
@@ -279,21 +295,22 @@ public class Show {
     }
 
 
-    void trigger(Handler<Show> c) {
-        if (_t > 999) {
-            System.out.println("sleep for " + _t);
-            try {
-                Thread.sleep(_t);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        c.handle(this);
-    }
+//    void trigger(Handler<Show> c) {
+//        if (_t > 999) {
+//            System.out.println("sleep for " + _t);
+//            try {
+//                Thread.sleep(_t);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        c.handle(this);
+//    }
 
 
     public void stop() {
 
+        log.info("show stop");
         closeTimer(t);
         mPlayer.stop(new Handler<MediaPlayer>() {
             @Override
