@@ -3,14 +3,9 @@ package com.arise.core.tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.arise.core.tools.Assert.assertEquals;
-import static com.arise.core.tools.CollectionUtil.pickOne;
-import static com.arise.core.tools.Mole.logInfo;
-import static java.util.Arrays.asList;
 
 public class CollectionUtilTest {
 

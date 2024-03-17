@@ -7,13 +7,8 @@ import java.io.IOException;
 import java.net.URLClassLoader;
 import java.util.Map;
 
-import static com.arise.cargo.management.DependencyManager.importDependencyRules;
-import static com.arise.cargo.management.DependencyManager.withBinary;
-import static com.arise.cargo.management.DependencyManager.withJar;
-import static com.arise.core.tools.Assert.assertEquals;
-import static com.arise.core.tools.Assert.assertFailed;
-import static com.arise.core.tools.Assert.assertNotNull;
-import static com.arise.core.tools.Assert.assertTrue;
+import static com.arise.cargo.management.DependencyManager.*;
+import static com.arise.core.tools.Assert.*;
 
 
 public class DependencyManagerTest {

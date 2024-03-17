@@ -6,7 +6,6 @@ import com.arise.core.models.Tuple2;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
@@ -19,11 +18,9 @@ import com.arise.weland.model.MediaPlayer;
 import com.arise.weland.ui.WelandForm;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.arise.core.tools.ContentType.isHttpPath;
 import static com.arise.core.tools.ContentType.isMedia;
-import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.ThreadUtil.sleep;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 

@@ -5,7 +5,6 @@ import com.arise.core.tools.Assert;
 import java.util.Calendar;
 
 import static com.arise.canter.Cronus.nilh;
-import static com.arise.canter.Cronus.parseHourRef;
 
 public class CronusTest2 {
 

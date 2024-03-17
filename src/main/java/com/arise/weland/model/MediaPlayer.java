@@ -1,26 +1,23 @@
 package com.arise.weland.model;
 
-import static com.arise.core.tools.Util.close;
-
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.exceptions.CommunicationException;
-import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ReflectUtil;
 import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.Util;
 import com.arise.weland.impl.ContentInfoProvider;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.arise.core.tools.Util.close;
 
 public abstract class MediaPlayer {
 

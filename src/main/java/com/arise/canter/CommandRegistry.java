@@ -4,13 +4,7 @@ package com.arise.canter;
 import com.arise.canter.Command.JsonCommand;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.serializers.parser.Groot;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.GenericTypeWorker;
-import com.arise.core.tools.MapUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,11 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.arise.canter.Defaults.CMD_FIND_FILE_STREAM;
-import static com.arise.canter.Defaults.CMD_GET_DATE;
-import static com.arise.canter.Defaults.CMD_PRINT;
-import static com.arise.canter.Defaults.CMD_SUM;
-import static com.arise.canter.Defaults.CMD_VALID_FILE;
+import static com.arise.canter.Defaults.*;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.hasText;
 

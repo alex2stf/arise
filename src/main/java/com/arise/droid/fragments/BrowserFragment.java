@@ -2,23 +2,12 @@ package com.arise.droid.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.SystemClock;
-import android.view.InputDevice;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
+import android.webkit.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.droid.tools.ContextFragment;

@@ -1,7 +1,6 @@
 package com.arise.core.tools;
 
 import com.arise.core.AppSettings;
-import com.arise.core.exceptions.DependencyException;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 

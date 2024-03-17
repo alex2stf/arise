@@ -8,7 +8,6 @@ import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

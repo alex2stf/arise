@@ -1,27 +1,5 @@
 package com.arise.droid;
 
-import static android.Manifest.permission.ACCESS_WIFI_STATE;
-import static android.Manifest.permission.BLUETOOTH;
-import static android.Manifest.permission.BLUETOOTH_ADMIN;
-import static android.Manifest.permission.CHANGE_WIFI_MULTICAST_STATE;
-import static android.Manifest.permission.INTERNET;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.VIBRATE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.Manifest.permission_group.CAMERA;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-import static com.arise.core.AppSettings.Keys.RADIO_ENABLED;
-import static com.arise.core.AppSettings.Keys.RADIO_SHOWS_PATH;
-import static com.arise.core.AppSettings.getProperty;
-import static com.arise.core.AppSettings.isTrue;
-import static com.arise.droid.AppUtil.APP_STATE;
-import static com.arise.droid.AppUtil.ON_START;
-import static com.arise.droid.AppUtil.OPEN_PATH;
-import static com.arise.droid.AppUtil.PATH;
-
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,20 +8,15 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.arise.core.AppSettings;
-import com.arise.core.models.Handler;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.Util;
 import com.arise.droid.fragments.AppFragment;
@@ -52,9 +25,13 @@ import com.arise.droid.fragments.MediaPlaybackFragment;
 import com.arise.droid.tools.AppPageAdapter;
 import com.arise.droid.tools.AppViewPager;
 import com.arise.weland.dto.ContentInfo;
-import com.arise.weland.dto.DeviceStat;
-import com.arise.weland.impl.RadioPlayer;
 import com.google.android.material.tabs.TabLayout;
+
+import static android.Manifest.permission.*;
+import static android.Manifest.permission_group.CAMERA;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.arise.droid.AppUtil.*;
 
 public class MainActivity extends AppCompatActivity {
     public static volatile boolean IS_RUNNING = true;

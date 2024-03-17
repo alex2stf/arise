@@ -9,17 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.arise.astox.net.models.http.HttpReader.CRLF;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.StringUtil.hasText;
-import static com.arise.core.tools.StringUtil.toCSV;
-import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
+import static com.arise.core.tools.StringUtil.*;
 
 public class HttpRequest extends ServerRequest {
 

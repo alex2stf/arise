@@ -9,10 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
-import static com.arise.core.tools.Assert.assertEquals;
-import static com.arise.core.tools.Assert.assertFalse;
-import static com.arise.core.tools.Assert.assertNull;
-import static com.arise.core.tools.Assert.assertTrue;
+import static com.arise.core.tools.Assert.*;
 import static com.arise.core.tools.TypeUtil.isNumericSequence;
 
 public class GrootTest {

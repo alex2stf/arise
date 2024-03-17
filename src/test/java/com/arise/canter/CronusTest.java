@@ -2,29 +2,12 @@ package com.arise.canter;
 
 
 import com.arise.core.exceptions.LogicalException;
-import com.arise.core.exceptions.SyntaxException;
-import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Assert;
 
-import javax.security.auth.login.CredentialNotFoundException;
-import javax.security.auth.login.LoginException;
 import java.util.Calendar;
 
-import static com.arise.canter.Cronus.dayFromString;
-import static com.arise.canter.Cronus.dayIsBetween;
-import static com.arise.canter.Cronus.dayMonthIsBetween;
-import static com.arise.canter.Cronus.fromString;
-import static com.arise.canter.Cronus.isAfter;
-import static com.arise.canter.Cronus.isBefore;
-import static com.arise.canter.Cronus.isBetween;
-import static com.arise.canter.Cronus.isWeekdayFormat;
-import static com.arise.canter.Cronus.parseDayRef;
-import static com.arise.canter.Cronus.parseHourRef;
-import static com.arise.canter.Cronus.rollIsBetween;
-import static com.arise.core.models.Tuple2.numInt;
-import static com.arise.core.tools.Assert.assertEquals;
-import static com.arise.core.tools.Assert.assertFalse;
-import static com.arise.core.tools.Assert.assertTrue;
+import static com.arise.canter.Cronus.*;
+import static com.arise.core.tools.Assert.*;
 
 public class CronusTest {
     public static void test(){

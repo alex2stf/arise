@@ -3,8 +3,6 @@ package com.arise.weland.model;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
-import com.arise.core.models.Handler;
-import com.arise.core.tools.ContentType;
 import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
@@ -14,8 +12,6 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.impl.Show;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;

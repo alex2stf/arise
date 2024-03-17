@@ -3,11 +3,7 @@ package com.arise.astox.net.models.http;
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.core.tools.StringUtil;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 

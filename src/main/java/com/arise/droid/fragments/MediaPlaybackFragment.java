@@ -1,8 +1,5 @@
 package com.arise.droid.fragments;
 
-import static com.arise.droid.AppUtil.State.PLAYING;
-import static com.arise.droid.AppUtil.contentInfoProvider;
-
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,21 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.arise.core.models.Handler;
-import com.arise.core.tools.AppCache;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 import com.arise.droid.AppUtil;
 import com.arise.droid.AppUtil.MediaState;
-import com.arise.droid.MainActivity;
-import com.arise.droid.impl.AndroidContentDecoder;
-import com.arise.droid.impl.AndroidContentHandler;
 import com.arise.droid.tools.ContextFragment;
-
 import com.arise.droid.views.MediaControls;
 import com.arise.droid.views.MyVideoView;
 import com.arise.droid.views.ThumbnailView;
@@ -36,6 +26,9 @@ import com.arise.weland.dto.ContentInfo;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.arise.droid.AppUtil.State.PLAYING;
+import static com.arise.droid.AppUtil.contentInfoProvider;
 
 
 public class MediaPlaybackFragment extends ContextFragment {

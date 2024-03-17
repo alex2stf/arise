@@ -4,7 +4,6 @@ package com.arise.weland.ui;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.ThreadUtil;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
