@@ -120,13 +120,23 @@ public class RadioPlayer {
         if (!is_play) {
             return;
         }
-        if (st != null) {
-            st.handle(this);
-        }
         if (c != null) {
-            c.stop();
+            c.stop(new Handler<MediaPlayer>() {
+                @Override
+                public void handle(MediaPlayer mediaPlayer) {
+                    stop_mplayer(h);
+                }
+            });
+        } else {
+            stop_mplayer(h);
         }
 
+
+
+    }
+
+
+    void stop_mplayer(final Handler<RadioPlayer> h){
         final RadioPlayer self = this;
         log.info("Radio stop");
         mPlayer.stop(new Handler<MediaPlayer>() {
@@ -136,6 +146,9 @@ public class RadioPlayer {
                 _cpath = "";
                 if(h != null) {
                     h.handle(self);
+                }
+                if (st != null) {
+                    st.handle(self);
                 }
             }
         });

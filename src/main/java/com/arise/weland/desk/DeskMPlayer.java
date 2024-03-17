@@ -71,7 +71,9 @@ public class DeskMPlayer extends MediaPlayer {
             return null;
         }
         if (!new File(path).exists()){
-            log.e("File " + path + " does not exists");
+            log.e("File " + path + " does not exists, implemnent error handler");
+            System.exit(-1);
+            return null;
         }
 
         is_play = true;
@@ -105,18 +107,7 @@ public class DeskMPlayer extends MediaPlayer {
         String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
         log.info("Open media " + path + " using strategy [" + strategy + "]");
 
-        if ("commands".equalsIgnoreCase(strategy)) {
-            if (r.containsCommand("close-media-player")) {
-                System.out.println("intai close");
-                r.execute("close-media-player", new String[]{});
-            }
-            if (r.containsCommand("play-media")) {
-                System.out.println("acum oplay");
-                r.execute("play-media", new String[]{path});
-            }
-            c.handle(path);
-            is_play = false;
-        } else if ((strategy + "").indexOf("javazone-player") > -1) {
+        if ((strategy + "").indexOf("javazone-player") > -1) {
             //TODO use JProxy
             withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
                 @Override
@@ -147,6 +138,7 @@ public class DeskMPlayer extends MediaPlayer {
             winst = playCmd.execute(path);
 
             wait_to_execute(winst);
+            log.info("winst executed" + winst);
             is_play = false;
             c.handle(path);
         }

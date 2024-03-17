@@ -128,7 +128,7 @@ public class Show {
 
     void continue_pick(final Handler<Show> c, final List<String> urls, final int retryIndex){
         log.info("continue_pick " + retryIndex);
-//        _up = false;
+        _up = false;
         clear_sys_props();
         if (StringUtil.hasText(_f)) {
             log.info("Using fallback " + _f);
@@ -143,11 +143,15 @@ public class Show {
     }
 
     void handle_local_finished(final Handler<Show> c){
-        clear_sys_props();
-//        if(_up) {
+
+        if(_up) {
+            clear_sys_props();
             _osc.handle(this);
             c.handle(this);
-//        }
+            _up = false;
+        } else {
+            log.info("show is not _up");
+        }
     }
 
     void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex) {
@@ -196,7 +200,7 @@ public class Show {
                 if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
                     File pflf = new File(pdir);
                     scp(pflf.getAbsolutePath());
-//               _up = true;
+                    _up = true;
                     mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
@@ -231,10 +235,11 @@ public class Show {
                     }
                     log.info("Play " + pfl.getAbsolutePath());
                     scp(pfl.getAbsolutePath());
-//                   _up = true;
+                   _up = true;
                     mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
+                            log.info("Random pick finihed play, _up=" + _up);
                             handle_local_finished(c);
                         }
                     });
@@ -293,28 +298,12 @@ public class Show {
     }
 
 
-//    void trigger(Handler<Show> c) {
-//        if (_t > 999) {
-//            System.out.println("sleep for " + _t);
-//            try {
-//                Thread.sleep(_t);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        c.handle(this);
-//    }
 
-
-    public void stop() {
+    public void stop(Handler<MediaPlayer> h) {
 
         log.info("show stop");
+        _up = false;
         closeTimer(t);
-        mPlayer.stop(new Handler<MediaPlayer>() {
-            @Override
-            public void handle(MediaPlayer mediaPlayer) {
-
-            }
-        });
+        mPlayer.stop(h);
     }
 }
