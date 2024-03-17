@@ -3,7 +3,6 @@ package com.arise.droid.tools;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;

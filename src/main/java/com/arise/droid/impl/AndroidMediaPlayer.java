@@ -1,20 +1,10 @@
 package com.arise.droid.impl;
 
-import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
-import static com.arise.core.tools.ThreadUtil.startThread;
-
-import android.app.Service;
 import android.content.Context;
 import android.media.AudioManager;
-import android.os.Looper;
-
-import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.Peer;
-import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.ThreadUtil;
-import com.arise.core.tools.Util;
 import com.arise.droid.MainActivity;
 import com.arise.droid.fragments.BrowserFragment;
 import com.arise.droid.fragments.MediaPlaybackFragment;
@@ -22,6 +12,9 @@ import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.model.MediaPlayer;
 
 import java.net.HttpURLConnection;
+
+import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
+import static com.arise.core.tools.ThreadUtil.startThread;
 
 public class AndroidMediaPlayer extends MediaPlayer {
 

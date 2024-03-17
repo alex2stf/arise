@@ -1,8 +1,6 @@
 package com.arise.droid;
 
 
-import static com.arise.core.tools.AppCache.putString;
-
 import com.arise.core.tools.AppCache;
 import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.Mole;
@@ -10,6 +8,8 @@ import com.arise.droid.impl.AndroidContentDecoder;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.RadioPlayer;
+
+import static com.arise.core.tools.AppCache.putString;
 
 public class AppUtil {
 

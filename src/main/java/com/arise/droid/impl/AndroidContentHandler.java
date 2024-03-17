@@ -1,19 +1,12 @@
 package com.arise.droid.impl;
 
-import static com.arise.droid.AppUtil.OPEN_PATH;
-
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
-
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.AppSettings;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.AppCache;
-import com.arise.core.tools.MapUtil;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.droid.AppUtil;
@@ -28,7 +21,8 @@ import com.arise.weland.model.MediaPlayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import static com.arise.droid.AppUtil.OPEN_PATH;
 
 public class AndroidContentHandler extends ContentHandler {
 
