@@ -4,20 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
 import com.arise.core.tools.ProgressiveRGBGenerator;
 import com.arise.core.tools.StringUtil;
-
-import org.w3c.dom.Text;
 
 import java.util.Random;
 

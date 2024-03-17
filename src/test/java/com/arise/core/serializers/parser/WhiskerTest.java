@@ -4,19 +4,8 @@ import com.arise.core.serializers.parser.Whisker.Lambda;
 import com.arise.core.serializers.parser.Whisker.Token;
 import com.arise.core.serializers.parser.Whisker.TokenType;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import static com.arise.core.tools.Assert.assertEquals;
 

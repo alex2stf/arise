@@ -3,16 +3,12 @@ package com.arise.weland.utils;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.cargo.management.DependencyManager;
-import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
-import com.arise.weland.impl.ContentInfoDecoder;
-import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.model.MediaPlayer;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 

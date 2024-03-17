@@ -1,10 +1,10 @@
 package com.company.todos;
 
 
+import java.util.Scanner;
+
 import static java.lang.System.exit;
 import static java.lang.System.out;
-
-import java.util.Scanner;
 
 public class ThingsToRealize {
 

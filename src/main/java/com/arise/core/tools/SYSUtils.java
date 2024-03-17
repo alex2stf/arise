@@ -6,7 +6,6 @@ import com.arise.core.models.Handler;
 import java.io.*;
 import java.util.*;
 
-import static com.arise.core.tools.FileUtil.exists;
 import static com.arise.core.tools.FileUtil.fileExists;
 import static com.arise.core.tools.StringUtil.*;
 
