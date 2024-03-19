@@ -1,1 +1,0 @@
-document.getElementsByClassName('video-ads')[0].style.visibility = 'hidden'

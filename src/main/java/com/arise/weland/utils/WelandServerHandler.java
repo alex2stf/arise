@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -132,6 +133,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       return contentHandler.onDeviceUpdate(req.queryParams()).toHttp();
     }
 
+
     if ("/proxy-skin".equals(req.path()) ){
       Map<String, String> args = new HashMap<>();
       args.put("uri", urlDecodeUTF8(req.getQueryParamString("uri", "")));
@@ -219,11 +221,14 @@ public class WelandServerHandler extends HTTPServerHandler {
               .addCorelationId(correlationId).allowAnyOrigin();
     }
 
+    if (req.pathsStartsWith("img-suggestion")){
+      String query = req.getQueryParam("q");
+      String def = req.getQueryParam("d");
+//      return "/thumbnail?id=" + id;
+        return HttpResponse.plainText("/thumbnail?id=" + def);
+//        return HttpResponse.json("{\"url\": \"/thumbnail?id=" + URLEncoder.encode(query, "UTF-8") + "\"");
 
-
-//    if(req.pathsStartsWith("snapshot-get")){
-//      return contentHandler.getLatestSnapshot().addCorelationId(correlationId).allowAnyOrigin();
-//    }
+    }
 
     if(req.pathsStartsWith("snapshot-make")){
       String id = req.getQueryParam("id");
@@ -235,6 +240,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     if(req.pathsStartsWith("media", "list")){
       Integer index = req.getQueryParamInt("index");
       String what = req.getPathAt(2);
+
       Playlist playlist = Playlist.find(what);
       ContentPage page = contentInfoProvider.getPage(playlist, index);
       return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();

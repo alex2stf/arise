@@ -40,6 +40,7 @@ public class RadioPlayer {
     volatile String _cpath = "";
 
     private static final Mole log = Mole.getInstance(RadioPlayer.class);
+    private ContentInfoProvider contentInfoProvider;
 
     public static MediaPlayer getMediaPlayer() {
         if (mPlayer == null) {
@@ -234,6 +235,9 @@ public class RadioPlayer {
                 s._h = getString(h, "hour");
                 s._d = getString(h, "day");
                 s._s = merge(getList(h, "sources"), lists);
+                if(contentInfoProvider != null){
+                    contentInfoProvider.addSimpleSources(s._s);
+                }
                 s._m = getString(h, "strategy");
                 s._f = getString(h, "fallback");
                 s._v = getString(h, "volume");
@@ -307,4 +311,7 @@ public class RadioPlayer {
         return CollectionUtil.pickFromList(lstr, false);
     }
 
+    public void setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
+        this.contentInfoProvider = contentInfoProvider;
+    }
 }

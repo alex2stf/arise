@@ -10,71 +10,32 @@ import com.arise.weland.dto.Playlist;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.arise.weland.dto.Playlist.MUSIC;
 import static com.arise.weland.dto.Playlist.VIDEOS;
 
 public class ContentInfoProvider {
 
+
     final ContentInfoDecoder decoder;
-    List<File> roots = new ArrayList<>();
+    BlockingQueue<String> scan_queue = new LinkedBlockingQueue<>();
     private Mole log = Mole.getInstance(ContentInfoProvider.class);
     private volatile boolean scannedOnce = false;
-    private volatile boolean scanning = false;
+    private volatile boolean _scanning = false;
     private int fcnt = 0;
-    private List<String> paths = new ArrayList<>();
+    private int lsc = 0;
+
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
         decoder.setProvider(this);
     }
 
-    static boolean acceptFilename(String name){
-        if (name.indexOf(".") > -1){
-            return ContentType.isMusic(name) || ContentType.isVideo(name) || "package-info.json".equals(name);
-        }
-        return true;
-    }
-
     public static Map packageInfoProps(File f) throws IOException {
         String content = FileUtil.read(f);
         return (Map) Groot.decodeBytes(content.replaceAll("\\s+", " ").getBytes());
-    }
-
-    public static Object[] decodePackageInfo(File f){
-        Object[] r = new Object[2];
-        try {
-            String content = FileUtil.read(f);
-            Map props = (Map) Groot.decodeBytes(content.replaceAll("\\s+", " ").getBytes());
-            ContentInfo contentInfo = new ContentInfo();
-            String main = MapUtil.getString(props, "main");
-            String pname = MapUtil.getString(props, "playlist");
-
-            if (!StringUtil.hasText(main) || !StringUtil.hasText(pname)){
-                return null;
-            }
-            Playlist plobj = Playlist.find(pname);
-            if (plobj == null){
-                return null;
-            }
-            File mainFile = new File(f.getParentFile(), main);
-            if (!mainFile.exists()){
-                return null;
-            }
-            contentInfo.setPath(f.getAbsolutePath());
-            String title = MapUtil.getString(props, "title");
-            contentInfo.setTitle(title);
-            contentInfo.setPlaylist(plobj);
-//            contentInfo.setGroupId()
-
-            r[0] = contentInfo;
-            r[1] = plobj;
-            return r;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void integrityCheck(Playlist playlist){
@@ -116,63 +77,79 @@ public class ContentInfoProvider {
 
     }
 
-    private void syncScan(){
-        if (scanning){
-            scanning = true;
+    private void take_from_queue(){
+        if (_scanning){
+            _scanning = true;
             return;
         }
         integrityCheck(MUSIC);
         integrityCheck(VIDEOS);
         fcnt = 0;
 
-        try {
-            for (String path: paths){
-                log.info("Loading static content from path " + path );
-                String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
-                List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
 
-                for (Map<Object, Object> map: contentInfos){
-                    ContentInfo contentInfo = new ContentInfo();
-                    String thumbnailId = MapUtil.getString(map, "thumbnail");
-                    if (thumbnailId != null){
-                        //this is intensive blocking
-                        try {
-                            SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
-                            if (d != null){
-                                contentInfo.setThumbnailId(d.getId());
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                    contentInfo.setPath(MapUtil.getString(map, "path"));
-
-                    if (map.containsKey("playlist")){
-                        contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
-                    } else {
-                        contentInfo.setPlaylist(Playlist.STREAMS);
-                    }
-
-
-                    contentInfo.setTitle(MapUtil.getString(map, "title"));
-                    mergeContent(contentInfo, contentInfo.getPlaylist());
+        while (scan_queue.size() != 0){
+            try {
+                String input = scan_queue.take();
+                if(input.startsWith("dir:")) {
+                    scanRootDirectory(input.substring("dir:".length()));
                 }
+                else if (input.startsWith("config:")) {
+                    scanConfigFile(input.substring("config:".length()));
+                }
+                else if (input.startsWith("stream:")) {
+                    addDirectStream(input.substring("stream:".length()));
+                }
+//                System.out.println("TAKE: " + scan_queue.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
         }
-        for (final File root: roots){
-            scanRoot(root);
-        }
-        scanning = false;
+        _scanning = false;
         scannedOnce = true;
-        log.info("SCAN COMPLETE: " + fcnt + " files found, scanning = " + scanning);
+        log.info("SCAN COMPLETE: " + fcnt + " files found, _scanning = " + _scanning);
     }
 
-    private int lsc = 0;
+    private void addDirectStream(String url) {
+        mergeContent(new ContentInfo().setPath(url).setPlaylist(Playlist.STREAMS).setTitle(url), Playlist.STREAMS);
 
-    private void scanRoot(File root){
+    }
+
+    private void scanConfigFile(String path) {
+        log.trace("scan config " + path);
+        String content = StreamUtil.toString(FileUtil.findStream(path)).replaceAll("\r\n", " ");
+        List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
+
+        for (Map<Object, Object> map: contentInfos){
+            ContentInfo contentInfo = new ContentInfo();
+            String thumbnailId = MapUtil.getString(map, "thumbnail");
+            if (thumbnailId != null){
+                //this is intensive blocking
+                try {
+                    SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
+                    if (d != null){
+                        contentInfo.setThumbnailId(d.getId());
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            contentInfo.setPath(MapUtil.getString(map, "path"));
+
+            if (map.containsKey("playlist")){
+                contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+            } else {
+                contentInfo.setPlaylist(Playlist.STREAMS);
+            }
+
+
+            contentInfo.setTitle(MapUtil.getString(map, "title"));
+            mergeContent(contentInfo, contentInfo.getPlaylist());
+        }
+    }
+
+    private void scanRootDirectory(String sroot){
+
+        File root = new File(sroot);
 //        log.trace("scan root " + root.getAbsolutePath());
         File [] innerFiles = root.listFiles();
         if (innerFiles == null || innerFiles.length == 0){
@@ -197,7 +174,7 @@ public class ContentInfoProvider {
                 lsc = fcnt;
             }
             for (File f: dirs){
-                scanRoot(f);
+                scanRootDirectory(f.getAbsolutePath());
             }
         }
     }
@@ -215,6 +192,7 @@ public class ContentInfoProvider {
     }
 
 
+    //TODO persista doar o data
     private void mergeContent(ContentInfo contentInfo, Playlist playlist){
 
         File playlistFile = getPlaylistFile(playlist);
@@ -235,6 +213,7 @@ public class ContentInfoProvider {
             return;
         }
         try {
+            //TODO aici append pe baza de set
             FileUtil.appendNewLineToFile(line, playlistFile);
 //            log.trace("Register " + contentInfo.getPath());
         } catch (IOException e) {
@@ -246,7 +225,7 @@ public class ContentInfoProvider {
         ThreadUtil.fireAndForget(new Runnable() {
             @Override
             public void run() {
-                syncScan();
+                take_from_queue();
             }
         }, "ContentInfoProvider#asyncScan-" + UUID.randomUUID().toString());
     }
@@ -285,6 +264,9 @@ public class ContentInfoProvider {
     }
 
     public ContentInfoProvider get(){
+        if(_scanning){
+            return this;
+        }
         asyncScan();
         return this;
     }
@@ -293,7 +275,7 @@ public class ContentInfoProvider {
         if (root == null || !root.exists() || !root.isDirectory()){
             return this;
         }
-        roots.add(root);
+        scan_queue.add("dir:" + root.getAbsolutePath());
         return this;
     }
 
@@ -527,7 +509,7 @@ public class ContentInfoProvider {
             ContentInfo x = infos.get(i);
             if (x.getPath().equals(path)){
                 infos.get(i).incrementVisit();
-                if (!scanning) {
+                if (!_scanning) {
                     persistPlaylist(playlist, infos);
                 }
                 return;
@@ -535,11 +517,24 @@ public class ContentInfoProvider {
         }
     }
 
+    /**
+     * adauga fiser json de import
+     * @param path
+     * @return
+     */
     public ContentInfoProvider addFromLocalResource(String path) {
-        paths.add(path);
+        scan_queue.add("config:" + path);
         return this;
     }
 
 
+    public void addSimpleSources(List<String> srcs) {
+        for(String s: srcs) {
 
+            if(s.startsWith("http")) {
+//                System.out.println("ADD " + s);
+                scan_queue.add("stream:" + s);
+            }
+        }
+    }
 }

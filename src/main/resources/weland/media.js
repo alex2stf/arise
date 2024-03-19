@@ -90,6 +90,8 @@ function is_url(x) {
     return x && (x.indexOf('http://') == 0 || x.indexOf('https://') == 0)
 }
 
+
+
 function placeThumbnail(obj, playlist) {
     var id = (obj.P + '').replace(/\./g, '_')
         .replace(/%/g, '-')
@@ -105,13 +107,14 @@ function placeThumbnail(obj, playlist) {
     div.id = id;
     var name = getFileNameFromObj(obj);
     var innerHtml = '';
-    //= '<span class="media-title">'+name+'</span><button class="media-btn" onclick="showOptions(\'' + obj.P + '\')">';
-    if(obj.Q){
-        innerHtml += '<img src="' + host +  '/thumbnail?id=' + obj.Q +'" class="thmb"/>'
-    } else {
-        //TODO sensitive icon
-        innerHtml += '<div class="thmb dfth-'+ cThCss(obj) + ' dvth"></div>';
-    }
+
+    var id = ("IMGSRC_" + name).replaceAll(" ", "").replaceAll(".", "X").replaceAll(":", "0").replaceAll("/", "A");
+    innerHtml += '<img  id ="'+id +'" class="thmb dfth-'+ cThCss(obj) + ' dvth"/>'
+
+    http_request("GET", host + "img-suggestion?q=" + obj.name + "&d=" + obj.Q, {}, function(r, a){
+        document.getElementById(id).src = a + "";
+    });
+
 
     innerHtml += '<div class="mt">';
     if((obj.B && obj.T) && obj.B != '' && obj.T != ''){

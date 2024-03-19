@@ -132,7 +132,9 @@ public class Main {
 
         final ContentInfoDecoder decoder = new PCDecoder();
         final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
-                .addFromLocalResource("weland/config/commons/content-infos.json");
+                //asta nu tb sa mai contina ce este deja in radio shows
+                .addFromLocalResource("weland/config/commons/content-infos.json")
+                ;
 
 
         for (File file: AppSettings.getScannableLocations()){
@@ -144,7 +146,7 @@ public class Main {
             contentInfoProvider.addRoot(file);
         }
 
-        contentInfoProvider.get();
+
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
@@ -157,13 +159,14 @@ public class Main {
 
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
+            rplayer.setContentInfoProvider(contentInfoProvider);
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
             if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){
                 RadioPlayer.getMediaPlayer().stop(new Handler<MediaPlayer>() {
                     @Override
                     public void handle(MediaPlayer mediaPlayer) {
-                        log.info("Force close media player");
+                        log.info("Force close media player, de aici ar trebui continuat");
                     }
                 });
             }
@@ -200,6 +203,8 @@ public class Main {
             }, "radio-play");
         }
 
+        //porneste scan DUPA ce pornesti rPlayer
+        contentInfoProvider.get();
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler(cmdReg)
                 .setContentProvider(contentInfoProvider)
