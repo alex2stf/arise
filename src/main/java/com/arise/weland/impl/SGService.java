@@ -21,18 +21,11 @@ import static com.arise.core.tools.Util.close;
 
 public class SuggestionService {
     Map root = new HashMap();
-    private CacheStrategy cacheStrategy;
-    private List<Convertor<Data, ContentInfo>> convertors;
+    private SuggestionCacheStrategy cacheStrategy;
 
     private static final Mole log = Mole.getInstance(SuggestionService.class);
 
-    public SuggestionService addConvertor(Convertor<Data, ContentInfo> convertor){
-        if (convertors == null){
-            convertors = new ArrayList<>();
-        }
-        convertors.add(convertor);
-        return this;
-    }
+
 
 
 
@@ -75,30 +68,10 @@ public class SuggestionService {
     }
 
 
-    public Data solveThumbnail(ContentInfo contentInfo){
-
-        Data response = null;
-        if (StringUtil.hasText( contentInfo.getThumbnailId() )){
-            response = solveUrlOrBase64(contentInfo.getThumbnailId());
-        }
-        if (response == null){
-            response = searchIcons(contentInfo.getPath());
-        }
 
 
-        if (response == null && !CollectionUtil.isEmpty(convertors)){
-            for (Convertor<Data, ContentInfo> c: convertors){
-                response = c.convert(contentInfo);
-                if (response != null){
-                    return response;
-                }
-            }
-        }
-        return response;
-    }
 
-
-    public Data searchIcons(String filename) {
+    public SuggestionData searchIcons(String filename) {
 
 
         if (!StringUtil.hasContent(filename)){
@@ -134,7 +107,7 @@ public class SuggestionService {
                 if (!isEmpty(icons)){
 
                     for(String icon: icons){
-                        Data d = solveUrlOrBase64(icon);
+                        SuggestionData d = solveUrlOrBase64(icon);
                         if (d != null){
                             return d;
                         }
@@ -155,15 +128,17 @@ public class SuggestionService {
 
 
 
-    public SuggestionService setCacheStrategy(CacheStrategy cacheStrategy) {
+    public SuggestionService setCacheStrategy(SuggestionCacheStrategy cacheStrategy) {
         this.cacheStrategy = cacheStrategy;
         return this;
     }
 
     private static final String images_extension[] = new String[]{"png", "jpeg", "jpg"};
 
+
+    @Deprecated
     //TODO unde e base64 se poate trimite direct in UI
-    public Data solveUrlOrBase64(String input){
+    public SuggestionData solveUrlOrBase64(String input){
         String id = StringEncoder.encodeShiftSHA(input + "", "xx");
         for (String ext: images_extension){
             String p = id + "." + ext;
@@ -177,7 +152,7 @@ public class SuggestionService {
             try {
                 Tuple2<byte[], ContentType> res = decodeBase64Image(input);
                 id = id + "." + res.second().mainExtension();
-                Data data = new Data(id, res.first(), res.second());
+                SuggestionData data = new SuggestionData(id, res.first(), res.second());
                 cacheStrategy.put(id, data);
                 return data;
             } catch (Exception e) {
@@ -199,7 +174,7 @@ public class SuggestionService {
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     do_get(uri, byteArrayOutputStream);
                     id = id + "." + contentType.mainExtension();
-                    Data data = new Data(id , byteArrayOutputStream.toByteArray(), contentType);
+                    SuggestionData data = new SuggestionData(id , byteArrayOutputStream.toByteArray(), contentType);
                     cacheStrategy.put(id, data);
                     return data;
                 }
@@ -327,36 +302,9 @@ public class SuggestionService {
         return r;
     }
 
-    public abstract static class CacheStrategy {
-        public abstract boolean contains(String id);
-        public abstract Data get(String id);
-        public abstract void put(String id, Data data);
-    }
-
-    public static class Data {
-        public final String id;
-        public final byte[] bytes;
-        public final ContentType contentType;
-
-        public Data(String id, byte[] bytes, ContentType contentType) {
-            this.id = id;
-            this.bytes = bytes;
-            this.contentType = contentType;
-        }
 
 
-        public String getId() {
-            return id;
-        }
 
-        public byte[] getBytes() {
-            return bytes;
-        }
-
-        public ContentType getContentType() {
-            return contentType;
-        }
-    }
 
 
     public static class SuggestionFetchException extends RuntimeException {
