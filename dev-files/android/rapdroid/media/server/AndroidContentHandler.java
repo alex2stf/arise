@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
 
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.AppCache;

@@ -30,7 +30,6 @@ public class ServerTestHandler extends WelandServerHandler {
     private final SSLContext sslContext;
 
     public ServerTestHandler() {
-        super(null);
         this.sslContext = null;
     }
 

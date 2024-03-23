@@ -1,7 +1,10 @@
 package com.arise.weland.impl;
 
+import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
@@ -121,19 +124,17 @@ public class ContentInfoProvider {
 
         for (Map<Object, Object> map: contentInfos){
             ContentInfo contentInfo = new ContentInfo();
-            String thumbnailId = MapUtil.getString(map, "thumbnail");
-            if (thumbnailId != null){
-                //this is intensive blocking
-                try {
-                    SuggestionService.Data d = decoder.fixThumbnail(thumbnailId + "");
-                    if (d != null){
-                        contentInfo.setThumbnailId(d.getId());
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
+            contentInfo.setTitle(MapUtil.getString(map, "title"));
             contentInfo.setPath(MapUtil.getString(map, "path"));
+
+            String thumbnail = MapUtil.getString(map, "thumbnail");
+            //TODO de decomentat???
+            if (thumbnail != null){
+                String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);
+//                System.out.println("thumbnailId=" + thumbnailId + " FOR " + thumbnail);
+                contentInfo.setThumbnailId(thumbnailId);
+            }
+
 
             if (map.containsKey("playlist")){
                 contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
@@ -142,7 +143,7 @@ public class ContentInfoProvider {
             }
 
 
-            contentInfo.setTitle(MapUtil.getString(map, "title"));
+
             mergeContent(contentInfo, contentInfo.getPlaylist());
         }
     }
@@ -230,18 +231,8 @@ public class ContentInfoProvider {
         }, "ContentInfoProvider#asyncScan-" + UUID.randomUUID().toString());
     }
 
-    private boolean isPackageInfo(File file) {
-        return "package-info.json".equalsIgnoreCase(file.getName());
-    }
 
-    int getMatchIndex(List<ContentInfo> sources, ContentInfo criteria){
-        for (int i = 0; i < sources.size(); i++){
-            if (sources.get(i).getPath().equals(criteria.getPath())){
-                return i;
-            }
-        }
-        return -1;
-    }
+
 
 
 
@@ -254,14 +245,7 @@ public class ContentInfoProvider {
         return fcnt == 0;
     }
 
-    boolean infoAlreadyExists(File file, List<ContentInfo> playlist){
-        for (ContentInfo c: playlist){
-            if (c.getPath().equals(file.getAbsolutePath())){
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public ContentInfoProvider get(){
         if(_scanning){
@@ -328,13 +312,8 @@ public class ContentInfoProvider {
                 .setIndex(limit);
     }
 
-    public HttpResponse getMediaPreview(String id) {
-        HttpResponse response = new HttpResponse();
-        byte[] bytes = decoder.getThumbnail(id);
-        ContentType contentType = decoder.getThumbnailContentType(id);
-        response.setBytes(bytes)
-                .setContentType(contentType);
-        return response;
+    public ServerResponse getMediaPreview(String id) {
+        return decoder.getThumbnail(id);
     }
 
     public ContentInfoDecoder getDecoder() {
@@ -530,9 +509,7 @@ public class ContentInfoProvider {
 
     public void addSimpleSources(List<String> srcs) {
         for(String s: srcs) {
-
             if(s.startsWith("http")) {
-//                System.out.println("ADD " + s);
                 scan_queue.add("stream:" + s);
             }
         }

@@ -19,9 +19,7 @@ public class WelandServerHandlerTest {
     }
 
     public static void main(String[] args) {
-        WelandServerHandler welandServerHandler = new WelandServerHandler(
-                DependencyManager.getCommandRegistry()
-        );
+        WelandServerHandler welandServerHandler = new WelandServerHandler();
 
         welandServerHandler.setContentHandler(new ContentHandler() {
             @Override

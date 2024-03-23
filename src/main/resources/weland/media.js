@@ -109,9 +109,13 @@ function placeThumbnail(obj, playlist) {
     var innerHtml = '';
 
     var id = ("IMGSRC_" + name).replaceAll(" ", "").replaceAll(".", "X").replaceAll(":", "0").replaceAll("/", "A");
+    var query = obj.Q ? "id=" + obj.Q : "q=" + name;
     innerHtml += '<img  id ="'+id +'" class="thmb dfth-'+ cThCss(obj) + ' dvth"/>'
+    var qurl =  host + "suggestion-uri?q=" + (obj.Q ? obj.Q : name);
 
-    http_request("GET", host + "img-suggestion?q=" + obj.name + "&d=" + obj.Q, {}, function(r, a){
+    console.log("GET", qurl)
+    http_request("GET",  qurl, {}, function(r, a){
+        console.log(a);
         document.getElementById(id).src = a + "";
     });
 

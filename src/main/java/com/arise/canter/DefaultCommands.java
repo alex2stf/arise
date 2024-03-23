@@ -17,7 +17,7 @@ import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.join;
 import static java.lang.Runtime.getRuntime;
 
-public class Defaults {
+public class DefaultCommands {
 
 
 
@@ -29,6 +29,9 @@ public class Defaults {
             return joined;
         }
     };
+
+
+
 
     public static final Command<String> CMD_SUM = new Command<String>("sum") {
 
@@ -73,7 +76,9 @@ public class Defaults {
 
     };
 
-    public static Command<String> CMD_FIND_FILE_STREAM = new Command<String>("find-file-stream") {
+
+    @Deprecated
+    public static final Command<String> CMD_FIND_FILE_STREAM = new Command<String>("find-file-stream") {
         @Override
         public String execute(List<String> args) {
             String path = args.get(0);

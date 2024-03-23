@@ -33,7 +33,6 @@ import static java.lang.String.valueOf;
 
 public class DependencyManager {
 
-    private static final CommandRegistry cmdReg = new CommandRegistry();
     private static final Map<String, Dependency> dependencyMap = new HashMap<>();
     private static final Mole log = Mole.getInstance(DependencyManager.class);
 
@@ -58,8 +57,8 @@ public class DependencyManager {
 
 
     static {
-        cmdReg.addCommand(DOWNLOAD_COMMAND);
-        cmdReg.addCommand(new Command<String>("file-exist") {
+        CommandRegistry.getInstance().addCommand(DOWNLOAD_COMMAND);
+        CommandRegistry.getInstance().addCommand(new Command<String>("file-exist") {
             @Override
             public String execute(List<String> x) {
                 String p = x.get(0);
@@ -75,7 +74,7 @@ public class DependencyManager {
             }
         });
 
-        cmdReg.addCommand(new Command<String>("maven-repo") {
+        CommandRegistry.getInstance().addCommand(new Command<String>("maven-repo") {
             @Override
             public String execute(List<String> args) {
                 File repo = new File(FileUtil.getUserDirectory(".m2"), "repository");
@@ -85,7 +84,7 @@ public class DependencyManager {
 
 
 
-        cmdReg.addCommand(new Command<String>("unzip") {
+        CommandRegistry.getInstance().addCommand(new Command<String>("unzip") {
             @Override
             public String execute(List<String> x) {
                 File s = new File(x.get(0));
@@ -96,7 +95,7 @@ public class DependencyManager {
             }
         });
 
-        cmdReg.addCommand(new Command<String>("sub-location") {
+        CommandRegistry.getInstance().addCommand(new Command<String>("sub-location") {
             @Override
             public String execute(List<String> a) {
                 File p = Locations.forName(a.get(0));
@@ -116,7 +115,7 @@ public class DependencyManager {
         });
 
 
-        cmdReg.addCommand(new Command<Process>("shell-exec") {
+        CommandRegistry.getInstance().addCommand(new Command<Process>("shell-exec") {
             @Override
             public Process execute(List<String> args) {
                 String wdir = args.get(0);
@@ -147,9 +146,6 @@ public class DependencyManager {
 
     }
 
-    public static CommandRegistry getCommandRegistry(){
-        return cmdReg;
-    }
 
     public static void withBinary(String n, final Handler<File> h) {
         withStrictDependency(n, new Handler<Object>() {
@@ -412,7 +408,7 @@ public class DependencyManager {
             if (!hasText(val)){
                 val = p.get("value");
             }
-            Object ret = cmdReg.executeCmdLine(val);
+            Object ret = CommandRegistry.getInstance().executeCommandLine(val);
             if (ret != null){
                 res.put(key, ret);
                 log.info("@dpmgmt[" + key + "]=(" + ret + ")");

@@ -30,7 +30,6 @@ public class RadioPlayer {
 
     List<Show> shows = new ArrayList<>();
 
-    private static final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
 
     static MediaPlayer mPlayer = null;
 
@@ -44,7 +43,7 @@ public class RadioPlayer {
 
     public static MediaPlayer getMediaPlayer() {
         if (mPlayer == null) {
-            mPlayer = MediaPlayer.getMediaPlayer("radio", cmdReg);
+            mPlayer = MediaPlayer.getMediaPlayer("radio");
         }
         return mPlayer;
     }

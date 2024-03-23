@@ -1,6 +1,7 @@
 package com.arise.astox.net.models;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by alex on 02/10/2017.
@@ -19,8 +20,8 @@ public abstract class ServerResponse  {
         return null;
     }
 
-    public void onTransporterAccepted(ServerRequest serverRequest, Object... transporters) {
-        throw new ServerResponse.InvalidImplementation("onTransporterAccepted method should be @Override");
+    public void onOutputStreamAccepted(ServerRequest serverRequest, OutputStream outputStream) {
+        throw new ServerResponse.InvalidImplementation("onOutputStreamAccepted method should be @Override");
     }
 
     public void setServerName(String name) {

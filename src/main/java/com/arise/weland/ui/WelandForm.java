@@ -74,7 +74,7 @@ public class WelandForm extends JFrame implements Runnable {
             addT(prov, new Provider<String>() {
                 @Override
                 public String get() {
-                    return "" + commandRegistry.executeCmdLine(d);
+                    return "" + commandRegistry.executeCommandLine(d);
                 }
             });
         }

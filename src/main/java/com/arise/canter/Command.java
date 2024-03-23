@@ -77,57 +77,8 @@ public abstract class Command<T> extends GenericTypeWorker {
 
 
 
-    static class JsonCommand extends Command<Object> {
 
-        List<Map> cmds;
-        String retVal;
-        public JsonCommand(String id) {
-            super(id);
-        }
-
-        private void storeResultIfNecessary(Object o, Map c){
-            String storeKey = MapUtil.getString(c, "store-key");
-            if (hasText(storeKey)){
-                getRegistry().store(storeKey, o);
-            }
-        }
-
-
-        @Override
-        public Object execute(final List<String> arguments) {
-           final Object res[] = new Object[]{null};
-           for (final Map c: cmds){
-               final String commandId = MapUtil.getString(c, "id");
-               final List<String> args = MapUtil.getList(c, "args");
-               String asyncMode = MapUtil.getString(c, "async");
-
-               if ("daemon".equalsIgnoreCase(asyncMode)){
-                   startDaemon(new Runnable() {
-                       @Override
-                       public void run() {
-                           res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
-                           storeResultIfNecessary(res[0], c);
-                       }
-                   }, ("async-cmd-" + commandId));
-               } else {
-                   res[0] = getRegistry().execute(commandId, Command.parseArgs(args, arguments));
-                   storeResultIfNecessary(res[0], c);
-               }
-
-
-
-           }
-           if(hasText(retVal)) {
-               return getRegistry().executeCmdLine(retVal);
-           }
-           return (res[0]);
-        }
-    }
-
-
-
-
-    private static List<String> parseArgs(List<String> in, List<String> arguments){
+    public static List<String> parseArgs(List<String> in, List<String> arguments){
         List<String> cp = new ArrayList<>();
         for (String s: in){
             Integer index = argIndex(s);

@@ -1,7 +1,6 @@
 package com.arise.weland.utils;
 
 import com.arise.astox.net.models.ServerRequest;
-import com.arise.astox.net.models.SingletonHttpResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -17,7 +17,6 @@ public class Cronus {
 
     private final List<CronTask> cronTasks = new ArrayList<>();
 
-    private CommandRegistry commandRegistry;
     private List<Runnable> otherTasks = new ArrayList<>();
 
 
@@ -37,8 +36,7 @@ public class Cronus {
     public static final String nilh = "xx:xx:xx";
     private static final SimpleDateFormat STDFMT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public Cronus(CommandRegistry commandRegistry, String path) {
-        this.commandRegistry = commandRegistry;
+    public Cronus(String path) {
 
 
         try {
@@ -136,7 +134,7 @@ public class Cronus {
         String cmdId = MapUtil.getString(cmd, "id");
         String args[] = MapUtil.getStringList(cmd, "args");
         cronTasks.add(
-                new CronTask(commandRegistry)
+                new CronTask()
                         .setDisable(disable)
                         .setDayRef(day)
                         .setStoreKey(storeKey)
@@ -159,7 +157,6 @@ public class Cronus {
         String cmdId;
         String storeKey;
         String args[];
-        private CommandRegistry cmdReg;
         private boolean disable = false;
 
         public CronTask setStoreKey(String storeKey) {
@@ -167,8 +164,7 @@ public class Cronus {
             return this;
         }
 
-        public CronTask(CommandRegistry cmdReg) {
-            this.cmdReg = cmdReg;
+        public CronTask() {
         }
 
         CronTask setDayRef(String dayRef) {
@@ -185,9 +181,9 @@ public class Cronus {
         }
 
         public void execute() {
-            Object res = cmdReg.execute(cmdId, args, null, null);
+            Object res = CommandRegistry.getInstance().execute(cmdId, args, null, null);
             if (StringUtil.hasText(storeKey)) {
-                cmdReg.store(storeKey, res);
+                CommandRegistry.getInstance().store(storeKey, res);
             }
         }
 

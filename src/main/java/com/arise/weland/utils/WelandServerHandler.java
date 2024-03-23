@@ -4,17 +4,21 @@ package com.arise.weland.utils;
 import com.arise.astox.net.models.AbstractServer;
 import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
+import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.HTTPServerHandler;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.*;
 import com.arise.weland.PlaylistWorker;
 import com.arise.weland.dto.*;
+import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.SGService;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.model.FileTransfer;
 
@@ -45,16 +49,13 @@ public class WelandServerHandler extends HTTPServerHandler {
 
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
-  private CommandRegistry commandRegistry;
 
 
   public static File getClientPropsFile(){
     return new File(FileUtil.findDocumentsDir(), "weland-client-props");
   }
 
-  public WelandServerHandler(CommandRegistry commandRegistry) {
-    this.commandRegistry = commandRegistry;
-  }
+
 
 
 
@@ -85,7 +86,8 @@ public class WelandServerHandler extends HTTPServerHandler {
   }
 
   @Override
-  public HttpResponse getHTTPResponse(HttpRequest req, AbstractServer server) {
+  public ServerResponse getResponse(AbstractServer serviceServer, ServerRequest request) {
+    HttpRequest req = (HttpRequest) request;
 
     if(req.isOptions()) {
       return oK().allowAnyOrigin();
@@ -217,18 +219,28 @@ public class WelandServerHandler extends HTTPServerHandler {
     //fetch thumbnail
     if (req.pathsStartsWith("thumbnail")){
       String id = req.getQueryParam("id");
-      return contentInfoProvider.getMediaPreview(id)
-              .addCorelationId(correlationId).allowAnyOrigin();
-    }
-
-    if (req.pathsStartsWith("img-suggestion")){
+      if(StringUtil.hasContent(id)){
+        return contentInfoProvider.getMediaPreview(id);
+      }
       String query = req.getQueryParam("q");
-      String def = req.getQueryParam("d");
-//      return "/thumbnail?id=" + id;
-        return HttpResponse.plainText("/thumbnail?id=" + def);
-//        return HttpResponse.json("{\"url\": \"/thumbnail?id=" + URLEncoder.encode(query, "UTF-8") + "\"");
-
+      Object res = SGService.getInstance().find(query);
+      if(res instanceof ServerResponse){
+        return (ServerResponse) res;
+      }
+      return new HttpResponse().setContentType(ContentType.IMAGE_JPEG).setBytes(ContentInfoDecoder.EMPTY_BYTE);
     }
+
+
+    if (req.pathsStartsWith("suggestion-uri")){
+      String query = req.getQueryParam("q");
+      Object response = SGService.getInstance().find(query);
+      if(response instanceof ServerResponse) {
+        return HttpResponse.plainText("thumbnail?id=" + query);
+      }
+
+      return HttpResponse.plainText(response +"");
+    }
+
 
     if(req.pathsStartsWith("snapshot-make")){
       String id = req.getQueryParam("id");
@@ -415,18 +427,18 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
     if (req.pathsStartsWith("commands", "registry")){
-      return HttpResponse.json(commandRegistry.toString());
+      return HttpResponse.json(CommandRegistry.getInstance().toString());
     }
 
     if (req.pathsStartsWith("commands", "exec")){
       String commandId = req.getQueryParam("cmd");
       String[] args = req.getQueryParamList("args");
-      Object o = commandRegistry.execute(commandId, args, null, null);
+      Object o = CommandRegistry.getInstance().execute(commandId, args, null, null);
       return HttpResponse.plainText(String.valueOf(o));
     }
 
 
-    return super.getHTTPResponse(req, server).allowAnyOrigin();
+    return null;
   }
 
 

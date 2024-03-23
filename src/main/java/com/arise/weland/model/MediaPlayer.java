@@ -33,7 +33,7 @@ public abstract class MediaPlayer {
 
     public static final Map<String, MediaPlayer> m = new ConcurrentHashMap<>();
 
-    public static MediaPlayer getMediaPlayer(String n, CommandRegistry r){
+    public static MediaPlayer getMediaPlayer(String n){
 
         if (m.containsKey(n)){
             return m.get(n);
@@ -52,7 +52,7 @@ public abstract class MediaPlayer {
         if (!m.containsKey(n)) {
             try {
                 Class dmpl = Class.forName("com.arise.weland.desk.DeskMPlayer");
-                MediaPlayer mpl = (MediaPlayer) dmpl.getConstructor(CommandRegistry.class).newInstance(r);
+                MediaPlayer mpl = (MediaPlayer) dmpl.getConstructor().newInstance();
                 m.put(n, mpl);
             } catch (Exception e) {
                 e.printStackTrace();

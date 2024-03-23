@@ -38,9 +38,9 @@ public class Assert {
         StackTraceElement as = ste[2];
         StackTraceElement cm = ste[3];
         int c = cnt.incrementAndGet();
-        log.info(
-                "T(" + c + ") " + as.getMethodName() + " passed at " + cm.getClassName() + "#" + cm.getMethodName() + " line:" + cm.getLineNumber()
-        );
+//        log.info(
+//                "T(" + c + ") " + as.getMethodName() + " passed at " + cm.getClassName() + "#" + cm.getMethodName() + " line:" + cm.getLineNumber()
+//        );
 
         /*
         * 0 - currentThread().getStackTrace

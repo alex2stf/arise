@@ -4,7 +4,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import com.arise.astox.net.models.ServerRequest;
-import com.arise.astox.net.models.SingletonHttpResponse;
 import com.arise.core.tools.Mole;
 
 import java.io.ByteArrayOutputStream;

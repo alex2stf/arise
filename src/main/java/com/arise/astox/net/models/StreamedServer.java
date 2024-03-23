@@ -143,6 +143,9 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
     }
 
 
+
+
+    @Deprecated
     private void handleDuplex(CONNECTION connection, DuplexDraft draft, ServerRequest serverRequest, OutputStream outputStream) throws IOException {
         ServerResponse serverResponse = getDuplexHandshakeResponse(draft, serverRequest);
         if (serverResponse == null) {
@@ -198,7 +201,10 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
         if (response != null) {
             response.setServerName(getName());
             if (response.isSelfManageable()) {
-                response.onTransporterAccepted(serverRequest, this, connection);
+                response.onOutputStreamAccepted(serverRequest, outputStream);
+                outputStream.flush();
+                close(connection);
+                Thread.currentThread().interrupt();
             } else {
                 try {
                     outputStream.write(response.bytes());

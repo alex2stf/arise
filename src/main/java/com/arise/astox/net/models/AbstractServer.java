@@ -152,6 +152,9 @@ public abstract class AbstractServer<READABLE> extends Peer {
 
 
 
+
+
+    @Deprecated
     public DuplexDraft<ServerRequest, ServerResponse> requestToDuplex(ServerRequest request){
         for (DuplexDraft<ServerRequest, ServerResponse> draft: duplexDrafts){
             if (draft.isValidHandshakeRequest(request)){

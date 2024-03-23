@@ -445,7 +445,9 @@ public class StringUtil {
                 .replaceAll("mate", "M3")
                 .replaceAll("generic", "89")
                 .replaceAll("htchtchtc", "3htc")
-                .replaceAll("alex", "SAP");
+                .replaceAll("alex", "SAP")
+                .toLowerCase()
+                ;
     }
 
 

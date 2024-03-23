@@ -39,12 +39,10 @@ public class DeskMPlayer extends MediaPlayer {
     Object winst = null;
     AudioInputStream aStream = null;
     Clip clip = null;
-    private CommandRegistry r;
     private ContentInfoProvider cip;
     private volatile boolean is_play = false;
 
-    public DeskMPlayer(CommandRegistry r){
-        this.r = r;
+    public DeskMPlayer(){
         getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
@@ -130,7 +128,7 @@ public class DeskMPlayer extends MediaPlayer {
             if (winst != null && winst instanceof Process) {
                 ((Process) winst).destroy();
             }
-            Command playCmd = r.getCommand("play-media");
+            Command playCmd = CommandRegistry.getInstance().getCommand("play-media");
             if (null == playCmd) {
                 AppSettings.throwOrExit("No play-media command found");
             }
@@ -165,10 +163,10 @@ public class DeskMPlayer extends MediaPlayer {
         }
         is_play = true;
         if (u.startsWith("https") ){
-            if (!r.containsCommand("browser-open")){
+            if (!CommandRegistry.getInstance().containsCommand("browser-open")){
                  AppSettings.throwOrExit("no browser-open command defined");
             }
-            proc[0] = (Process) r.getCommand("browser-open").execute(u);
+            proc[0] = (Process) CommandRegistry.getInstance().getCommand("browser-open").execute(u);
         } else {
             String uri = "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(u);
                 if (cip != null){
@@ -180,7 +178,7 @@ public class DeskMPlayer extends MediaPlayer {
                     uri += "&title=" + urlEncodeUTF8(ci.getTitle());
                 }
             }
-            proc[0] = (Process) r.getCommand("browser-open").execute(uri);
+            proc[0] = (Process) CommandRegistry.getInstance().getCommand("browser-open").execute(uri);
         }
     }
 
@@ -204,14 +202,14 @@ public class DeskMPlayer extends MediaPlayer {
                p.destroy();
            }
         }
-        if(r.containsCommand("browser-close")) {
+        if(CommandRegistry.getInstance().containsCommand("browser-close")) {
             wait_to_execute(
-                    r.getCommand("browser-close").execute()
+                    CommandRegistry.getInstance().getCommand("browser-close").execute()
             );
         }
-        if(r.containsCommand("close-media")) {
+        if(CommandRegistry.getInstance().containsCommand("close-media")) {
             wait_to_execute(
-                    r.getCommand("close-media").execute()
+                    CommandRegistry.getInstance().getCommand("close-media").execute()
             );
         }
         is_play = false;

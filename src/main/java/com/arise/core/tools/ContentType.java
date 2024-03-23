@@ -67,7 +67,7 @@ public enum ContentType  {
 
     private static ContentType searchInArr(List arr){
         for (Object o: arr){
-            ContentType contentType = ContentType.search((String) o);
+            ContentType contentType = search((String) o);
             if (contentType != null){
                 return contentType;
             }
@@ -178,7 +178,7 @@ public enum ContentType  {
             return TEXT_PLAIN;
         }
         try {
-            ContentType ct = ContentType.valueOf(s);
+            ContentType ct = valueOf(s);
             if (ct != null){
                 return ct;
             }
@@ -187,7 +187,7 @@ public enum ContentType  {
         }
 
         if (s.length() > 4){
-            for (ContentType contentType : ContentType.values()){
+            for (ContentType contentType : values()){
                 if (contentType.displayName.equalsIgnoreCase(s)){
                     return contentType;
                 }
@@ -244,14 +244,14 @@ public enum ContentType  {
 
         try {
             Integer index = Integer.valueOf(s);
-            ContentType vals[] = ContentType.values();
+            ContentType vals[] = values();
             if (index > 0 && index < vals.length){
                 return vals[index];
             }
         } catch (NumberFormatException e){
 
         }
-        return ContentType.TEXT_PLAIN;
+        return TEXT_PLAIN;
     }
 
 
@@ -285,17 +285,20 @@ public enum ContentType  {
     }
 
     public static boolean isHttpPath(String in){
-        try {
-            URL uri = new URL(in);
-            return uri != null
-                    && (uri.getProtocol().startsWith("http") );
-        }  catch (MalformedURLException e) {
-            return false;
+        if(in.startsWith("http:") || in.startsWith("https:")) {
+            try {
+                URL uri = new URL(in);
+                return uri != null
+                        && (uri.getProtocol().startsWith("http"));
+            } catch (MalformedURLException e) {
+                return false;
+            }
         }
+        return false;
     }
 
     public static boolean isMedia(String path) {
-        return ContentType.isMusic(path) || ContentType.isVideo(path);
+        return isMusic(path) || isVideo(path);
     }
 
     public static boolean isPicture(File f) {
@@ -306,6 +309,15 @@ public enum ContentType  {
         return s.endsWith(".jpg")
                 || s.endsWith(".png")
                 || s.endsWith(".jpeg");
+    }
+
+    public static boolean isPicture(ContentType c) {
+        return c.equals(IMAGE_GIF) || c.equals(IMAGE_PNG)
+                || c.equals(IMAGE_PNG) || c.equals(IMAGE_XPNG);
+    }
+
+    public static boolean isBase64EncodedImage(String in) {
+        return in.startsWith("data:image/jpeg;base64");
     }
 
 

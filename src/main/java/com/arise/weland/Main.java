@@ -14,20 +14,24 @@ import com.arise.core.tools.*;
 import com.arise.weland.desk.DesktopContentHandler;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.*;
-import com.arise.weland.impl.unarchivers.MediaInfoSolver;
 import com.arise.weland.model.MediaPlayer;
 import com.arise.weland.ui.WelandForm;
 import com.arise.weland.utils.WelandServerHandler;
 
+import javax.net.ssl.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.UUID;
 
-import static com.arise.canter.Defaults.PROCESS_EXEC;
+import static com.arise.canter.DefaultCommands.PROCESS_EXEC;
 import static com.arise.core.AppSettings.isTrue;
 import static com.arise.core.tools.ThreadUtil.repeatedTask;
 import static com.arise.core.tools.ThreadUtil.startThread;
@@ -83,8 +87,46 @@ public class Main {
     static  DesktopContentHandler desktopContentHandler;
     static  RadioPlayer rplayer;
 
+
+    public static void doTrustToCertificates() throws Exception {
+        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        return;
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        return;
+                    }
+                }
+        };
+
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        HostnameVerifier hv = new HostnameVerifier() {
+            public boolean verify(String urlHostName, SSLSession session) {
+                if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
+                    System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+                }
+                return true;
+            }
+        };
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
+    }
+
     public static void main(String[] args) throws IOException {
         System.out.println("hi");
+        try {
+            doTrustToCertificates();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         int u = 0;
         File[] rts = File.listRoots();
@@ -111,7 +153,6 @@ public class Main {
         detect_device_capabilities();
 
         DependencyManager.importDependencyRules("_cargo_/dependencies.json");
-        MediaInfoSolver.load();
         AppCache.setWorker(new StandardCacheWorker());
 
         try {
@@ -121,13 +162,13 @@ public class Main {
             log.error("Failed to load content-type definitions", e);
         }
 
-        final CommandRegistry cmdReg = DependencyManager.getCommandRegistry();
-        cmdReg.addCommand(PROCESS_EXEC)
+        CommandRegistry.getInstance()
+                .addCommand(PROCESS_EXEC)
                 .addCommand(MOUSE_PING);
 
         String cmds = AppSettings.getProperty(Keys.LOCAL_COMANDS_FILE);
         if (StringUtil.hasText(cmds)){
-            cmdReg.loadJsonResource(cmds);
+            CommandRegistry.getInstance().loadJsonResource(cmds);
         }
 
         final ContentInfoDecoder decoder = new PCDecoder();
@@ -154,7 +195,7 @@ public class Main {
         Cronus cronus = null;
 
         if (!AppSettings.isFalse(Keys.CRONUS_ENABLED)){
-            cronus = new Cronus(cmdReg, AppSettings.getProperty(Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
+            cronus = new Cronus(AppSettings.getProperty(Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
         }
 
         if (isTrue(Keys.RADIO_ENABLED)){
@@ -206,7 +247,7 @@ public class Main {
         //porneste scan DUPA ce pornesti rPlayer
         contentInfoProvider.get();
 
-        final WelandServerHandler welandServerHandler = new WelandServerHandler(cmdReg)
+        final WelandServerHandler welandServerHandler = new WelandServerHandler()
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler);
 
@@ -220,7 +261,7 @@ public class Main {
                 public void run() {
 
 
-                    welandForm[0] = new WelandForm(cmdReg);
+                    welandForm[0] = new WelandForm(CommandRegistry.getInstance());
                     welandForm[0].pack();
                     welandForm[0].setVisible(true);
                     desktopContentHandler.setForm(welandForm[0]);

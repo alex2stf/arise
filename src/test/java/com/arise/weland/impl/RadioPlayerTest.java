@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 
 import com.arise.canter.Command;
+import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.tools.StringUtil;
 
@@ -143,11 +144,11 @@ public class RadioPlayerTest {
 
     public static void testFixed(){
 
-        DependencyManager.getCommandRegistry().loadJsonResource("commands_pi.json");
+        CommandRegistry.getInstance().loadJsonResource("commands_pi.json");
 
 
 
-        DependencyManager.getCommandRegistry().addCommand(new Command<Object>("process-exec") {
+        CommandRegistry.getInstance().addCommand(new Command<Object>("process-exec") {
             @Override
             public Object execute(List<String> arguments) {
                 System.out.println("Process exec " + StringUtil.join(arguments, " "));
@@ -155,7 +156,7 @@ public class RadioPlayerTest {
             }
         });
 
-        DependencyManager.getCommandRegistry().addCommand(new Command<Object>("browser-open") {
+        CommandRegistry.getInstance().addCommand(new Command<Object>("browser-open") {
             @Override
             public Object execute(List<String> arguments) {
                 System.out.println("Opened " + StringUtil.join(arguments, ""));
@@ -163,7 +164,7 @@ public class RadioPlayerTest {
             }
         });
 
-        DependencyManager.getCommandRegistry().addCommand(new Command<Object>("browser-close") {
+        CommandRegistry.getInstance().addCommand(new Command<Object>("browser-close") {
             @Override
             public Object execute(List<String> arguments) {
                 System.out.println("Closed " + StringUtil.join(arguments, ""));

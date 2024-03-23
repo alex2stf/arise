@@ -72,7 +72,7 @@ System.setProperty("dependencies.forced.profiles", "ubuntu");
 //            @Override
 //            public void handle(File file) {
 //                System.out.println(file);
-//                Defaults.PROCESS_EXEC.execute(file.getAbsolutePath(), "https://live.rockfm.ro:8443/rockfm.aacp");
+//                DefaultCommands.PROCESS_EXEC.execute(file.getAbsolutePath(), "https://live.rockfm.ro:8443/rockfm.aacp");
 //            }
 //        });
 

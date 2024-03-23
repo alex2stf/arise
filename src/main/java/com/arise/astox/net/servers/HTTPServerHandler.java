@@ -43,20 +43,25 @@ public class HTTPServerHandler implements AbstractServer.StateObserver, Abstract
         return this;
     }
 
-    @Override
-    public ServerResponse getResponse(AbstractServer server, ServerRequest request) {
-        if (request instanceof HttpRequest){
-            return getHTTPResponse((HttpRequest) request, server);
-        }
-        return null;
-    }
+//    @Override
+//    public ServerResponse getResponse(AbstractServer server, ServerRequest request) {
+//        if (request instanceof HttpRequest){
+//            return getHTTPResponse((HttpRequest) request, server);
+//        }
+//        return null;
+//    }
 
-    public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server){
-        for (Map.Entry<String, ResponseBuilder> entry : responseMap.entrySet()) {
-            if (entry.getKey().equals(request.path())) {
-                return entry.getValue().build(request);
-            }
-        }
+//    public HttpResponse getHTTPResponse(HttpRequest request, AbstractServer server){
+//        for (Map.Entry<String, ResponseBuilder> entry : responseMap.entrySet()) {
+//            if (entry.getKey().equals(request.path())) {
+//                return entry.getValue().build(request);
+//            }
+//        }
+//        return null;
+//    }
+
+    @Override
+    public ServerResponse getResponse(AbstractServer serviceServer, ServerRequest request) {
         return null;
     }
 

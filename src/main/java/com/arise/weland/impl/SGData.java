@@ -5,13 +5,13 @@ import com.arise.core.tools.ContentType;
 /**
  * Created by alex2 on 20/03/2024.
  */
-public class SuggestionData {
+public class SGData {
 
     public final String id;
     public final byte[] bytes;
     public final ContentType contentType;
 
-    public SuggestionData(String id, byte[] bytes, ContentType contentType) {
+    public SGData(String id, byte[] bytes, ContentType contentType) {
         this.id = id;
         this.bytes = bytes;
         this.contentType = contentType;

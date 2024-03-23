@@ -12,9 +12,9 @@ import java.util.UUID;
 public class CommandRegistryTest {
 
     public static void test_1(){
-        CommandRegistry commandRegistry = new CommandRegistry();
-        commandRegistry.addCommand(Defaults.PROCESS_EXEC);
-        commandRegistry.addCommand(Defaults.PROCESS_EXEC);
+        CommandRegistry commandRegistry = CommandRegistry.INSTANCE;
+        commandRegistry.addCommand(DefaultCommands.PROCESS_EXEC);
+        commandRegistry.addCommand(DefaultCommands.PROCESS_EXEC);
 
         Object result;
 
@@ -45,7 +45,7 @@ public class CommandRegistryTest {
     }
 
     public static void test_2(){
-        CommandRegistry commandRegistry = new CommandRegistry();
+        CommandRegistry commandRegistry = CommandRegistry.getInstance();
 
         commandRegistry.addCommand(new Command<String>("test1") {
             @Override
@@ -63,10 +63,10 @@ public class CommandRegistryTest {
 
         String res;
 
-        res = String.valueOf(commandRegistry.executeCmdLine("$test1($test2(x))"));
+        res = String.valueOf(commandRegistry.executeCommandLine("$test1($test2(x))"));
         Assert.assertEquals("test1test2x", res);
 
-        res = String.valueOf(commandRegistry.executeCmdLine("$test1(x)"));
+        res = String.valueOf(commandRegistry.executeCommandLine("$test1(x)"));
         Assert.assertEquals("test1x", res);
 
 

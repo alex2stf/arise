@@ -1,12 +1,10 @@
 package com.arise.canter;
 
 
-import com.arise.canter.Command.JsonCommand;
 import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.arise.canter.Defaults.*;
+import static com.arise.canter.DefaultCommands.*;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.hasText;
 
-public final class CommandRegistry extends GenericTypeWorker {
+public enum CommandRegistry  {
+    INSTANCE;
+
+    public static final CommandRegistry getInstance(){
+        return INSTANCE;
+    }
 
     private Map<String, Command> commands = new HashMap<>();
     private static final Mole log = Mole.getInstance(CommandRegistry.class);
@@ -35,7 +38,7 @@ public final class CommandRegistry extends GenericTypeWorker {
                 .build();
     }
 
-    public CommandRegistry(){
+    CommandRegistry(){
        registerDefaultCommands();
     }
 
@@ -46,26 +49,27 @@ public final class CommandRegistry extends GenericTypeWorker {
         addCommand(CMD_GET_DATE);
         addCommand(CMD_SUM);
         addCommand(CMD_VALID_FILE);
-        addCommand(CMD_FIND_FILE_STREAM);
-        addCommand(new Command<String>("read-storage") {
-            @Override
-            public String execute(List<String> arguments) {
-                String key = arguments.get(0);
-                return storage.get(key) + "";
-            }
-        });
 
-        addCommand(new Command<Process>("exec-sync") {
-            @Override
-            public Process execute(List<String> arguments) {
-                try {
-                    return Runtime.getRuntime().exec(CollectionUtil.toArray(arguments));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        });
+        addCommand(CMD_FIND_FILE_STREAM);
+//        addCommand(new Command<String>("read-storage") {
+//            @Override
+//            public String execute(List<String> arguments) {
+//                String key = arguments.get(0);
+//                return storage.get(key) + "";
+//            }
+//        });
+//
+//        addCommand(new Command<Process>("exec-sync") {
+//            @Override
+//            public Process execute(List<String> arguments) {
+//                try {
+//                    return Runtime.getRuntime().exec(CollectionUtil.toArray(arguments));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }
+//        });
     }
 
 
@@ -98,7 +102,12 @@ public final class CommandRegistry extends GenericTypeWorker {
     }
 
 
-    public Object executeCmdLine(String line){
+    /**
+     * main function to execute commnd lines like $find-file-stream(x)
+     * @param line
+     * @return
+     */
+    public Object executeCommandLine(String line){
         if (line.startsWith("$")){
             int argBegin = line.indexOf("(");
             int argEnd = line.lastIndexOf(")");
@@ -129,10 +138,7 @@ public final class CommandRegistry extends GenericTypeWorker {
             if (hasText(r)){
                 nsargs.add(r);
             }
-//            List<String> actArgs = new ArrayList<>();
-//            for (String s: nsargs){
-//                actArgs.add(executeCmdLine(s) + "");
-//            }
+
 
             String commandId = line.substring(1, argBegin);
             return execute(commandId, nsargs);
@@ -142,6 +148,10 @@ public final class CommandRegistry extends GenericTypeWorker {
 
     public Object execute(String commandId, String[] args, Event[] onSuccess, Event[] onError) {
 
+        if(!containsCommand(commandId)) {
+            System.out.println("MISSING COMMAND " + commandId);
+            System.exit(-2);
+        }
         Command command = getCommand(commandId);
 
         String[] localArgs = new String[]{};
@@ -150,7 +160,7 @@ public final class CommandRegistry extends GenericTypeWorker {
             for (int i = 0; i < args.length; i++){
                 String currentArg = args[i];
                 if (currentArg.startsWith("$")){
-                    localArgs[i] = executeCmdLine(currentArg) + "";
+                    localArgs[i] = executeCommandLine(currentArg) + "";
                 }
                 else {
                     localArgs[i] = args[i];
@@ -183,7 +193,7 @@ public final class CommandRegistry extends GenericTypeWorker {
     public CommandRegistry loadJsonResource(String s) {
         log.info("loading commands from json file " + s);
         InputStream inputStream = FileUtil.findStream(s);
-        String content = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");
+        String content = StreamUtil.toString(inputStream).replaceAll("\r\n", " ");  //TODO fixthis
         return loadJsonString(content);
     }
 

@@ -1,29 +1,28 @@
 package com.arise.weland.impl;
 
-import com.arise.cargo.management.DependencyManager;
-import com.arise.core.models.Convertor;
-import com.arise.core.models.Tuple2;
+import com.arise.astox.net.models.ServerResponse;
+import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.*;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.TypeUtil.isNull;
-import static com.arise.core.tools.Util.close;
+import static com.arise.core.tools.TypeUtil.search;
 
-public class SuggestionService {
-    Map root = new HashMap();
-    private SuggestionCacheStrategy cacheStrategy;
+public enum  SGService {
+    INSTANCE;
 
-    private static final Mole log = Mole.getInstance(SuggestionService.class);
+    public static final SGService getInstance(){
+        return INSTANCE;
+    }
+    Map<String, Set<String>> root = new HashMap();
+    private SGCache cacheStrategy;
+
+    private static final Mole log = Mole.getInstance(SGService.class);
 
 
 
@@ -31,9 +30,10 @@ public class SuggestionService {
 
 
 
-    public SuggestionService load(String path){
+    public SGService  load(String path){
         InputStream inputStream = FileUtil.findStream(path);
         if (inputStream == null){
+            log.error("stream " + path + "NOT FOUND");
             return this;
         }
 
@@ -43,224 +43,71 @@ public class SuggestionService {
         if (local == null){
             return this;
         }
-        for (Map.Entry<Object, Object> e: local.entrySet()){
-            root.put(String.valueOf(e.getKey()), e.getValue());
+        List suggestions = (List) local.get("suggestions");
+
+        for(Object item: suggestions) {
+            if(item instanceof Map) {
+                Map suggestion = (Map) item;
+                String key = (String) suggestion.get("key");
+                List<String> icons  = (List<String>) suggestion.get("icons");
+                System.out.println("xxxx" +key);
+
+                Set<String> set = root.containsKey(key) ? root.get(key) : new HashSet<String>();
+                for(String x: icons) {
+                    set.add(x);
+                }
+                addVariants(key, set, null);
+            }
         }
+
         return this;
     }
 
-    private Map getSuggestion(String  val){
-        List suggestions = MapUtil.getList(root,"suggestions");
-        if (suggestions == null){
-            return null;
-        }
-        for (Object o: suggestions){
-            if (o instanceof Map){
-                Map m = (Map) o;
-                if (m.containsKey("key")){
-                    if (String.valueOf(m.get("key")).equalsIgnoreCase(val)){
-                        return m;
-                    }
-                }
-            }
-        }
-        return null;
-    }
+//    private Map getSuggestion(String  val){
+//        List suggestions = MapUtil.getList(root, "suggestions");
+//        if (suggestions == null){
+//            return null;
+//        }
+//        for (Object o: suggestions){
+//            if (o instanceof Map){
+//                Map m = (Map) o;
+//                if (m.containsKey("key")){
+//                    if (String.valueOf(m.get("key")).equalsIgnoreCase(val)){
+//                        return m;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 
 
-
-
-    public SuggestionData searchIcons(String filename) {
-
-
-        if (!StringUtil.hasContent(filename)){
-            return null;
-        }
-        String parts[] = filename.split("\\\\");
-        String next = parts[parts.length - 1];
-        parts = next.split("/");
-        next = parts[parts.length - 1];
-        parts = next.split("\\.");
-        next = parts[0];
-
-        parts = next.split("\\s+");
-        List<String> vals = new ArrayList<>();
-        for (int i = 0; i < parts.length; i++){
-            String k = parts[i].trim();
-            if (isValidWord(k)){
-                vals.add(k);
-            }
-        }
-
-        List<String> combs =  getLinearCombinations(vals);
-        String ext[] = filename.split("\\.");
-        if (ext.length > 1){
-            String last = ext[ext.length -1];
-            combs.add("_" + last);
-        }
-        //search for icons:
-        for (String s: combs){
-            Map x = getSuggestion(s);
-            if (x != null){
-                List<String> icons = MapUtil.getList(x, "icons");
-                if (!isEmpty(icons)){
-
-                    for(String icon: icons){
-                        SuggestionData d = solveUrlOrBase64(icon);
-                        if (d != null){
-                            return d;
-                        }
-                    }
-                }
-
-            }
-
-        }
-
-        return null;
-    }
-
-
-
-
-
-
-
-
-    public SuggestionService setCacheStrategy(SuggestionCacheStrategy cacheStrategy) {
-        this.cacheStrategy = cacheStrategy;
-        return this;
-    }
 
     private static final String images_extension[] = new String[]{"png", "jpeg", "jpg"};
 
 
-    @Deprecated
-    //TODO unde e base64 se poate trimite direct in UI
-    public SuggestionData solveUrlOrBase64(String input){
-        String id = StringEncoder.encodeShiftSHA(input + "", "xx");
-        for (String ext: images_extension){
-            String p = id + "." + ext;
-            if (cacheStrategy.contains(p)){
-                return cacheStrategy.get(p);
-            }
-        }
 
 
-        if (input.startsWith("data:")){
-            try {
-                Tuple2<byte[], ContentType> res = decodeBase64Image(input);
-                id = id + "." + res.second().mainExtension();
-                SuggestionData data = new SuggestionData(id, res.first(), res.second());
-                cacheStrategy.put(id, data);
-                return data;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        else if (input.startsWith("http") && input.indexOf("/") > -1){
-            URL uri;
-            try {
-                uri = new URL(input);
-                String exts[] = uri.getPath().split("\\.");
-                ContentType contentType = ContentType.search(exts[exts.length - 1]);
-                if (contentType.equals(ContentType.TEXT_PLAIN)){
-                    contentType = ContentType.IMAGE_JPEG;
-                }
-                try {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    do_get(uri, byteArrayOutputStream);
-                    id = id + "." + contentType.mainExtension();
-                    SuggestionData data = new SuggestionData(id , byteArrayOutputStream.toByteArray(), contentType);
-                    cacheStrategy.put(id, data);
-                    return data;
-                }
-                catch (SuggestionFetchException e){
-                    log.error("Failed to solve suggestion for " + uri);
-                    return null;
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                    return null;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return null;
-    }
 
 
-    public void do_get(URL url, OutputStream out){
-        HttpURLConnection connection = null;
-        try {
-            connection = DependencyManager.getConnection(url, null, null);
-        } catch (IOException e) {
-            close(connection);
-            throw new SuggestionFetchException("Failed to obtain connection to " + url, e);
-        }
-
-        log.info("GET " + url);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        InputStream in = null;
-        try {
-            in = connection.getInputStream();
-        } catch (IOException e) {
-            close(in);
-            close(connection);
-            throw new SuggestionFetchException("Failed to obtain stream from " + url, e);
-        }
-        byte[] buf = new byte[8192];
-        int length = 0;
-
-        while (true){
-            try {
-                if (!((length = in.read(buf)) > 0)) break;
-            } catch (Exception e) {
-                close(in);
-                close(connection);
-                throw new SuggestionFetchException("Failed to read stream from " + url, e);
-            }
-            try {
-                out.write(buf, 0, length);
-                try {
-                    out.flush();
-                }catch (IOException e){
-                    close(in);
-                    close(connection);
-                    close(out);
-                    throw new SuggestionFetchException("Failed to flush file stream", e);
-                }
-            } catch (IOException e) {
-                close(in);
-                close(connection);
-                close(out);
-                throw new SuggestionFetchException("Failed to write stream ", e);
-            }
-
-        }
-    }
 
 
-    public static Tuple2<byte[], ContentType> decodeBase64Image(String input) throws Exception {
+    public static ServerResponse decodeBase64Image(String input) throws Exception {
         int sepIndex = input.indexOf(",");
         String start = input.substring(0, sepIndex);
         String ctype = start.substring(start.indexOf(":") + 1, start.indexOf(";"));
         ContentType contentType = ContentType.search(ctype);
         String content = input.substring(sepIndex + 1);
         byte[] bytes =   B64.decodeToByteArray(content);;
-        return new Tuple2<>(bytes, contentType);
+        return new HttpResponse().setBytes(bytes).setContentType(contentType);
     }
 
 
 
 
     char disallowed[] = new char[]{'~', '-'};
+
     private boolean isValidWord(String s){
         if (isNull(s)){
             return false;
@@ -302,8 +149,82 @@ public class SuggestionService {
         return r;
     }
 
+    public String createThumbnailId(ContentInfo contentInfo, String path) {
+        String id = StringUtil.sanitizeAppId(contentInfo.getPath()); //TODO fa-o id
+        Set<String> icons = root.get(id);
+        if(CollectionUtil.isEmpty(icons)){
+            icons = new HashSet<>();
+        }
+        icons.add(path);
+        addVariants(id, icons, path);
+        if(StringUtil.hasContent(contentInfo.getTitle()) && null != contentInfo.getTitle()){
+            addVariants(contentInfo.getTitle(), icons, null);
+        }
+        return id;
+    }
+
+    void addVariants(String id, Set<String> icons, String path) {
+        id = id.toLowerCase().replaceAll("\\s+", " "); //remove tabs and newlines
+
+        root.put(id, icons);
+        root.put(id.replaceAll("\\s+", ""), icons);
+
+        if(path != null && !ContentType.isBase64EncodedImage(path)){
+            root.put(path.toLowerCase(), icons);
+            root.put(path.toLowerCase().replaceAll("\\s+", ""), icons);
+        }
+    }
+
+    public Object find(String id) {
+        id = id.toLowerCase();
+        if(root.containsKey(id)) {
+            String path = root.get(id).iterator().next();  //TODO pick next sau random
+            return decodePath(path);
+
+        }
+        //idul devine query
+        String query = id;
+        for (String key: root.keySet()){
+            if (query.toLowerCase().indexOf(key.toLowerCase()) > -1){
+                return decodePath(root.get(key).iterator().next()); //TODO pick next
+            }
+        }
+
+        System.out.println("TODO poti facse scrap web for ??? " + id);
+
+        return null;
+    }
 
 
+    private Object decodePath(String path){
+        //citeste din classpath
+        if(path.startsWith("classpath:")) {
+            path = path.substring("classpath:".length());
+            try {
+                return new HttpResponse()
+                        .setBytes(StreamUtil.toBytes(FileUtil.findStream(path)))
+                        .setContentType(ContentType.search(path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        //decode base64
+        else if(path.startsWith("data:image/")){
+            try {
+                return decodeBase64Image(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        else if(ContentType.isHttpPath(path)) {
+            return path;
+        }
+        //TODO aici poti face scrapping dupa url sau numele fisierului
+        System.out.println("TODO scrap web for ????? " + path);
+        return path;
+    }
 
 
 

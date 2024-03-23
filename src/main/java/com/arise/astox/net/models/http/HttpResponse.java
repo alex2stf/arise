@@ -3,6 +3,7 @@ package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerResponse;
+import com.arise.core.tools.Assert;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.StreamUtil;
 import com.arise.core.tools.StringUtil;
@@ -60,16 +61,17 @@ public class HttpResponse extends ServerResponse {
 
 
 
+    private ContentType contentType;
     public HttpResponse setContentType(ContentType contentType) {
-        if(contentType == null){
-            System.out.println("WTF?");
-        }
-        else {
-            addHeader("Content-Type", contentType.toString());
-        }
+        Assert.assertNotNull(contentType);
+        addHeader("Content-Type", contentType.toString());
+        this.contentType = contentType;
         return this;
     }
 
+    public ContentType getContentType(){
+        return contentType;
+    }
 
 
     public String headerLine() {
