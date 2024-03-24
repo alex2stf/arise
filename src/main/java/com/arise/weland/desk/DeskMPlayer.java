@@ -83,12 +83,15 @@ public class DeskMPlayer extends MediaPlayer {
                 clip.addLineListener(new LineListener() {
                     @Override
                     public void update(LineEvent event) {
-                        if (LineEvent.Type.STOP.equals(event.getType())){
+                        log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
+                        boolean isStopEvent = LineEvent.Type.STOP.equals(event.getType()) || LineEvent.Type.CLOSE.equals(event.getType());
+                        if (is_play == true && isStopEvent){
+                            log.trace("HANDLE CLOSE " + event.getType() + " for " + path);
                             close(clip);
                             c.handle(path);
                             is_play = false;
                         }
-                        log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
+
                     }
                 });
 
