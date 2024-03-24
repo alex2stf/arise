@@ -37,7 +37,7 @@ public class Builder {
                     .jarLib("libs/vlcj-3.0.1.jar")
                     .jarLib("libs/commons-compress-1.19.jar")
                     .jarLib("libs/webcam-capture-0.3.12.jar")
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland", RES_ROOT + "_cargo_")
+                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland", RES_ROOT + "_cargo_", RES_ROOT + "pictures")
                     .resourceFiles(RES_ROOT + "content-types.json")
                     .mainClass("com.arise.weland.Main")
                     .named("weland")
