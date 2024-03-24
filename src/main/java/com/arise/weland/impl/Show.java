@@ -36,7 +36,7 @@ public class Show {
     List<String> _s;
     String _m;
     String n;
-    volatile boolean _up;
+    volatile boolean _playing;
     RadioPlayer p;
     ThreadUtil.TimerResult t;
     Handler<Show> _osc;
@@ -80,7 +80,7 @@ public class Show {
             }
         }
 
-        _up = true;
+        _playing = true;
         play_from_list_of_strings(c, _s, 0);
 
     }
@@ -91,7 +91,7 @@ public class Show {
         t = delayedTask(new Runnable() {
             @Override
             public void run() {
-                _up = false;
+                _playing = false;
                 log.info("setup_stream_close media.stop()");
                 mPlayer.stop(new Handler<MediaPlayer>() {
                     @Override
@@ -106,16 +106,16 @@ public class Show {
     }
 
     void close_all_resources(final Handler<Object> onComplete) {
-        if (_up) {
+        if (_playing) {
             closeTimer(t);
-            _up = false;
+            _playing = false;
 
             log.info("close_all_resources media.stop()");
             mPlayer.stop(new Handler<MediaPlayer>() {
                 @Override
                 public void handle(MediaPlayer mediaPlayer) {
                     closeTimer(t);
-                    _up = false;
+                    _playing = false;
                     log.info("Show [" + n + "] resources closed");
                     onComplete.handle(this);
                 }
@@ -128,7 +128,7 @@ public class Show {
 
     void continue_pick(final Handler<Show> c, final List<String> urls, final int retryIndex){
         log.info("continue_pick " + retryIndex);
-        _up = false;
+        _playing = false;
         clear_sys_props();
         if (StringUtil.hasText(_f)) {
             log.info("Using fallback " + _f);
@@ -144,14 +144,16 @@ public class Show {
 
     void handle_local_finished(final Handler<Show> c){
 
-        if(_up) {
+        if(_playing) {
             clear_sys_props();
             _osc.handle(this);
-            c.handle(this);
-            _up = false;
+
+            _playing = false;
         } else {
-            log.info("show is not _up");
+            log.info("show is not _playing");
         }
+
+        c.handle(this);
     }
 
     void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex) {
@@ -198,12 +200,13 @@ public class Show {
 
                 //daca e fisier local
                 if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
-                    File pflf = new File(pdir);
+                    final File pflf = new File(pdir);
                     scp(pflf.getAbsolutePath());
-                    _up = true;
+                    _playing = true;
                     mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
+                            log.info("Stopped " + pflf.getAbsolutePath());
                             handle_local_finished(c);
                         }
                     });
@@ -235,11 +238,11 @@ public class Show {
                     }
                     log.info("Play " + pfl.getAbsolutePath());
                     scp(pfl.getAbsolutePath());
-                   _up = true;
+                   _playing = true;
                     mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
-                            log.info("Random pick finihed play, _up=" + _up);
+                            log.info("Random pick finihed play, _playing=" + _playing);
                             handle_local_finished(c);
                         }
                     });
@@ -247,7 +250,7 @@ public class Show {
                 } else if(ContentType.isHttpPath(pdir)) {
                     final long finalExp = exp;
                     log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
-                    _up = false;
+                    _playing = false;
 
                     //default consideram ca e URL
                     mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
@@ -256,20 +259,20 @@ public class Show {
                             log.info("Start stream show [" + n + "] with url " + pdir);
                             clear_sys_props();
                             scp(pdir);
-                            mPlayer.playStream(pdir);
+                            _playing = true;
+                            mPlayer.playStreamSync(pdir);
                             setup_stream_close(c, finalExp);
-                            _up = true;
                         }
                     }, new Handler<Tuple2<Throwable, Peer>>() {
                         @Override
                         public void handle(Tuple2<Throwable, Peer> errTpl) {
                             log.error(retryIndex + ") iteration check url " + pdir + " failed");
                             clear_sys_props();
+                            _playing = false;
                             close_all_resources(new Handler<Object>() {
                                 @Override
                                 public void handle(Object o) {
-                                    play_from_list_of_strings(c, urls, retryIndex + 1);
-                                    _up = false;
+                                play_from_list_of_strings(c, urls, retryIndex + 1);
                                 }
                             });
 
@@ -302,7 +305,7 @@ public class Show {
     public void stop(Handler<MediaPlayer> h) {
 
         log.info("show stop");
-        _up = false;
+        _playing = false;
         closeTimer(t);
         mPlayer.stop(h);
     }

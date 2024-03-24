@@ -118,6 +118,10 @@ public class StreamUtil {
         if(response == null){
             response = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         }
+
+        if(response == null){
+            Mole.getInstance(StreamUtil.class).info("FATAL NULL stream resource s for "  + resource);
+        }
         return response;
     }
 

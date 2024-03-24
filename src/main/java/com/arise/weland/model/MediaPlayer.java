@@ -73,7 +73,7 @@ public abstract class MediaPlayer {
 
     public abstract void pause();
 
-    public abstract void playStream(String path);
+    public abstract void playStreamSync(String path);
 
     public abstract String setVolume(String mVol);
 

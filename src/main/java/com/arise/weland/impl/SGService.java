@@ -190,7 +190,7 @@ public enum  SGService {
             }
         }
 
-        System.out.println("TODO poti facse scrap web for ??? " + id);
+//        System.out.println("TODO poti facse scrap web for ??? " + id);
 
         return null;
     }

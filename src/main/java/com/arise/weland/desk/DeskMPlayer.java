@@ -88,7 +88,7 @@ public class DeskMPlayer extends MediaPlayer {
                             c.handle(path);
                             is_play = false;
                         }
-                        log.trace("LINE_EVENT " + event.getType() + " for " + path);
+                        log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
                     }
                 });
 
@@ -157,7 +157,7 @@ public class DeskMPlayer extends MediaPlayer {
 
     }
 
-    public void playStream(String u) {
+    public void playStreamSync(String u) {
         if (proc[0] != null){
             proc[0].destroy();
         }

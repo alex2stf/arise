@@ -10,7 +10,7 @@
     {
       "key": "rammstein",
       "icons": [
-        "classpath:pictures/rammstein.jpg"
+        "classpath:/pictures/rammstein.jpg"
       ]
     },
 

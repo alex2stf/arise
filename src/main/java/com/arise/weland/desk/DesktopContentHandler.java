@@ -103,7 +103,7 @@ public class DesktopContentHandler extends ContentHandler {
                     }, 12 * 1000);
 
                 }
-                deskMPlayer.playStream(path);
+                deskMPlayer.playStreamSync(path);
                 return deviceStat.toHttp();
             } else {
                 System.out.println("WTF????");
