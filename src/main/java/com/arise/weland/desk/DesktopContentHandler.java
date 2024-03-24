@@ -65,7 +65,6 @@ public class DesktopContentHandler extends ContentHandler {
         DeviceStat deviceStat = getInstance();
 
         if (rplayer != null && rplayer.isPlaying()){
-
             if(isHttpPath(path) || isLocalFileRadioFormat(path) || isMedia(path)) {
                 log.info("RESTARTING RADIO for " + path);
                 System.setProperty("radio.forced.path", path);
@@ -165,6 +164,10 @@ public class DesktopContentHandler extends ContentHandler {
     @Override
     public HttpResponse stop(String x) {
         log.info("STOP " + x);
+        if(rplayer != null && rplayer.isPlaying()){
+            rplayer.restart();
+            return DeviceStat.getInstance().toHttp();
+        }
         deskMPlayer.stop(null);
         return null;
     }
@@ -197,12 +200,7 @@ public class DesktopContentHandler extends ContentHandler {
     public DeviceStat getDeviceStat() {
         final DeviceStat dS = getInstance();
 
-        JARProxies.getCamIds(new Handler<List<Tuple2<String, String>>>() {
-            @Override
-            public void handle(List<Tuple2<String, String>> camIds) {
-                dS.setProp("cams.v1", camIds);
-            }
-        });
+
 
         decorateStandard(dS);
 //        dS.setProp("cams.active.v", "v1");
@@ -222,10 +220,7 @@ public class DesktopContentHandler extends ContentHandler {
 
     @Override
     public void takeSnapshot(String id) {
-       JARProxies.takeSnapshot(id);
-       if (_f != null) {
-           _f.refreshSnapshot();
-       }
+        System.out.println("TODO use command");
     }
 
 

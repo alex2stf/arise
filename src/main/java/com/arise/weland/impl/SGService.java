@@ -50,7 +50,6 @@ public enum  SGService {
                 Map suggestion = (Map) item;
                 String key = (String) suggestion.get("key");
                 List<String> icons  = (List<String>) suggestion.get("icons");
-                System.out.println("xxxx" +key);
 
                 Set<String> set = root.containsKey(key) ? root.get(key) : new HashSet<String>();
                 for(String x: icons) {
@@ -165,9 +164,20 @@ public enum  SGService {
 
     void addVariants(String id, Set<String> icons, String path) {
         id = id.toLowerCase().replaceAll("\\s+", " "); //remove tabs and newlines
+        try {
+            String[] parts = id.split(" ");
+            if (parts.length > 2){
+                root.put(parts[0] + " " + parts[1], icons);
+                root.put(parts[0] + parts[1], icons);
+            }
 
+        }catch (Exception e){
+
+        }
         root.put(id, icons);
         root.put(id.replaceAll("\\s+", ""), icons);
+
+
 
         if(path != null && !ContentType.isBase64EncodedImage(path)){
             root.put(path.toLowerCase(), icons);
@@ -189,8 +199,11 @@ public enum  SGService {
                 return decodePath(root.get(key).iterator().next()); //TODO pick next
             }
         }
+        if(id.indexOf("bob dylan") > -1){
+            System.out.println("TODO poti facse scrap web for ??? " + id);
+        }
 
-//        System.out.println("TODO poti facse scrap web for ??? " + id);
+//
 
         return null;
     }

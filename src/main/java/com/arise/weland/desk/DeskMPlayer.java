@@ -74,22 +74,25 @@ public class DeskMPlayer extends MediaPlayer {
             return null;
         }
 
-        is_play = true;
+
         if (path.endsWith(".wav")){
             stopClips();
             try {
+                is_play = true;
                 aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
                 final Clip clip = AudioSystem.getClip(null);
                 clip.addLineListener(new LineListener() {
                     @Override
                     public void update(LineEvent event) {
-                        log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
+
                         boolean isStopEvent = LineEvent.Type.STOP.equals(event.getType()) || LineEvent.Type.CLOSE.equals(event.getType());
-                        if (is_play == true && isStopEvent){
-                            log.trace("HANDLE CLOSE " + event.getType() + " for " + path);
+                        if (isStopEvent){
+                            log.trace("HANDLE STOP EVENT " + event.getType() + " for " + path);
                             close(clip);
                             c.handle(path);
                             is_play = false;
+                        } else {
+                            log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
                         }
 
                     }
@@ -98,6 +101,7 @@ public class DeskMPlayer extends MediaPlayer {
                 clip.open(aStream);
                 clip.start();
             } catch (Exception e) {
+                is_play = true;
                 log.error("Failed to play sound " + path + " go next", e);
                 c.handle(path);
             }
@@ -105,29 +109,8 @@ public class DeskMPlayer extends MediaPlayer {
             return aStream;
         }
 
-        String strategy = getProperty(Keys.MEDIA_PLAY_STRATEGY, "vlc");
-        log.info("Open media " + path + " using strategy [" + strategy + "]");
 
-        if ((strategy + "").indexOf("javazone-player") > -1) {
-            //TODO use JProxy
-            withJar("JAVAZOOM_JLAYER_101", new Handler<URLClassLoader>() {
-                @Override
-                public void handle(URLClassLoader classLoader) {
-                    if (winst != null) {
-                        getMethod(winst, "close").call();
-                    }
-
-                    try {
-                        winst = Class.forName("javazoom.jl.player.Player", true, classLoader).getConstructor(InputStream.class).newInstance(new BufferedInputStream(new FileInputStream(path)));
-                        getMethod(winst, "play").call();
-                    } catch (Exception e) {
-                        throw new DependencyException("javazoom.jl.player.Player failed", e);
-                    }
-                    c.handle(path);
-                    is_play = false;
-                }
-            });
-        } else {
+        else {
             if (winst != null && winst instanceof Process) {
                 ((Process) winst).destroy();
             }
@@ -135,10 +118,10 @@ public class DeskMPlayer extends MediaPlayer {
             if (null == playCmd) {
                 AppSettings.throwOrExit("No play-media command found");
             }
-
+            is_play = true;
             winst = playCmd.execute(path);
 
-            wait_to_execute(winst);
+            wait_to_execute(winst, "play " + path);
             log.info("winst executed" + winst);
             is_play = false;
             c.handle(path);
@@ -147,11 +130,12 @@ public class DeskMPlayer extends MediaPlayer {
         return winst;
     }
 
-    void wait_to_execute(Object o){
+    void wait_to_execute(Object o, String identifier){
         if(o instanceof Process){
             try {
                 int i = ((Process) o).waitFor();
-                log.info("process " + o + " exited with " + i);
+                Process p = (Process) o;
+                log.info("process "  + " exited with " + i);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -195,6 +179,7 @@ public class DeskMPlayer extends MediaPlayer {
             close(clip);
         }
         close(aStream);
+        is_play = false;
     }
 
     public void stop(Handler<MediaPlayer> comp) {
@@ -207,12 +192,12 @@ public class DeskMPlayer extends MediaPlayer {
         }
         if(CommandRegistry.getInstance().containsCommand("browser-close")) {
             wait_to_execute(
-                    CommandRegistry.getInstance().getCommand("browser-close").execute()
+                    CommandRegistry.getInstance().getCommand("browser-close").execute(), "browser-close"
             );
         }
         if(CommandRegistry.getInstance().containsCommand("close-media")) {
             wait_to_execute(
-                    CommandRegistry.getInstance().getCommand("close-media").execute()
+                    CommandRegistry.getInstance().getCommand("close-media").execute(), "close-media"
             );
         }
         is_play = false;

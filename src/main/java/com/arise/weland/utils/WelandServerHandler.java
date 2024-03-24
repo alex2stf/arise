@@ -270,6 +270,14 @@ public class WelandServerHandler extends HTTPServerHandler {
       return DeviceStat.getInstance().toHttp(req);
     }
 
+    //close || stopPreviews
+    if (req.pathsStartsWith("files", "close")){
+      HttpResponse response = contentHandler.stop(req);
+      if (response != null){
+        return response.allowAnyOrigin();
+      }
+      return contentHandler.getDeviceStat().toHttp(req);
+    }
 
     if ("/download".equals(req.path())){
       String path = req.getQueryParam("file");
@@ -352,11 +360,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-      //close || stopPreviews
-      if (req.pathsStartsWith("files", "close")){
-        contentHandler.stop(req);
-        return contentHandler.getDeviceStat().toHttp(req);
-      }
+
 
      //PAUSE
       if (req.pathsStartsWith("media", "pause")){
