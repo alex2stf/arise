@@ -2,6 +2,7 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
+import com.arise.canter.CommandRegistry;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
@@ -10,11 +11,13 @@ import java.io.*;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
+import static com.arise.core.tools.CollectionUtil.merge;
 import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.TypeUtil.search;
 
 public enum  SGService {
     INSTANCE;
+
 
     public static final SGService getInstance(){
         return INSTANCE;
@@ -24,10 +27,26 @@ public enum  SGService {
 
     private static final Mole log = Mole.getInstance(SGService.class);
 
+    public static void setDesktopImage(String desktopImage) {
+        Object img = getInstance().find(desktopImage);
+        if(img == null){
+            try {
+                img = new HttpResponse().setBytes(
+                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk0.jpg"))
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        HttpResponse res = (HttpResponse) img;
+        System.out.println(res.bytes());
+        File tmp = new File("tmp_out_img.jpg");
+        FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
+        if(CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), new Date()+ "" });
+        }
 
-
-
-
+    }
 
 
     public SGService  load(String path){

@@ -13,6 +13,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.OSProxies;
+import com.arise.weland.impl.SGService;
 import com.arise.weland.model.MediaPlayer;
 
 import javax.sound.sampled.*;
@@ -64,6 +65,8 @@ public class DeskMPlayer extends MediaPlayer {
     }
 
     public Object play(final String path, final Handler<String> c) {
+
+        SGService.setDesktopImage(path);
         if (isAppClosed){
             log.warn("App received shutdown hook");
             return null;
@@ -145,6 +148,7 @@ public class DeskMPlayer extends MediaPlayer {
     }
 
     public void playStreamSync(String u) {
+        SGService.setDesktopImage(u);
         if (proc[0] != null){
             proc[0].destroy();
         }

@@ -68,5 +68,22 @@
         "args": ["/usr/bin/pkill", "firefox"]
       }
     ]
+  },
+  {
+    "id": "set-desktop-background",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(C:\\Users\\alex2\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
+          "$find-file-stream(#python_scripts/create_desktop_image.py)"
+        ],
+        "store-key": "desk-img"
+      },
+      {
+        "id": "process-exec",
+        "args": ["echo", "ok"]
+      }
+    ]
   }
 ]

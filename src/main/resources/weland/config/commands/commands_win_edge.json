@@ -35,5 +35,18 @@
         "args": ["C:\\Program Files\\Windows Media Player\\wmplayer.exe",  "{0}"]
       }
     ]
+  },
+  {
+    "id": "set-desktop-background",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "$valid-file(C:\\Users\\alex2\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
+          "$find-file-stream(#python_scripts/create_desktop_image.py)", "{0}", "{1}"
+        ],
+        "store-key": "desk-img"
+      }
+    ]
   }
 ]
