@@ -40,7 +40,7 @@ public enum  SGService {
         }
         HttpResponse res = (HttpResponse) img;
         System.out.println(res.bytes());
-        File tmp = new File("tmp_out_img.jpg");
+        File tmp = FileUtil.findSomeTempFile("tmp_desk");
         FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
         if(CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), new Date()+ "" });
@@ -222,7 +222,6 @@ public enum  SGService {
             System.out.println("TODO poti facse scrap web for ??? " + id);
         }
 
-//
 
         return null;
     }
