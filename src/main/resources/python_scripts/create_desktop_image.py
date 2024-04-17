@@ -110,4 +110,6 @@ im.paste(img, offset)
 im.save(sys.argv[2])
 
 
-# subprocess.run(["dir"])
+subprocess.run(["killall", "pcmanfm"])
+
+subprocess.run(["pcmanfm", "--desktop", "--profile", "lubuntu", "&"])
