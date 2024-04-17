@@ -87,19 +87,18 @@ else:
     horz_gradient(draw, region, gradient_color, color_palette)
 
 #font = ImageFont.load_default(size=60)
-font = ImageFont.truetype('arial.ttf', size=60)
+# font = ImageFont.truetype('arial.ttf', size=60)
 
-draw.text(
-    (20, 20),  # Coordinates
-    sys.argv[3],  # Text
-    LIGHTGRAY,  # Color
-    font=font
-)
+# draw.text(
+#     (20, 20),  # Coordinates
+#     sys.argv[3],  # Text
+#     LIGHTGRAY,  # Color
+#     font=font
+# )
 im.putalpha(200)
 
 bg_w, bg_h = im.size
 
-print("aici")
 
 offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
 # background.paste(img, offset)
@@ -109,4 +108,5 @@ im.paste(img, offset)
 im.save(sys.argv[2])
 
 
-# subprocess.run(["dir"])
+subprocess.run(["killall", "pcmanfm"])
+subprocess.run([ "pcmanfm", "--desktop", "--profile", "lubuntu", "&"])
