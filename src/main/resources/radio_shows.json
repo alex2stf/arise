@@ -375,7 +375,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
       "strategy": "local-first",
-      "sources": ["${relax}"]
+      "sources": ["${relax}",  "${local-paths-mixed}"]
     },
 
     {
@@ -383,7 +383,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "local-first",
-      "sources": ["${relax}"]
+      "sources": ["${relax}",  "${local-paths-mixed}"]
     },
     {
       "name": "weekdays_16_17",
@@ -434,9 +434,9 @@
       "name": "radio_shows_nightly_monday_tuesday",
       "day": "monday_tuesday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
-      "strategy": "linear-pick",
+      "strategy": "local-first",
       "sources": [
-        "https://live.rockfm.ro:8443/rockfm.aacp"
+        "https://live.rockfm.ro:8443/rockfm.aacp", "${local-paths-mixed}"
       ]
     },
 
