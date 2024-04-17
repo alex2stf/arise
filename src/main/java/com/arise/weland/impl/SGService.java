@@ -39,11 +39,11 @@ public enum  SGService {
             }
         }
         HttpResponse res = (HttpResponse) img;
-        System.out.println(res.bytes());
         File tmp = FileUtil.findSomeTempFile("tmp_desk");
+        File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
         FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
         if(CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), new Date()+ "" });
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), new Date()+ "" });
         }
 
     }

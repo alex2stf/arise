@@ -78,7 +78,7 @@ public class FileUtil {
                 .callFor(File.class, "Pictures");
 
         if (picturesDir == null){
-            return new File("/home/alex/Pictures");
+            picturesDir = getUserDirectory("Pictures");
         }
 
         return picturesDir;

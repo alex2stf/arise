@@ -75,14 +75,10 @@
       {
         "id": "process-exec",
         "args": [
-          "$valid-file(C:\\Users\\alex2\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
-          "$find-file-stream(#python_scripts/create_desktop_image.py)"
+          "$valid-file(/usr/bin/python3)",
+          "$find-file-stream(#python_scripts/create_desktop_image.py)", "{0}", "{1}", "{2}"
         ],
         "store-key": "desk-img"
-      },
-      {
-        "id": "process-exec",
-        "args": ["echo", "ok"]
       }
     ]
   }

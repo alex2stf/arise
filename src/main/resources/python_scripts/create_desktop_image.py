@@ -92,7 +92,7 @@ font = ImageFont.load_default(size=60)
 
 draw.text(
     (0, 20),  # Coordinates
-    sys.argv[2],  # Text
+    sys.argv[3],  # Text
     LIGHTGRAY,  # Color
     font=font
 )
@@ -107,7 +107,7 @@ offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
 # background.save('out_merged.png')
 
 im.paste(img, offset)
-im.save('out_merged.png')
+im.save(sys.argv[2])
 
 
 # subprocess.run(["dir"])
