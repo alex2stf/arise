@@ -90,7 +90,7 @@ else:
 font = ImageFont.truetype('arial.ttf', size=60)
 
 draw.text(
-    (0, 20),  # Coordinates
+    (20, 20),  # Coordinates
     sys.argv[3],  # Text
     LIGHTGRAY,  # Color
     font=font
