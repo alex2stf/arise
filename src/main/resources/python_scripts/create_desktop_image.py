@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw, ImageFont
-from screeninfo import get_monitors
 import sys
 import subprocess
 
@@ -8,9 +7,9 @@ from random import randint, choice
 print(sys.argv[1])
 sw = 0
 sh = 0
-for m in get_monitors():
-    sw = m.width;
-    sh = m.height;
+
+sw = 1980
+sh = 1210
 
 
 BLACK, DARKGRAY, GRAY = ((0,0,0), (63,63,63), (127,127,127))
