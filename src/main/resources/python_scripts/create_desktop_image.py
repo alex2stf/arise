@@ -86,8 +86,8 @@ else:
     print("H")
     horz_gradient(draw, region, gradient_color, color_palette)
 
-font = ImageFont.load_default(size=60)
-
+#font = ImageFont.load_default(size=60)
+font = ImageFont.true_type('arial.ttf', size=60)
 
 draw.text(
     (0, 20),  # Coordinates
