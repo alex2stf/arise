@@ -4,20 +4,22 @@ import subprocess
 import os
 
 from random import randint, choice
-os.system("killall pcmanfm")
+#os.system("killall pcmanfm")
+subprocess.Popen(["killall", "pcmanfm"], start_new_session=True)
 
 print(sys.argv[1])
 sw = 0
 sh = 0
 
-sw = 1980
-sh = 1210
+sw = 1680
+sh = 1050
 
 
 BLACK, DARKGRAY, GRAY = ((0,0,0), (63,63,63), (127,127,127))
 LIGHTGRAY, WHITE = ((191,191,191), (255,255,255))
-BLUE, GREEN, RED = ((0, 0, 255), (0, 255, 0), (255, 0, 0))
-
+M1, M2, M3 = ((56, 21, 46), (156, 77, 56), (255, 0, 0))
+B1, B2, B3 = ((31, 67, 144), (18, 149, 211), (17, 42, 92))
+G1, G2, G3 = ((242, 204, 54), (237, 104, 187), (25, 154, 208))
 
 class Point(object):
     def __init__(self, x, y):
@@ -78,15 +80,37 @@ im = Image.new('RGB', (sw,sh), 'orange')
 draw = ImageDraw.Draw(im)
 
 
-color_palette = [BLUE, RED, WHITE]
-region = Rect(0, 0, sw, sh)
 
-if randint(0, 1) == 0:
-    print("V")
-    vert_gradient(draw, region, gradient_color, color_palette)
+region = Rect(0, 0, sw, sh)
+rint = randint(0, 7)
+
+if rint == 0:
+	color_palette = [B1, B2, B3]
+	vert_gradient(draw, region, gradient_color, color_palette)
+elif rint == 1:
+	color_palette = [B1, B2, B3]
+	horz_gradient(draw, region, gradient_color, color_palette)
+elif rint == 2:
+	color_palette = [M1, M2, M3]
+	vert_gradient(draw, region, gradient_color, color_palette)
+elif rint == 3:
+	color_palette = [M1, M2, M3]
+	horz_gradient(draw, region, gradient_color, color_palette)
+elif rint == 4:
+	color_palette = [B3, B1, B2, M3]
+	horz_gradient(draw, region, gradient_color, color_palette)
+elif rint == 5:
+	color_palette = [B3, B1, B2, M3]
+	vert_gradient(draw, region, gradient_color, color_palette)
+elif rint == 6:
+	color_palette = [G3, G2, G1]
+	horz_gradient(draw, region, gradient_color, color_palette)
+elif rint == 7:
+	color_palette = [G1, G2, G3]
+	vert_gradient(draw, region, gradient_color, color_palette)
 else:
-    print("H")
-    horz_gradient(draw, region, gradient_color, color_palette)
+	color_palette = [B1, BLACK, GREEN]
+	horz_gradient(draw, region, gradient_color, color_palette)
 
 #font = ImageFont.load_default(size=60)
 # font = ImageFont.truetype('arial.ttf', size=60)
@@ -109,4 +133,5 @@ offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
 im.paste(img, offset)
 im.save(sys.argv[2])
 
-os.system("pcmanfm --desktop --profile lubuntu")
+#os.system("pcmanfm --desktop --profile lubuntu")
+subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
