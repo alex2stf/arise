@@ -88,7 +88,10 @@ public enum  SGService {
                 try {
                     Object p = CommandRegistry.getInstance().getCommand("process-exec")
                             .execute("curl", x, "-o", tmp.getAbsolutePath());
-                    Thread.sleep(3000);
+                    if(p instanceof Process){
+						((Process)p).waitFor();
+						}
+                    //Thread.sleep(3000);
 					tmp = FileUtil.findSomeTempFile("tmp_desk");
                 } catch (Exception e) {
                     e.printStackTrace();
