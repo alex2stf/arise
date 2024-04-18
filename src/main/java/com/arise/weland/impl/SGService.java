@@ -70,7 +70,7 @@ public enum  SGService {
         }
 
         if(tmp.exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), new Date()+ "" });
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), desktopImage });
         } else {
 			System.out.println("NU EXISTA TMP-UL");
 		}
