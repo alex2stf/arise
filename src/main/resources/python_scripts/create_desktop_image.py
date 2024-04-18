@@ -4,6 +4,7 @@ import subprocess
 import os
 
 from random import randint, choice
+os.system("killall pcmanfm")
 
 print(sys.argv[1])
 sw = 0
@@ -108,13 +109,4 @@ offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
 im.paste(img, offset)
 im.save(sys.argv[2])
 
-from subprocess import Popen, PIPE
-import time
-os.system("killall pcmanfm")
-
-time.sleep(1)
-os.spawn(os.P_DETACH, "pcmanfm --desktop --profile lubuntu")
-# subprocess.Popen([ "pcmanfm", "--desktop", "--profile", "lubuntu"])
-# os.system("killall pcmanfm & pcmanfm --desktop --profile lubuntu")
-
-# subprocess = Popen("killall pcmanfm;pcmanfm --desktop --profile lubuntu", shell = True)
+os.system("pcmanfm --desktop --profile lubuntu")
