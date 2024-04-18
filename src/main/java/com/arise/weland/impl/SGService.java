@@ -1,13 +1,17 @@
 package com.arise.weland.impl;
 
+import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
+import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -27,19 +31,42 @@ public enum  SGService {
 
     private static final Mole log = Mole.getInstance(SGService.class);
 
-    public static void setDesktopImage(String desktopImage) {
-        Object img = getInstance().find(desktopImage);
+    private static final List<String> urls = new ArrayList<>();
+    static {
+        urls.add("https://live.staticflickr.com/65535/52607511849_af34b6e5d9.jpg");
+        urls.add("https://mcdn.wallpapersafari.com/medium/40/55/gtBrSV.jpg");
+        urls.add("https://i.ytimg.com/vi/bhc7y-n7vIU/hqdefault.jpg");
+        urls.add("https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/in-the-end-swedish-attitude-design.jpg");
+        urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
+    }
 
-        if(img == null) {
-            int rand = (int) Math.round((Math.random() * 7) + 0);
-            try {
-                img = new HttpResponse().setBytes(
-                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public static void setDesktopImage(String desktopImage) {
+        final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
+
+
+
+        if(null == imgs[0]) {
+            final String nextUrl = CollectionUtil.randomPick(urls);
+            RadioPlayer.getMediaPlayer().validateStreamUrl(nextUrl, new Handler<HttpURLConnection>() {
+                @Override
+                public void handle(HttpURLConnection httpURLConnection) {
+                    imgs[0]= nextUrl;
+                }
+            }, new Handler<Tuple2<Throwable, Peer>>() {
+                @Override
+                public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
+                    int rand = (int) Math.round((Math.random() * 7) + 0);
+                    try {
+                        imgs[0] = new HttpResponse().setBytes(
+                                StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
+
 
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
@@ -49,14 +76,14 @@ public enum  SGService {
         }
 
 
-        if(img instanceof HttpResponse) {
-            HttpResponse res = (HttpResponse) img;
+        if(imgs[0] instanceof HttpResponse) {
+            HttpResponse res = (HttpResponse) imgs[0];
             FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
         }
         
 
-        if(img instanceof String) {
-            String x = (String) img;
+        if(imgs[0] instanceof String) {
+            String x = (String) imgs[0];
             if(x.startsWith("http")) {
                 try {
                     Object p = CommandRegistry.getInstance().getCommand("process-exec")
