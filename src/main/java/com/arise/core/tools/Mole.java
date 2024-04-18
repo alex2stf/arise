@@ -482,37 +482,37 @@ public class Mole {
 
         @Override
         public boolean error(Object... args) {
-            return log("ERROR", args);
+            return log("E", args);
         }
 
         @Override
         public boolean info(Object... args) {
-            return log(" INFO", args);
+            return log("I", args);
         }
 
         @Override
         public boolean trace(Object... args) {
-            return log("TRACE", args);
+            return log("T", args);
         }
 
         @Override
         public boolean fatal(Object... args) {
-            return log("FATAL", args);
+            return log("F", args);
         }
 
         @Override
         public boolean warn(Object... args) {
-            return log(" WARN", args);
+            return log(" W", args);
         }
 
         @Override
         public boolean debug(Object... args) {
-            return log("DEBUG", args);
+            return log("D", args);
         }
 
         @Override
         public boolean log(Object... args) {
-            return log("  LOG", args);
+            return log("L", args);
         }
 
         @Override

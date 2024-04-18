@@ -101,7 +101,7 @@ public enum  SGService {
                             }
                             tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("Nu s-a executat file download", e);
                             citesteDefaultDinLocal(imgs);
                         }
                     }
