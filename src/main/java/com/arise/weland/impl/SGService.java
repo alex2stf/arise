@@ -57,7 +57,7 @@ public enum  SGService {
             if(x.startsWith("http")) {
                 try {
                     Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                            .execute("curl", x, ">", tmp.getAbsolutePath());
+                            .execute("curl", "-g",  x, ">", tmp.getAbsolutePath());
                     if(p instanceof Process){
                         ((Process)p).waitFor();
                     }
