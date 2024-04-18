@@ -121,7 +121,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("hi");
         try {
             doTrustToCertificates();
         } catch (Exception e) {

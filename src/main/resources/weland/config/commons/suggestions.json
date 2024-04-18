@@ -166,9 +166,59 @@
     },
 
     {
-      "key": "slow",
+      "key": "meat loaf",
+      "icons": ["https://w0.peakpx.com/wallpaper/467/197/HD-wallpaper-meat-loaf-meat-rock-music-band.jpg"]
+    },
+    {
+      "key": "rahova",
+      "icons": ["https://images.squarespace-cdn.com/content/5ab5deb0d274cb74e96b87a1/1676693290282-6FPS5EZRULXZXTOQ7SED/0.23+Nickelodeon+Bright.jpg"]
+    },
+    {
+      "key": "eagles",
+      "icons": ["https://www.chrishoffmanart.com/cdn/shop/products/image_30c7a4f8-c5db-40de-ad00-4a668f71221f.jpg"]
+    },
+    {
+      "key": "90s",
+      "icons": ["https://img.freepik.com/free-vector/hand-drawn-nostalgic-90-s-background_23-2149049467.jpg"]
+    },
+    {
+      "key": "inspiration",
+      "icons": ["https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"]
+    },
+    {
+      "key": "slow thoughts",
+      "icons": ["https://img.freepik.com/free-photo/majestic-mountain-peak-tranquil-winter-landscape-generated-by-ai_188544-15662.jpg"]
+    },
+    {
+      "key": "bluesrad",
+      "icons": ["https://wallpapercave.com/wp/wp2248527.jpg"]
+    },
+    {
+      "key": "musiquefrancaise",
+      "icons": ["https://w0.peakpx.com/wallpaper/1016/211/HD-wallpaper-paris-shop-colorful-cafe-travel-beautiful-nice-tower-people-painting-light-street-art-lovely-france-sky-market-summer-walk-eifel.jpg"]
+    },
+    {
+      "key": "beatles",
       "icons": [
-        "broken-path"
+        "https://c4.wallpaperflare.com/wallpaper/44/494/325/the-beatles-monochrome-men-musician-wallpaper-preview.jpg"
+      ]
+    },
+    {
+      "key": "beethoven",
+      "icons": [
+        "https://c4.wallpaperflare.com/wallpaper/421/380/1019/ludwig-van-beethoven-traditional-art-painting-hd-wallpaper-thumb.jpg"
+      ]
+    },
+    {
+      "key": "pearl jam",
+      "icons": [
+        "https://c4.wallpaperflare.com/wallpaper/811/1019/590/alternative-grunge-hard-jam-wallpaper-preview.jpg"
+      ]
+    },
+    {
+      "key": "srg-ssr",
+      "icons": [
+        "https://c4.wallpaperflare.com/wallpaper/182/324/962/jazz-singer-artwork-person-with-musical-instrument-painting-wallpaper-preview.jpg"
       ]
     }
 

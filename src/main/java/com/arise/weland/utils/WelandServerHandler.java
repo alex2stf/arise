@@ -237,6 +237,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       if(response instanceof ServerResponse) {
         return HttpResponse.plainText("thumbnail?id=" + query);
       }
+//      System.out.println("NU AM GASIT NIMIC PENTRU " + query);
 
       return HttpResponse.plainText(response +"");
     }

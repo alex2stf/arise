@@ -131,7 +131,6 @@ public class ContentInfoProvider {
             //TODO de decomentat???
             if (thumbnail != null){
                 String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);
-//                System.out.println("thumbnailId=" + thumbnailId + " FOR " + thumbnail);
                 contentInfo.setThumbnailId(thumbnailId);
             }
 
