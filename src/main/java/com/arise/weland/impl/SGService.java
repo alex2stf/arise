@@ -32,17 +32,38 @@ public enum  SGService {
         if(img == null){
             try {
                 img = new HttpResponse().setBytes(
-                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk0.jpg"))
+                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk1.jpg"))
                 );
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        HttpResponse res = (HttpResponse) img;
-        File tmp = FileUtil.findSomeTempFile("tmp_desk");
+
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
-        FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
-        if(CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
+        File tmp = FileUtil.findSomeTempFile("tmp_desk");
+
+        if(img instanceof HttpResponse) {
+            HttpResponse res = (HttpResponse) img;
+
+            FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
+        }
+
+        if(img instanceof String) {
+            String x = (String) img;
+            if(x.startsWith("http")) {
+                try {
+                    Object p = CommandRegistry.getInstance().getCommand("process-exec")
+                            .execute("curl", x, ">", tmp.getAbsolutePath());
+                    if(p instanceof Process){
+                        ((Process)p).waitFor();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if(tmp.exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), new Date()+ "" });
         }
 

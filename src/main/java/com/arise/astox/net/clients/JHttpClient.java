@@ -124,13 +124,14 @@ public class JHttpClient extends Client<HttpRequest, HttpResponse, HttpURLConnec
                 }
             }
 
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
+            con.setConnectTimeout(7000);
+            con.setReadTimeout(7000);
 
             try {
                 con.connect();
                 completionHandler.handle(con);
             } catch (Throwable e) {
+                e.printStackTrace();
                 log.error("Failed to connect to " + _u);
                 onError(e);
             }
