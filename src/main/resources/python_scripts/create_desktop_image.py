@@ -116,8 +116,8 @@ else:
 font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 draw.text(
-	(0, 0),  # Coordinates
-	'arise',  # Text
+	(330, 20),  # Coordinates
+	sys.argv[3],  # Text
 	WHITE,  # Color
 	font=font
 )
