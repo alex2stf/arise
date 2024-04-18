@@ -42,12 +42,15 @@ public enum  SGService {
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
         File tmp = FileUtil.findSomeTempFile("tmp_desk");
+        if(tmp.exists()){
+            tmp.delete();
+        }
 
         if(img instanceof HttpResponse) {
             HttpResponse res = (HttpResponse) img;
-
             FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
         }
+        img = "https://cache.desktopnexus.com/cropped-wallpapers/2215/2215579-1536x864-[DesktopNexus.com].jpg";
 
         if(img instanceof String) {
             String x = (String) img;
