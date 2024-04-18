@@ -29,6 +29,7 @@ public enum  SGService {
 
     public static void setDesktopImage(String desktopImage) {
         Object img = getInstance().find(desktopImage);
+
         if(img == null) {
             int rand = (int) Math.round((Math.random() * 7) + 0);
             try {
@@ -40,27 +41,28 @@ public enum  SGService {
             }
         }
 
+
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
         File tmp = FileUtil.findSomeTempFile("tmp_desk");
         if(tmp.exists()){
             tmp.delete();
         }
 
+
         if(img instanceof HttpResponse) {
             HttpResponse res = (HttpResponse) img;
             FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
         }
-        img = "https://cache.desktopnexus.com/cropped-wallpapers/2215/2215579-1536x864-[DesktopNexus.com].jpg";
+        
 
         if(img instanceof String) {
             String x = (String) img;
             if(x.startsWith("http")) {
                 try {
                     Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                            .execute("curl", "-g",  x, ">", tmp.getAbsolutePath());
-                    if(p instanceof Process){
-                        ((Process)p).waitFor();
-                    }
+                            .execute("curl", x, "-o", tmp.getAbsolutePath());
+                    Thread.sleep(3000);
+					tmp = FileUtil.findSomeTempFile("tmp_desk");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -69,7 +71,9 @@ public enum  SGService {
 
         if(tmp.exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), new Date()+ "" });
-        }
+        } else {
+			System.out.println("NU EXISTA TMP-UL");
+		}
 
     }
 
