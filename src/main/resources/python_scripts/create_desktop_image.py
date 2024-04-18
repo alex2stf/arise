@@ -77,9 +77,9 @@ img.putalpha(200)
 
 # background = Image.open('desk.jpg', 'r')
 im = Image.new('RGB', (sw,sh), 'orange')
+
+
 draw = ImageDraw.Draw(im)
-
-
 
 region = Rect(0, 0, sw, sh)
 rint = randint(0, 7)
@@ -112,26 +112,33 @@ else:
 	color_palette = [B1, BLACK, GREEN]
 	horz_gradient(draw, region, gradient_color, color_palette)
 
-#font = ImageFont.load_default(size=60)
-# font = ImageFont.truetype('arial.ttf', size=60)
+#font = ImageFont.load_default()
+font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
-# draw.text(
-#     (20, 20),  # Coordinates
-#     sys.argv[3],  # Text
-#     LIGHTGRAY,  # Color
-#     font=font
-# )
+draw.text(
+	(0, 0),  # Coordinates
+	'arise',  # Text
+	WHITE,  # Color
+	font=font
+)
+
+
+
 im.putalpha(200)
 
 bg_w, bg_h = im.size
 
 
 offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
-# background.paste(img, offset)
-# background.save('out_merged.png')
+
+
 
 im.paste(img, offset)
+
+
+
 im.save(sys.argv[2])
 
 #os.system("pcmanfm --desktop --profile lubuntu")
 subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
+
