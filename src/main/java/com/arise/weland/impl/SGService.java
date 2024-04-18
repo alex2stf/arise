@@ -40,6 +40,17 @@ public enum  SGService {
         urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
     }
 
+    static void citesteDefaultDinLocal(Object imgs[]){
+        int rand = (int) Math.round((Math.random() * 7) + 0);
+        try {
+            imgs[0] = new HttpResponse().setBytes(
+                    StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void setDesktopImage(String desktopImage) {
         final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
 
@@ -55,14 +66,8 @@ public enum  SGService {
             }, new Handler<Tuple2<Throwable, Peer>>() {
                 @Override
                 public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
-                    int rand = (int) Math.round((Math.random() * 7) + 0);
-                    try {
-                        imgs[0] = new HttpResponse().setBytes(
-                                StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
-                        );
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    log.error("Nu ai conexiune la net, nu se poate citi " + nextUrl);
+                    citesteDefaultDinLocal(imgs);
                 }
             });
         }
@@ -70,34 +75,46 @@ public enum  SGService {
 
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
-        File tmp = FileUtil.findSomeTempFile("tmp_desk");
-        if(tmp.exists()){
-            tmp.delete();
+        final File[] tmp = {FileUtil.findSomeTempFile("tmp_desk")};
+        if(tmp[0].exists()){
+            tmp[0].delete();
         }
 
 
         if(imgs[0] instanceof HttpResponse) {
             HttpResponse res = (HttpResponse) imgs[0];
-            FileUtil.writeBytesToFile(res.bodyBytes(), tmp);
+            FileUtil.writeBytesToFile(res.bodyBytes(), tmp[0]);
         }
         
 
         if(imgs[0] instanceof String) {
-            String x = (String) imgs[0];
+            final String x = (String) imgs[0];
             if(x.startsWith("http")) {
-                try {
-                    Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                            .execute("curl", x, "-o", tmp.getAbsolutePath());
-                    Thread.sleep(3000);
-					tmp = FileUtil.findSomeTempFile("tmp_desk");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                RadioPlayer.getMediaPlayer().validateStreamUrl(x, new Handler<HttpURLConnection>() {
+                    @Override
+                    public void handle(HttpURLConnection httpURLConnection) {
+                        try {
+                            Object p = CommandRegistry.getInstance().getCommand("process-exec")
+                                    .execute("curl", x, "-o", tmp[0].getAbsolutePath());
+                            Thread.sleep(3000);
+                            tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Handler<Tuple2<Throwable, Peer>>() {
+                    @Override
+                    public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
+                        log.error("Exista sugestie valid definita dar nu exista conexiune la internet");
+                        citesteDefaultDinLocal(imgs);
+                    }
+                });
             }
+
         }
 
-        if(tmp.exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp.getAbsolutePath(), out.getAbsolutePath(), desktopImage });
+        if(tmp[0].exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp[0].getAbsolutePath(), out.getAbsolutePath(), desktopImage });
         } else {
 			System.out.println("NU EXISTA TMP-UL");
 		}
