@@ -96,10 +96,13 @@ public enum  SGService {
                         try {
                             Object p = CommandRegistry.getInstance().getCommand("process-exec")
                                     .execute("curl", x, "-o", tmp[0].getAbsolutePath());
-                            Thread.sleep(3000);
+                            if(p instanceof Process){
+                                ((Process)p).waitFor();
+                            }
                             tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
                         } catch (Exception e) {
                             e.printStackTrace();
+                            citesteDefaultDinLocal(imgs);
                         }
                     }
                 }, new Handler<Tuple2<Throwable, Peer>>() {
@@ -110,7 +113,6 @@ public enum  SGService {
                     }
                 });
             }
-
         }
 
         if(tmp[0].exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
@@ -154,23 +156,6 @@ public enum  SGService {
         return this;
     }
 
-//    private Map getSuggestion(String  val){
-//        List suggestions = MapUtil.getList(root, "suggestions");
-//        if (suggestions == null){
-//            return null;
-//        }
-//        for (Object o: suggestions){
-//            if (o instanceof Map){
-//                Map m = (Map) o;
-//                if (m.containsKey("key")){
-//                    if (String.valueOf(m.get("key")).equalsIgnoreCase(val)){
-//                        return m;
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
 
 
