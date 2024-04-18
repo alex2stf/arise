@@ -108,7 +108,7 @@ public enum  SGService {
                 }, new Handler<Tuple2<Throwable, Peer>>() {
                     @Override
                     public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
-                        log.error("Exista sugestie valid definita dar nu exista conexiune la internet");
+                        log.error("Exista sugestie valid definita dar nu exista conexiune la internet", throwablePeerTuple2.first());
                         citesteDefaultDinLocal(imgs);
                     }
                 });
