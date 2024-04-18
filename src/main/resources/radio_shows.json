@@ -5,6 +5,7 @@
       "https://streaming.exclusive.radio/er/calm/icecast.audio",
       "https://streaming.exclusive.radio/er/classical/icecast.audio",
       "https://streaming.exclusive.radio/er/beethoven/icecast.audio",
+      "https://streaming.exclusive.radio/er/jeanmicheljarre/icecast.audio",
       "https://drive.uber.radio/uber/calmbirdsong/icecast.audio",
       "https://drive.uber.radio/uber/calmdreamscape/icecast.audio",
       "https://drive.uber.radio/uber/calmpiano/icecast.audio",
@@ -196,7 +197,11 @@
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
       "https://streaming.exclusive.radio/er/pretenders/icecast.audio",
-      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio"
+      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio",
+      "https://streaming.exclusive.radio/er/garymoore/icecast.audio",
+      "https://streaming.exclusive.radio/er/heart/icecast.audio",
+      "https://streaming.exclusive.radio/er/simongarfunklehits/icecast.audio",
+      "https://streaming.exclusive.radio/er/talkingheadshits/icecast.audio"
     ],
     "weekend-list": [
       "https://streaming.exclusive.radio/er/rock/icecast.audio",
@@ -269,6 +274,7 @@
       "https://streaming.exclusive.radio/er/abba/icecast.audio",
       "https://streaming.exclusive.radio/er/amywinehouse/icecast.audio",
       "https://streaming.exclusive.radio/er/barrywhite/icecast.audio",
+      "https://streaming.exclusive.radio/er/streisandhits/icecast.audio",
       "https://streaming.exclusive.radio/er/everlybrothers/icecast.audio",
       "https://streaming.exclusive.radio/er/evacassidy/icecast.audio",
       "https://streaming.exclusive.radio/er/fatsdomino/icecast.audio",

@@ -29,10 +29,11 @@ public enum  SGService {
 
     public static void setDesktopImage(String desktopImage) {
         Object img = getInstance().find(desktopImage);
-        if(img == null){
+        if(img == null) {
+            int rand = (int) Math.round((Math.random() * 7) + 0);
             try {
                 img = new HttpResponse().setBytes(
-                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk1.jpg"))
+                        StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
                 );
             } catch (IOException e) {
                 e.printStackTrace();
