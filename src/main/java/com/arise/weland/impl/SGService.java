@@ -281,10 +281,14 @@ public enum  SGService {
         }
     }
 
+    private String randomPick(Set<String> icons){
+        return icons.iterator().next();
+    }
+
     public Object find(String id) {
         id = id.toLowerCase();
         if(root.containsKey(id)) {
-            String path = root.get(id).iterator().next();  //TODO pick next sau random
+            String path = randomPick(root.get(id));
             return decodePath(path);
 
         }
@@ -292,7 +296,7 @@ public enum  SGService {
         String query = id;
         for (String key: root.keySet()){
             if (query.toLowerCase().indexOf(key.toLowerCase()) > -1){
-                return decodePath(root.get(key).iterator().next()); //TODO pick next
+                return decodePath(randomPick(root.get(key)));
             }
         }
         if(id.indexOf("bob dylan") > -1){
