@@ -33,6 +33,25 @@ public enum  SGService {
 
     private static final List<String> urls = new ArrayList<>();
     static {
+        urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
+        urls.add("https://i.pinimg.com/originals/9b/fd/a0/9bfda0efb535e51570c6648a41e7a3c8.jpg");
+        urls.add("https://mcdn.wallpapersafari.com/medium/35/85/WFlGVS.jpg");
+        urls.add("https://www.desktopbackground.org/p/2015/09/29/1018545_download-10-stunning-sexy-ubuntu-wallpapers_1920x1200_h.jpg");
+        urls.add("https://www.free-codecs.com/pictures/screenshots/bsplayer.jpg");
+        urls.add("https://media-assets.wired.it/photos/615f319b5b820b8db3e7cd47/master/w_1600%2Cc_limit/1518175196_Winamp.jpg");
+        urls.add("https://media.askvg.com/articles/images5/Winamp_Skin_VLC_Media_Player.png");
+        urls.add("https://wmpskinsarchive.neocities.org/images/tubeframe.png");
+        urls.add("https://wmpskinsarchive.neocities.org/images/STALKER.png");
+        urls.add("https://e0.pxfuel.com/wallpapers/150/412/desktop-wallpaper-sexy-in-black-sexy-lingerie-model-woman.jpg");
+        urls.add("https://wmpskinsarchive.neocities.org/images/QuickSilver.png");
+        urls.add("https://wmpskinsarchive.neocities.org/images/Main_Street.png");
+        urls.add("https://m.media-amazon.com/images/I/71FydjvsrcL._AC_SX679_.jpg");
+        urls.add("https://wmpskinsarchive.neocities.org/images/digitaldj.png");
+        urls.add("https://w0.peakpx.com/wallpaper/495/184/HD-wallpaper-sexy-female-art-art-female-model-abstract-sexy.jpg");
+        urls.add("https://wmpskinsarchive.neocities.org/images/cerulean.png");
+        urls.add("https://wmpskinsarchive.neocities.org/images/9SeriesDefault.png");
+        urls.add("https://w.wallhaven.cc/full/42/wallhaven-42k88m.jpg");
+        urls.add("https://wmpskinsarchive.neocities.org/images/ALXVortex.png");
         urls.add("https://live.staticflickr.com/65535/52607511849_af34b6e5d9.jpg");
         urls.add("https://mcdn.wallpapersafari.com/medium/40/55/gtBrSV.jpg");
         urls.add("https://i.ytimg.com/vi/bhc7y-n7vIU/hqdefault.jpg");
