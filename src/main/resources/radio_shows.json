@@ -411,7 +411,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${local-paths-mixed}"]
+      "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
     {
       "name": "weekdays_carols_17_18",
@@ -547,7 +547,7 @@
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${weekend-list}", "${local-paths-mixed}"]
+      "sources": ["${weekend-list}"]
     },
     {
       "name": "weekend_18-19",
