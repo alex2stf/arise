@@ -282,6 +282,7 @@ public enum  SGService {
     }
 
     private String randomPick(Set<String> icons){
+        //TODO random pick din lista de icon-uri
         return icons.iterator().next();
     }
 
