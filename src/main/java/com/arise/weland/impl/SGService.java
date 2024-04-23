@@ -73,6 +73,7 @@ public enum  SGService {
             imgs[0] = new HttpResponse().setBytes(
                     StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
             );
+            log.info("AM citit din local " + "pictures/desk" + rand + ".jpg");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,6 +83,8 @@ public enum  SGService {
         if(imgs[0] instanceof HttpResponse) {
             HttpResponse res = (HttpResponse) imgs[0];
             FileUtil.writeBytesToFile(res.bodyBytes(), tmp[0]);
+        } else {
+            log.info("NU AM CE FACE CU imgs[0] = " + imgs[0]);
         }
     }
 
@@ -155,21 +158,22 @@ public enum  SGService {
         }
         final String nextUrl= urls.get(urlIndex[0]);
 
-
-
+        log.info("Cautam default");
         NetworkUtil.pingUrl(nextUrl, new Handler<URLConnection>() {
             @Override
             public void handle(URLConnection httpURLConnection) {
                 imgs[0]= nextUrl;
                 urlIndex[0]++;
+                log.info("E ok " + imgs[0]);
             }
         }, new Handler<Object>() {
             @Override
             public void handle(Object err) {
-                log.info("INVALID " + nextUrl);
+                log.info("Nu e ok " + nextUrl);
                 urlIndex[0]++;
                 if(urlIndex[0] > urls.size() - 1) {
                     urlIndex[0] = 0;
+                    log.info("Am terminat de iterat ");
                     citesteDefaultDinLocal(imgs);
                 } else {
                     findSomeDefault(imgs);
