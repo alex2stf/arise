@@ -111,7 +111,7 @@ public enum  SGService {
         }, onErr);
     }
 
-    public static void setDesktopImage(String desktopImage) {
+    public static synchronized void setDesktopImage(String desktopImage) {
         final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
 
         if(null == imgs[0]) {
@@ -125,9 +125,7 @@ public enum  SGService {
             tmp[0].delete();
         }
 
-
         scrieHttpResponseInTmp(imgs, tmp);
-        
 
         if(imgs[0] instanceof String) {
             final String x = (String) imgs[0];
@@ -319,7 +317,7 @@ public enum  SGService {
                 root.put(parts[0] + parts[1], icons);
             }
 
-        }catch (Exception e){
+        } catch (Exception e){
 
         }
         root.put(id, icons);
@@ -334,7 +332,7 @@ public enum  SGService {
     }
 
 
-    public Object find(String id) {
+    public synchronized Object find(String id) {
         id = id.toLowerCase();
         if(root.containsKey(id)) {
             String path = randomPickElement(root.get(id));

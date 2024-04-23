@@ -249,14 +249,13 @@ public class Show {
                     return;
                 } else if(ContentType.isHttpPath(pdir)) {
                     final long finalExp = exp;
-                    log.info("Show [" + n + "] should end in " + strfMillis(finalExp));
                     _playing = false;
 
                     //default consideram ca e URL
                     NetworkUtil.pingUrl(pdir, new Handler<URLConnection>() {
                         @Override
                         public void handle(URLConnection huc) {
-                            log.info("Start stream show [" + n + "] with url " + pdir);
+                            log.info("Start stream show [" + n + "] with url " + pdir + " and should end in " + strfMillis(finalExp));
                             clear_sys_props();
                             scp(pdir);
                             _playing = true;
@@ -266,7 +265,7 @@ public class Show {
                     }, new Handler<Object>() {
                         @Override
                         public void handle(Object errTpl) {
-                            log.error(retryIndex + ") iteration check url " + pdir + " failed");
+                            log.error(retryIndex + "] iteration check url " + pdir + " failed");
                             clear_sys_props();
                             _playing = false;
                             close_all_resources(new Handler<Object>() {
