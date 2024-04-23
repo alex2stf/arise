@@ -32,7 +32,7 @@ public class NetworkUtil {
             }
             connection.disconnect();
         } catch (Exception e) {
-            log.error("Failed to ping " + u);
+            log.error("Ping " + u + "throws ", e);
             err.handle(e);
         }
 

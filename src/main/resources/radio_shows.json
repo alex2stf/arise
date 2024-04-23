@@ -59,7 +59,6 @@
       "https://bestofrockfm.stream.vip/acdc/mp3-128/bestofrockfm.stream.vip"
     ],
     "generic-radios": [
-      "http://91.121.59.45:8013/stream",
       "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
       "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
       "https://str0.creacast.com/melody2",
@@ -71,14 +70,12 @@
       "https://live.rockfm.ro/kiss.energy",
       "https://live.rockfm.ro/hard.rock",
       "http://www.clasicradio.ro:7100/stream",
-      "http://89.39.189.22:2222/;",
       "http://stream.darkedge.ro:8000/stream/2/",
       "https://web.smartradio.ro:8443/smartnroll",
       "http://www.clasicradio.ro:8032/stream",
       "http://s3.myradiostream.com:7022/;",
       "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053",
       "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
-      "http://192.111.140.11:8058/stream/1/",
       "https://streaming.exclusive.radio/er/italy/icecast.audio",
       "https://streaming.exclusive.radio/er/musiquefrancaise/icecast.audio",
       "https://streaming.exclusive.radio/er/hollywoodandbroadway/icecast.audio",
