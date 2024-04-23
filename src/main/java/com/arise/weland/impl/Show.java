@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.arise.canter.Cronus.*;
-import static com.arise.core.tools.CollectionUtil.pickFromList;
-import static com.arise.core.tools.CollectionUtil.randomPick;
 import static com.arise.core.tools.FileUtil.getRandomFileFromDirectory;
 import static com.arise.core.tools.StringUtil.hasContent;
 import static com.arise.core.tools.ThreadUtil.closeTimer;
@@ -187,16 +185,16 @@ public class Show {
                     clear_sys_props();
                 }
                 else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
-                    pdir = pickFromList(urls, false);
+                    pdir = CollectionUtil.pickFromPersistentList(urls, false, n);
                 }
                 else if(_m.toLowerCase().indexOf("stream-first") > -1) {
-                    pdir = smartPick(urls, true);
+                    pdir = smartPick(urls, true, n);
                 }
                 else if(_m.toLowerCase().indexOf("local-first") > -1) {
-                    pdir = smartPick(urls, false);
+                    pdir = smartPick(urls, false, n);
                 }
                 else {
-                    pdir = randomPick(urls);
+                    pdir = CollectionUtil.randomPickFromPersistentList(urls, n);
                 }
 
                 //daca e fisier local

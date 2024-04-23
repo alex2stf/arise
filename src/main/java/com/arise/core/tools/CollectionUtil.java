@@ -182,13 +182,12 @@ public class CollectionUtil {
         return c.iterator().next();
     }
 
-    public static String randomPick(List<String> s) {
-       return pickFromList(s, true);
+    public static String randomPickFromPersistentList(List<String> s, String name) {
+       return pickFromPersistentList(s, true, name);
     }
 
-    public static String pickFromList(List<String> s, boolean dSh) {
-        String k = join(s, "x");
-        k = (k.hashCode() < 0 ? "h" + Math.abs(k.hashCode()) : k.hashCode()) + "-" + UUID.nameUUIDFromBytes(k.getBytes());
+    public static String pickFromPersistentList(List<String> s, boolean dSh, String name) {
+        String k = "L_" + dSh + StringUtil.sanitizeAppId(name);
         AppCache.StoredList l = AppCache.getStoredList(k);
         if (l.isEmpty() || l.isIndexExceeded()){
             if(dSh){
@@ -197,6 +196,7 @@ public class CollectionUtil {
             l = storeList(k, s, 0);
         }
         int i = l.getIndex();
+        System.out.println("index = " + i);
         storeList(k, l.getItems(), i + 1);
         return l.getItems().get(i);
     }

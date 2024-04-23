@@ -151,6 +151,7 @@ public enum  SGService {
             @Override
             public void handle(URLConnection httpURLConnection) {
                 imgs[0]= nextUrl;
+                urlIndex[0]++;
             }
         }, new Handler<Object>() {
             @Override

@@ -1,6 +1,7 @@
 package com.arise.core.tools;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +78,33 @@ public class CollectionUtilTest {
 
     public static void main(String[] args) {
 
-        testSublist();
+        List<String> list  = new ArrayList<>();
+        for(int i = 0; i < 20; i++){
+            list.add(i + "");
+//            list.add(i + "a");
+//            list.add(i + "b");
+//            list.add(i + "c");
+//            list.add(i + "d");
+//            list.add(i + "e");
+//            list.add(i + "f");
+//            list.add(i + "g");
+//            list.add(i + "h");
+//            list.add(i + "i");
+//            list.add(i + "j");
+//            list.add(i + "k");
+//            list.add(i + "l");
+//            list.add(i + "m");
+//            list.add(i + "n");
+        }
+
+
+        for(int i = 0; i < list.size(); i++){
+            String x = CollectionUtil.pickFromPersistentList(list, true, "test");
+            System.out.println(x);
+        }
+
+
+//        testSublist();
 
 
 //        Set<String> s = new HashSet<>();
