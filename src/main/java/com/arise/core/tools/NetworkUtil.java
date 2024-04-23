@@ -27,7 +27,11 @@ public class NetworkUtil {
             if (200 <= responseCode && responseCode <= 399) {
                 suk.handle(connection);
             } else {
-                log.error("Ping " + u + " returned " + responseCode);
+                if(responseCode == 403){
+                    log.error("AI LUAT BAN de la " + u);
+                } else {
+                    log.error("Ping " + u + " returned " + responseCode);
+                }
                 err.handle(responseCode);
             }
             connection.disconnect();
