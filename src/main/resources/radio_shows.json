@@ -436,7 +436,7 @@
       "name": "weekdays_18_19",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
@@ -470,7 +470,7 @@
       "name": "weekdays_20_21_wednesday_thursday_friday",
       "day": "wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
-      "strategy": "stream",
+      "strategy": "local-first",
       "sources": ["${weekdays-list}", "${local-paths-mixed}"]
     },
 
