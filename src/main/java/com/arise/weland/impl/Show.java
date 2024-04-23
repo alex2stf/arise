@@ -9,6 +9,7 @@ import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -253,9 +254,9 @@ public class Show {
                     _playing = false;
 
                     //default consideram ca e URL
-                    mPlayer.validateStreamUrl(pdir, new Handler<HttpURLConnection>() {
+                    NetworkUtil.pingUrl(pdir, new Handler<URLConnection>() {
                         @Override
-                        public void handle(HttpURLConnection huc) {
+                        public void handle(URLConnection huc) {
                             log.info("Start stream show [" + n + "] with url " + pdir);
                             clear_sys_props();
                             scp(pdir);
@@ -263,9 +264,9 @@ public class Show {
                             mPlayer.playStreamSync(pdir);
                             setup_stream_close(c, finalExp);
                         }
-                    }, new Handler<Tuple2<Throwable, Peer>>() {
+                    }, new Handler<Object>() {
                         @Override
-                        public void handle(Tuple2<Throwable, Peer> errTpl) {
+                        public void handle(Object errTpl) {
                             log.error(retryIndex + ") iteration check url " + pdir + " failed");
                             clear_sys_props();
                             _playing = false;

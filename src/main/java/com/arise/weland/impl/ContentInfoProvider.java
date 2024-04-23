@@ -127,7 +127,17 @@ public class ContentInfoProvider {
             contentInfo.setTitle(MapUtil.getString(map, "title"));
             contentInfo.setPath(MapUtil.getString(map, "path"));
 
-            String thumbnail = MapUtil.getString(map, "thumbnail");
+            String thumbnail = null;
+            if(map.containsKey("thumbnail")) {
+                Object th = map.get("thumbnail");
+                if(th instanceof String){
+                    thumbnail = (String) th;
+                }
+                else if (th instanceof Collection){
+                    thumbnail = CollectionUtil.randomPickElement((Collection<String>) th);
+                }
+            }
+
             //TODO de decomentat???
             if (thumbnail != null){
                 String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);

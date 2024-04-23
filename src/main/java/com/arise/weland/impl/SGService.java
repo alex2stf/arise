@@ -12,6 +12,7 @@ import com.arise.weland.dto.ContentInfo;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -84,15 +85,16 @@ public enum  SGService {
 
         if(null == imgs[0]) {
             final String nextUrl = CollectionUtil.randomPick(urls);
-            RadioPlayer.getMediaPlayer().validateStreamUrl(nextUrl, new Handler<HttpURLConnection>() {
+
+
+            NetworkUtil.pingUrl(nextUrl, new Handler<URLConnection>() {
                 @Override
-                public void handle(HttpURLConnection httpURLConnection) {
+                public void handle(URLConnection httpURLConnection) {
                     imgs[0]= nextUrl;
                 }
-            }, new Handler<Tuple2<Throwable, Peer>>() {
+            }, new Handler<Object>() {
                 @Override
-                public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
-                    log.error("Nu ai conexiune la net, nu se poate citi " + nextUrl);
+                public void handle(Object throwablePeerTuple2) {
                     citesteDefaultDinLocal(imgs);
                 }
             });
@@ -116,9 +118,9 @@ public enum  SGService {
         if(imgs[0] instanceof String) {
             final String x = (String) imgs[0];
             if(x.startsWith("http")) {
-                RadioPlayer.getMediaPlayer().validateStreamUrl(x, new Handler<HttpURLConnection>() {
+                NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
                     @Override
-                    public void handle(HttpURLConnection httpURLConnection) {
+                    public void handle(URLConnection httpURLConnection) {
                         try {
                             Object p = CommandRegistry.getInstance().getCommand("process-exec")
                                     .execute("curl", x, "-o", tmp[0].getAbsolutePath());
@@ -131,10 +133,9 @@ public enum  SGService {
                             citesteDefaultDinLocal(imgs);
                         }
                     }
-                }, new Handler<Tuple2<Throwable, Peer>>() {
+                }, new Handler<Object>() {
                     @Override
-                    public void handle(Tuple2<Throwable, Peer> throwablePeerTuple2) {
-                        log.error("Exista sugestie valid definita dar nu exista conexiune la internet", throwablePeerTuple2.first());
+                    public void handle(Object throwablePeerTuple2) {
                         citesteDefaultDinLocal(imgs);
                     }
                 });

@@ -238,9 +238,6 @@ public class DeskMPlayer extends MediaPlayer {
     }
 
 
-    public void validateStreamUrl(String u, Handler<HttpURLConnection> suk, Handler<Tuple2<Throwable, Peer>> erh) {
-        this.validateSync(u, suk, erh);
-    }
 
     public boolean isPlaying() {
         return is_play;

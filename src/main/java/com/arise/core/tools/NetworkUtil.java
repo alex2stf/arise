@@ -1,13 +1,42 @@
 package com.arise.core.tools;
 
+import com.arise.astox.net.clients.JHttpClient;
+import com.arise.astox.net.models.Peer;
+import com.arise.astox.net.models.http.HttpRequest;
+import com.arise.core.exceptions.CommunicationException;
+import com.arise.core.models.Handler;
+import com.arise.core.models.Tuple2;
+
+import java.io.IOException;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.arise.core.tools.Util.close;
+
 public class NetworkUtil {
+    private static final Mole log = Mole.getInstance(NetworkUtil.class);
 
+    public static void pingUrl(final String u, final Handler<URLConnection> suk, final Handler<Object> err) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(u).openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setRequestMethod("HEAD");
+            int responseCode = connection.getResponseCode();
+            if (200 <= responseCode && responseCode <= 399) {
+                suk.handle(connection);
+            } else {
+                log.error("Ping " + u + " returned " + responseCode);
+                err.handle(responseCode);
+            }
+            connection.disconnect();
+        } catch (Exception e) {
+            log.error("Failed to ping " + u);
+            err.handle(e);
+        }
 
+    }
 
     public static List<NetworkInterface> networkInterfaces(){
         try {

@@ -83,84 +83,8 @@ public abstract class MediaPlayer {
 
     public abstract boolean isPlaying();
 
-    public abstract void validateStreamUrl(String u, Handler<HttpURLConnection> handler, Handler<Tuple2<Throwable, Peer>> tuple2Handler);
 
 
-    protected void validateSync(final String u, final Handler<HttpURLConnection> suk, final Handler<Tuple2<Throwable, Peer>> erh) {
-
-        final JHttpClient c = new JHttpClient();
-        c.setAbsoluteUrl(u);
-        HttpRequest request = new HttpRequest();
-        request.setMethod("GET");
-        c.setErrorHandler(new Handler<Tuple2<Throwable, Peer>>() {
-            @Override
-            public void handle(Tuple2<Throwable, Peer> c) {
-                erh.handle(c);
-                close(c.second());
-            }
-        });
-        c.connectSync(request, new Handler<HttpURLConnection>() {
-            @Override
-            public void handle(HttpURLConnection x) {
-
-                int code = -1;
-                Throwable err = null;
-                try {
-                    code = x.getResponseCode();
-                } catch (Exception e) {
-                    err = new CommunicationException("Get response code failed for " + u, e);
-                }
-                close(c);
-
-                try {
-                    x.disconnect();
-                }catch (Exception e){
-                    if (err == null){
-                        err = new CommunicationException("Http disconnect failed for " + u, e);
-                    }
-                }
-
-                try {
-                    close(x.getInputStream());
-                } catch (Exception e) {
-                    if (err == null){
-                        err = new CommunicationException("InputStream close failed for " + u, e);
-                    }
-                }
-
-                try {
-                    close(x.getErrorStream());
-                } catch (Exception e) {
-                    if (err == null){
-                        err = new CommunicationException("ErrorStream close failed for " + u, e);
-                    }
-                }
-
-                try {
-                    close(x.getOutputStream());
-                } catch (Exception e) {
-                    if (err == null){
-                        err = new CommunicationException("OutputStream close failed for " + u, e);
-                    }
-                }
-
-                try {
-                    x.disconnect();
-                } catch (Exception e){
-                    if (err == null){
-                        err = new CommunicationException("HttpConnection disconnect failed for " + u, e);
-                    }
-                }
-
-                if (code > 199 && code < 299){
-                    suk.handle(x);
-                } else {
-                    erh.handle(new Tuple2<Throwable, Peer>(err, c));
-                }
-
-            }
-        });
-    }
 
 
 
