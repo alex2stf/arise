@@ -1,18 +1,14 @@
 package com.arise.weland.impl;
 
-import com.arise.astox.net.models.Peer;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.*;
@@ -67,26 +63,24 @@ public enum  SGService {
         Collections.shuffle(urls);
     }
 
-    static void citesteDefaultDinLocal(Object imgs[]){
+    static File tmpDesk(){
+        return FileUtil.findSomeTempFile("tmp_desk");
+    }
+
+    static void scrieCevaDinLocal(){
         int rand = (int) Math.round((Math.random() * 7) + 0);
+        String name = "pictures/desk" + rand + ".jpg";
         try {
-            imgs[0] = new HttpResponse().setBytes(
-                    StreamUtil.toBytes(FileUtil.findStream("pictures/desk" + rand + ".jpg"))
+            StreamUtil.transfer(
+                    FileUtil.findStream(name),
+                    new FileOutputStream(tmpDesk())
             );
-            log.info("AM citit din local " + "pictures/desk" + rand + ".jpg");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Nu am putut copia " + name + " in " + tmpDesk().getAbsolutePath(), e);
         }
     }
 
-    static void scrieHttpResponseInTmp(Object[] imgs, final File[] tmp){
-        if(imgs[0] instanceof HttpResponse) {
-            HttpResponse res = (HttpResponse) imgs[0];
-            FileUtil.writeBytesToFile(res.bodyBytes(), tmp[0]);
-        } else {
-            log.info("NU AM CE FACE CU imgs[0] = " + imgs[0]);
-        }
-    }
+
 
     static void downloadImage(final String x, Handler<Object> onErr) {
         if(!x.startsWith("http")) {
@@ -120,49 +114,36 @@ public enum  SGService {
     }
 
     public static synchronized void setDesktopImage(String desktopImage) {
-        final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
 
-        if(null == imgs[0]) {
-            log.info("Search some default");
-            findSomeDefault(imgs);  //returneaza HttpResponse sau url pe imgs[0]
+        tmpDesk().delete();
+        Object image = getInstance().find(desktopImage);
+
+        if(null == image) {
+            log.info("Nu s-a gasit nici o sugestie pentru " + desktopImage);
+            iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]
         }
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
-        final File[] tmp = {FileUtil.findSomeTempFile("tmp_desk")};
-        if(tmp[0].exists()){
-            tmp[0].delete();
-        }
-
-        scrieHttpResponseInTmp(imgs, tmp);
-
-        if(imgs[0] instanceof String) {
-            final String x = (String) imgs[0];
+        if (image instanceof HttpResponse){
+            HttpResponse res = (HttpResponse) image;
+            FileUtil.writeBytesToFile(res.bodyBytes(), tmpDesk());
+        } else if(image instanceof String) {
+            final String x = (String) image;
             downloadImage(x, new Handler<Object>() {
                 @Override
                 public void handle(Object o) {
-                    FileUtil.findSomeTempFile("tmp_desk").delete();
-                    findSomeDefault(imgs); //returneaza HttpResponse sau url pe imgs[0]
+                    iaDefaultDinUrl(); //returneaza HttpResponse sau url pe imgs[0]
                 }
             });
         }
 
         //a doua iteratie
-        if(!FileUtil.findSomeTempFile("tmp_desk").exists()){
-            if(imgs[0] instanceof HttpResponse){
-                scrieHttpResponseInTmp(imgs, tmp);
-            } else if(imgs[0] instanceof String) {
-                downloadImage((String) imgs[0], new Handler<Object>() {
-                    @Override
-                    public void handle(Object o) {
-                        log.info("MAI TREBUIE SA MAI PUI UN DEFAULT AICI");
-                    }
-                });
-            }
+        if(!tmpDesk().exists()){
+            scrieCevaDinLocal();
         }
 
-        tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
-        if(tmp[0].exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp[0].getAbsolutePath(), out.getAbsolutePath(), desktopImage });
+        if(tmpDesk().exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmpDesk().getAbsolutePath(), out.getAbsolutePath(), desktopImage });
         } else {
 			System.out.println("NU EXISTA TMP-UL");
 		}
@@ -170,34 +151,26 @@ public enum  SGService {
     }
 
 
-    public static void findSomeDefault(final Object imgs[]){
+    public static void iaDefaultDinUrl(){
         if(urlIndex[0] > urls.size() - 1) {
             urlIndex[0] = 0;
         }
         final String nextUrl= urls.get(urlIndex[0]);
-
-        log.info("Cautam default");
-        NetworkUtil.pingUrl(nextUrl, new Handler<URLConnection>() {
-            @Override
-            public void handle(URLConnection httpURLConnection) {
-                imgs[0]= nextUrl;
-                urlIndex[0]++;
-                log.info("E ok " + imgs[0]);
+        try {
+            NetworkUtil.downloadImage(nextUrl, tmpDesk());
+            urlIndex[0]++;
+            log.info("E ok " + nextUrl);
+        } catch (Exception e) {
+            log.info("Nu e ok " + nextUrl);
+            urlIndex[0]++;
+            if(urlIndex[0] > urls.size() - 1) {
+                urlIndex[0] = 0;
+                log.info("Am terminat de iterat ");
+                scrieCevaDinLocal();
+            } else {
+                iaDefaultDinUrl();
             }
-        }, new Handler<Object>() {
-            @Override
-            public void handle(Object err) {
-                log.info("Nu e ok " + nextUrl);
-                urlIndex[0]++;
-                if(urlIndex[0] > urls.size() - 1) {
-                    urlIndex[0] = 0;
-                    log.info("Am terminat de iterat ");
-                    citesteDefaultDinLocal(imgs);
-                } else {
-                    findSomeDefault(imgs);
-                }
-            }
-        });
+        }
     }
 
 

@@ -83,7 +83,9 @@
       "https://streaming.exclusive.radio/er/goodevening/icecast.audio",
       "https://drive.uber.radio/uber/jjrbennygoodman/icecast.audio",
       "https://asculta.radioromanian.net/8800/stream?ver=587047",
-      "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip"
+      "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip",
+      "https://radio.nugs.net/pearljam",
+      "https://stream.lolliradio.net/lolli_italia.mp3"
     ],
     "youtubes": [
       "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/-yFeZekJxZ8?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"

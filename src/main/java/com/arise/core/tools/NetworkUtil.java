@@ -22,7 +22,7 @@ public class NetworkUtil {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(u).openConnection();
             connection.setConnectTimeout(10000);
-            connection.setRequestMethod("HEAD");
+            connection.setRequestMethod("GET");
             int responseCode = connection.getResponseCode();
             if (200 <= responseCode && responseCode <= 399) {
                 suk.handle(connection);
