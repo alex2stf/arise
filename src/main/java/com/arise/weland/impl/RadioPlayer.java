@@ -36,7 +36,8 @@ public class RadioPlayer {
 
     volatile String _cpath = "";
 
-    private static final Mole log = Mole.getInstance(RadioPlayer.class);
+    private static final Mole log = Mole.getInstance("RD-PLAYER");
+
     private ContentInfoProvider contentInfoProvider;
 
     public static MediaPlayer getMediaPlayer() {

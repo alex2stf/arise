@@ -502,7 +502,7 @@ public class Mole {
 
         @Override
         public boolean warn(Object... args) {
-            return log(" W", args);
+            return log("W", args);
         }
 
         @Override

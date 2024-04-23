@@ -35,7 +35,8 @@ import static java.lang.Runtime.getRuntime;
 public class DeskMPlayer extends MediaPlayer {
 
 
-    private static final Mole log = Mole.getInstance(DeskMPlayer.class);
+    private static final Mole log = Mole.getInstance("PCMPLAYER");
+
     final Process proc[] = new Process[]{null};
     Object winst = null;
     AudioInputStream aStream = null;

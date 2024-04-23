@@ -25,7 +25,7 @@ public enum  SGService {
     Map<String, Set<String>> root = new HashMap();
     private SGCache cacheStrategy;
 
-    private static final Mole log = Mole.getInstance(SGService.class);
+    private static final Mole log = Mole.getInstance("SGSERVICE");
 
     private static final List<String> urls = new ArrayList<>();
     private static final int [] urlIndex = new int[]{0};
@@ -114,6 +114,10 @@ public enum  SGService {
     }
 
     public static synchronized void setDesktopImage(String desktopImage) {
+        if(!CommandRegistry.getInstance().containsCommand("set-desktop-background")){
+            log.warn("Nu poti seta desktop fara comanda definita");
+            return;
+        }
 
         tmpDesk().delete();
         Object image = getInstance().find(desktopImage);
@@ -142,7 +146,7 @@ public enum  SGService {
             scrieCevaDinLocal();
         }
 
-        if(tmpDesk().exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
+        if(tmpDesk().exists()) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmpDesk().getAbsolutePath(), out.getAbsolutePath(), desktopImage });
         } else {
 			System.out.println("NU EXISTA TMP-UL");

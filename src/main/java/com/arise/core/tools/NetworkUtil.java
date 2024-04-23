@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import static com.arise.core.tools.Util.close;
 
 public class NetworkUtil {
-    private static final Mole log = Mole.getInstance(NetworkUtil.class);
+    private static final Mole log = Mole.getInstance("NETWORKUT");
 
     public static void pingUrl(final String u, final Handler<URLConnection> suk, final Handler<Object> err) {
         try {

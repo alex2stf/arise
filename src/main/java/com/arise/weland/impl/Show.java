@@ -43,7 +43,8 @@ public class Show {
 
     private static final MediaPlayer mPlayer = RadioPlayer.getMediaPlayer();
 
-    private static final Mole log = Mole.getInstance(Show.class);
+    private static final Mole log = Mole.getInstance("RADIOSHOW");
+
 
     public String name() {
         return n;
@@ -110,28 +111,25 @@ public class Show {
             closeTimer(t);
             _playing = false;
 
-            log.info("close_all_resources media.stop()");
             mPlayer.stop(new Handler<MediaPlayer>() {
                 @Override
                 public void handle(MediaPlayer mediaPlayer) {
                     closeTimer(t);
                     _playing = false;
-                    log.info("Show [" + n + "] resources closed");
+                    log.info(n + "] resources closed");
                     onComplete.handle(this);
                 }
             });
         } else {
-            log.info("Nothing to close");
             onComplete.handle(this);
         }
     }
 
     void continue_pick(final Handler<Show> c, final List<String> urls, final int retryIndex){
-        log.info("continue_pick " + retryIndex);
         _playing = false;
         clear_sys_props();
         if (StringUtil.hasText(_f)) {
-            log.info("Using fallback " + _f);
+            log.info(n + "] using fallback " + _f);
             p.forceStartActiveShow(_f, c);
         } else {
             play_from_list_of_strings(c, urls, retryIndex);
@@ -161,7 +159,7 @@ public class Show {
             @Override
             public void handle(Object o) {
                 //init functie
-                log.info("Entring play_from_list_of_strings iteration " + retryIndex);
+                log.info(n + "] play_from_list_of_strings iteration " + retryIndex);
 
                 Map<Integer, List<String>> parts = Cronus.getParts(_h);
                 long exp = 4000;
@@ -174,7 +172,7 @@ public class Show {
                 }
 
                 if (retryIndex > urls.size() + 1) {
-                    log.error("Urls list iteration complete. Are you connected to the internet?");
+                    log.error(n + "] urls list iteration complete. Are you connected to the internet?");
                     setup_stream_close(c, exp);
                     return;
                 }
@@ -206,7 +204,7 @@ public class Show {
                     mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
-                            log.info("Stopped " + pflf.getAbsolutePath());
+                            log.info(n + "] stopped " + pflf.getAbsolutePath());
                             handle_local_finished(c);
                         }
                     });
@@ -218,7 +216,7 @@ public class Show {
                     String path = pdir.substring("file:".length());
                     File file = new File(apply_variables(path));
                     if (!file.exists()) {
-                        log.warn("File " + file.getAbsolutePath() + " does not exist");
+                        log.warn(n + "] file " + file.getAbsolutePath() + " does not exist");
                         continue_pick(c, urls, retryIndex + 1);
                         return;
                     }
@@ -232,18 +230,17 @@ public class Show {
 
 
                     if (pfl == null) {
-                        log.info("NULL AT: " + pfl.getAbsolutePath());
+                        log.info(n + "] null at " + pfl.getAbsolutePath());
                         continue_pick(c, urls, retryIndex + 1);
                         return;
                     }
-                    log.info("Play " + pfl.getAbsolutePath());
+                    log.info(n + "] play " + pfl.getAbsolutePath());
                     scp(pfl.getAbsolutePath());
                    _playing = true;
                     mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
-                            log.info("Random pick finihed play, _playing=" + _playing);
-                            handle_local_finished(c);
+                        handle_local_finished(c);
                         }
                     });
                     return;
@@ -255,7 +252,7 @@ public class Show {
                     NetworkUtil.pingUrl(pdir, new Handler<URLConnection>() {
                         @Override
                         public void handle(URLConnection huc) {
-                            log.info("Start stream show [" + n + "] with url " + pdir + " and should end in " + strfMillis(finalExp));
+                            log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end in " + strfMillis(finalExp));
                             clear_sys_props();
                             scp(pdir);
                             _playing = true;
@@ -265,7 +262,7 @@ public class Show {
                     }, new Handler<Object>() {
                         @Override
                         public void handle(Object errTpl) {
-                            log.error(retryIndex + "] iteration check url " + pdir + " failed");
+                            log.error(n + "] iteration " + retryIndex + "check url " + pdir + " failed");
                             clear_sys_props();
                             _playing = false;
                             close_all_resources(new Handler<Object>() {
@@ -278,7 +275,7 @@ public class Show {
                         }
                     });
                 } else {
-                    log.info("WTF faci cu " + pdir + "??????");
+                    log.info(n + "] WTF faci cu " + pdir + "??????");
                 }
 
                 //final de functie
