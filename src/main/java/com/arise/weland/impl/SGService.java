@@ -88,17 +88,36 @@ public enum  SGService {
         }
     }
 
+    static void downloadImage(final String x, Handler<Object> onErr) {
+        if(!x.startsWith("http")) {
+            onErr.handle(null);
+            return;
+        }
+
+        NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
+            @Override
+            public void handle(URLConnection urlConnection) {
+                FileUtil.findSomeTempFile("tmp_desk").delete();
+                Object p = CommandRegistry.getInstance().getCommand("process-exec")
+                        .execute("curl", x, "-o", FileUtil.findSomeTempFile("tmp_desk").getAbsolutePath());
+                if(p instanceof Process){
+                    try {
+                        ((Process)p).waitFor();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, onErr);
+    }
+
     public static void setDesktopImage(String desktopImage) {
         final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
 
-
-
         if(null == imgs[0]) {
             log.info("Search some default");
-            findSomeDefault(imgs);
+            findSomeDefault(imgs);  //returneaza HttpResponse sau url pe imgs[0]
         }
-
-
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
         final File[] tmp = {FileUtil.findSomeTempFile("tmp_desk")};
@@ -112,34 +131,27 @@ public enum  SGService {
 
         if(imgs[0] instanceof String) {
             final String x = (String) imgs[0];
-            if(x.startsWith("http")) {
+            downloadImage(x, new Handler<Object>() {
+                @Override
+                public void handle(Object o) {
+                    FileUtil.findSomeTempFile("tmp_desk").delete();
+                    findSomeDefault(imgs); //returneaza HttpResponse sau url pe imgs[0]
+                }
+            });
+        }
 
-                NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
-                    @Override
-                    public void handle(URLConnection urlConnection) {
-                        FileUtil.findSomeTempFile("tmp_desk").delete();
-                        Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                                .execute("curl", x, "-o", FileUtil.findSomeTempFile("tmp_desk").getAbsolutePath());
-                        if(p instanceof Process){
-                            try {
-                                ((Process)p).waitFor();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Handler<Object>() {
+        //a doua iteratie
+        if(!FileUtil.findSomeTempFile("tmp_desk").exists()){
+            if(imgs[0] instanceof HttpResponse){
+                scrieHttpResponseInTmp(imgs, tmp);
+            } else if(imgs[0] instanceof String) {
+                downloadImage((String) imgs[0], new Handler<Object>() {
                     @Override
                     public void handle(Object o) {
-                        FileUtil.findSomeTempFile("tmp_desk").delete();
-                        findSomeDefault(imgs);
+                        log.info("MAI TREBUIE SA MAI PUI UN DEFAULT AICI");
                     }
                 });
             }
-        }
-
-        if(!FileUtil.findSomeTempFile("tmp_desk").exists()){
-            scrieHttpResponseInTmp(imgs, tmp);
         }
 
         tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
