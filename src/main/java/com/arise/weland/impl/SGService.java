@@ -15,9 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.util.*;
 
-import static com.arise.core.tools.CollectionUtil.isEmpty;
-import static com.arise.core.tools.CollectionUtil.merge;
-import static com.arise.core.tools.CollectionUtil.randomPickElement;
+import static com.arise.core.tools.CollectionUtil.*;
 import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.TypeUtil.search;
 
@@ -34,6 +32,7 @@ public enum  SGService {
     private static final Mole log = Mole.getInstance(SGService.class);
 
     private static final List<String> urls = new ArrayList<>();
+    private static final int [] urlIndex = new int[]{0};
     static {
         urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
         urls.add("https://i.pinimg.com/originals/9b/fd/a0/9bfda0efb535e51570c6648a41e7a3c8.jpg");
@@ -65,6 +64,7 @@ public enum  SGService {
         urls.add("https://getwallpapers.com/wallpaper/full/f/c/b/1410170-full-size-blues-music-wallpaper-2560x1600-ios.jpg");
         urls.add("https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/in-the-end-swedish-attitude-design.jpg");
         urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
+        Collections.shuffle(urls);
     }
 
     static void citesteDefaultDinLocal(Object imgs[]){
@@ -84,20 +84,8 @@ public enum  SGService {
 
 
         if(null == imgs[0]) {
-            final String nextUrl = CollectionUtil.randomPick(urls);
-
-
-            NetworkUtil.pingUrl(nextUrl, new Handler<URLConnection>() {
-                @Override
-                public void handle(URLConnection httpURLConnection) {
-                    imgs[0]= nextUrl;
-                }
-            }, new Handler<Object>() {
-                @Override
-                public void handle(Object throwablePeerTuple2) {
-                    citesteDefaultDinLocal(imgs);
-                }
-            });
+            log.info("Search some default");
+            findSomeDefault(imgs);
         }
 
 
@@ -148,6 +136,35 @@ public enum  SGService {
 			System.out.println("NU EXISTA TMP-UL");
 		}
 
+    }
+
+
+    public static void findSomeDefault(final Object imgs[]){
+        if(urlIndex[0] > urls.size() - 1) {
+            urlIndex[0] = 0;
+        }
+        final String nextUrl= urls.get(urlIndex[0]);
+
+
+
+        NetworkUtil.pingUrl(nextUrl, new Handler<URLConnection>() {
+            @Override
+            public void handle(URLConnection httpURLConnection) {
+                imgs[0]= nextUrl;
+            }
+        }, new Handler<Object>() {
+            @Override
+            public void handle(Object err) {
+                log.info("INVALID " + nextUrl);
+                urlIndex[0]++;
+                if(urlIndex[0] > urls.size() - 1) {
+                    urlIndex[0] = 0;
+                    citesteDefaultDinLocal(imgs);
+                } else {
+                    findSomeDefault(imgs);
+                }
+            }
+        });
     }
 
 
