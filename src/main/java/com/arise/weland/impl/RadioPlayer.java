@@ -7,15 +7,13 @@ import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.CollectionUtil;
 import com.arise.core.tools.Mole;
+import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -233,7 +231,9 @@ public class RadioPlayer {
                 s.n = getString(h, "name");
                 s._h = getString(h, "hour");
                 s._d = getString(h, "day");
-                s._s = merge(getList(h, "sources"), lists);
+                List list = getList(h, "sources");
+                s._LiD = UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
+                s._s = merge(list, lists);
                 if(contentInfoProvider != null){
                     contentInfoProvider.addSimpleSources(s._s);
                 }

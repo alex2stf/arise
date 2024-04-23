@@ -33,6 +33,7 @@ public class Show {
     String _f;
     String _v;
     List<String> _s;
+    String _LiD;
     String _m;
     String n;
     volatile boolean _playing;
@@ -185,16 +186,16 @@ public class Show {
                     clear_sys_props();
                 }
                 else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
-                    pdir = CollectionUtil.pickFromPersistentList(urls, false, n);
+                    pdir = CollectionUtil.pickFromPersistentList(urls, false, _LiD);
                 }
                 else if(_m.toLowerCase().indexOf("stream-first") > -1) {
-                    pdir = smartPick(urls, true, n);
+                    pdir = smartPick(urls, true, _LiD);
                 }
                 else if(_m.toLowerCase().indexOf("local-first") > -1) {
-                    pdir = smartPick(urls, false, n);
+                    pdir = smartPick(urls, false, _LiD);
                 }
                 else {
-                    pdir = CollectionUtil.randomPickFromPersistentList(urls, n);
+                    pdir = CollectionUtil.randomPickFromPersistentList(urls, _LiD);
                 }
 
                 //daca e fisier local

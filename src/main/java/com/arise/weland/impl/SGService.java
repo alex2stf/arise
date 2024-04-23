@@ -110,30 +110,35 @@ public enum  SGService {
         if(imgs[0] instanceof String) {
             final String x = (String) imgs[0];
             if(x.startsWith("http")) {
-                tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
-                tmp[0].delete();
-                Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                        .execute("curl", x, "-o", tmp[0].getAbsolutePath());
-                if(p instanceof Process){
-                    try {
-                        ((Process)p).waitFor();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+
+                NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
+                    @Override
+                    public void handle(URLConnection urlConnection) {
+                        FileUtil.findSomeTempFile("tmp_desk").delete();
+                        Object p = CommandRegistry.getInstance().getCommand("process-exec")
+                                .execute("curl", x, "-o", FileUtil.findSomeTempFile("tmp_desk").getAbsolutePath());
+                        if(p instanceof Process){
+                            try {
+                                ((Process)p).waitFor();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
+                }, new Handler<Object>() {
+                    @Override
+                    public void handle(Object o) {
+                        FileUtil.findSomeTempFile("tmp_desk").delete();
+                        findSomeDefault(imgs);
+                    }
+                });
             }
         }
 
-        if(!tmp[0].exists()){
+        if(!FileUtil.findSomeTempFile("tmp_desk").exists()){
             scrieHttpResponseInTmp(imgs, tmp);
         }
-        
+
         tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
         if(tmp[0].exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp[0].getAbsolutePath(), out.getAbsolutePath(), desktopImage });
