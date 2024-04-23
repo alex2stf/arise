@@ -66,15 +66,23 @@ public class DeskMPlayer extends MediaPlayer {
 
     public Object play(final String path, final Handler<String> c) {
 
-        SGService.setDesktopImage(path);
+
+
+        File fileToPlay = new File(path);
         if (isAppClosed){
             log.warn("App received shutdown hook");
             return null;
         }
-        if (!new File(path).exists()){
-            log.e("File " + path + " does not exists, implemnent error handler");
+        if (!fileToPlay.exists()){
+            log.e("File " + path + " does not exists, implement error handler");
             System.exit(-1);
             return null;
+        }
+
+        if(fileToPlay.length() > 700000) {
+            SGService.setDesktopImage(path);
+        } else {
+            System.out.println("NU SCHIMBA DESKTOP PENTRU FISIER DE " + fileToPlay.length());
         }
 
 
@@ -82,7 +90,9 @@ public class DeskMPlayer extends MediaPlayer {
             stopClips();
             try {
                 is_play = true;
-                aStream = AudioSystem.getAudioInputStream(new File(path).toURI().toURL());
+
+
+                aStream = AudioSystem.getAudioInputStream(fileToPlay.toURI().toURL());
                 final Clip clip = AudioSystem.getClip(null);
                 clip.addLineListener(new LineListener() {
                     @Override
@@ -122,7 +132,7 @@ public class DeskMPlayer extends MediaPlayer {
                 AppSettings.throwOrExit("No play-media command found");
             }
             is_play = true;
-            winst = playCmd.execute(path);
+            winst = playCmd.execute(fileToPlay.getAbsolutePath());
 
             wait_to_execute(winst, "play " + path);
             log.info("winst executed" + winst);

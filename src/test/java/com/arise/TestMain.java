@@ -11,6 +11,8 @@ import com.arise.tests.HttpBoundaryTest;
 import com.arise.weland.dto.ContentInfoTest;
 import com.arise.weland.impl.RadioPlayerTest;
 
+import java.io.File;
+
 import static com.arise.core.tools.Assert.assertTrue;
 
 public class TestMain {
