@@ -39,7 +39,7 @@ import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class Main {
 
-    private static final Mole log = Mole.getInstance(Main.class);
+    private static final Mole log = Mole.getInstance(">>>  MAIN");
 
 
 

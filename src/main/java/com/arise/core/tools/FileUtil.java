@@ -16,7 +16,8 @@ import static java.util.Collections.shuffle;
 
 public class FileUtil {
 
-    private static final Mole log = Mole.getInstance(FileUtil.class);
+    private static final Mole log = Mole.getInstance("FILE-UTIL");
+
     private static final String ANDROID_OS_ENVIRONMENT = "android.os.Environment";
     private static final String ANDROID_OS_CONTEXT_WRAPPER = "android.content.ContextWrapper";
     private static final String ANDROID_CONTEXT = "android.content.Context";
