@@ -53,7 +53,10 @@
       "https://stream.laut.fm/magic-christmas",
       "https://radioxmaslive.radioca.st/stream",
       "https://streaming.exclusive.radio/er/christmaspop/icecast.audio",
-      "https://streaming.exclusive.radio/er/christmascarols/icecast.audio"
+      "https://streaming.exclusive.radio/er/christmascarols/icecast.audio",
+      "https://bestofrockfm.stream.vip/xmasrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/altrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/acdc/mp3-128/bestofrockfm.stream.vip"
     ],
     "generic-radios": [
       "http://91.121.59.45:8013/stream",
@@ -62,7 +65,9 @@
       "https://str0.creacast.com/melody2",
       "https://i4.streams.ovh/sc/bluesrad/stream",
       "https://live.rockfm.ro/ballads.rock",
+      "https://bestofrockfm.stream.vip/90rock/mp3-128/bestofrockfm.stream.vip",
       "https://live.rockfm.ro/blues",
+      "https://bestofrockfm.stream.vip/80rock/aac-64/bestofrockfm.stream.vip",
       "https://live.rockfm.ro/kiss.energy",
       "https://live.rockfm.ro/hard.rock",
       "http://www.clasicradio.ro:7100/stream",
@@ -79,7 +84,8 @@
       "https://streaming.exclusive.radio/er/hollywoodandbroadway/icecast.audio",
       "https://streaming.exclusive.radio/er/goodevening/icecast.audio",
       "https://drive.uber.radio/uber/jjrbennygoodman/icecast.audio",
-      "https://asculta.radioromanian.net/8800/stream?ver=587047"
+      "https://asculta.radioromanian.net/8800/stream?ver=587047",
+      "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip"
     ],
     "youtubes": [
       "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/-yFeZekJxZ8?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
@@ -202,7 +208,14 @@
       "https://streaming.exclusive.radio/er/garymoore/icecast.audio",
       "https://streaming.exclusive.radio/er/heart/icecast.audio",
       "https://streaming.exclusive.radio/er/simongarfunklehits/icecast.audio",
-      "https://streaming.exclusive.radio/er/talkingheadshits/icecast.audio"
+      "https://streaming.exclusive.radio/er/talkingheadshits/icecast.audio",
+      "https://bestofrockfm.stream.vip/rammstein/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/party/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/metallica/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/metal/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/hardrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/deutsch/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/classic/mp3-128/bestofrockfm.stream.vip"
     ],
     "weekend-list": [
       "https://streaming.exclusive.radio/er/rock/icecast.audio",

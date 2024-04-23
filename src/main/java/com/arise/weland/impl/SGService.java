@@ -16,6 +16,7 @@ import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.CollectionUtil.merge;
+import static com.arise.core.tools.CollectionUtil.randomPickElement;
 import static com.arise.core.tools.TypeUtil.isNull;
 import static com.arise.core.tools.TypeUtil.search;
 
@@ -35,6 +36,7 @@ public enum  SGService {
     static {
         urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
         urls.add("https://i.pinimg.com/originals/9b/fd/a0/9bfda0efb535e51570c6648a41e7a3c8.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/0/2/0/1410169-most-popular-blues-music-wallpaper-1920x1200-for-meizu.jpg");
         urls.add("https://mcdn.wallpapersafari.com/medium/35/85/WFlGVS.jpg");
         urls.add("https://www.desktopbackground.org/p/2015/09/29/1018545_download-10-stunning-sexy-ubuntu-wallpapers_1920x1200_h.jpg");
         urls.add("https://www.free-codecs.com/pictures/screenshots/bsplayer.jpg");
@@ -46,6 +48,7 @@ public enum  SGService {
         urls.add("https://wmpskinsarchive.neocities.org/images/QuickSilver.png");
         urls.add("https://wmpskinsarchive.neocities.org/images/Main_Street.png");
         urls.add("https://m.media-amazon.com/images/I/71FydjvsrcL._AC_SX679_.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/d/c/8/1410156-widescreen-blues-music-wallpaper-1920x1200-samsung-galaxy.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/digitaldj.png");
         urls.add("https://w0.peakpx.com/wallpaper/495/184/HD-wallpaper-sexy-female-art-art-female-model-abstract-sexy.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/cerulean.png");
@@ -55,6 +58,10 @@ public enum  SGService {
         urls.add("https://live.staticflickr.com/65535/52607511849_af34b6e5d9.jpg");
         urls.add("https://mcdn.wallpapersafari.com/medium/40/55/gtBrSV.jpg");
         urls.add("https://i.ytimg.com/vi/bhc7y-n7vIU/hqdefault.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/4/1/5/1410163-large-blues-music-wallpaper-1920x1200.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/e/6/0/1410148-download-blues-music-wallpaper-1920x1080-ipad-pro.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/9/d/4/1410145-blues-music-wallpaper-1920x1080-windows-7.jpg");
+        urls.add("https://getwallpapers.com/wallpaper/full/f/c/b/1410170-full-size-blues-music-wallpaper-2560x1600-ios.jpg");
         urls.add("https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/in-the-end-swedish-attitude-design.jpg");
         urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
     }
@@ -219,30 +226,30 @@ public enum  SGService {
 
 
 
-    private List<String> getLinearCombinations(List<String> vals) {
-
-        List<String> r = new ArrayList<>();
-        if (vals.size() == 1){
-            r.add(vals.get(0));
-            r.add(vals.get(0).toLowerCase());
-            return r;
-        }
-        for (int j = 0; j < vals.size(); j++){
-            String c = vals.get(j);
-            for (int i = j + 1; i < vals.size(); i++){
-                r.add(c + " " + vals.get(i));
-                c+=" " + vals.get(i);
-            }
-        }
-        Collections.sort(r, new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return Integer.compare(s.length(), t1.length());
-            }
-        });
-        Collections.reverse(r);
-        return r;
-    }
+//    private List<String> getLinearCombinations(List<String> vals) {
+//
+//        List<String> r = new ArrayList<>();
+//        if (vals.size() == 1){
+//            r.add(vals.get(0));
+//            r.add(vals.get(0).toLowerCase());
+//            return r;
+//        }
+//        for (int j = 0; j < vals.size(); j++){
+//            String c = vals.get(j);
+//            for (int i = j + 1; i < vals.size(); i++){
+//                r.add(c + " " + vals.get(i));
+//                c+=" " + vals.get(i);
+//            }
+//        }
+//        Collections.sort(r, new Comparator<String>() {
+//            @Override
+//            public int compare(String s, String t1) {
+//                return Integer.compare(s.length(), t1.length());
+//            }
+//        });
+//        Collections.reverse(r);
+//        return r;
+//    }
 
     public String createThumbnailId(ContentInfo contentInfo, String path) {
         String id = StringUtil.sanitizeAppId(contentInfo.getPath()); //TODO fa-o id
@@ -281,15 +288,11 @@ public enum  SGService {
         }
     }
 
-    private String randomPick(Set<String> icons){
-        //TODO random pick din lista de icon-uri
-        return icons.iterator().next();
-    }
 
     public Object find(String id) {
         id = id.toLowerCase();
         if(root.containsKey(id)) {
-            String path = randomPick(root.get(id));
+            String path = randomPickElement(root.get(id));
             return decodePath(path);
 
         }
@@ -297,7 +300,7 @@ public enum  SGService {
         String query = id;
         for (String key: root.keySet()){
             if (query.toLowerCase().indexOf(key.toLowerCase()) > -1){
-                return decodePath(randomPick(root.get(key)));
+                return decodePath(randomPickElement(root.get(key)));
             }
         }
         if(id.indexOf("bob dylan") > -1){

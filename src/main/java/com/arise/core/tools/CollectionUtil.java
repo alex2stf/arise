@@ -163,6 +163,25 @@ public class CollectionUtil {
         return cp;
     }
 
+    public static <T> T randomPickElement(Collection<T> c){
+        int size = c.size();
+        if(isEmpty(c)){
+            return null;
+        }
+        if(size == 1){
+            return c.iterator().next();
+        }
+        int rand = (int) Math.round((Math.random() * size) + 0);
+        int i = 0;
+        for (T t: c){
+            if (i == rand){
+                return t;
+            }
+            i++;
+        }
+        return c.iterator().next();
+    }
+
     public static String randomPick(List<String> s) {
        return pickFromList(s, true);
     }
