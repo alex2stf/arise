@@ -78,6 +78,13 @@ public enum  SGService {
         }
     }
 
+    static void scrieHttpResponseInTmp(Object[] imgs, final File[] tmp){
+        if(imgs[0] instanceof HttpResponse) {
+            HttpResponse res = (HttpResponse) imgs[0];
+            FileUtil.writeBytesToFile(res.bodyBytes(), tmp[0]);
+        }
+    }
+
     public static void setDesktopImage(String desktopImage) {
         final Object imgs[] = new Object[]{getInstance().find(desktopImage)};
 
@@ -97,39 +104,37 @@ public enum  SGService {
         }
 
 
-        if(imgs[0] instanceof HttpResponse) {
-            HttpResponse res = (HttpResponse) imgs[0];
-            FileUtil.writeBytesToFile(res.bodyBytes(), tmp[0]);
-        }
+        scrieHttpResponseInTmp(imgs, tmp);
         
 
         if(imgs[0] instanceof String) {
             final String x = (String) imgs[0];
             if(x.startsWith("http")) {
-                NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
-                    @Override
-                    public void handle(URLConnection httpURLConnection) {
-                        try {
-                            Object p = CommandRegistry.getInstance().getCommand("process-exec")
-                                    .execute("curl", x, "-o", tmp[0].getAbsolutePath());
-                            if(p instanceof Process){
-                                ((Process)p).waitFor();
-                            }
-                            tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
-                        } catch (Exception e) {
-                            log.error("Nu s-a executat file download", e);
-                            citesteDefaultDinLocal(imgs);
-                        }
+                tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
+                tmp[0].delete();
+                Object p = CommandRegistry.getInstance().getCommand("process-exec")
+                        .execute("curl", x, "-o", tmp[0].getAbsolutePath());
+                if(p instanceof Process){
+                    try {
+                        ((Process)p).waitFor();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }, new Handler<Object>() {
-                    @Override
-                    public void handle(Object throwablePeerTuple2) {
-                        citesteDefaultDinLocal(imgs);
-                    }
-                });
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
             }
         }
 
+        if(!tmp[0].exists()){
+            scrieHttpResponseInTmp(imgs, tmp);
+        }
+        
+        tmp[0] = FileUtil.findSomeTempFile("tmp_desk");
         if(tmp[0].exists() && CommandRegistry.getInstance().containsCommand("set-desktop-background")) {
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmp[0].getAbsolutePath(), out.getAbsolutePath(), desktopImage });
         } else {
