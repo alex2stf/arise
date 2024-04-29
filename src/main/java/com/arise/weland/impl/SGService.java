@@ -42,6 +42,7 @@ public enum  SGService {
         urls.add("https://wmpskinsarchive.neocities.org/images/STALKER.png");
         urls.add("https://e0.pxfuel.com/wallpapers/150/412/desktop-wallpaper-sexy-in-black-sexy-lingerie-model-woman.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/QuickSilver.png");
+        urls.add("https://images.unsplash.com/photo-1511379938547-c1f69419868d");
         urls.add("https://wmpskinsarchive.neocities.org/images/Main_Street.png");
         urls.add("https://m.media-amazon.com/images/I/71FydjvsrcL._AC_SX679_.jpg");
         urls.add("https://getwallpapers.com/wallpaper/full/d/c/8/1410156-widescreen-blues-music-wallpaper-1920x1200-samsung-galaxy.jpg");
@@ -54,6 +55,7 @@ public enum  SGService {
         urls.add("https://live.staticflickr.com/65535/52607511849_af34b6e5d9.jpg");
         urls.add("https://mcdn.wallpapersafari.com/medium/40/55/gtBrSV.jpg");
         urls.add("https://i.ytimg.com/vi/bhc7y-n7vIU/hqdefault.jpg");
+        urls.add("https://images.unsplash.com/photo-1557244056-ac3033d17d9a");
         urls.add("https://getwallpapers.com/wallpaper/full/4/1/5/1410163-large-blues-music-wallpaper-1920x1200.jpg");
         urls.add("https://getwallpapers.com/wallpaper/full/e/6/0/1410148-download-blues-music-wallpaper-1920x1080-ipad-pro.jpg");
         urls.add("https://getwallpapers.com/wallpaper/full/9/d/4/1410145-blues-music-wallpaper-1920x1080-windows-7.jpg");

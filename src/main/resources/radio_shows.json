@@ -45,7 +45,9 @@
       "https://drive.uber.radio/uber/jjrdianakrall/icecast.audio",
       "https://drive.uber.radio/uber/jjrdavebrubeck/icecast.audio",
       "https://drive.uber.radio/uber/jjrwoodyherman/icecast.audio",
-      "https://drive.uber.radio/uber/cmrjohnnycash/icecast.audio"
+      "https://drive.uber.radio/uber/cmrjohnnycash/icecast.audio",
+      "https://stm1.srvif.com:7576/stream/1/",
+      "https://streams.calmradio.com:10428/stream/1/"
     ],
     "christmas-romanian": [
       "file:/storage/emulated/0/Documents/arise-app/",
@@ -182,7 +184,8 @@
       "https://streaming.exclusive.radio/er/lovemovies/icecast.audio",
       "https://streaming.exclusive.radio/er/1920/icecast.audio",
       "https://streaming.exclusive.radio/er/1930/icecast.audio",
-      "https://streaming.exclusive.radio/er/1940/icecast.audio"
+      "https://streaming.exclusive.radio/er/1940/icecast.audio",
+      "https://drive.uber.radio/uber/rtwprog/icecast.audio"
     ],
     "week-list-5": [
       "https://live.magicfm.ro/magicfm.aacp",
@@ -592,7 +595,7 @@
       "sources": ["${goodies-4}", "${goodies-6}",  "${local-all}"]
     },
     {
-      "name": "weekdays_carols_21_21",
+      "name": "weekdays_carols_21_22",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "local-first",
@@ -614,68 +617,68 @@
 
 
     {
-      "name": "weekend_10-11",
+      "name": "weekend_9-15_10-20",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_09:25:00_AND_11:00:00",
+      "hour": "EACH_SECOND BETWEEN_09:15:00_AND_10:20:00",
       "strategy": "local-first",
       "sources": ["${goodies-7}", "${local-all}"],
-      "volume": "50%"
+      "volume": "30%"
     },
     {
-      "name": "weekend_11_12",
+      "name": "weekend_10-20_11-45",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
+      "hour": "EACH_SECOND BETWEEN_10:20:00_AND_11:45:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-5}", "${local-all}"]
     },
     {
-      "name": "weekend_12-13",
+      "name": "weekend_11-45_13",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
+      "hour": "EACH_SECOND BETWEEN_11:45:00_AND_13:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-4}", "${local-all}"]
     },
     {
       "name": "weekend_13-14",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-3}", "${local-all}"]
     },
     {
       "name": "weekend_14-15",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
       "strategy": "loal-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-2}", "${local-all}"]
     },
     {
       "name": "weekend_15-16",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-1}", "${local-all}"]
     },
     {
       "name": "weekend_16-17",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-2}", "${local-all}"]
     },
     {
       "name": "weekend_17-18",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}"]
+      "sources": ["${goodies-3}"]
     },
     {
       "name": "weekend_18-19",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-4}", "${local-all}", "${local-sounds}"]
     },
     {
       "name": "weekend_19-20",
@@ -683,10 +686,11 @@
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "local-first",
       "sources": [
-        "${goodies-7}",
+        "${goodies-5}",
         "${youtubes}",
         "${generic-radios}",
-        "${local-all}"
+        "${local-all}",
+        "${local-mixed}"
       ]
     },
     {
@@ -694,7 +698,7 @@
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "local-first",
-      "sources": ["${goodies-7}", "${local-all}"]
+      "sources": ["${goodies-6}", "${local-all}", "${local-sounds}"]
     },
     {
       "name": "weekend_21-22",

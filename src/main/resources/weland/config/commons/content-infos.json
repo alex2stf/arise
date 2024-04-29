@@ -47,7 +47,11 @@
   },
   {
     "title": "Bob Dylan ExclusiveFM",
-    "thumbnail": "classpath:pictures/bob_dylan.jpg",
+    "thumbnail": [
+      "classpath:pictures/bob_dylan.jpg",
+      "https://media.cnn.com/api/v1/images/stellar/prod/210521174805-01-bob-dylan-unf.jpg",
+      "https://images.unsplash.com/photo-1608503402194-6b51ab76c22c"
+    ],
     "path": "https://streaming.exclusive.radio/er/bobdylan/icecast.audio"
   },
   {
