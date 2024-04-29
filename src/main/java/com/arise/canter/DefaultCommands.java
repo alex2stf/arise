@@ -135,6 +135,8 @@ public class DefaultCommands {
                     Mole.getInstance("PROC-EXEC").trace("\t|" + s);
                 }
 
+                return proc;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
