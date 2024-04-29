@@ -1,5 +1,6 @@
 package com.arise.weland.impl;
 
+import com.arise.canter.DefaultCommands;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
 import com.arise.core.tools.FileUtil;
@@ -89,7 +90,8 @@ public class OSProxies {
             log.error("Cannot set volume on empty file");
             return;
         }
-        SYSUtils.exec(f.getAbsolutePath(), "set", "Master", v);
+        DefaultCommands.PROCESS_EXEC.execute(f.getAbsolutePath(), "set", "Master", v);
+//        SYSUtils.exec(f.getAbsolutePath(), "set", "Master", v);
     }
 
 

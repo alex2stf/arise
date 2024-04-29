@@ -1,13 +1,8 @@
 package com.arise.canter;
 
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StreamUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -121,7 +116,25 @@ public class DefaultCommands {
         public Process execute(List<String> args) {
             try {
                 Mole.getInstance("PROC-EXEC").trace(join(args, " "));
-                return getRuntime().exec(toArray(args));
+
+                Process proc = getRuntime().exec(toArray(args));
+                BufferedReader stdInput = new BufferedReader(new
+                        InputStreamReader(proc.getInputStream()));
+
+                BufferedReader stdError = new BufferedReader(new
+                        InputStreamReader(proc.getErrorStream()));
+
+                Mole.getInstance("PROC-EXEC").trace("\t|STDIN");
+                String s = null;
+                while ((s = stdInput.readLine()) != null) {
+                    Mole.getInstance("PROC-EXEC").trace("\t|" + s);
+                }
+
+                Mole.getInstance("PROC-EXEC").trace("\t|  ERR");
+                while ((s = stdError.readLine()) != null) {
+                    Mole.getInstance("PROC-EXEC").trace("\t|" + s);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

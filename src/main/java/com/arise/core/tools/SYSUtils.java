@@ -136,6 +136,12 @@ public class SYSUtils {
         return exec(args);
     }
 
+    @Deprecated
+    /**
+     * use PROCESS_EXEC instead
+     * @param args
+     * @return
+     */
     public static Result exec(String ... args){
        System.out.println("---!" + StringUtil.join(args, " "));
 
