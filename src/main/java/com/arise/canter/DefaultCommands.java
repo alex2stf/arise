@@ -114,10 +114,11 @@ public class DefaultCommands {
     public static final Command<Process> PROCESS_EXEC = new Command<Process>("process-exec") {
         @Override
         public Process execute(List<String> args) {
+            Process proc = null;
             try {
                 Mole.getInstance("PROC-EXEC").trace(join(args, " "));
 
-                Process proc = getRuntime().exec(toArray(args));
+                proc = getRuntime().exec(toArray(args));
                 BufferedReader stdInput = new BufferedReader(new
                         InputStreamReader(proc.getInputStream()));
 
@@ -140,7 +141,7 @@ public class DefaultCommands {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return proc;
         }
     };
 
