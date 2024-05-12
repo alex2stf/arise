@@ -200,6 +200,7 @@ public class Main {
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
             rplayer.setContentInfoProvider(contentInfoProvider);
+            rplayer.loadShowsResourcePath("radio_shows_special.json");
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
             if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){

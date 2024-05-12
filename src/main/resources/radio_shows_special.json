@@ -1,0 +1,34 @@
+{
+  "lists": {
+
+   "dummy": ["todo"]
+  },
+  "shows": [
+    {
+      "name": "rammstein",
+      "day": "sunday",
+      "hour": "EACH_SECOND BETWEEN_10:00:00_AND_11:45:00",
+      "strategy": "stream-first",
+      "sources": ["https://www.youtube.com/watch?v=skl6N3zGv-s&list=PL4zZspbjJ-iRHCcfvViOLqp2XkJfrxtcf"]
+    },
+    {
+      "name": "music_8d",
+      "day": "sunday",
+      "hour": "EACH_SECOND BETWEEN_11:45:00_AND_14:00:00",
+      "strategy": "stream-first",
+      "sources": ["https://www.youtube.com/watch?v=DZs8ToHrCwQ&list=PLMl0O4f3Cvd9wtnY9VTQmh55kiRDKYKHM"]
+    },
+
+    {
+      "name": "rahova_city",
+      "day": "sunday",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_23:00:00",
+      "strategy": "stream-first",
+      "sources": ["https://www.youtube.com/watch?v=Wa-iCBDi3pQ&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC"]
+    },
+
+
+
+
+  ]
+}
