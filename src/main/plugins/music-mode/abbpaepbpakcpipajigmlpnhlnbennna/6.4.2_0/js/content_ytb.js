@@ -171,17 +171,27 @@ function addImagesButton() {
         headElement.insertBefore(el_1, endElement);
         let el_2 = `<a id="topbar_button_mmfytb_thunderarea" class="yt-simple-endpoint style-scope ytd-topbar-menu-button-renderer" tabindex="-1"></a>`;
         el_2 = new DOMParser().parseFromString(el_2, "text/html").body.firstElementChild;
-        el_1.querySelector("div#button").appendChild(el_2);
+        if(el_2 && el_1 && el_1.querySelector("div#button")){
+            el_1.querySelector("div#button").appendChild(el_2);
+        }
 
         let el_3 = `<yt-icon-button id="button" class="style-scope ytd-topbar-menu-button-renderer style-default"></yt-icon-button>`;
         el_3 = new DOMParser().parseFromString(el_3, "text/html").body.firstElementChild;
         el_2.appendChild(el_3);
         let el_4 = el_3.querySelector("button#button");
+        if(el_4){
+
         el_4.setAttribute("aria-label", "Hide images");
+        }
 
         let el_5 = `<yt-icon class="style-scope ytd-topbar-menu-button-renderer" id="icon_mmfytb_thunderarea"></yt-icon>`;
         el_5 = new DOMParser().parseFromString(el_5, "text/html").body.firstElementChild;
+
+        if(el_4 && el_5 ) {
+
+
         el_4.appendChild(el_5);
+        }
 
         el_6 = `<tp-yt-paper-tooltip class="style-scope ytd-topbar-menu-button-renderer" id="tooltip_text_mmfytb_thunderarea" role="tooltip" tabindex="-1"></tp-yt-paper-tooltip>`;
         el_6 = new DOMParser().parseFromString(el_6, "text/html").body.firstElementChild;
@@ -200,8 +210,15 @@ function addImagesButton() {
   function setImagesButtonState() {
     if (imageButtonState) {
       empty(document.getElementById("icon_mmfytb_thunderarea"));
-      document.getElementById("icon_mmfytb_thunderarea").appendChild(svgImageEnabledEl);
-      document.getElementById("tooltip_text_mmfytb_thunderarea").querySelector("#tooltip").dataset.gray = "0";
+
+      if(document.getElementById("icon_mmfytb_thunderarea")){
+
+        document.getElementById("icon_mmfytb_thunderarea").appendChild(svgImageEnabledEl);
+      }
+      if(document.getElementById("tooltip_text_mmfytb_thunderarea")){
+
+         document.getElementById("tooltip_text_mmfytb_thunderarea").querySelector("#tooltip").dataset.gray = "0";
+      }
     } else {
       empty(document.getElementById("icon_mmfytb_thunderarea"));
       document.getElementById("icon_mmfytb_thunderarea").appendChild(svgImageDisabledEl);
@@ -418,6 +435,9 @@ function removeButtons(video, images) {
 }
 
 function empty(node) {
+ if(!node || !node.hasChildNodes) {
+    return;
+ }
   while (node.hasChildNodes()) {
     node.removeChild(node.firstChild);
   }

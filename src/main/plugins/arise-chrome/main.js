@@ -32,11 +32,20 @@ function clickAll(classes){
     for(var i = 0; i < elems.length; i++) {
         try {
             elems[i].click();
-            console.log("found  " + classes)
+            console.log(new Date() + "found  " + classes)
         }catch(ex){
 
         }
 
+    }
+
+    var playBtn = document.getElementsByClassName('ytp-play-button ytp-button');
+    if(playBtn && playBtn[0]) {
+        var attr = playBtn[0].getAttribute('title') + '';
+        if(attr.toLowerCase().indexOf('play') > -1) {
+            playBtn[0].click();
+            console.log(new Date() + ' clicked play');
+        }
     }
 }
 
