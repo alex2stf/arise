@@ -21,10 +21,10 @@
 
     {
       "name": "rahova_city",
-      "day": "sunday",
+      "day": "monday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_23:00:00",
       "strategy": "stream-first",
-      "sources": ["https://www.youtube.com/watch?v=Wa-iCBDi3pQ&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC"]
+      "sources": ["https://www.youtube.com/watch?v=-1AeP3R5UdI&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC&index=65"]
     }
 
 
