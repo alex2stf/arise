@@ -1,0 +1,305 @@
+{
+   "AboutTitle": {
+      "message": "About - Music Mode for YouTube"
+   },
+   "ContactTitle": {
+      "message": "Contact - Music Mode for YouTube"
+   },
+   "DonateTitle": {
+      "message": "Donate - Music Mode for YouTube"
+   },
+   "HideImages": {
+      "message": "Hide images"
+   },
+   "OptionsMenuOption": {
+      "message": "Change of options for current tab (and page)"
+   },
+   "OptionsMenuOptionDescription": {
+      "message": "Enable/Disable the options of YouTube, YouTube Music, and Other Sites for the current tab (and page) from the popup"
+   },
+   "OptionsTitle": {
+      "message": "Options - Music Mode for YouTube"
+   },
+   "PopupExplanation": {
+      "message": "*the window that appears when you click the extension's icon"
+   },
+   "ShowImages": {
+      "message": "Show images"
+   },
+   "ThumbnailsAppearance": {
+      "message": "Select how you want the thumbnails on YouTube to appear (if the 'Thumbnails' option is enabled):"
+   },
+   "ThumbnailsAppearanceTitle": {
+      "message": "Thumbnail appearance"
+   },
+   "VideoButtonTooltipDisabled": {
+      "message": "Hide the video"
+   },
+   "VideoButtonTooltipEnabled": {
+      "message": "Show the video"
+   },
+   "about": {
+      "message": "About"
+   },
+   "adBlockerDescription": {
+      "message": "Skips the YouTube ads"
+   },
+   "adblocker": {
+      "message": "Ad Skipper"
+   },
+   "adblockerTooltip": {
+      "message": "Skips the ads"
+   },
+   "advanced_options": {
+      "message": "Advanced options"
+   },
+   "apply": {
+      "message": "OK"
+   },
+   "avatars": {
+      "message": "Avatars"
+   },
+   "avatarsDescription": {
+      "message": "Hides the images of channel/user avatars"
+   },
+   "avatarsTooltip": {
+      "message": "Hides the images of\nchannel/user avatars"
+   },
+   "beAPatronButton": {
+      "message": "Become a Patron!"
+   },
+   "command1Description": {
+      "message": "Enable/Disable the extension on the current tab"
+   },
+   "contact": {
+      "message": "Contact"
+   },
+   "contactHeader": {
+      "message": "Developer: Nick Pantelidis"
+   },
+   "continueWatchingPrompt_option": {
+      "message": "Disable continue watching prompt"
+   },
+   "continueWatchingPrompt_text": {
+      "message": "Disable the 'Video Paused. Continue Watching?' prompt when the option Video is enabled"
+   },
+   "continueWatchingPrompt_title": {
+      "message": "Continue watching prompt"
+   },
+   "control_buttons": {
+      "message": "Always visible control buttons"
+   },
+   "control_buttons_text": {
+      "message": "Control buttons (play, volume etc) will be always visible along with progress bar"
+   },
+   "currentPageTooltip": {
+      "message": "Configure the extension's function\nfor this page only. When the page\nchanges, these settings are removed"
+   },
+   "currentTabTooltip": {
+      "message": "Configure the extension's function\nfor this tab only"
+   },
+   "current_page": {
+      "message": "Current page"
+   },
+   "current_tab": {
+      "message": "Current tab"
+   },
+   "date_of_release": {
+      "message": "Date of release"
+   },
+   "date_of_release_text": {
+      "message": "2 October 2019"
+   },
+   "donate": {
+      "message": "Donation"
+   },
+   "donation": {
+      "message": "Donate"
+   },
+   "embedded": {
+      "message": "Other sites"
+   },
+   "embeddedDescription": {
+      "message": "Enable or disable the extension and the corresponding options for YouTube videos embedded in sites"
+   },
+   "embeddedTooltip": {
+      "message": "YouTube videos embedded\nin other sites"
+   },
+   "enabledByDefault": {
+      "message": "Enabled by default"
+   },
+   "enabledByDefault_text": {
+      "message": "When you open a new tab the extension will be enabled by default"
+   },
+   "extDescription": {
+      "message": "Blocks the video keeping only the audio on YouTube and YouTube Music."
+   },
+   "followTwitter": {
+      "message": "Follow"
+   },
+   "google_search": {
+      "message": "Google search"
+   },
+   "google_searchDescription": {
+      "message": "Hides various images in Google search such as the video thumbnails"
+   },
+   "google_searchTooltip": {
+      "message": "Hides various images\nin Google search"
+   },
+   "google_search_full": {
+      "message": "Google search"
+   },
+   "hideLogo": {
+      "message": "Remove extension's logo from videos"
+   },
+   "hideLogo_text": {
+      "message": "Remove Music Mode for YouTube™ logo that it is added on the videos"
+   },
+   "liveVideoTitle": {
+      "message": "Live videos"
+   },
+   "live_144": {
+      "message": "Live video quality to 144p"
+   },
+   "live_144_text": {
+      "message": "Set automatically the quality of live videos to 144p when the option Video is enabled on YouTube (since YouTube live videos are not blocked but only hidden)"
+   },
+   "offTooltip": {
+      "message": "Disable the extension for all tabs"
+   },
+   "onTooltip": {
+      "message": "Enable the extension for all tabs"
+   },
+   "options": {
+      "message": "Options"
+   },
+   "other_images": {
+      "message": "Other images"
+   },
+   "other_imagesDescription": {
+      "message": "Hides various other images (channel art etc)"
+   },
+   "other_imagesTooltip": {
+      "message": "Hides various additional images"
+   },
+   "pageOffTooltip": {
+      "message": "Disable the extension for this page"
+   },
+   "pageOnTooltip": {
+      "message": "Enable the extension for this page"
+   },
+   "pageXTooltip": {
+      "message": "Remove the settings for this page"
+   },
+   "pressEnter": {
+      "message": "or press 'Enter'"
+   },
+   "privacy_policy": {
+      "message": "Privacy Policy"
+   },
+   "privacy_policy_text": {
+      "message": "The extension does not collect any kind of user data. The user options are stored locally in the user's browser"
+   },
+   "progress_bar": {
+      "message": "Always visible progress bar"
+   },
+   "progress_bar_text": {
+      "message": "The progress bar will always be visible on YouTube videos (not emebedded) when the option Video is enabled for YouTube"
+   },
+   "progress_bar_title": {
+      "message": "Always visible progress bar & control buttons"
+   },
+   "quickAccessButtons": {
+      "message": "Quick access buttons"
+   },
+   "quickAccessButtonsImages": {
+      "message": "Images quick access button"
+   },
+   "quickAccessButtonsImagesDescription": {
+      "message": "Adds a button on YouTube topbar, from which you can hide/show the images of the page (these settings will only apply to the current page)"
+   },
+   "quickAccessButtonsVideo": {
+      "message": "Video quick access button"
+   },
+   "quickAccessButtonsVideoDescription": {
+      "message": "Adds a button on YouTube video toolbar from which you can hide/show the video (these settings will only apply to the current page)"
+   },
+   "rate": {
+      "message": "Review"
+   },
+   "showVideoThumbnail": {
+      "message": "Show video thumbnail in video player"
+   },
+   "showVideoThumbnail_text": {
+      "message": "Display the video thumbnail in the video player when the video is blocked"
+   },
+   "support": {
+      "message": "Support"
+   },
+   "tabOffTooltip": {
+      "message": "Disable the extension for this tab"
+   },
+   "tabOnTooltip": {
+      "message": "Enable the extension for this tab"
+   },
+   "tabXTooltip": {
+      "message": "Remove the settings for this tab"
+   },
+   "tempOption": {
+      "message": "Configuration for one page"
+   },
+   "tempOptionDescription": {
+      "message": "Enable/Disable the extension for only one page from the popup"
+   },
+   "tempOptionTitle": {
+      "message": "Popup* options"
+   },
+   "themeChannel": {
+      "message": "Channel \u003Csvg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' focusable='false' style='pointer-events: none; display: block; width: 10px; height: 15px; margin-left: 3px; fill: #606060'>\u003Cg viewBox='0 0 24 24' class='style-scope yt-icon'>\u003Cpath fill='none' d='M0 0h24v24H0z' class='style-scope yt-icon'>\u003C/path>\u003Cpath d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z' class='style-scope yt-icon'>\u003C/path>\u003C/g>\u003C/svg>"
+   },
+   "themeVideoTitle": {
+      "message": "Video Title"
+   },
+   "themeViews": {
+      "message": "5.1M&nbsp;views"
+   },
+   "thumbnails": {
+      "message": "Thumbnails"
+   },
+   "thumbnailsDescription": {
+      "message": "Hides the video thumbnails"
+   },
+   "thumbnailsTooltip": {
+      "message": "Hides the video thumbnails"
+   },
+   "tip_1": {
+      "message": "If you have enabled the options Thumbnails, Ad Skipper and Avatars (plus, Other Images on YouTube) the images are not only hidden but also blocked. As a result, more bandwidth is saved and the page loads faster."
+   },
+   "tip_2": {
+      "message": "Use the keyboard shortcut \u003Cb>Ctrl + M\u003C/b> to enable the extension for the current tab with the options that you have selected on the options page. (the shortcut will not work if it is used from another extension)"
+   },
+   "tips": {
+      "message": "Tips"
+   },
+   "translatePrompt": {
+      "message": "\u003Ca class='links' data-i18n='translatePrompt' href='https://thunderarea.github.io/translate/''>Translate the extension\u003C/a>"
+   },
+   "video": {
+      "message": "Video"
+   },
+   "videoDescription": {
+      "message": "Blocks the video keeping only the audio (the video in live stream is hidden but not blocked)"
+   },
+   "videoPlayer": {
+      "message": "Video player"
+   },
+   "videoTooltip": {
+      "message": "Blocks the video keeping\nonly the audio"
+   },
+   "youtube": {
+      "message": "YouTube"
+   },
+   "youtube_music": {
+      "message": "YouTube Music"
+   }
+}
