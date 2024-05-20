@@ -533,8 +533,8 @@
 
 
     {
-      "name": "any_tuesday_wednesday",
-      "day": "tuesday_wednesday",
+      "name": "any_monday_wednesday",
+      "day": "monday_wednesday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "local-first",
       "sources": [
@@ -543,16 +543,15 @@
     },
 
 
-
-
-
     {
-      "name": "weekdays_19_20_monday_thursday_friday",
-      "day": "monday_thursday_friday EXCEPT:december",
+      "name": "weekdays_19_20_tuesday_thursday_friday",
+      "day": "tuesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "local-first",
       "sources": ["${goodies-1}", "${local-all}"]
     },
+
+    
     {
       "name": "weekdays_carols_19_20_monday_thursday_friday",
       "day": "monday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
