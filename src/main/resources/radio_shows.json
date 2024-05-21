@@ -533,7 +533,7 @@
 
 
     {
-      "name": "any_monday_wednesday",
+      "name": "any_monday_wednesday_19_20",
       "day": "monday_wednesday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "local-first",
@@ -544,17 +544,17 @@
 
 
     {
-      "name": "weekdays_19_20_tuesday_thursday_friday",
+      "name": "any_other_19_20",
       "day": "tuesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "local-first",
       "sources": ["${goodies-1}", "${local-all}"]
     },
 
-    
+
     {
-      "name": "weekdays_carols_19_20_monday_thursday_friday",
-      "day": "monday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "name": "any_other_carols_19_20",
+      "day": "tuesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
@@ -563,15 +563,15 @@
 
 
     {
-      "name": "weekdays_20_21_monday_thursday_friday",
-      "day": "monday_thursday_friday EXCEPT:december",
+      "name": "weekdays_20_21",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "local-first",
       "sources": ["${goodies-2}", "${local-all}"]
     },
     {
-      "name": "weekdays_carols_20_21_monday_thursday_friday",
-      "day": "monday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "name": "weekdays_carols_20_21",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
