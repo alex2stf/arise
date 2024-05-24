@@ -579,10 +579,6 @@
 
 
 
-
-
-
-
     {
       "name": "weekdays_21_22_summer",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:october,november,december,january,february,march",

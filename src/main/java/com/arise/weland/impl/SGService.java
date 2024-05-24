@@ -65,6 +65,7 @@ public enum  SGService {
         urls.add("https://w0.peakpx.com/wallpaper/495/184/HD-wallpaper-sexy-female-art-art-female-model-abstract-sexy.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/cerulean.png");
         urls.add("https://w.forfun.com/fetch/f2/f219d1569a3140e08415042a9112ff99.jpeg");
+        urls.add("https://fanappic.com/wp-content/uploads/2011/07/Sexy-Girl-iPad-Wallpaper.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/9SeriesDefault.png");
         urls.add("https://w.wallhaven.cc/full/42/wallhaven-42k88m.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/ALXVortex.png");
