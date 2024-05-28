@@ -56,7 +56,7 @@
     "commands": [
       {
         "id": "process-exec",
-        "args": ["/usr/bin/chromium-browser", "{0}"]
+        "args": ["/usr/bin/firefox", "{0}"]
       }
     ]
   },
@@ -65,7 +65,7 @@
     "commands": [
       {
         "id": "process-exec",
-        "args": ["/usr/bin/pkill", "chromium-browser"]
+        "args": ["/usr/bin/pkill", "firefox"]
       }
     ]
   },
