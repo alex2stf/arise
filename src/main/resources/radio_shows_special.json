@@ -9,7 +9,10 @@
       "day": "2024-05-28",
       "hour": "EACH_SECOND BETWEEN_10:00:00_AND_21:45:00",
       "strategy": "stream-first",
-      "sources": ["vlc-list:C:\\Users\\alex2\\Videos\\videos"]
+      "sources": [
+        "vlc-list:C:\\Users\\alex2\\Videos\\videos",
+        "vlc-list:/media/kids/407B-B087/videos"
+      ]
     },
     {
       "name": "music_8d",
