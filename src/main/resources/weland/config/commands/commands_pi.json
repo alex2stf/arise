@@ -39,7 +39,7 @@
       {
         "id": "process-exec",
         "args": [
-          "/usr/bin/vlc", "--playlist-autostart", "--loop", "--playlist-tree",  "{0}"
+          "/usr/bin/vlc", "--playlist-autostart", "--loop", "--playlist-tree", "--fullscreen",  "{0}"
         ]
       }
     ]
