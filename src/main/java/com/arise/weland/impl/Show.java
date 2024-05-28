@@ -284,12 +284,14 @@ public class Show {
                     if(!CommandRegistry.getInstance().containsCommand("vlc-open")) {
                         log.warn("Nu exista comanda vlc-open pentru deschidere playlisturi vlc");
                         continue_pick(c, sources, retryIndex + 1);
+                        return;
                     }
 
                     File f = new File(path);
                     if(!f.exists()){
                         log.warn("Nu exista fisierul/directorul vlc-playlist" + f.getAbsolutePath());
                         continue_pick(c, sources, retryIndex + 1);
+                        return;
                     }
 
                     CommandRegistry.getInstance().execute("vlc-open", new String[]{f.getAbsolutePath()});
