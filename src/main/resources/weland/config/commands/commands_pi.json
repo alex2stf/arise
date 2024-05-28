@@ -34,11 +34,26 @@
     ]
   },
   {
+    "id": "vlc-open",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "/usr/bin/vlc", "--playlist-autostart", "--loop", "--playlist-tree",  "{0}"
+        ]
+      }
+    ]
+  },
+  {
     "id": "close-media",
     "commands": [
       {
         "id": "process-exec",
         "args": ["/usr/bin/pkill", "mpg321"]
+      },
+      {
+        "id": "process-exec",
+        "args": ["/usr/bin/pkill", "vlc"]
       }
     ]
   },
