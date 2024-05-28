@@ -1,14 +1,12 @@
 package com.arise.weland.impl;
 
-import com.arise.astox.net.models.Peer;
+import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.tools.*;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
-import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.List;
@@ -59,7 +57,7 @@ public class Show {
         return act;
     }
 
-    void scp(String x) {
+    void set_current_path(String x) {
         if (p != null) {
             p._cpath = x;
         }
@@ -154,7 +152,7 @@ public class Show {
         c.handle(this);
     }
 
-    void play_from_list_of_strings(final Handler<Show> c, final List<String> urls, final int retryIndex) {
+    void play_from_list_of_strings(final Handler<Show> c, final List<String> sources, final int retryIndex) {
         close_all_resources(new Handler<Object>() {
             @Override
             public void handle(Object o) {
@@ -171,7 +169,7 @@ public class Show {
                     }
                 }
 
-                if (retryIndex > urls.size() + 1) {
+                if (retryIndex > sources.size() + 1) {
                     log.error(n + "] urls list iteration complete. Are you connected to the internet?");
                     setup_stream_close(c, exp);
                     return;
@@ -184,22 +182,22 @@ public class Show {
                     clear_sys_props();
                 }
                 else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
-                    pdir = CollectionUtil.pickFromPersistentList(urls, false, _LiD);
+                    pdir = CollectionUtil.pickFromPersistentList(sources, false, _LiD);
                 }
                 else if(_m.toLowerCase().indexOf("stream-first") > -1) {
-                    pdir = smartPick(urls, true, _LiD);
+                    pdir = smartPick(sources, true, _LiD);
                 }
                 else if(_m.toLowerCase().indexOf("local-first") > -1) {
-                    pdir = smartPick(urls, false, _LiD);
+                    pdir = smartPick(sources, false, _LiD);
                 }
                 else {
-                    pdir = CollectionUtil.randomPickFromPersistentList(urls, _LiD);
+                    pdir = CollectionUtil.randomPickFromPersistentList(sources, _LiD);
                 }
 
                 //daca e fisier local
                 if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
                     final File pflf = new File(pdir);
-                    scp(pflf.getAbsolutePath());
+                    set_current_path(pflf.getAbsolutePath());
                     _playing = true;
                     mPlayer.play(pflf.getAbsolutePath(), new Handler<String>() {
                         @Override
@@ -211,13 +209,13 @@ public class Show {
                     return;
                 }
 
-                //daca e format file:
+                //daca e format file (director sau fisier):
                 else if (pdir.startsWith("file:")) {
                     String path = pdir.substring("file:".length());
                     File file = new File(apply_variables(path));
                     if (!file.exists()) {
                         log.warn(n + "] file " + file.getAbsolutePath() + " does not exist");
-                        continue_pick(c, urls, retryIndex + 1);
+                        continue_pick(c, sources, retryIndex + 1);
                         return;
                     }
 
@@ -231,11 +229,11 @@ public class Show {
 
                     if (pfl == null) {
                         log.info(n + "] null at " + pfl.getAbsolutePath());
-                        continue_pick(c, urls, retryIndex + 1);
+                        continue_pick(c, sources, retryIndex + 1);
                         return;
                     }
                     log.info(n + "] play " + pfl.getAbsolutePath());
-                    scp(pfl.getAbsolutePath());
+                    set_current_path(pfl.getAbsolutePath());
                    _playing = true;
                     mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                         @Override
@@ -244,7 +242,10 @@ public class Show {
                         }
                     });
                     return;
-                } else if(ContentType.isHttpPath(pdir)) {
+                }
+
+                //daca e url
+                else if(ContentType.isHttpPath(pdir)) {
                     final long finalExp = exp;
                     _playing = false;
 
@@ -254,7 +255,7 @@ public class Show {
                         public void handle(URLConnection huc) {
                             log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end in " + strfMillis(finalExp));
                             clear_sys_props();
-                            scp(pdir);
+                            set_current_path(pdir);
                             _playing = true;
                             mPlayer.playStreamSync(pdir);
                             setup_stream_close(c, finalExp);
@@ -268,13 +269,34 @@ public class Show {
                             close_all_resources(new Handler<Object>() {
                                 @Override
                                 public void handle(Object o) {
-                                play_from_list_of_strings(c, urls, retryIndex + 1);
+                                play_from_list_of_strings(c, sources, retryIndex + 1);
                                 }
                             });
 
                         }
                     });
-                } else {
+                }
+
+                else if(pdir.startsWith("vlc-list:")){
+
+                    String path = pdir.substring("vlc-list:".length());
+                    System.out.println(path);
+                    if(!CommandRegistry.getInstance().containsCommand("vlc-open")) {
+                        log.warn("Nu exista comanda vlc-open pentru deschidere playlisturi vlc");
+                        continue_pick(c, sources, retryIndex + 1);
+                    }
+
+                    File f = new File(path);
+                    if(!f.exists()){
+                        log.warn("Nu exista fisierul/directorul vlc-playlist" + f.getAbsolutePath());
+                        continue_pick(c, sources, retryIndex + 1);
+                    }
+
+                    CommandRegistry.getInstance().execute("vlc-open", new String[]{f.getAbsolutePath()});
+
+
+                }
+                else {
                     log.info(n + "] WTF faci cu " + pdir + "??????");
                 }
 

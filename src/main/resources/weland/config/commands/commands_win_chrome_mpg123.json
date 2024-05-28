@@ -9,6 +9,17 @@
     ]
   },
   {
+    "id": "vlc-open",
+    "commands": [
+      {
+        "id": "process-exec",
+        "args": [
+          "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe", "--playlist-autostart", "--loop", "--playlist-tree",  "{0}"
+        ]
+      }
+    ]
+  },
+  {
     "id": "browser-close",
     "commands": [
       {
@@ -24,6 +35,11 @@
       {
         "id": "process-exec",
         "args": ["taskkill", "/F", "/IM", "mpg123.exe"]
+      },
+
+      {
+        "id": "process-exec",
+        "args": ["taskkill", "/F", "/IM", "vlc.exe"]
       }
     ]
   },
