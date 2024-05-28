@@ -293,9 +293,10 @@ public class Show {
                         continue_pick(c, sources, retryIndex + 1);
                         return;
                     }
+                    log.info(n + "] start vlc playlist at " + DateUtil.nowHour() +" with path " + f.getAbsolutePath() + " and should end in " + strfMillis(exp));
 
                     CommandRegistry.getInstance().execute("vlc-open", new String[]{f.getAbsolutePath()});
-
+                    setup_stream_close(c, exp);
 
                 }
                 else {
