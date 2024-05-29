@@ -28,6 +28,13 @@
       ]
     },
     {
+      "key": "jimmy hendrix",
+      "icons": [
+        "https://images8.alphacoders.com/701/thumb-1920-701560.jpg",
+        "https://e0.pxfuel.com/wallpapers/253/344/desktop-wallpaper-jimi-hendrix-psychedelic-the-art-mad-background-60s-psychedelic.jpg"
+      ]
+    },
+    {
       "key": "leonard cohen",
       "icons": [
         "https://i.pinimg.com/474x/c0/6a/fb/c06afbe9336586e9f45c3f6e6b731e0e--leonard-cohen-studios.jpg",
@@ -357,6 +364,18 @@
       "key": "gorillaz",
       "icons": [
         "https://wmpskinsarchive.neocities.org/images/Gorillaz.png"
+      ]
+    },
+    {
+      "key": "rock fm",
+      "icons": [
+        "https://mcdn.wallpapersafari.com/medium/73/74/5M83Fh.jpg",
+        "https://mcdn.wallpapersafari.com/medium/49/63/iXwqzA.jpg",
+        "https://cdn-radiotime-logos.tunein.com/s87949g.png",
+        "https://images3.alphacoders.com/584/58479.jpg",
+        "https://e1.pxfuel.com/desktop-wallpaper/39/997/desktop-wallpaper-rock-guitar-ys-guitar.jpg",
+        "https://i.pinimg.com/736x/70/8b/e0/708be0f2e2aeea79f14c2991974ad96d.jpg",
+        "https://wallpaperbat.com/img/348330-blue-electric-guitar-wallpaper-image-picture-becuo-blues.jpg"
       ]
     }
 

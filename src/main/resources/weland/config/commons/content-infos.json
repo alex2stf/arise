@@ -2,8 +2,7 @@
   {
     "path": "https://live.rockfm.ro:8443/rockfm.aacp",
     "playlist": "STREAMS",
-    "title": "Rock FM",
-    "thumbnail": "https://cdn-radiotime-logos.tunein.com/s87949g.png"
+    "title": "Rock FM"
   },
   {
     "path": "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",

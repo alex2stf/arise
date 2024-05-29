@@ -23,13 +23,20 @@ public enum  SGService {
         return INSTANCE;
     }
     Map<String, Set<String>> root = new HashMap();
-    private SGCache cacheStrategy;
 
     private static final Mole log = Mole.getInstance("SGSERVICE");
 
     private static final List<String> urls = new ArrayList<>();
     private static final int [] urlIndex = new int[]{0};
     static {
+
+        StreamUtil.readLineByLine(FileUtil.findStream("weland/config/commons/images.txt"), new StreamUtil.LineIterator() {
+            @Override
+            public void onLine(int lineNo, String content) {
+                urls.add(content);
+            }
+        });
+        /*
         urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/Batman%20Begins.png");
         urls.add("https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg");
@@ -91,6 +98,7 @@ public enum  SGService {
         urls.add("https://img.freepik.com/free-photo/musician-playing-electric-guitar_23-2151414213.jpg");
         urls.add("https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/in-the-end-swedish-attitude-design.jpg");
         urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
+        */
         Collections.shuffle(urls);
     }
 
