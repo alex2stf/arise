@@ -30,12 +30,13 @@ public enum  SGService {
     private static final int [] urlIndex = new int[]{0};
     static {
 
-        StreamUtil.readLineByLine(FileUtil.findStream("weland/config/commons/images.txt"), new StreamUtil.LineIterator() {
+        StreamUtil.readLineByLine(FileUtil.findStream("pictures/images.txt"), new StreamUtil.LineIterator() {
             @Override
             public void onLine(int lineNo, String content) {
                 urls.add(content);
             }
         });
+        System.out.println(urls);
         /*
         urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
         urls.add("https://wmpskinsarchive.neocities.org/images/Batman%20Begins.png");
