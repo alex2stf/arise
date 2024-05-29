@@ -113,9 +113,7 @@ function placeThumbnail(obj, playlist) {
     innerHtml += '<img  id ="'+id +'" class="thmb dfth-'+ cThCss(obj) + ' dvth"/>'
     var qurl =  host + "suggestion-uri?q=" + (obj.Q ? obj.Q : name);
 
-    console.log("GET", qurl)
     http_request("GET",  qurl, {}, function(r, a){
-        console.log(a);
         document.getElementById(id).src = a + "";
     });
 

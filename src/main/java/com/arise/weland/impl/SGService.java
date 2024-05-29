@@ -29,77 +29,12 @@ public enum  SGService {
     private static final List<String> urls = new ArrayList<>();
     private static final int [] urlIndex = new int[]{0};
     static {
-
         StreamUtil.readLineByLine(FileUtil.findStream("pictures/images.txt"), new StreamUtil.LineIterator() {
             @Override
             public void onLine(int lineNo, String content) {
                 urls.add(content);
             }
         });
-        System.out.println(urls);
-        /*
-        urls.add("https://i.pinimg.com/originals/43/8f/a8/438fa8f38d01e429201126e13c8015df.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Batman%20Begins.png");
-        urls.add("https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg");
-        urls.add("https://wallsdesk.com/wp-content/uploads/2016/07/Scarlett-Johansson-Sexy-Wallpapers.jpg");
-        urls.add("https://i.pinimg.com/originals/9b/fd/a0/9bfda0efb535e51570c6648a41e7a3c8.jpg");
-        urls.add("https://getwallpapers.com/wallpaper/full/0/2/0/1410169-most-popular-blues-music-wallpaper-1920x1200-for-meizu.jpg");
-        urls.add("https://mcdn.wallpapersafari.com/medium/35/85/WFlGVS.jpg");
-        urls.add("https://www.desktopbackground.org/p/2015/09/29/1018545_download-10-stunning-sexy-ubuntu-wallpapers_1920x1200_h.jpg");
-        urls.add("https://www.free-codecs.com/pictures/screenshots/bsplayer.jpg");
-        urls.add("https://media-assets.wired.it/photos/615f319b5b820b8db3e7cd47/master/w_1600%2Cc_limit/1518175196_Winamp.jpg");
-        urls.add("https://media.askvg.com/articles/images5/Winamp_Skin_VLC_Media_Player.png");
-        urls.add("https://wmpskinsarchive.neocities.org/images/tubeframe.png");
-        urls.add("https://cafans.b-cdn.net/images/Category_50149/subcat_125029/Woman_of_X-men_U2.jpg");
-        urls.add("https://img.goodfon.com/original/1920x1200/c/ab/devushka-art-by-dandonfuga-marvel-rouge-x-man.jpg");
-        urls.add("https://images5.alphacoders.com/488/488512.jpg");
-        urls.add("https://pbs.twimg.com/media/C2SRGUIXAAArnz6.jpg");
-        urls.add("https://cdn.wallpapersafari.com/25/2/O9viq2.jpg");
-        urls.add("https://w0.peakpx.com/wallpaper/86/103/HD-wallpaper-halle-berry-berry-halle-actress-sexy.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/STALKER.png");
-        urls.add("https://w0.peakpx.com/wallpaper/13/473/HD-wallpaper-scarlett-johansson-beautiful-sexy-02.jpg");
-        urls.add("https://e0.pxfuel.com/wallpapers/150/412/desktop-wallpaper-sexy-in-black-sexy-lingerie-model-woman.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/QuickSilver.png");
-        urls.add("https://images.unsplash.com/photo-1511379938547-c1f69419868d");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Main_Street.png");
-        urls.add("https://img.freepik.com/free-photo/electric-guitar-still-life_23-2151376272.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Plus!%20Space.png");
-        urls.add("https://images.sftcdn.net/images/t_app-cover-l,f_auto/p/a87cbe22-96da-11e6-a0e8-00163ed833e7/1782960444/vlc-media-player-skins-pack-screenshot.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/WWN_mp7.png");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Plus!%20SlimLine.png");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Windows_XP_Media_Center_Edition.png");
-        urls.add("https://m.media-amazon.com/images/I/71FydjvsrcL._AC_SX679_.jpg");
-        urls.add("https://getwallpapers.com/wallpaper/full/d/c/8/1410156-widescreen-blues-music-wallpaper-1920x1200-samsung-galaxy.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/digitaldj.png");
-        urls.add("https://w0.peakpx.com/wallpaper/495/184/HD-wallpaper-sexy-female-art-art-female-model-abstract-sexy.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/cerulean.png");
-        urls.add("https://w.forfun.com/fetch/f2/f219d1569a3140e08415042a9112ff99.jpeg");
-        urls.add("https://img.freepik.com/free-photo/photorealistic-electric-guitar-still-life_23-2151376326.jpg");
-        urls.add("https://img.freepik.com/free-photo/electric-guitar-beautiful-setting-still-life_23-2151423236.jpg");
-        urls.add("https://fanappic.com/wp-content/uploads/2011/07/Sexy-Girl-iPad-Wallpaper.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/9SeriesDefault.png");
-        urls.add("https://w.wallhaven.cc/full/42/wallhaven-42k88m.jpg");
-        urls.add("https://w0.peakpx.com/wallpaper/746/700/HD-wallpaper-margot-robbie-robbie-australian-model-legs-beautiful-heels-actress-margot-2015.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/ALXVortex.png");
-        urls.add("https://live.staticflickr.com/65535/52607511849_af34b6e5d9.jpg");
-        urls.add("https://mcdn.wallpapersafari.com/medium/40/55/gtBrSV.jpg");
-        urls.add("https://i.ytimg.com/vi/bhc7y-n7vIU/hqdefault.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Erektorset.png");
-        urls.add("https://m.media-amazon.com/images/I/81NyV4Mtv7L._SX679_.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Gold.png");
-        urls.add("https://c4.wallpaperflare.com/wallpaper/625/521/176/scarlett-johansson-actress-hollywood-women-wallpaper-preview.jpg");
-        urls.add("https://wmpskinsarchive.neocities.org/images/Goo.png");
-        urls.add("https://images.unsplash.com/photo-1557244056-ac3033d17d9a");
-        urls.add("https://getwallpapers.com/wallpaper/full/4/1/5/1410163-large-blues-music-wallpaper-1920x1200.jpg");
-        urls.add("https://img.freepik.com/free-photo/woman-with-grapefruit-high-angle_23-2149893928.jpg");
-        urls.add("https://getwallpapers.com/wallpaper/full/e/6/0/1410148-download-blues-music-wallpaper-1920x1080-ipad-pro.jpg");
-        urls.add("https://getwallpapers.com/wallpaper/full/9/d/4/1410145-blues-music-wallpaper-1920x1080-windows-7.jpg");
-        urls.add("https://cache.desktopnexus.com/cropped-wallpapers/176/176881-1536x864-[DesktopNexus.com].jpg");
-        urls.add("https://getwallpapers.com/wallpaper/full/f/c/b/1410170-full-size-blues-music-wallpaper-2560x1600-ios.jpg");
-        urls.add("https://img.freepik.com/free-photo/musician-playing-electric-guitar_23-2151414213.jpg");
-        urls.add("https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/in-the-end-swedish-attitude-design.jpg");
-        urls.add("https://1.bp.blogspot.com/_SWYwL3fIkFs/S95uhByssMI/AAAAAAAAEp8/FXftVrz7Ii4/s1600/oil+painting+abstract+windows+media+player+skin.png");
-        */
         Collections.shuffle(urls);
     }
 
@@ -337,9 +272,11 @@ public enum  SGService {
         id = id.toLowerCase().replaceAll("\\s+", " "); //remove tabs and newlines
         try {
             String[] parts = id.split(" ");
-            if (parts.length > 2){
+            if (parts.length >= 2){
                 root.put(parts[0] + " " + parts[1], icons);
                 root.put(parts[0] + parts[1], icons);
+            } else {
+                root.put(id, icons);
             }
 
         } catch (Exception e){
@@ -364,6 +301,8 @@ public enum  SGService {
             return decodePath(path);
 
         }
+
+        System.out.println("CAUTA " + id);
         //idul devine query
         String query = id;
         for (String key: root.keySet()){
@@ -371,10 +310,6 @@ public enum  SGService {
                 return decodePath(randomPickElement(root.get(key)));
             }
         }
-        if(id.indexOf("bob dylan") > -1){
-            System.out.println("TODO poti facse scrap web for ??? " + id);
-        }
-
 
         return null;
     }
@@ -411,19 +346,5 @@ public enum  SGService {
     }
 
 
-
-    public static class SuggestionFetchException extends RuntimeException {
-
-        private final String m;
-        private final Throwable c;
-
-        public SuggestionFetchException(String m, Throwable c){
-            super(m, c);
-            this.m = m;
-            this.c = c;
-        }
-
-
-    }
 
 }

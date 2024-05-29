@@ -232,7 +232,7 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
     if (req.pathsStartsWith("suggestion-uri")){
-      String query = req.getQueryParam("q");
+      String query = req.getQueryParam("q").toLowerCase();
       Object response = SGService.getInstance().find(query);
       if(response instanceof ServerResponse) {
         return HttpResponse.plainText("thumbnail?id=" + query);

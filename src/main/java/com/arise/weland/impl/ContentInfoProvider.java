@@ -306,9 +306,9 @@ public class ContentInfoProvider {
         }
 
 
-        log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
+//        log.info("Fetch from " + rIndex + " to " + limit + " from a size of " + sourceSize + " id " + playlist);
         if (rIndex == limit && scannedOnce){
-            log.info("Fetch complete " + playlist.name() + "  at " + Util.now());
+//            log.info("Fetch complete " + playlist.name() + "  at " + Util.now());
             return new ContentPage().setData(Collections.EMPTY_LIST).setIndex(null);
 
         }
