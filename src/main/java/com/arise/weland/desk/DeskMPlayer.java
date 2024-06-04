@@ -80,10 +80,11 @@ public class DeskMPlayer extends MediaPlayer {
             return null;
         }
 
-        if(fileToPlay.length() > 700000) {
+        if(fileToPlay.length() > 3000000) {
+            log.info("setDesktopImage allowed ptr fisier de " + fileToPlay.length());
             SGService.setDesktopImage(path);
         } else {
-            System.out.println("NU SCHIMBA DESKTOP PENTRU FISIER DE " + fileToPlay.length());
+            log.warn("NU SCHIMBA DESKTOP PENTRU FISIER DE " + fileToPlay.length());
         }
 
 

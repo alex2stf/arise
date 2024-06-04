@@ -70,22 +70,6 @@ public enum  SGService {
             e.printStackTrace();
             onErr.handle(null);
         }
-
-//        NetworkUtil.pingUrl(x, new Handler<URLConnection>() {
-//            @Override
-//            public void handle(URLConnection urlConnection) {
-//                FileUtil.findSomeTempFile("tmp_desk").delete();
-//                Object p = CommandRegistry.getInstance().getCommand("process-exec")
-//                        .execute("curl", x, "-o", FileUtil.findSomeTempFile("tmp_desk").getAbsolutePath());
-//                if(p instanceof Process){
-//                    try {
-//                        ((Process)p).waitFor();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }, onErr);
     }
 
     public static synchronized void setDesktopImage(String desktopImage) {
