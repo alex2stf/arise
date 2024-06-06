@@ -18,6 +18,42 @@ import static com.arise.core.tools.Util.close;
 public class NetworkUtil {
     private static final Mole log = Mole.getInstance("NETWORKUT");
 
+
+
+    public static boolean isIPV4String(String in) {
+
+        String parts[] = in.split("\\.");
+        if(parts == null || parts.length != 4) {
+            System.out.println("1 FALSE " + in);
+            return false;
+        }
+        for (int i = 0; i < parts.length; i++){
+            int x = 0;
+            if(parts[i].startsWith("0") && parts[i].length() > 1) {
+                System.out.println("x FALSE " + in);
+                return false;
+            }
+            try {
+               x = Integer.parseInt(parts[i]);
+            }catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("2 FALSE " + in);
+                return false;
+            }
+            if(x < 0 || x > 255){
+                System.out.println("3 FALSE " + in);
+                return false;
+            }
+            if(0 == i && x < 1) {
+                System.out.println("4 FALSE " + in);
+                return false;
+            }
+        }
+        System.out.println("TRUE " + in);
+        return true;
+    }
+
+
     public static void pingUrl(final String u, final Handler<URLConnection> suk, final Handler<Object> err) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(u).openConnection();
