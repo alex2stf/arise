@@ -4,7 +4,8 @@
       "key": "Bruce Springsteen",
       "icons": [
         "https://i.pinimg.com/originals/a2/25/84/a22584ce1cd31c02d61590b3dad5783d.jpg",
-        "classpath:pictures/bruce_springsteen.jpg"
+        "classpath:pictures/bruce_springsteen.jpg",
+        "https://i.cbc.ca/1.5802018.1605311609!/fileImage/httpImage/image.jpg_gen/derivatives/original_1180/bruce-springsteen-young-1975.jpg"
       ]
     },
 
@@ -225,6 +226,7 @@
     {
       "key": "beatles",
       "icons": [
+        "https://3.bp.blogspot.com/-LO_n-sLoIoU/XcmwOiqSVTI/AAAAAAAASo0/m1mjr0DiniQcmkg6izxiYLdHZTcS761JgCLcBGAsYHQ/s1600/Times_Most_Influental_Images_26%2B%25286%2529.jpg",
         "https://c4.wallpaperflare.com/wallpaper/44/494/325/the-beatles-monochrome-men-musician-wallpaper-preview.jpg",
         "https://rare-gallery.com/uploads/posts/571187-the-beatles.jpg",
         "https://rare-gallery.com/uploads/posts/780750-Lennon-McCartney-Harrison-and-Starr-The-Beatles.jpg"
@@ -312,6 +314,16 @@
       "key": "howlin wolf",
       "icons": [
         "https://wallpapercave.com/uwp/uwp3872926.jpeg"
+      ]
+    },
+    {
+      "key": "elvis",
+      "icons": [
+        "https://steemitimages.com/DQmSyZzLhnFTwDt4d8kXPBfW2r9vyjivoLgRX9sK5LUcoYq/old-historic-photos-141__605.jpg",
+        "classpath:pictures/elvis_presley.jpg",
+        "https://images8.alphacoders.com/127/1270930.jpg",
+        "https://w0.peakpx.com/wallpaper/69/407/HD-wallpaper-movie-elvis-austin-butler.jpg",
+        "https://w.forfun.com/fetch/3a/3a34dc9e646b4bd08181c4bca69363f0.jpeg"
       ]
     },
     {
@@ -407,7 +419,10 @@
         "https://images3.alphacoders.com/584/58479.jpg",
         "https://e1.pxfuel.com/desktop-wallpaper/39/997/desktop-wallpaper-rock-guitar-ys-guitar.jpg",
         "https://i.pinimg.com/736x/70/8b/e0/708be0f2e2aeea79f14c2991974ad96d.jpg",
-        "https://wallpaperbat.com/img/348330-blue-electric-guitar-wallpaper-image-picture-becuo-blues.jpg"
+        "https://wallpaperbat.com/img/348330-blue-electric-guitar-wallpaper-image-picture-becuo-blues.jpg",
+        "https://schoolofrock.imgix.net/img/news-article-hero@2x/allstarsdallas050-edit-1677013329.jpg",
+        "https://i1.sndcdn.com/artworks-6EZKLzFLZ93d5DeL-W35RzA-t500x500.jpg",
+        "https://sportshub.cbsistatic.com/i/2022/11/12/c4ac05af-1924-4bfe-a0d5-0a5a5d48c69e/murdered-guitar.jpg"
       ]
     },
     {
@@ -421,7 +436,11 @@
     {
       "key": "johnny cash",
       "icons": [
-        "https://rare-gallery.com/uploads/posts/1166531-photography-silhouette-music-musician-guitarist-Johnny-Cash-light-darkness-computer-wallpaper.jpg"
+        "https://rare-gallery.com/uploads/posts/1166531-photography-silhouette-music-musician-guitarist-Johnny-Cash-light-darkness-computer-wallpaper.jpg",
+        "https://i.guim.co.uk/img/media/26d7f9bc5172ab96baa35a79cde15283d3a4cbdb/0_109_5400_3240/master/5400.jpg?width=620&dpr=2&s=none",
+        "https://www.rockarchive.com/media/4351/johnny-cash-cash002alme.jpg",
+        "https://www.unmtickets.com/assets/img/23-24-Web-banners-860x450_Cash-a43f156913-4bdfb0991d.png",
+        "https://happymag.tv/wp-content/uploads/2020/02/johnny-cash-2.jpg"
       ]
     },
     {

@@ -195,21 +195,21 @@ public enum  SGService {
 
 
 
-    char disallowed[] = new char[]{'~', '-'};
+//    char disallowed[] = new char[]{'~', '-'};
 
-    private boolean isValidWord(String s){
-        if (isNull(s)){
-            return false;
-        }
-        if (s.length() == 1) {
-            for (char c: disallowed){
-                if (c == s.charAt(0)){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    private boolean isValidWord(String s){
+//        if (isNull(s)){
+//            return false;
+//        }
+//        if (s.length() == 1) {
+//            for (char c: disallowed){
+//                if (c == s.charAt(0)){
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
 
 
@@ -256,6 +256,7 @@ public enum  SGService {
         id = id.toLowerCase().replaceAll("\\s+", " "); //remove tabs and newlines
         try {
             String[] parts = id.split(" ");
+            //TODO reconcateneaza perechi, nu doar primele 2
             if (parts.length >= 2){
                 root.put(parts[0] + " " + parts[1], icons);
                 root.put(parts[0] + parts[1], icons);

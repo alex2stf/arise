@@ -46,13 +46,7 @@
   },
   {
     "title": "Elvis Presley",
-    "path": "https://streaming.exclusive.radio/er/elvispresley/icecast.audio",
-    "thumbnail": [
-      "classpath:pictures/elvis_presley.jpg",
-      "https://images8.alphacoders.com/127/1270930.jpg",
-      "https://w0.peakpx.com/wallpaper/69/407/HD-wallpaper-movie-elvis-austin-butler.jpg",
-      "https://w.forfun.com/fetch/3a/3a34dc9e646b4bd08181c4bca69363f0.jpeg"
-    ]
+    "path": "https://streaming.exclusive.radio/er/elvispresley/icecast.audio"
   },
   {
     "title": "Classic Music",
