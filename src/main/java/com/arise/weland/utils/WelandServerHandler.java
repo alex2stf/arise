@@ -88,6 +88,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   @Override
   public ServerResponse getResponse(AbstractServer serviceServer, ServerRequest request) {
     HttpRequest req = (HttpRequest) request;
+    AppDispatcher.tick();
 
     if(req.isOptions()) {
       return oK().allowAnyOrigin();

@@ -55,6 +55,7 @@ public class NetworkUtil {
 
 
     public static void pingUrl(final String u, final Handler<URLConnection> suk, final Handler<Object> err) {
+        AppDispatcher.tick();
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(u).openConnection();
             connection.setConnectTimeout(10000);

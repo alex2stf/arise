@@ -5,10 +5,7 @@ import com.arise.canter.CommandRegistry;
 import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
@@ -153,6 +150,7 @@ public class RadioPlayer {
     int lR = 1000;
 
     private void loop() {
+        AppDispatcher.tick();
         if (MediaPlayer.isAppClosed) {
             log.warn("Media player closed, loop disabled");
             return;

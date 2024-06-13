@@ -146,7 +146,7 @@ public enum CommandRegistry  {
         return line;
     }
 
-    public Object execute(String commandId, String[] args, Event[] onSuccess, Event[] onError) {
+    public Object execute(String commandId, String[] args, CommandEvent[] onSuccess, CommandEvent[] onError) {
 
         if(!containsCommand(commandId)) {
             System.out.println("MISSING COMMAND " + commandId);
@@ -184,7 +184,7 @@ public enum CommandRegistry  {
         return response;
     }
 
-    public void dispatch(Event [] events, Command parentCommand, Object ... args) {
+    public void dispatch(CommandEvent[] commandEvents, Command parentCommand, Object ... args) {
 
 
         System.out.println("TODO");

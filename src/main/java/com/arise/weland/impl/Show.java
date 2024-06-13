@@ -97,6 +97,7 @@ public class Show {
                     public void handle(MediaPlayer mediaPlayer) {
                         log.i("Show [" + n + "] stooped at " + Util.now());
                         c.handle(null);
+
                     }
                 });
 

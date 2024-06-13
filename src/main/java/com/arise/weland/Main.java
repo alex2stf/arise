@@ -190,7 +190,6 @@ public class Main {
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
-        final WelandForm[] welandForm = {null};
         Cronus cronus = null;
 
         if (!AppSettings.isFalse(Keys.CRONUS_ENABLED)){
@@ -228,10 +227,7 @@ public class Main {
             rplayer.onStreamChanged(new Handler<Show>() {
                 @Override
                 public void handle(Show show) {
-                    if (welandForm[0] != null){
-                        welandForm[0].showNextIcon();
-                    }
-                    log.info("Stream changed");
+                    AppDispatcher.tick();
 
                 }
             });
@@ -255,30 +251,13 @@ public class Main {
 
 
         if(isTrue(Keys.UI_ENABLED)) {
-            final Cronus finalCronus = cronus;
+
             ThreadUtil.fireAndForget(new Runnable() {
                 @Override
                 public void run() {
-
-
-                    welandForm[0] = new WelandForm(CommandRegistry.getInstance());
-                    welandForm[0].pack();
-                    welandForm[0].setVisible(true);
-                    desktopContentHandler.setForm(welandForm[0]);
-                    if (rplayer != null){
-                        welandForm[0].setRadioPlayer(rplayer);
-                    }
-
-                    if(finalCronus != null) {
-                        finalCronus.registerTask(welandForm[0]);
-                    }
-                    else {
-                        repeatedTask(welandForm[0], 1000);
-                    }
-
-                    if(isTrue(Keys.UI_CLOSE_ON_EXIT)){
-                        welandForm[0].setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    }
+                    WelandForm welandForm = new WelandForm();
+                    welandForm.pack();
+                    welandForm.setVisible(true);
                 }
             }, "ui-thread");
 

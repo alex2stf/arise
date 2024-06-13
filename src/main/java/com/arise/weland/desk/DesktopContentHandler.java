@@ -3,10 +3,7 @@ package com.arise.weland.desk;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.ContentType;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
-import com.arise.core.tools.ThreadUtil;
+import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
@@ -32,7 +29,6 @@ public class DesktopContentHandler extends ContentHandler {
 
     private final MediaPlayer deskMPlayer;
     private RadioPlayer rplayer;
-    private com.arise.weland.ui.WelandForm _f;
 
 
     public DesktopContentHandler(ContentInfoProvider cip) {
@@ -92,16 +88,7 @@ public class DesktopContentHandler extends ContentHandler {
                     }
                 });
                 sleep(1000 * 8);
-                if (_f != null) {
-                    ThreadUtil.delayedTask(new Runnable() {
-                        @Override
-                        public void run() {
-                            _f.toFront();
-                            _f.repaint();
-                        }
-                    }, 12 * 1000);
-
-                }
+                AppDispatcher.tick();
                 deskMPlayer.playStreamSync(path);
                 return deviceStat.toHttp();
             } else {
@@ -113,9 +100,7 @@ public class DesktopContentHandler extends ContentHandler {
         }
         else if (isMedia(path)){
             deskMPlayer.stop(null);
-            if (_f != null) {
-                _f.toFront();
-            }
+            AppDispatcher.tick();
             deskMPlayer.play(path);
         }
         else {
@@ -224,7 +209,5 @@ public class DesktopContentHandler extends ContentHandler {
     }
 
 
-    public void setForm(WelandForm _f) {
-        this._f = _f;
-    }
+
 }
