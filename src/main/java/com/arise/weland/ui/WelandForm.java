@@ -42,10 +42,8 @@ public class WelandForm extends JFrame {
         textField.setFont(font);
         textField.setForeground(new Color(255, 255, 1));
         textField.setBackground(new Color(0, 0, 0, 0));
-        textField.setText("OK");
         textField.setHorizontalAlignment(SwingConstants.CENTER);
 
-//        textField.setEnabled(false);
         add(textField);
         textField.setText(sdf.format(new Date()));
 
