@@ -2,12 +2,14 @@ package com.arise.weland.impl;
 
 import com.arise.canter.CommandRegistry;
 import com.arise.canter.Cronus;
+import com.arise.core.AppSettings;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.*;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.net.URLConnection;
+import java.security.Key;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +155,15 @@ public class Show {
         c.handle(this);
     }
 
+    void play_stream_url(String pdir, Handler<Show> c, final long finalExp){
+        log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end in " + strfMillis(finalExp));
+        clear_sys_props();
+        set_current_path(pdir);
+        _playing = true;
+        mPlayer.playStreamSync(pdir);
+        setup_stream_close(c, finalExp);
+    }
+
     void play_from_list_of_strings(final Handler<Show> c, final List<String> sources, final int retryIndex) {
         close_all_resources(new Handler<Object>() {
             @Override
@@ -251,31 +262,32 @@ public class Show {
                     _playing = false;
 
                     //default consideram ca e URL
-                    NetworkUtil.pingUrl(pdir, new Handler<URLConnection>() {
-                        @Override
-                        public void handle(URLConnection huc) {
-                            log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end in " + strfMillis(finalExp));
-                            clear_sys_props();
-                            set_current_path(pdir);
-                            _playing = true;
-                            mPlayer.playStreamSync(pdir);
-                            setup_stream_close(c, finalExp);
-                        }
-                    }, new Handler<Object>() {
-                        @Override
-                        public void handle(Object errTpl) {
-                            log.error(n + "] iteration " + retryIndex + "check url " + pdir + " failed");
-                            clear_sys_props();
-                            _playing = false;
-                            close_all_resources(new Handler<Object>() {
-                                @Override
-                                public void handle(Object o) {
-                                play_from_list_of_strings(c, sources, retryIndex + 1);
-                                }
-                            });
+                    if(AppSettings.isTrue(AppSettings.Keys.RADIO_PING_STREAM)) {
+                        NetworkUtil.pingUrl(pdir, new Handler<URLConnection>() {
+                            @Override
+                            public void handle(URLConnection huc) {
+                                play_stream_url(pdir, c, finalExp);
+                            }
+                        }, new Handler<Object>() {
+                            @Override
+                            public void handle(Object errTpl) {
+                                log.error(n + "] iteration " + retryIndex + "check url " + pdir + " failed");
+                                clear_sys_props();
+                                _playing = false;
+                                close_all_resources(new Handler<Object>() {
+                                    @Override
+                                    public void handle(Object o) {
+                                        play_from_list_of_strings(c, sources, retryIndex + 1);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        play_stream_url(pdir, c, finalExp);
+                    }
 
-                        }
-                    });
+
+
                 }
 
                 else if(pdir.startsWith("vlc-list:")){

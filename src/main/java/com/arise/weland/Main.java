@@ -15,11 +15,10 @@ import com.arise.weland.desk.DesktopContentHandler;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.*;
 import com.arise.weland.model.MediaPlayer;
-import com.arise.weland.ui.WelandForm;
+import com.arise.weland.ui.ClockForm;
 import com.arise.weland.utils.WelandServerHandler;
 
 import javax.net.ssl.*;
-import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
@@ -33,7 +32,6 @@ import java.util.UUID;
 
 import static com.arise.canter.DefaultCommands.PROCESS_EXEC;
 import static com.arise.core.AppSettings.isTrue;
-import static com.arise.core.tools.ThreadUtil.repeatedTask;
 import static com.arise.core.tools.ThreadUtil.startThread;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
@@ -250,14 +248,14 @@ public class Main {
         final WelandRequestBuilder requestBuilder = new WelandRequestBuilder();
 
 
-        if(isTrue(Keys.UI_ENABLED)) {
+        if(isTrue(Keys.UI_CLOCK_ENABLED)) {
 
             ThreadUtil.fireAndForget(new Runnable() {
                 @Override
                 public void run() {
-                    WelandForm welandForm = new WelandForm();
-                    welandForm.pack();
-                    welandForm.setVisible(true);
+                    ClockForm clockForm = new ClockForm();
+                    clockForm.pack();
+                    clockForm.setVisible(true);
                 }
             }, "ui-thread");
 

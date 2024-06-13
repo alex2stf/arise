@@ -25,13 +25,13 @@ import static com.arise.core.tools.StringUtil.join;
 import static com.arise.core.tools.Util.now;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
-public class WelandForm extends JFrame {
+public class ClockForm extends JFrame {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
     JTextField textField;
 
-    public WelandForm(){
+    public ClockForm(){
 
         setUndecorated(true);
         setBackground(new Color(0, 0, 1, 0));
@@ -50,19 +50,25 @@ public class WelandForm extends JFrame {
         AppDispatcher.onTick(new AppDispatcher.Event() {
             @Override
             public void execute() {
-                textField.setText(sdf.format(new Date()));
-                repaint();
+                refresh();
             }
         });
 
         ThreadUtil.repeatedTask(new Runnable() {
             @Override
             public void run() {
-                textField.setText(sdf.format(new Date()));
-                repaint();
-                System.out.println("CALLED");
+                refresh();
             }
         }, 1000 * 60);
+    }
+
+    private void refresh(){
+        try {
+            textField.setText(sdf.format(new Date()));
+            repaint();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

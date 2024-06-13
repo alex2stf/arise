@@ -2,19 +2,14 @@ package com.arise.weland.desk;
 
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.dto.Message;
 import com.arise.weland.impl.ContentInfoProvider;
-import com.arise.weland.impl.JARProxies;
 import com.arise.weland.impl.RadioPlayer;
 import com.arise.weland.model.ContentHandler;
 import com.arise.weland.model.MediaPlayer;
-import com.arise.weland.ui.WelandForm;
-
-import java.util.List;
 
 import static com.arise.core.tools.ContentType.isHttpPath;
 import static com.arise.core.tools.ContentType.isMedia;

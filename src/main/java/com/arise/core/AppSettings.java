@@ -232,8 +232,7 @@ public class AppSettings {
         KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
         CRONUS_CONFIG_FILE("cronus.config.file", new String[]{"path to cronus.json"}),
         CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
-        UI_ENABLED("ui.enabled", new String[]{"true", "false(default)"}),
-        UI_CLOSE_ON_EXIT("ui.closeOnExit", new String[]{"true", "false(default)"}),
+        UI_CLOCK_ENABLED("ui.clock.enabled", new String[]{"true", "false(default)"}),
 
 
         //Deprecater
@@ -241,6 +240,7 @@ public class AppSettings {
         UI_IMAGE_ICON_REFRESH("ui.image.icon.refresh", new String[]{"true", "false(default)"} ),
         LOCAL_COMANDS_FILE("cmds.local.file", new String[]{"/path/to/local/commands_win_edge.json"} )
         , RADIO_ENABLED("radio.enabled", new String[]{"true", "false(default)"})
+        , RADIO_PING_STREAM("radio.ping.stream", new String[]{"true", "false(default)"})
         , RADIO_SHOWS_PATH("radio.shows.path", new String[]{"/path/to/local/shows.json"})
         , DEPENDENCY_FORCED_PROFILES("dependencies.forced.profiles", new String[]{})
         , APP_ON_ERROR_EXIT("app.onerror.exit", new String[]{"true", "false(default)"})
