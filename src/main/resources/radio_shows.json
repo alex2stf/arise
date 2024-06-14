@@ -588,6 +588,14 @@
     },
 
     {
+      "name": "weekdays_nights_22_23_summer",
+      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday EXCEPT:october,november,december,january,february,march,april,may",
+      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_23:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-1}", "${goodies-2}", "${goodies-4}", "${generic-radios}", "${goodies-6}", "${local-mixed}"]
+    },
+
+    {
       "name": "weekdays_21_22_autumn",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:april,may,june,july,august,september,december",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
@@ -601,16 +609,6 @@
       "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
     },
-
-
-
-
-
-
-
-
-
-
 
 
 
