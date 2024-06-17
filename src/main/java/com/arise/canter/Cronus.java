@@ -288,8 +288,9 @@ public class Cronus {
         Integer maxDays = Integer.valueOf(op);
 
         String id = parts.length > 2 ? parts[2] : "default";
-        String uid = UUID.nameUUIDFromBytes((op + id).getBytes()).toString();
-        File file = AppCache.getDataFile("R" + uid);
+//        String uid = UUID.nameUUIDFromBytes((op + id).getBytes()).toString();
+        String uid = op + "_" + id;
+        File file = AppCache.getDataFile("R_" + uid);
 
         List<String> lines = null;
         if(file.exists()) {
@@ -350,8 +351,9 @@ public class Cronus {
             return STDFMT.format(c.getTime());
         }
 
-        if(in.startsWith("random_day:")) {
-            return calc_random(in, c);
+        if(moment.startsWith("random_day:")) {
+            System.out.println(moment);
+            return calc_random(moment, c);
         }
 
         if (moment.indexOf("_") > -1 || isWeekdayFormat(moment)){

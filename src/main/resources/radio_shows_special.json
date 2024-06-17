@@ -32,6 +32,35 @@
       ]
     },
     {
+      "name": "white_buffalo",
+      "day": "random_day:30:whitebuffalo",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_20:30:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=pOyqfQDKX7A&list=PL4zZspbjJ-iQmY7-pZgk2FyfKjlKlj_3n&index=1"
+      ]
+    },
+    {
+      "name": "bossa_nova",
+      "day": "random_day:30:bossanove",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:20:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=J2FBb3firpY&list=PL4zZspbjJ-iRhsQV532ezNlMxkb0Zok4O&index=1"
+      ]
+    },
+    {
+      "name": "queen",
+      "day": "random_day:30:queen",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_18:45:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=ZaJT5lucoc8&list=PL4zZspbjJ-iSsZ_eEBNWqYQJp74guN_aq&index=1"
+      ]
+    },
+
+
+    {
       "name": "special_local_videos",
       "day": "2024-05-28",
       "hour": "EACH_SECOND BETWEEN_10:00:00_AND_19:30:00",

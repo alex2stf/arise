@@ -1,12 +1,17 @@
 [
   {
+    "path": "https://www.youtube.com/watch?v=ZaJT5lucoc8&list=PL4zZspbjJ-iSsZ_eEBNWqYQJp74guN_aq&index=1",
+    "title": "Queen (YT)"
+  },
+  {
     "path": "https://live.rockfm.ro:8443/rockfm.aacp",
     "playlist": "STREAMS",
     "title": "Rock FM"
   },
+
   {
     "path": "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
-    "title": "Rolling Stones"
+    "title": "Rolling Stones EX"
   },
   {
     "title": "David Bowie",
