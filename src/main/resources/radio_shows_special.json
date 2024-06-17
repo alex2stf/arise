@@ -13,7 +13,7 @@
     },
     {
       "name": "de_mers_la_mare",
-      "day": "random_day:30:summer EXCEPT:october,november,december,january,february,march,april,may",
+      "day": "random_day:10:summer EXCEPT:october,november,december,january,february,march,april,may",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_23:00:00",
       "strategy": "stream-first",
       "sources": ["https://www.youtube.com/watch?v=X1vhPZpXvKY&list=PL4zZspbjJ-iRvJTtcJUxA0TKRtm5Jpm9I"]
