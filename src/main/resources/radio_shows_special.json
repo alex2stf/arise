@@ -24,8 +24,8 @@
     },
     {
       "name": "robbie_williams",
-      "day": "random_day:30:robbiewilliams EXCEPT:october,november,december,january,february,march,april,may",
-      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_23:00:00",
+      "day": "random_day:30:robbiewilliams EXCEPT:october,november,january,march,april,may,july",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_18:40:00",
       "strategy": "stream-first",
       "sources": [
         "https://www.youtube.com/watch?v=iy4mXZN1Zzk&list=PL4zZspbjJ-iQoTK0-2dPCwmsildVEffMr&index=1"
