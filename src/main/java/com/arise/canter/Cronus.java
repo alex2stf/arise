@@ -5,11 +5,13 @@ import com.arise.core.exceptions.SyntaxException;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.arise.core.tools.FileUtil.readLinesFromFile;
 import static com.arise.core.tools.ThreadUtil.repeatedTask;
 import static com.arise.core.tools.Util.EXTFMT;
 
@@ -221,8 +223,9 @@ public class Cronus {
 
     public static boolean matchMoment(Calendar c, String d, String h) {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
+//        System.out.println(moment);
         String oth = EXTFMT.format(c.getTime());
-     //   Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
+//        Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
         return moment.equalsIgnoreCase(oth);
     }
 
@@ -270,10 +273,62 @@ public class Cronus {
         return res;
     }
 
+
+    public static Calendar getRandomDate(int maxDays){
+        Calendar randDate = Util.nowCalendar();
+        int rand = Util.randPersistBetween(1, maxDays);
+        randDate.add(Calendar.DAY_OF_YEAR, rand);
+        return randDate;
+    }
+
+
+    public static String calc_random(String in, Calendar c){
+        String parts[] = in.split(":");
+        String op = parts[1];
+        Integer maxDays = Integer.valueOf(op);
+
+        String id = parts.length > 2 ? parts[2] : "default";
+        String uid = UUID.nameUUIDFromBytes((op + id).getBytes()).toString();
+        File file = AppCache.getDataFile("R" + uid);
+
+        List<String> lines = null;
+        if(file.exists()) {
+            try {
+                lines = readLinesFromFile(file);
+            } catch (Exception ex) {
+                lines = new ArrayList<>();
+            }
+        }
+
+        Calendar randDate = Util.nowCalendar();
+
+        if(CollectionUtil.isEmpty(lines)) {
+            randDate = getRandomDate(maxDays);
+            FileUtil.writeStringToFile(file, STDFMT.format(randDate.getTime()));
+        } else {
+            try {
+                Date saved = STDFMT.parse(lines.get(0));
+                if(Util.now().after(saved)) {
+                    randDate = getRandomDate(maxDays);
+                    FileUtil.writeStringToFile(file, STDFMT.format(randDate.getTime()));
+                } else {
+                    randDate.setTime(saved);
+                }
+            } catch (ParseException e) {
+                throw new LogicalException("Invalid date format " + lines.get(0));
+            }
+        }
+        return STDFMT.format(randDate.getTime());
+
+    }
+
+
     public static String parseDayRef(String in, Calendar c) {
 
         Map<Integer, List<String>> parts = getParts(in);
         String moment = parts.get(1).get(0).toLowerCase();
+
+
 
         if (parts.containsKey(2)) {   //between
             String fromDay = parts.get(2).get(0);
@@ -293,6 +348,10 @@ public class Cronus {
 
         if ("DAILY".equalsIgnoreCase(moment)) {
             return STDFMT.format(c.getTime());
+        }
+
+        if(in.startsWith("random_day:")) {
+            return calc_random(in, c);
         }
 
         if (moment.indexOf("_") > -1 || isWeekdayFormat(moment)){

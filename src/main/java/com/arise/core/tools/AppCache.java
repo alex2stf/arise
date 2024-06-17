@@ -44,19 +44,21 @@ public class AppCache {
         }
     }
 
-    static File getStoredListFile(String name){
-        File listsDir = new File(FileUtil.findAppDir(), "lists");
+    public static File getDataFile(String name){
+        File listsDir = new File(FileUtil.findAppDir(), "data");
         if (!listsDir.exists()){
             listsDir.mkdir();
         }
         return new File(listsDir, name);
     }
 
+
+
     public static StoredList storeList(String name, List<String> items, int index){
         if (CollectionUtil.isEmpty(items)){
             return new StoredList(new ArrayList<String>(), 0);
         }
-        File list = getStoredListFile(name);
+        File list = getDataFile(name);
         StringBuilder sb = new StringBuilder().append(index).append("\n");
         for (String s: items){
             sb.append(s.trim()).append("\n");
@@ -66,11 +68,11 @@ public class AppCache {
     }
 
     public static void dropStoredList(String name){
-        getStoredListFile(name).delete();
+        getDataFile(name).delete();
     }
 
     public static StoredList getStoredList(String name) {
-        File list = getStoredListFile(name);
+        File list = getDataFile(name);
         if (!list.exists()){
             return new StoredList(new ArrayList<String>(), 0);
         }

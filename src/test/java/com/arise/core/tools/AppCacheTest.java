@@ -31,7 +31,7 @@ public class AppCacheTest {
         x.add("aa");
         x.add("bb");
         AppCache.storeList("test", x, 1);
-        File f = AppCache.getStoredListFile("test");
+        File f = AppCache.getDataFile("test");
         String content = FileUtil.read(f);
         System.out.println(content);
 

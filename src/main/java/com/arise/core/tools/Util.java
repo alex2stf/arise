@@ -64,6 +64,15 @@ public final class Util {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
+    public static int randPersistBetween(int min, int max) {
+        List<String> ints = new ArrayList<>();
+        for (int i = min; i <= max; i++){
+            ints.add(i + "");
+        }
+        String x = CollectionUtil.randomPickFromPersistentList(ints, min + "_" + max);
+        return Integer.valueOf(x);
+    }
+
     public static void rejectNullArgs(Object... args) {
         for (Object arg : args) {
             rejectNull(arg);
@@ -209,7 +218,7 @@ public final class Util {
 
     public static Date now(){
 
-        String f = System.getProperty("arise.forced.now", null);
+        String f = AppSettings.getProperty(AppSettings.Keys.FORCED_NOW);
         if (StringUtil.hasText(f)){
             try {
                 return EXTFMT.parse(f);
