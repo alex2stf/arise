@@ -21,7 +21,6 @@
     ],
     "relax": [
       "https://stream.srg-ssr.ch/m/rsj/mp3_128",
-      "https://streaming.exclusive.radio/er/calm/icecast.audio",
       "https://streaming.exclusive.radio/er/classical/icecast.audio",
       "https://streaming.exclusive.radio/er/beethoven/icecast.audio",
       "https://streamingv2.shoutcast.com/Beethoven-Radio",
@@ -51,6 +50,7 @@
       "https://stream2-0nlineradio.radiohost.de/vivaldi",
       "https://streams.calmradio.com:8928/stream/1/",
       "https://live.radioart.com/fMozart.mp3",
+      "https://2.mystreaming.net/uber/crmozart/icecast.audio",
       "https://air.radioart.online/fChopin.mp3",
       "https://air.radioart.online/fVocal_chillout.mp3"
     ],
@@ -64,12 +64,9 @@
     ],
     "christmas": [
       "https://generations-thema.ice.infomaniak.ch/generations-thema.aac",
-      "https://radio1.streamserver.link:8070/hcr-aac",
       "https://s01.digitalserver.org:7638/;stream.nsv",
-      "https://kathy.torontocast.com:1635/stream",
       "https://listen.openstream.co/3667/audio",
       "https://listen.openstream.co/4169/audio",
-      "https://streams.calmradio.com:2628/stream",
       "https://ais-sa5.cdnstream1.com/b55667_128mp3",
       "https://christmasfm.cdnstream1.com/2549_128.mp3",
       "https://christmasfm.cdnstream1.com/2550_128.mp3",
@@ -88,19 +85,13 @@
     "generic-radios": [
       "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
       "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
-      "https://str0.creacast.com/melody2",
       "https://i4.streams.ovh/sc/bluesrad/stream",
       "https://live.rockfm.ro/ballads.rock",
       "https://bestofrockfm.stream.vip/90rock/mp3-128/bestofrockfm.stream.vip",
       "https://live.rockfm.ro/blues",
       "https://bestofrockfm.stream.vip/80rock/aac-64/bestofrockfm.stream.vip",
-      "https://live.rockfm.ro/kiss.energy",
       "https://live.rockfm.ro/hard.rock",
-      "http://www.clasicradio.ro:7100/stream",
-      "http://stream.darkedge.ro:8000/stream/2/",
       "https://web.smartradio.ro:8443/smartnroll",
-      "http://www.clasicradio.ro:8032/stream",
-      "http://s3.myradiostream.com:7022/;",
       "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053",
       "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
       "https://streaming.exclusive.radio/er/italy/icecast.audio",
@@ -112,9 +103,6 @@
       "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip",
       "https://radio.nugs.net/pearljam",
       "https://stream.lolliradio.net/lolli_italia.mp3"
-    ],
-    "youtubes": [
-      "html-content:<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/-yFeZekJxZ8?start=2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
     ],
     "week-list-1": [
       "https://streaming.exclusive.radio/er/INXS/icecast.audio",
@@ -128,7 +116,9 @@
       "https://streaming.exclusive.radio/er/simongarfunkle/icecast.audio",
       "https://streaming.exclusive.radio/er/velvetunderground/icecast.audio",
       "https://ais-sa5.cdnstream1.com/b87537_128mp3",
-      "https://streaming.exclusive.radio/er/00s/icecast.audio"
+      "https://streaming.exclusive.radio/er/00s/icecast.audio",
+      "https://2.mystreaming.net/uber/ghr/icecast.audio",
+      "https://nl4.mystreaming.net/uber/boomerang2000s/icecast.audio"
     ],
     "week-list-2": [
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
@@ -148,16 +138,7 @@
       "https://bestofrockfm.stream.vip/classic/mp3-128/bestofrockfm.stream.vip"
     ],
     "week-list-3": [
-      "https://streaming.exclusive.radio/er/50s/icecast.audio",
-      "https://streaming.exclusive.radio/er/60s/icecast.audio",
-      "https://streaming.exclusive.radio/er/70s/icecast.audio",
-      "https://streaming.exclusive.radio/er/80s/icecast.audio",
       "https://streaming.exclusive.radio/er/blues/icecast.audio",
-      "https://streaming.exclusive.radio/er/love50s/icecast.audio",
-      "https://streaming.exclusive.radio/er/love60s/icecast.audio",
-      "https://streaming.exclusive.radio/er/love80s/icecast.audio",
-      "https://streaming.exclusive.radio/er/love90s/icecast.audio",
-      "https://streaming.exclusive.radio/er/love00s/icecast.audio",
       "https://streaming.exclusive.radio/er/beatles/icecast.audio",
       "https://streaming.exclusive.radio/er/kingsofleon/icecast.audio",
       "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
@@ -187,10 +168,15 @@
       "https://streaming.exclusive.radio/er/streisand/icecast.audio",
       "https://streaming.exclusive.radio/er/folk/icecast.audio",
       "https://streaming.exclusive.radio/er/lovemovies/icecast.audio",
-      "https://streaming.exclusive.radio/er/1920/icecast.audio",
-      "https://streaming.exclusive.radio/er/1930/icecast.audio",
-      "https://streaming.exclusive.radio/er/1940/icecast.audio",
-      "https://drive.uber.radio/uber/rtwprog/icecast.audio"
+      "https://drive.uber.radio/uber/rtwprog/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwalt/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwblues/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwclassics/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwprog/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwcountry/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwheavymetal/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwpunk/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwstadium/icecast.audio"
     ],
     "week-list-5": [
       "https://live.magicfm.ro/magicfm.aacp",
@@ -289,8 +275,7 @@
       "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
       "https://streaming.exclusive.radio/er/beatles/icecast.audio",
       "https://streaming.exclusive.radio/er/sleep-maxrichter/icecast.audio",
-      "https://streaming.exclusive.radio/er/goodmorning/icecast.audio",
-      "https://streaming.exclusive.radio/er/classical/icecast.audio"
+      "https://streaming.exclusive.radio/er/goodmorning/icecast.audio"
     ],
     "goodies-4": [
       "https://streaming.exclusive.radio/er/jazz/icecast.audio",
@@ -685,7 +670,6 @@
       "strategy": "local-first",
       "sources": [
         "${goodies-5}",
-        "${youtubes}",
         "${generic-radios}",
         "${local-all}",
         "${local-mixed}"

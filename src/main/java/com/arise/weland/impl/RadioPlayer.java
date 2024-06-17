@@ -10,7 +10,9 @@ import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.arise.core.serializers.parser.Groot.decodeBytes;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
@@ -88,6 +90,35 @@ public class RadioPlayer {
 
 
     public void play() {
+
+//        final Map<String, String> scanned = new ConcurrentHashMap<>();
+//
+//        for(Show s: shows){
+//            for (final String src: s._s){
+//                if(src.startsWith("http") ) {
+//                    NetworkUtil.pingUrl(src, new Handler<URLConnection>() {
+//                        @Override
+//                        public void handle(URLConnection urlConnection) {
+//
+//                        }
+//                    }, new Handler<Object>() {
+//                        @Override
+//                        public void handle(Object o) {
+//                            try {
+//
+//                                if(!scanned.containsKey(src)) {
+//                                    FileUtil.appendNewLineToFile(src, new File("remove.txt"));
+//                                    System.out.println("NOT VALID: " + src);
+//                                    scanned.put(src, src);
+//                                }
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }
         if (is_play) {
             return;
         }
