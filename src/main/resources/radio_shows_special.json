@@ -9,14 +9,27 @@
       "day": "random_day:30:bruce",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_16:40:00",
       "strategy": "stream-first",
-      "sources": ["https://www.youtube.com/watch?v=6bM3L296ZNw&list=PL4zZspbjJ-iTQQkxKi5y1AQZr_QV4aDbP"]
+      "sources": [
+        "https://www.youtube.com/watch?v=6bM3L296ZNw&list=PL4zZspbjJ-iTQQkxKi5y1AQZr_QV4aDbP"
+      ]
     },
     {
       "name": "de_mers_la_mare",
       "day": "random_day:10:summer EXCEPT:october,november,december,january,february,march,april,may",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_23:00:00",
       "strategy": "stream-first",
-      "sources": ["https://www.youtube.com/watch?v=X1vhPZpXvKY&list=PL4zZspbjJ-iRvJTtcJUxA0TKRtm5Jpm9I"]
+      "sources": [
+        "https://www.youtube.com/watch?v=X1vhPZpXvKY&list=PL4zZspbjJ-iRvJTtcJUxA0TKRtm5Jpm9I"
+      ]
+    },
+    {
+      "name": "robbie_williams",
+      "day": "random_day:30:robbiewilliams EXCEPT:october,november,december,january,february,march,april,may",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_23:00:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=iy4mXZN1Zzk&list=PL4zZspbjJ-iQoTK0-2dPCwmsildVEffMr&index=1"
+      ]
     },
     {
       "name": "special_local_videos",

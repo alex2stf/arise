@@ -520,8 +520,8 @@
     {
       "name": "any_monday_wednesday_19_20",
       "day": "monday_wednesday",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
-      "strategy": "local-first",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "stream-first",
       "sources": [
         "https://live.rockfm.ro:8443/rockfm.aacp", "${local-all}"
       ]
