@@ -178,9 +178,7 @@
     ],
     "week-list-5": [
       "https://live.magicfm.ro/magicfm.aacp",
-      "https://streaming.exclusive.radio/er/90s/icecast.audio",
       "https://streaming.exclusive.radio/er/indie/icecast.audio",
-      "https://streaming.exclusive.radio/er/love80s/icecast.audio",
       "https://streaming.exclusive.radio/er/boston/icecast.audio",
       "https://streaming.exclusive.radio/er/belindacarlisle/icecast.audio",
       "https://streaming.exclusive.radio/er/camilacabello/icecast.audio",
@@ -191,7 +189,6 @@
       "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio",
       "https://streaming.exclusive.radio/er/beegees/icecast.audio",
       "https://streaming.exclusive.radio/er/sherylcrow/icecast.audio",
-      "https://streaming.exclusive.radio/er/mix9/icecast.audio",
       "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio",
       "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio"
     ],

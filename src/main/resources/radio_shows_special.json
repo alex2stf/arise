@@ -77,6 +77,16 @@
       ]
     },
 
+    {
+      "name": "bath_break_acc",
+      "day": "random_day:40:adrberinde EXCEPT:december,february,april,june,august,october",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_16:20:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=Frj2CLGldC4&list=PLMl0O4f3Cvd_MSc_qFW01XCb4TEmXD-W1&index=1"
+      ]
+    },
+
 
     {
       "name": "special_local_videos",
