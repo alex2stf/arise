@@ -21,8 +21,6 @@
     ],
     "relax": [
       "https://stream.srg-ssr.ch/m/rsj/mp3_128",
-      "https://streaming.exclusive.radio/er/classical/icecast.audio",
-      "https://streaming.exclusive.radio/er/beethoven/icecast.audio",
       "https://streamingv2.shoutcast.com/Beethoven-Radio",
       "https://streaming.exclusive.radio/er/jeanmicheljarre/icecast.audio",
       "https://drive.uber.radio/uber/calmbirdsong/icecast.audio",
