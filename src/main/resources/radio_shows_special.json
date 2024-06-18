@@ -58,6 +58,24 @@
         "https://www.youtube.com/watch?v=ZaJT5lucoc8&list=PL4zZspbjJ-iSsZ_eEBNWqYQJp74guN_aq&index=1"
       ]
     },
+    {
+      "name": "fabrizio_de_andre",
+      "day": "random_day:30:fabdandre",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:34:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=YKSwyvr2IRc&list=PL4zZspbjJ-iQCPxzxJkP_iL8lhiLeHQ7i&index=1"
+      ]
+    },
+    {
+      "name": "adrian_berinde",
+      "day": "random_day:30:adrberinde EXCEPT:december,february,april,june,august,october",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_16:00:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=YKSwyvr2IRc&list=PL4zZspbjJ-iQCPxzxJkP_iL8lhiLeHQ7i&index=1"
+      ]
+    },
 
 
     {
