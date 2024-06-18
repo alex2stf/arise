@@ -73,7 +73,7 @@ public class NetworkUtil {
             }
             connection.disconnect();
         } catch (Exception e) {
-            log.error("Ping " + u + "throws ", e);
+//            log.error("Ping " + u + "throws ", e);
             err.handle(e);
         }
 

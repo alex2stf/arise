@@ -107,6 +107,17 @@
       ]
     },
 
+
+    {
+      "name": "elliot_smith",
+      "day": "2024-06-18",
+      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_22:38:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=UuizNQUOFCI&list=PL6KwzgIePF4BbeyY14AVTLNz12UjMcJWC"
+      ]
+    },
+
     {
       "name": "special_local_videos",
       "day": "2024-05-28",

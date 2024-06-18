@@ -104,15 +104,27 @@ public class RadioPlayer {
 //                    }, new Handler<Object>() {
 //                        @Override
 //                        public void handle(Object o) {
-//                            try {
-//
-//                                if(!scanned.containsKey(src)) {
-//                                    FileUtil.appendNewLineToFile(src, new File("remove.txt"));
-//                                    System.out.println("NOT VALID: " + src);
-//                                    scanned.put(src, src);
+//                            if(o instanceof Integer || o instanceof Exception) {
+//                                int i = -1;
+//                                if(o instanceof Integer) {
+//                                    i = (int) o;
 //                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
+//
+//                                if(i >  399 || o instanceof Exception) {
+//                                    try {
+//
+//                                        if (!scanned.containsKey(src)) {
+//                                            FileUtil.appendNewLineToFile(src, new File("remove.txt"));
+//                                            System.out.println("NOT VALID: " + src);
+//                                            scanned.put(src, src);
+//                                        }
+//                                    } catch (IOException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    System.out.println(o + " from " +  src );
+//                                }
+//                            } else {
+//                                System.out.println(o + " unhalt " +  src );
 //                            }
 //                        }
 //                    });

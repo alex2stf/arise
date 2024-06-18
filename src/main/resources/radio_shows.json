@@ -50,7 +50,11 @@
       "https://live.radioart.com/fMozart.mp3",
       "https://2.mystreaming.net/uber/crmozart/icecast.audio",
       "https://air.radioart.online/fChopin.mp3",
-      "https://air.radioart.online/fVocal_chillout.mp3"
+      "https://air.radioart.online/fVocal_chillout.mp3",
+      "https://www.youtube.com/watch?v=DxnDcH2NS5c",
+      "https://www.youtube.com/watch?v=4VXErA63_eg",
+      "https://www.youtube.com/watch?v=BE6JUt9LnCw",
+      "https://www.youtube.com/watch?v=EYWEprqoLAQ"
     ],
     "christmas-romanian": [
       "file:/storage/emulated/0/Documents/arise-app/",
@@ -116,7 +120,8 @@
       "https://ais-sa5.cdnstream1.com/b87537_128mp3",
       "https://streaming.exclusive.radio/er/00s/icecast.audio",
       "https://2.mystreaming.net/uber/ghr/icecast.audio",
-      "https://nl4.mystreaming.net/uber/boomerang2000s/icecast.audio"
+      "https://nl4.mystreaming.net/uber/boomerang2000s/icecast.audio",
+      "https://www.youtube.com/watch?v=UK0D-tlCW1I"
     ],
     "week-list-2": [
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
@@ -133,7 +138,8 @@
       "https://bestofrockfm.stream.vip/metal/mp3-128/bestofrockfm.stream.vip",
       "https://bestofrockfm.stream.vip/hardrock/mp3-128/bestofrockfm.stream.vip",
       "https://bestofrockfm.stream.vip/deutsch/mp3-128/bestofrockfm.stream.vip",
-      "https://bestofrockfm.stream.vip/classic/mp3-128/bestofrockfm.stream.vip"
+      "https://bestofrockfm.stream.vip/classic/mp3-128/bestofrockfm.stream.vip",
+      "https://www.youtube.com/watch?v=g6obP-zTFUk"
     ],
     "week-list-3": [
       "https://streaming.exclusive.radio/er/blues/icecast.audio",
@@ -189,7 +195,9 @@
       "https://streaming.exclusive.radio/er/beegees/icecast.audio",
       "https://streaming.exclusive.radio/er/sherylcrow/icecast.audio",
       "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio",
-      "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio"
+      "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
+      "https://www.youtube.com/watch?v=LD2i99QPVI0",
+      "https://www.youtube.com/watch?v=oD3pm71Scm0"
     ],
     "week-list-6": [
       "https://streaming.exclusive.radio/er/softrock/icecast.audio",
@@ -223,7 +231,8 @@
       "https://streaming.exclusive.radio/er/eurythmics/icecast.audio",
       "https://streaming.exclusive.radio/er/foofighters/icecast.audio",
       "https://streaming.exclusive.radio/er/michaeljackson/icecast.audio",
-      "https://streaming.exclusive.radio/er/muddywaters/icecast.audio"
+      "https://streaming.exclusive.radio/er/muddywaters/icecast.audio",
+      "https://www.youtube.com/watch?v=LQ3G7QaYgMA"
     ],
     "goodies-1": [
       "https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio",
@@ -235,7 +244,8 @@
       "https://streaming.exclusive.radio/er/springsteen/icecast.audio",
       "https://streaming.exclusive.radio/er/ledzeppelin/icecast.audio",
       "https://streaming.exclusive.radio/er/doors/icecast.audio",
-      "https://streaming.exclusive.radio/er/greenday/icecast.audio"
+      "https://streaming.exclusive.radio/er/greenday/icecast.audio",
+      "https://www.youtube.com/watch?v=1UHpCzhvQ3s"
     ],
     "goodies-2": [
       "https://streaming.exclusive.radio/er/michaelbolton/icecast.audio",
@@ -365,7 +375,9 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
       "strategy": "stream",
-      "sources": ["${christmas-romanian}"],
+      "sources": [
+        "${christmas-romanian}"
+      ],
       "volume": "35%"
     },
 
