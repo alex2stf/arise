@@ -271,7 +271,7 @@ public class RadioPlayer {
                 s._h = getString(h, "hour");
                 s._d = getString(h, "day");
                 List list = getList(h, "sources");
-                s._LiD = UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
+                s._LiD = s.n; //UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
                 s._s = merge(list, lists);
                 if(contentInfoProvider != null){
                     contentInfoProvider.addSimpleSources(s._s);
