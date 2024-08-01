@@ -119,6 +119,26 @@
     },
 
     {
+      "name": "metallica garage inc",
+      "day": "annually:08-01",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_15:17:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=Y_tZPrxL5vk"
+      ]
+    },
+
+    {
+      "name": "metallica s&m",
+      "day": "annually:08-02",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_15:14:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=jqbnszYNCRg"
+      ]
+    },
+
+    {
       "name": "special_local_videos",
       "day": "2024-05-28",
       "hour": "EACH_SECOND BETWEEN_10:00:00_AND_19:30:00",

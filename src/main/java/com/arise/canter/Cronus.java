@@ -282,7 +282,7 @@ public class Cronus {
     }
 
 
-    public static String calc_random(String in, Calendar c){
+    public static String calc_random(String in){
         String parts[] = in.split(":");
         String op = parts[1];
         Integer maxDays = Integer.valueOf(op);
@@ -353,9 +353,26 @@ public class Cronus {
 
         if(moment.startsWith("random_day:")) {
             System.out.println(moment);
-            return calc_random(moment, c);
+            return calc_random(moment);
         }
 
+        if(moment.startsWith("annually:")) {
+            String rest = moment.substring("annually:".length());
+            if(rest.indexOf("-") > -1){
+                String pts[]  = rest.split("-");
+                if(pts.length != 2){
+                    return nilh;
+                }
+                Calendar t = Calendar.getInstance();
+                t.set(Calendar.MONTH, Integer.valueOf(pts[0]) - 1);
+                t.set(Calendar.DAY_OF_MONTH, Integer.valueOf(pts[1]));
+
+                return STDFMT.format(t.getTime());
+            }
+            return nilh;
+        }
+
+        //monday, monday_tuesday
         if (moment.indexOf("_") > -1 || isWeekdayFormat(moment)){
             String dwd[] = moment.toLowerCase().split("_");
             if (isWeekdayFormat(dwd)){
