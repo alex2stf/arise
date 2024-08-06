@@ -139,6 +139,16 @@
     },
 
     {
+      "name": "cantafabule",
+      "day": "annually:08-06",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:40:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=jFOBgqJ3YE0"
+      ]
+    },
+
+    {
       "name": "special_local_videos",
       "day": "2024-05-28",
       "hour": "EACH_SECOND BETWEEN_10:00:00_AND_19:30:00",
@@ -160,7 +170,7 @@
       "day": "22-08-2024",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_23:00:00",
       "strategy": "stream-first",
-      "sources": ["https://www.youtube.com/watch?v=-1AeP3R5UdI&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC&index=65"]
+      "sources": ["https://www.youtube.com/watch?v=-1AeP3R5UdI&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC"]
     }
 
 
