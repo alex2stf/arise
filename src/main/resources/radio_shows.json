@@ -20,6 +20,14 @@
       "file:/media/kids/407B-B087/Music/sounds"
     ],
     "relax": [
+      {
+        "name": "Leonard Cohen - Old ideas",
+        "path": "https://www.youtube.com/watch?v=sc_J0_WAIuM&list=PLNDXDJtQAOanpjrFnzTmg158aSpDRe7D3"
+      },
+      {
+        "name": "Songs of Leonard Cohen",
+        "path": "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"
+      },
       "https://www.youtube.com/watch?v=L86tbBjkCOY",
       "https://www.youtube.com/watch?v=ekAWjg-y3EI",
       "https://www.youtube.com/watch?v=h8l84GLG-lI",
@@ -135,7 +143,7 @@
       "https://streaming.exclusive.radio/er/joebonamassa/icecast.audio",
       "https://www.youtube.com/watch?v=bomLJW7Ya7c",
       "https://streaming.exclusive.radio/er/alicecooper/icecast.audio",
-      "https://www.youtube.com/playlist?list=PLNPGM2D7aODe7899Yra6qD_PYEHNJdzbS",
+      "https://www.youtube.com/watch?v=5LqOgFrfuJY&list=PLNPGM2D7aODe7899Yra6qD_PYEHNJdzbS",
       "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
       "https://www.youtube.com/watch?v=zq-xBpjlYKo",
       "https://streaming.exclusive.radio/er/arethafranklin/icecast.audio",
@@ -144,12 +152,17 @@
       "https://streaming.exclusive.radio/er/blondie/icecast.audio",
       "https://streaming.exclusive.radio/er/simongarfunkle/icecast.audio",
       "https://streaming.exclusive.radio/er/velvetunderground/icecast.audio",
+      "https://www.youtube.com/watch?v=W9t3t2Cl0Nw",
       "https://ais-sa5.cdnstream1.com/b87537_128mp3",
       "https://2.mystreaming.net/uber/ghr/icecast.audio",
       "https://nl4.mystreaming.net/uber/boomerang2000s/icecast.audio",
       "https://www.youtube.com/watch?v=UK0D-tlCW1I"
     ],
     "week-list-2": [
+      {
+        "name": "Leonard Cohen - new skin for old ceremonies",
+        "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb"
+      },
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       "https://www.youtube.com/watch?v=c0hbZCbB54g",
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
@@ -212,6 +225,7 @@
       "https://streaming.exclusive.radio/er/creedence/icecast.audio",
       "https://streaming.exclusive.radio/er/blues/icecast.audio",
       "https://streaming.exclusive.radio/er/howlinwolf/icecast.audio",
+      "https://www.youtube.com/watch?v=ifZqnS5gNHU",
       "https://streaming.exclusive.radio/er/carpenters/icecast.audio",
       "https://streaming.exclusive.radio/er/streisand/icecast.audio",
       "https://www.youtube.com/watch?v=aXTCDB70Qgo&list=PLXhfRoiJBIislZ9MHBBNYK0h3N30Gv7Ja&index=1",
@@ -258,7 +272,8 @@
       "https://www.youtube.com/watch?v=zw44oG-EVQo",
       "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
       "https://www.youtube.com/watch?v=LD2i99QPVI0",
-      "https://www.youtube.com/watch?v=oD3pm71Scm0"
+      "https://www.youtube.com/watch?v=oD3pm71Scm0",
+      "https://www.youtube.com/watch?v=z0tkk1CFIiU"
     ],
     "week-list-6": [
       "https://streaming.exclusive.radio/er/softrock/icecast.audio",
@@ -369,7 +384,6 @@
       "https://www.youtube.com/watch?v=6Ymjklj0RZQ",
       "https://streaming.exclusive.radio/er/jimmycliff/icecast.audio",
       "https://www.youtube.com/watch?v=1fAyQyBZJVA&list=PLudVi421d2lLWX1CiXf1BtMJYPvrI3nTz",
-      "https://streaming.exclusive.radio/er/jimmyrogers/icecast.audio",
       "https://www.youtube.com/watch?v=fWvKvOViM3g",
       "https://streaming.exclusive.radio/er/joanjett/icecast.audio",
       "https://www.youtube.com/watch?v=31vjCNgsGy0",
