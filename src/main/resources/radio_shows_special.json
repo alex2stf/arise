@@ -159,6 +159,26 @@
       ]
     },
 
+    {
+      "name": "linkin park 50 songs",
+      "day": "annually:09-24",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_15:10:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=kXYiU_JCYtU&list=PL9LkJszkF_Z6bJ82689htd2wch-HVbzCO&index=1"
+      ]
+    },
+
+    {
+      "name": "pearl jam",
+      "day": "annually:09-22",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_15:28:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://www.youtube.com/watch?v=DdTYl8SU8qU&list=PL-xTct5_jYAUBcHGajsk1CZe1Us0hpbKd&index=1"
+      ]
+    },
+
 
 
 

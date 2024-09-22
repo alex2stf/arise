@@ -10,6 +10,7 @@ import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -250,15 +251,21 @@ public class RadioPlayer {
             if (!isEmpty(lx)) {
                 for (Map.Entry<Object, Object> e : lx.entrySet()) {
                     if (e.getValue() instanceof List) {
-                        List<String> c = new ArrayList<>();
+                        Set<String> c = new HashSet<>();
                         for (Object zz : ((List) e.getValue())) {
                             if (zz instanceof String) {
                                 c.add(zz + "");
+                            } else if (zz instanceof Map) {
+                                Map zm = (Map) zz;
+                                String zmp = MapUtil.getString(zm, "path");
+                                if(StringUtil.hasText(zmp)){
+                                    c.add(zmp);
+                                }
                             }
                         }
                         String k = e.getKey() + "";
                         if (!lists.containsKey(k)) {
-                            lists.put(k, c);
+                            lists.put(k, new ArrayList<String>(c));
                         }
                     }
                 }
