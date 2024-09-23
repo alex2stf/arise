@@ -164,7 +164,10 @@
         "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb"
       },
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
-      "https://www.youtube.com/watch?v=c0hbZCbB54g",
+      {
+        "name": "Bruce Springtsteen - Darkness at the edge of town",
+        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1"
+      },
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
       "https://www.youtube.com/watch?v=pqy9magFBNY&list=PLiN-7mukU_RE6-LmaokFMNhxBjopXjcjX&index=1",
       "https://streaming.exclusive.radio/er/pretenders/icecast.audio",
