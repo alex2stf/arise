@@ -6,6 +6,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.*;
+import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.MediaPlayer;
 
@@ -39,7 +40,7 @@ public class RadioPlayer {
 
     private static final Mole log = Mole.getInstance("RD-PLAYER");
 
-    private ContentInfoProvider contentInfoProvider;
+    ContentInfoProvider contentInfoProvider;
 
     public static MediaPlayer getMediaPlayer() {
         if (mPlayer == null) {
@@ -304,22 +305,37 @@ public class RadioPlayer {
 
     }
 
-    private List<String> merge(List<String> src, Map<String, List<String>> buf) {
+    private List<String> merge(List<Object> src, Map<String, List<String>> buf) {
         if (isEmpty(buf)) {
-            return src;
+            return new ArrayList<>();
         }
 
         List<String> res = new ArrayList<>();
 
-        for (String s : src) {
-            if (s.startsWith("${") && s.endsWith("}")) {
-                String key = s.substring(2, s.length() - 1);
-                for (String u : buf.get(key)) {
-                    res.add(u);
+        for (Object o : src) {
+            if(o instanceof String){
+                String s = (String) o;
+                if (s.startsWith("${") && s.endsWith("}")) {
+                    String key = s.substring(2, s.length() - 1);
+                    for (String u : buf.get(key)) {
+                        addValidString(res, u);
+                    }
+                } else {
+                    addValidString(res, s);
                 }
-            } else {
-                res.add(s);
             }
+
+            if(o instanceof Map){
+                Map m = (Map) o;
+                String path = MapUtil.getString(m, "path");
+                addValidString(res, path);
+                if(contentInfoProvider != null){
+                    ContentInfo c = contentInfoProvider.fromMap(m);
+                    contentInfoProvider.mergeContent(c, Playlist.STREAMS);
+                }
+
+            }
+
         }
 
         return res;

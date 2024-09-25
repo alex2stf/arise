@@ -175,7 +175,26 @@
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_15:28:00",
       "strategy": "stream-first",
       "sources": [
-        "https://www.youtube.com/watch?v=DdTYl8SU8qU&list=PL-xTct5_jYAUBcHGajsk1CZe1Us0hpbKd&index=1"
+        {
+          "title": "Pearl Jam",
+          "path": "https://www.youtube.com/watch?v=DdTYl8SU8qU&list=PL-xTct5_jYAUBcHGajsk1CZe1Us0hpbKd&index=1",
+          "duration": "212m"
+
+        }
+      ]
+    },
+    {
+      "name": "The Crow OST",
+      "day": "annually:09-27",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_14:05:00",
+      "strategy": "stream-first",
+      "sources": [
+        {
+          "title": "The Crow OST",
+          "path": "https://www.youtube.com/watch?v=HY7AN5xq-zI&list=PLjDvaXwceFJT8hDNwmcj3mQfB5h46-nuJ&index=1",
+          "duration": "65m"
+
+        }
       ]
     },
 

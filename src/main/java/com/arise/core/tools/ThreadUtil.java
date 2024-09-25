@@ -73,6 +73,9 @@ public class ThreadUtil {
     public static TimerResult delayedTask(Runnable action, long delay){
         Timer timer = new Timer(false);
         TimerResult timerResult = new TimerResult(timer, action);
+        if(delay < 0){
+            System.out.println("wtf");
+        }
         timer.schedule(timerResult.getTimerTask(), delay);
         return timerResult;
     }

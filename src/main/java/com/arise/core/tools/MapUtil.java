@@ -107,6 +107,12 @@ public class MapUtil {
         return i;
     }
 
+    public static void addValidString(List<String> res, String u) {
+        if(StringUtil.hasText(u)){
+            res.add(u);
+        }
+    }
+
 
     public static class MapBuilder<K, V> {
         final Map<K, V> x;

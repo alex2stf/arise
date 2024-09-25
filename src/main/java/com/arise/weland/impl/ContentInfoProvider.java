@@ -29,6 +29,7 @@ public class ContentInfoProvider {
     private volatile boolean _scanning = false;
     private int fcnt = 0;
     private int lsc = 0;
+    private static final Map<String, Integer> DURATIONS = new HashMap<>();
 
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
@@ -130,9 +131,20 @@ public class ContentInfoProvider {
 
 
     public ContentInfo fromMap(Map map) {
-        ContentInfo contentInfo = new ContentInfo();
-        contentInfo.setTitle(MapUtil.getString(map, "title"));
-        contentInfo.setPath(MapUtil.getString(map, "path"));
+        ContentInfo cI = new ContentInfo();
+        cI.setTitle(MapUtil.getString(map, "title"));
+        cI.setPath(MapUtil.getString(map, "path"));
+
+        String durationVal = MapUtil.getString(map, "duration");
+        if(StringUtil.hasText(durationVal)){
+            char time = durationVal.charAt(durationVal.length() - 1);
+            if('m' == time){
+                int duration = Integer.parseInt(durationVal.substring(0, durationVal.length() - 1));
+                cI.setDuration(duration);
+                DURATIONS.put(cI.getPath(), duration * 60);
+            }
+        }
+
 
         String thumbnail = null;
         if(map.containsKey("thumbnail")) {
@@ -146,17 +158,17 @@ public class ContentInfoProvider {
         }
 
         if (thumbnail != null){
-            String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);
-            contentInfo.setThumbnailId(thumbnailId);
+            String thumbnailId = SGService.getInstance().createThumbnailId(cI, thumbnail);
+            cI.setThumbnailId(thumbnailId);
         }
 
         if (map.containsKey("playlist")){
-            contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+            cI.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
         } else {
-            contentInfo.setPlaylist(Playlist.STREAMS);
+            cI.setPlaylist(Playlist.STREAMS);
         }
 
-        return contentInfo;
+        return cI;
     }
 
     private void scanRootDirectory(String sroot){
@@ -528,5 +540,10 @@ public class ContentInfoProvider {
     }
 
 
-
+    public int getDuration(String pdir) {
+        if(DURATIONS.containsKey(pdir)){
+            return DURATIONS.get(pdir);
+        }
+        return -1;
+    }
 }

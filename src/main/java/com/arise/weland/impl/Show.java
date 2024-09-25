@@ -258,8 +258,18 @@ public class Show {
 
                 //daca e url
                 else if(ContentType.isHttpPath(pdir)) {
+
+                    if(null != p.contentInfoProvider) {
+                        int d = p.contentInfoProvider.getDuration(pdir);
+                        if( d > 0) {
+                            log.info("Found duration  " + d + " for " + pdir );
+                            exp = (p.contentInfoProvider.getDuration(pdir) * 1000);
+                        }
+                    }
+
                     final long finalExp = exp;
                     _playing = false;
+
 
                     //default consideram ca e URL
                     if(AppSettings.isTrue(AppSettings.Keys.RADIO_PING_STREAM)) {
