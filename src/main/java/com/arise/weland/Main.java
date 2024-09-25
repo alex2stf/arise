@@ -171,8 +171,7 @@ public class Main {
         final ContentInfoDecoder decoder = new PCDecoder();
         final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
                 //asta nu tb sa mai contina ce este deja in radio shows
-                .addFromLocalResource("weland/config/commons/content-infos.json")
-                ;
+                .addFromLocalResource("weland/config/commons/content-infos.json");
 
 
         for (File file: AppSettings.getScannableLocations()){

@@ -21,11 +21,11 @@
     ],
     "relax": [
       {
-        "name": "Leonard Cohen - Old ideas",
+        "title": "Leonard Cohen - Old ideas",
         "path": "https://www.youtube.com/watch?v=sc_J0_WAIuM&list=PLNDXDJtQAOanpjrFnzTmg158aSpDRe7D3"
       },
       {
-        "name": "Songs of Leonard Cohen",
+        "title": "Songs of Leonard Cohen",
         "path": "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"
       },
       "https://www.youtube.com/watch?v=L86tbBjkCOY",
@@ -123,7 +123,10 @@
       "https://live.rockfm.ro/hard.rock",
       "https://web.smartradio.ro:8443/smartnroll",
       "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053",
-      "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
+      {
+        "title": "Radio folk",
+        "path": "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3"
+      },
       "https://streaming.exclusive.radio/er/italy/icecast.audio",
       "https://www.youtube.com/watch?v=dKd25JBBL3E",
       "https://streaming.exclusive.radio/er/musiquefrancaise/icecast.audio",
@@ -141,7 +144,6 @@
       "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
       "https://www.youtube.com/watch?v=W5hpnLIswbQ&list=PLMEZyDHJojxObikH_duAoKPz9TfkxdQKu&index=1",
       "https://streaming.exclusive.radio/er/joebonamassa/icecast.audio",
-      "https://www.youtube.com/watch?v=bomLJW7Ya7c",
       "https://streaming.exclusive.radio/er/alicecooper/icecast.audio",
       "https://www.youtube.com/watch?v=5LqOgFrfuJY&list=PLNPGM2D7aODe7899Yra6qD_PYEHNJdzbS",
       "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
@@ -160,12 +162,12 @@
     ],
     "week-list-2": [
       {
-        "name": "Leonard Cohen - new skin for old ceremonies",
+        "title": "Leonard Cohen - new skin for old ceremonies",
         "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb"
       },
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       {
-        "name": "Bruce Springtsteen - Darkness at the edge of town",
+        "title": "Bruce Springtsteen - Darkness at the edge of town",
         "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1"
       },
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
@@ -219,7 +221,6 @@
     ],
     "week-list-4": [
       "https://streaming.exclusive.radio/er/gongs/icecast.audio",
-      "https://radio.cloud23.eu/magiainimiitale",
       "https://stream.srg-ssr.ch/m/rsj/mp3_128",
       "https://streaming.exclusive.radio/er/ericclapton/icecast.audio",
       "https://www.youtube.com/watch?v=-0OubtmmuZs&list=PLMl0O4f3Cvd_NKAypcRIDcf0oouUJ-iI9&index=1",

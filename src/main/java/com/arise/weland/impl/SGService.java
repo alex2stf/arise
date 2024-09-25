@@ -287,7 +287,7 @@ public enum  SGService {
 
         }
 
-        System.out.println("CAUTA " + id);
+//        System.out.println("CAUTA " + id);
         //idul devine query
         String query = id;
         for (String key: root.keySet()){

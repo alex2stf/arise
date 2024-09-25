@@ -6,6 +6,7 @@ import com.arise.cargo.management.DependencyManager;
 import com.arise.core.exceptions.LogicalException;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.*;
+import com.arise.weland.dto.Playlist;
 import com.arise.weland.model.MediaPlayer;
 
 import java.io.File;
@@ -260,6 +261,11 @@ public class RadioPlayer {
                                 String zmp = MapUtil.getString(zm, "path");
                                 if(StringUtil.hasText(zmp)){
                                     c.add(zmp);
+                                    if(null != contentInfoProvider){
+                                        contentInfoProvider.mergeContent(
+                                                contentInfoProvider.fromMap(zm), Playlist.STREAMS
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -280,9 +286,6 @@ public class RadioPlayer {
                 List list = getList(h, "sources");
                 s._LiD = s.n; //UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
                 s._s = merge(list, lists);
-                if(contentInfoProvider != null){
-                    contentInfoProvider.addSimpleSources(s._s);
-                }
                 s._m = getString(h, "strategy");
                 s._f = getString(h, "fallback");
                 s._v = getString(h, "volume");

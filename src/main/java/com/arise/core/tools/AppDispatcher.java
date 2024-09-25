@@ -28,7 +28,7 @@ public class AppDispatcher {
                    Mole.getInstance("APP_EVENT").warn("Error executing event" + name, ex);
                }
            }
-       } else {
+       } else if(!"tick".equals(name)) {
            Mole.getInstance("APP_EVENT").warn("not found " + name);
        }
     }

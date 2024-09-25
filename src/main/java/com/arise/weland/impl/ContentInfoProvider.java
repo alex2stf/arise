@@ -123,38 +123,40 @@ public class ContentInfoProvider {
         List<Map<Object, Object>> contentInfos = (List<Map<Object, Object>>) Groot.decodeBytes(content);
 
         for (Map<Object, Object> map: contentInfos){
-            ContentInfo contentInfo = new ContentInfo();
-            contentInfo.setTitle(MapUtil.getString(map, "title"));
-            contentInfo.setPath(MapUtil.getString(map, "path"));
-
-            String thumbnail = null;
-            if(map.containsKey("thumbnail")) {
-                Object th = map.get("thumbnail");
-                if(th instanceof String){
-                    thumbnail = (String) th;
-                }
-                else if (th instanceof Collection){
-                    thumbnail = CollectionUtil.randomPickElement((Collection<String>) th);
-                }
-            }
-
-            //TODO de decomentat???
-            if (thumbnail != null){
-                String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);
-                contentInfo.setThumbnailId(thumbnailId);
-            }
-
-
-            if (map.containsKey("playlist")){
-                contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
-            } else {
-                contentInfo.setPlaylist(Playlist.STREAMS);
-            }
-
-
-
+            ContentInfo contentInfo = fromMap(map);
             mergeContent(contentInfo, contentInfo.getPlaylist());
         }
+    }
+
+
+    public ContentInfo fromMap(Map map) {
+        ContentInfo contentInfo = new ContentInfo();
+        contentInfo.setTitle(MapUtil.getString(map, "title"));
+        contentInfo.setPath(MapUtil.getString(map, "path"));
+
+        String thumbnail = null;
+        if(map.containsKey("thumbnail")) {
+            Object th = map.get("thumbnail");
+            if(th instanceof String){
+                thumbnail = (String) th;
+            }
+            else if (th instanceof Collection){
+                thumbnail = CollectionUtil.randomPickElement((Collection<String>) th);
+            }
+        }
+
+        if (thumbnail != null){
+            String thumbnailId = SGService.getInstance().createThumbnailId(contentInfo, thumbnail);
+            contentInfo.setThumbnailId(thumbnailId);
+        }
+
+        if (map.containsKey("playlist")){
+            contentInfo.setPlaylist(Playlist.find(MapUtil.getString(map, "playlist")));
+        } else {
+            contentInfo.setPlaylist(Playlist.STREAMS);
+        }
+
+        return contentInfo;
     }
 
     private void scanRootDirectory(String sroot){
@@ -203,9 +205,15 @@ public class ContentInfoProvider {
 
 
     //TODO persista doar o data
-    private void mergeContent(ContentInfo contentInfo, Playlist playlist){
+    public void mergeContent(ContentInfo contentInfo, Playlist playlist){
 
-        File playlistFile = getPlaylistFile(playlist);
+        File playlistFile = null;
+        try {
+            playlistFile = getPlaylistFile(playlist);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
         if(!playlistFile.exists()){
             try {
                 playlistFile.createNewFile();
@@ -348,6 +356,10 @@ public class ContentInfoProvider {
 
 
     File getPlaylistFile(Playlist playlist){
+        if(null == playlist){
+            System.out.println("WTFFFFFFFFFFFFFFFFFFFFFFF");
+            System.exit(-1);
+        }
         return new File(FileUtil.findAppDir() + File.separator + playlist.name() + ".v2plst");
     }
 
@@ -516,11 +528,5 @@ public class ContentInfoProvider {
     }
 
 
-    public void addSimpleSources(List<String> srcs) {
-        for(String s: srcs) {
-            if(s.startsWith("http")) {
-                scan_queue.add("stream:" + s);
-            }
-        }
-    }
+
 }
