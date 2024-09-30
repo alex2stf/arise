@@ -93,47 +93,6 @@ public class RadioPlayer {
 
 
     public void play() {
-
-//        final Map<String, String> scanned = new ConcurrentHashMap<>();
-//
-//        for(Show s: shows){
-//            for (final String src: s._s){
-//                if(src.startsWith("http") ) {
-//                    NetworkUtil.pingUrl(src, new Handler<URLConnection>() {
-//                        @Override
-//                        public void handle(URLConnection urlConnection) {
-//
-//                        }
-//                    }, new Handler<Object>() {
-//                        @Override
-//                        public void handle(Object o) {
-//                            if(o instanceof Integer || o instanceof Exception) {
-//                                int i = -1;
-//                                if(o instanceof Integer) {
-//                                    i = (int) o;
-//                                }
-//
-//                                if(i >  399 || o instanceof Exception) {
-//                                    try {
-//
-//                                        if (!scanned.containsKey(src)) {
-//                                            FileUtil.appendNewLineToFile(src, new File("remove.txt"));
-//                                            System.out.println("NOT VALID: " + src);
-//                                            scanned.put(src, src);
-//                                        }
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    System.out.println(o + " from " +  src );
-//                                }
-//                            } else {
-//                                System.out.println(o + " unhalt " +  src );
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        }
         if (is_play) {
             return;
         }
@@ -177,7 +136,7 @@ public class RadioPlayer {
 
     void stop_mplayer(final Handler<RadioPlayer> h){
         final RadioPlayer self = this;
-        log.info("Radio stop");
+        log.info("Radio calls stop");
         mPlayer.stop(new Handler<MediaPlayer>() {
             @Override
             public void handle(MediaPlayer mediaPlayer) {

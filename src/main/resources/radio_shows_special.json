@@ -6,7 +6,7 @@
   "shows": [
     {
       "name": "youtube_bruce_springsteen",
-      "day": "random_day:30:bruce",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_16:40:00",
       "strategy": "stream-first",
       "sources": [
@@ -15,7 +15,7 @@
     },
     {
       "name": "de_mers_la_mare",
-      "day": "random_day:10:summer EXCEPT:october,november,december,january,february,march,april,may",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_23:00:00",
       "strategy": "stream-first",
       "sources": [
@@ -24,7 +24,7 @@
     },
     {
       "name": "robbie_williams",
-      "day": "random_day:30:robbiewilliams EXCEPT:october,november,january,march,april,may,july",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_18:40:00",
       "strategy": "stream-first",
       "sources": [
@@ -33,7 +33,7 @@
     },
     {
       "name": "white_buffalo",
-      "day": "random_day:30:whitebuffalo",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_20:30:00",
       "strategy": "stream-first",
       "sources": [
@@ -42,7 +42,7 @@
     },
     {
       "name": "bossa_nova",
-      "day": "random_day:30:bossanove",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:20:00",
       "strategy": "stream-first",
       "sources": [
@@ -51,7 +51,7 @@
     },
     {
       "name": "queen",
-      "day": "random_day:30:queen",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_18:45:00",
       "strategy": "stream-first",
       "sources": [
@@ -60,7 +60,7 @@
     },
     {
       "name": "fabrizio_de_andre",
-      "day": "random_day:30:fabdandre",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:34:00",
       "strategy": "stream-first",
       "sources": [
@@ -69,7 +69,7 @@
     },
     {
       "name": "adrian_berinde",
-      "day": "random_day:30:adrberinde EXCEPT:december,february,april,june,august,october",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_16:00:00",
       "strategy": "stream-first",
       "sources": [
@@ -79,7 +79,7 @@
 
     {
       "name": "bath_break_acc",
-      "day": "random_day:30:bath_break",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_17:30:00",
       "strategy": "stream-first",
       "sources": [
@@ -89,7 +89,7 @@
 
     {
       "name": "french",
-      "day": "random_day:30:french",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_18:00:00",
       "strategy": "stream-first",
       "sources": [
@@ -99,7 +99,7 @@
 
     {
       "name": "music_8d_acc",
-      "day": "random_day:30:m8d",
+      "day": "2024-06-18",
       "hour": "EACH_SECOND BETWEEN_11:45:00_AND_13:00:00",
       "strategy": "stream-first",
       "sources": [
@@ -178,7 +178,7 @@
         {
           "title": "Pearl Jam",
           "path": "https://www.youtube.com/watch?v=DdTYl8SU8qU&list=PL-xTct5_jYAUBcHGajsk1CZe1Us0hpbKd&index=1",
-          "duration": "212m"
+          "duration": "212"
 
         }
       ]
@@ -192,8 +192,22 @@
         {
           "title": "The Crow OST",
           "path": "https://www.youtube.com/watch?v=HY7AN5xq-zI&list=PLjDvaXwceFJT8hDNwmcj3mQfB5h46-nuJ&index=1",
-          "duration": "65m"
-
+          "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/72/The_Crow_soundtrack_album_cover.jpg",
+          "duration": "65"
+        }
+      ]
+    },
+    {
+      "name": "The Crow City of Angels OST",
+      "day": "annually:08-03",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_14:05:00",
+      "strategy": "stream-first",
+      "sources": [
+        {
+          "title": "The Crow City of Angels OST",
+          "path": "https://www.youtube.com/watch?v=VZHBXsvPgSQ&list=PLrNYaDWRao8kwhDet--pQb-VT9Yrh2fAv&index=1",
+          "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3f/Crowangels.jpg",
+          "duration": "80"
         }
       ]
     },

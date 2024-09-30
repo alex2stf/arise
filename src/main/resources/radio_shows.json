@@ -163,12 +163,15 @@
     "week-list-2": [
       {
         "title": "Leonard Cohen - new skin for old ceremonies",
-        "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb"
+        "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb",
+        "duration": "37"
       },
       "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
       {
         "title": "Bruce Springtsteen - Darkness at the edge of town",
-        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1"
+        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/af/BruceSpringsteenDarknessontheEdgeofTown.jpg",
+        "duration": "45"
       },
       "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
       "https://www.youtube.com/watch?v=pqy9magFBNY&list=PLiN-7mukU_RE6-LmaokFMNhxBjopXjcjX&index=1",
@@ -367,7 +370,17 @@
       "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
       "https://www.youtube.com/watch?v=D4KQae9oMWs",
       "https://streaming.exclusive.radio/er/tompetty/icecast.audio",
-      "https://www.youtube.com/watch?v=klVu1sf6HO4",
+      {
+        "path": "https://www.youtube.com/watch?v=klVu1sf6HO4",
+        "title": "Bruce Springsteen - The River",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/c/cc/The_River_%28Bruce_Springsteen%29_%28Front_Cover%29.jpg",
+        "duration": "90"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=BNtSIXsE2hY",
+        "title": "Nirvana - more than rare",
+        "duration": "80"
+      },
       "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
       "https://www.youtube.com/watch?v=yTp5runGeBM",
       "https://streaming.exclusive.radio/er/tomwaits/icecast.audio",
@@ -375,7 +388,6 @@
       "https://streaming.exclusive.radio/er/lanadelrey/icecast.audio",
       "https://www.youtube.com/watch?v=ECj6yy5hOLE",
       "https://streaming.exclusive.radio/er/leonardcohen/icecast.audio",
-      "https://www.youtube.com/watch?v=adWscc_KpTo",
       "https://streaming.exclusive.radio/er/adele/icecast.audio",
       "https://streaming.exclusive.radio/er/meatloaf/icecast.audio"
     ],
@@ -421,10 +433,41 @@
       "https://streaming.exclusive.radio/er/jamesbrown/icecast.audio",
       "https://www.youtube.com/watch?v=W9t3t2Cl0Nw",
       "https://streaming.exclusive.radio/er/irishfolk/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=hCpL_ImsiDo&list=PLiN-7mukU_REqiENrjkvrz8IjpBwQKgSl",
+        "title": "Bruce Springsteen  - Nebraska",
+        "duration": "41",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/9/94/Bruce_Springsteen_-_Nebraska.jpg"
+      },
       "https://streaming.exclusive.radio/er/chrisrea/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=tRx212PUa4g&list=PLiN-7mukU_REYdA_UUaejpJvf5nitRok9",
+        "title": "Bruce Springsteen  - Born in the USA",
+        "duration": "80",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/31/BruceBorn1984.JPG"
+      },
       "https://streaming.exclusive.radio/er/chilipeppers/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=u4_5XqEEPOo&list=PLuLzcYr9FZ7oA7jQXNU2JjSK3qjRowY65",
+        "title": "Bruce Springsteen  - Tunnel of love",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/23/Bruce_Springsteen_-_Tunnel_of_Love.png",
+        "duration": "48"
+      },
       "https://streaming.exclusive.radio/er/robbiewilliams/icecast.audio",
+      {
+        "title": "Bruce Springsteen  - Human Touch",
+        "path": "https://www.youtube.com/watch?v=-T0u-q9LPhU&list=PLuFrIncMdIQwUbRzCL-fJqe3qN2_rW_BS",
+        "duration": "69",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/5f/Bruce_Springsteen_-_Human_Touch_-_coverart_-_I.jpg"
+      },
       "https://streaming.exclusive.radio/er/gunsnroses/icecast.audio",
+      {
+        "title": "Bruce Springsteen  - Lucky town",
+        "path": "https://www.youtube.com/watch?v=SM3pM8HZ5fE&list=PLSIGLU67ZCz_wxkzRg8fHQjupBABARQiz",
+        "duration": "100",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/25/Lucky_Town.jpg"
+
+      },
       "https://streaming.exclusive.radio/er/ironmaiden/icecast.audio"
     ],
     "goodies-5": [
@@ -447,6 +490,12 @@
     ],
     "goodies-6": [
       "https://streaming.exclusive.radio/er/softrock/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=VuBRgq6nT7s&list=PLiN-7mukU_RFqvqmtFllVdTqu9avnaE-c",
+        "title": "Bruce Springsteen  - The rising",
+        "duration": "71",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/b6/Springsteen_The_Rising.jpg"
+      },
       "https://www.youtube.com/watch?v=VuBRgq6nT7s&list=PLiN-7mukU_RFqvqmtFllVdTqu9avnaE-c",
       "https://streaming.exclusive.radio/er/abba/icecast.audio",
       "https://www.youtube.com/watch?v=fc4Dhpjwx3g&list=PLokPvQ9_SPn_sippdWrmmy_5EXzPels5I",
@@ -458,12 +507,68 @@
       "https://streaming.exclusive.radio/er/everlybrothers/icecast.audio",
       "https://www.youtube.com/watch?v=_3yosg1YE68",
       "https://streaming.exclusive.radio/er/evacassidy/icecast.audio",
+      {
+        "title": "Pantera - Vulgar display of power",
+        "path": "https://www.youtube.com/watch?v=8hu6xDPcNlE",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/12/PanteraVulgarDisplayofPower.jpg",
+        "duration": "60"
+      },
+
+      {
+        "title": "within temptation - bleed out",
+        "path": "https://www.youtube.com/watch?v=Y1QAMCYmAcY&list=PLbCRk_34_-dnHH3o82qGn19sMExAcEyp7",
+        "duration": "50"
+      },
+      {
+        "title": "Bruce Springsteen - The ghost of Tom Joad",
+        "path": "https://www.youtube.com/watch?v=CumZ9dugKKU&list=PLNPGM2D7aODew2hs5OVlHiMAkWi_UYH_h",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ea/The_Ghost_of_Tom_Joad.jpg",
+        "duration": "52"
+      },
+
       "https://streaming.exclusive.radio/er/fatsdomino/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=P_9PU0Si4b0",
+        "title": "The Stone Roses",
+        "duration": "61"
+      },
+
       "https://streaming.exclusive.radio/er/fleetwoodmac/icecast.audio",
+
+      {
+        "path": "https://www.youtube.com/watch?v=ZXZrZ26Sgqs&list=PL1622C9F99D5CC398",
+        "title": "Phoenix - Baba Novak",
+        "duration": "50",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
+      },
       "https://streaming.exclusive.radio/er/thejesusandmarychain/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=KONChf3gjnc&list=PLZQ-eoXvkD1ARztHcNiQGT4O0i5gHZXUK",
+        "title": "Bruce Springsteen - 18 tracks",
+        "duration": "72",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/c/c5/Bs-18t.jpg"
+      },
       "https://streaming.exclusive.radio/er/thecure/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=7Iaca30QbOo&list=PLgC_M284OGYeQeSsFnzpbJAPLSlsri9R0",
+        "title": "Bruce Springsteen - Greetings from Asbury Park ",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2f/Greetings_from_Asbury_Park_NJ.jpg",
+        "duration": "39"
+      },
       "https://streaming.exclusive.radio/er/thekinks/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=LWLMaZ7H3B0&list=PLX66jEixZe1xSgBpHL1OWKoGs_S7AKJU_",
+        "title": "Bruce Springsteen - The Wild, the Innocent & the E Street Shuffle",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/1f/TheWildTheInnocent.jpg",
+        "duration": "48"
+      },
       "https://streaming.exclusive.radio/er/thewho/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=W2X0Gf9jfz8&list=PLiN-7mukU_RERSYl0eVI_Qdsk2i7mlCBo",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/7a/Born_to_Run_%28Front_Cover%29.jpg",
+        "title": "Bruce Springsteen  - Born to Run",
+        "duration": "40"
+      },
       "https://streaming.exclusive.radio/er/beachboys/icecast.audio",
       "https://streaming.exclusive.radio/er/royorbison/icecast.audio",
       "https://streaming.exclusive.radio/er/pattismith/icecast.audio",
@@ -483,16 +588,81 @@
       "https://streaming.exclusive.radio/er/otisredding/icecast.audio",
       "https://www.youtube.com/watch?v=FfIZr38DLSg&list=PL9DIppW0sLtLLMhM7GivJCAVQvJxunJtg",
       "https://streaming.exclusive.radio/er/ub40/icecast.audio",
-      "https://streaming.exclusive.radio/er/ratpack/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=4jMqtRFq0q8&list=PLiN-7mukU_RHDB8v24oraagEJv57ctTNG",
+        "title": "Bruce Springsteen  - Devils and dust",
+        "duration": "77",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e3/Bruce_Springsteen_-_Devils_%26_Dust.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=OG1ctA7FXyU&list=PLiN-7mukU_RHGX-zktjaT4lO0oApwT60_",
+        "duration": "80",
+        "title": "Bruce Springsteen  - We Shall Overcome: The Seeger Sessions",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/6/6d/Seeger_sessions.jpg"
+      },
       "https://streaming.exclusive.radio/er/police/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=2f3XaoHqQuQ&list=PLNPGM2D7aODc2XU4MAMYcdNuHLo47_iTP",
+        "title":"Bruce Springsteen  - Magic",
+        "duration": "49",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/5d/Bruce_Springsteen_-_Magic.jpg"
+      },
       "https://streaming.exclusive.radio/er/neildiamond/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=QRA6lWzCpCQ&list=PLuFrIncMdIQzVUjxkojk31vhhCBb7Fnd3",
+        "duration": "60",
+        "title": "Bruce Springsteen  - Working on a dream",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/1c/Working_on_a_Dream.jpg"
+      },
       "https://streaming.exclusive.radio/er/elvispresley/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=2UmI2DqoOEg&list=PLNPGM2D7aODcn0TIJWJ_6IRk-xkLRIp55",
+        "duration": "53",
+        "title": "Bruce Springsteen  - Wrecking ball",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e3/Wreckingball.jpg"
+      },
       "https://streaming.exclusive.radio/er/thesmiths/icecast.audio",
+      {
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/8/84/High_Hopes_album_Bruce_Springsteen.jpg",
+        "title": "Bruce Springsteen  - High hopes",
+        "path": "https://www.youtube.com/watch?v=OGdNarT90hk&list=PLuFrIncMdIQwRcVh-e-GkHaP_6w9TatsW&index=1",
+        "duration": "52"
+      },
       "https://streaming.exclusive.radio/er/aerosmith/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=fX784eWx4Qk&list=PLiN-7mukU_REK8CHqSRqVqKgIwG3sAekz",
+        "duration": "60",
+        "title": "Bruce Springsteen  - Western Stars",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4e/Bruce_Springsteen_-_Western_Stars.png"
+      },
       "https://streaming.exclusive.radio/er/whitesnake/icecast.audio",
+      {
+        "title": "Bruce Springsteen  - Letter to you",
+        "path": "https://www.youtube.com/watch?v=s-RT3nxr3T4&list=PLxA687tYuMWimGUycWLLK1j2GxtHVYFkb",
+        "duration": "59",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/7e/Lettertoyou.jpg"
+      },
       "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+      {
+        "tile": "Bruce Springsteen  - Only the strong survive",
+        "path": "https://www.youtube.com/watch?v=p-yndasQvY8&list=PLxA687tYuMWgPE96YSx67JGzBayn9_u1a",
+        "duration": "51",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/73/Bruce_Springsteen_-_Only_the_Strong_Survive.png"
+      },
       "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=2YsAvibvPRE&list=PLjLlTP7TOdelm-SC_IGIG1xfukyggsois",
+        "title": "Iris - Luna plina",
+        "thumbnail": "https://i.discogs.com/eaRET-gWqNnCrbQGYWfkmTl7Slt7e9KTtgCG8R0-hG8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzNTg3/MTQtMTMzMjkyODM5/NC5qcGVn.jpeg",
+        "duration": "60"
+      },
       "https://streaming.exclusive.radio/er/pulp/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=MVl7taUQVLw&list=PL1Zw2Z8NKVUw-TRG8rTXDVZLWkSwJJv46",
+        "title": "Audioslave",
+        "duration": "67",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/ac/Audioslave_-_Audioslave.jpg"
+      },
       "https://streaming.exclusive.radio/er/radiohead/icecast.audio",
       "https://streaming.exclusive.radio/er/rem/icecast.audio"
     ]
@@ -514,7 +684,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
       "strategy": "local-first",
-      "sources": ["${local-mixed}", "${local-all}", "${generic-radios}"],
+      "sources": ["${generic-radios}"],
       "volume": "35%"
     },
     {
@@ -669,50 +839,32 @@
 
 
     {
-      "name": "any_monday_wednesday_19_20",
+      "name": "any_monday_wednesday_19_21",
       "day": "monday_wednesday",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "stream-first",
       "sources": [
-        "https://live.rockfm.ro:8443/rockfm.aacp", "${local-all}"
+        "https://live.rockfm.ro:8443/rockfm.aacp"
       ]
     },
 
 
     {
-      "name": "any_other_19_20",
+      "name": "any_other_19_21",
       "day": "tuesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "local-first",
       "sources": ["${goodies-1}", "${local-all}"]
     },
 
 
     {
-      "name": "any_other_carols_19_20",
+      "name": "any_other_carols_19_21",
       "day": "tuesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "local-first",
       "sources": ["${christmas}", "${christmas-romanian}"]
     },
-
-
-
-    {
-      "name": "weekdays_20_21",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
-      "strategy": "local-first",
-      "sources": ["${goodies-2}", "${local-all}"]
-    },
-    {
-      "name": "weekdays_carols_20_21",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
-      "strategy": "local-first",
-      "sources": ["${christmas}", "${christmas-romanian}"]
-    },
-
 
 
     {

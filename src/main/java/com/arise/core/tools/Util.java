@@ -218,6 +218,7 @@ public final class Util {
 
     public static Date now(){
 
+//        String f = FileUtil.loadProps(new File("application.properties")).getProperty("arise.forced.now");
         String f = AppSettings.getProperty(AppSettings.Keys.FORCED_NOW);
         if (StringUtil.hasText(f)){
             try {
@@ -230,7 +231,10 @@ public final class Util {
     }
 
     public static Calendar nowCalendar() {
-        String f = AppSettings.getProperty(AppSettings.Keys.FORCED_NOW);
+//        String f = FileUtil.loadProps(new File("application.properties")).getProperty("arise.forced.now");
+         String f = AppSettings.getProperty(AppSettings.Keys.FORCED_NOW);
+
+
 
         if (StringUtil.hasText(f)){
             try {

@@ -111,7 +111,7 @@ public class Show {
         if (_playing) {
             closeTimer(t);
             _playing = false;
-
+            log.info("close_all_resources calls stop");
             mPlayer.stop(new Handler<MediaPlayer>() {
                 @Override
                 public void handle(MediaPlayer mediaPlayer) {
@@ -348,7 +348,7 @@ public class Show {
 
     public void stop(Handler<MediaPlayer> h) {
 
-        log.info("show stop");
+        log.info("show " + name() + " stop");
         _playing = false;
         closeTimer(t);
         mPlayer.stop(h);

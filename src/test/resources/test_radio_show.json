@@ -1,0 +1,843 @@
+{
+  "lists": {
+
+    "local-all": [
+      "file:${music_dir}/mixed",
+      "file:${usb_drive_0}/Music/mixed",
+      "file:${usb_drive_0}/Music/sounds",
+      "file:${usb_drive_0}/Music/dance",
+      "file:/media/kids/407B-B087/Music/mixed",
+      "file:/media/kids/407B-B087/Music/sounds",
+      "file:/media/kids/407B-B087/Music/dance",
+      "file:/media/kids/7CB607A1B6075B52/Music/dance"
+    ],
+    "local-mixed": [
+      "file:/media/kids/407B-B087/Music/mixed",
+      "file:${usb_drive_0}/Music/mixed"
+    ],
+    "local-sounds": [
+      "file:${usb_drive_0}/Music/sounds",
+      "file:/media/kids/407B-B087/Music/sounds"
+    ],
+    "relax": [
+      {
+        "title": "Leonard Cohen - Old ideas",
+        "path": "https://www.youtube.com/watch?v=sc_J0_WAIuM&list=PLNDXDJtQAOanpjrFnzTmg158aSpDRe7D3"
+      },
+      {
+        "title": "Songs of Leonard Cohen",
+        "path": "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"
+      },
+      "https://www.youtube.com/watch?v=L86tbBjkCOY",
+      "https://www.youtube.com/watch?v=ekAWjg-y3EI",
+      "https://www.youtube.com/watch?v=h8l84GLG-lI",
+      "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+      "https://streamingv2.shoutcast.com/Beethoven-Radio",
+      "https://www.youtube.com/watch?v=US3AN4yFCu8&t=1211s",
+      "https://streaming.exclusive.radio/er/jeanmicheljarre/icecast.audio",
+      "https://drive.uber.radio/uber/calmbirdsong/icecast.audio",
+      "https://www.youtube.com/watch?v=62j1xAdYKAQ",
+      "https://drive.uber.radio/uber/calmdreamscape/icecast.audio",
+      "https://www.youtube.com/watch?v=1aDl9ZsxAfE",
+      "https://drive.uber.radio/uber/calmpiano/icecast.audio",
+      "https://www.youtube.com/watch?v=BbbWJIvb94c",
+      "https://drive.uber.radio/uber/calmreiki/icecast.audio",
+      "https://www.youtube.com/watch?v=wsDSUax7_Ks",
+      "https://drive.uber.radio/uber/calmjungle/icecast.audio",
+      "https://www.youtube.com/watch?v=cFYyErEn_iA",
+      "https://drive.uber.radio/uber/calmsoundscapes/icecast.audio",
+      "https://www.youtube.com/watch?v=qHxXqzsjcqc",
+      "https://drive.uber.radio/uber/jjraljarreau/icecast.audio",
+      "https://www.youtube.com/watch?v=CpAkBWG8eu8",
+      "https://drive.uber.radio/uber/jjramywinehouse/icecast.audio",
+      "https://www.youtube.com/watch?v=-ZWwmVDQ20Q",
+      "https://drive.uber.radio/uber/jjrarttatum/icecast.audio",
+      "https://www.youtube.com/watch?v=2UpVysqootk&list=PLi7MVFI9bRy5aHG9YeCJjvf451nFrsJo1",
+      "https://drive.uber.radio/uber/jjrbillevans/icecast.audio",
+      "https://www.youtube.com/watch?v=xsTtJWGTw0A&list=PLVkdHEyrl5l3a90O1FyEGkGJNpJUlrsxo&index=1",
+      "https://drive.uber.radio/uber/jjrbillieholiday/icecast.audio",
+      "https://www.youtube.com/watch?v=OcBtAoL_AaY&list=PL1JmU8l-9JbWI_x1qGOCOlnwezNQ71F0z",
+      "https://drive.uber.radio/uber/jjrcharlesmingus/icecast.audio",
+      "https://drive.uber.radio/uber/jjrcharlieparker/icecast.audio",
+      "https://drive.uber.radio/uber/jjrchetbaker/icecast.audio",
+      "https://drive.uber.radio/uber/jjrdjangoreinhardt/icecast.audio",
+      "https://drive.uber.radio/uber/jjrjohncoltrane/icecast.audio",
+      "https://www.youtube.com/watch?v=D_5BsfbFixc",
+      "https://drive.uber.radio/uber/jjrdianakrall/icecast.audio",
+      "https://www.youtube.com/watch?v=m_zBIKrF9G0&list=PLMl0O4f3Cvd-lkqF2g7UQMjmPOwwd6M4k",
+      "https://drive.uber.radio/uber/jjrdavebrubeck/icecast.audio",
+      "https://www.youtube.com/watch?v=i5J5LTi4xDg&list=PL1JmU8l-9JbWMRgp4NoPRaxIMFU0oSue0",
+      "https://drive.uber.radio/uber/jjrwoodyherman/icecast.audio",
+      "https://www.youtube.com/watch?v=GxWgRnnWfcc&list=PLH1JGOJgZ2u2J7bRnfjl-7kDj_vQKTPa6",
+      "https://drive.uber.radio/uber/cmrjohnnycash/icecast.audio",
+      "https://stm1.srvif.com:7576/stream/1/",
+      "https://streams.calmradio.com:10428/stream/1/",
+      "https://stream2-0nlineradio.radiohost.de/vivaldi",
+      "https://streams.calmradio.com:8928/stream/1/",
+      "https://live.radioart.com/fMozart.mp3",
+      "https://2.mystreaming.net/uber/crmozart/icecast.audio",
+      "https://air.radioart.online/fChopin.mp3",
+      "https://air.radioart.online/fVocal_chillout.mp3",
+      "https://www.youtube.com/watch?v=DxnDcH2NS5c",
+      "https://www.youtube.com/watch?v=4VXErA63_eg",
+      "https://www.youtube.com/watch?v=BE6JUt9LnCw",
+      "https://www.youtube.com/watch?v=EYWEprqoLAQ",
+      "https://www.youtube.com/watch?v=QSnDaQ2nCy8"
+    ],
+    "christmas-romanian": [
+      "file:/storage/emulated/0/Documents/arise-app/",
+      "http://colinde.radiohot.ro:8000/;",
+      "http://colinde2.radioplay.ro:9292/;stream.nsv",
+      "http://37.251.146.169:8900/stream",
+      "http://www.clasicradio.ro:8900/stream",
+      "https://craciun.radiomegahit.eu:8114/stream"
+    ],
+    "christmas": [
+      "https://generations-thema.ice.infomaniak.ch/generations-thema.aac",
+      "https://s01.digitalserver.org:7638/;stream.nsv",
+      "https://listen.openstream.co/3667/audio",
+      "https://listen.openstream.co/4169/audio",
+      "https://ais-sa5.cdnstream1.com/b55667_128mp3",
+      "https://christmasfm.cdnstream1.com/2549_128.mp3",
+      "https://christmasfm.cdnstream1.com/2550_128.mp3",
+      "https://christmasfm.cdnstream1.com/2547_128.mp3",
+      "https://christmasfm.cdnstream1.com/2549_128.mp3",
+      "https://media-ssl.musicradio.com/HeartXmas",
+      "https://edge51.streams.arabella.at/arabella-christmas",
+      "https://stream.laut.fm/magic-christmas",
+      "https://radioxmaslive.radioca.st/stream",
+      "https://streaming.exclusive.radio/er/christmaspop/icecast.audio",
+      "https://streaming.exclusive.radio/er/christmascarols/icecast.audio",
+      "https://bestofrockfm.stream.vip/xmasrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/altrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/acdc/mp3-128/bestofrockfm.stream.vip"
+    ],
+    "generic-radios": [
+      "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
+      "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
+      "https://i4.streams.ovh/sc/bluesrad/stream",
+      "https://live.rockfm.ro/ballads.rock",
+      "https://bestofrockfm.stream.vip/90rock/mp3-128/bestofrockfm.stream.vip",
+      "https://live.rockfm.ro/blues",
+      "https://bestofrockfm.stream.vip/80rock/aac-64/bestofrockfm.stream.vip",
+      "https://live.rockfm.ro/hard.rock",
+      "https://web.smartradio.ro:8443/smartnroll",
+      "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053",
+      {
+        "title": "Radio folk",
+        "path": "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3"
+      },
+      "https://streaming.exclusive.radio/er/italy/icecast.audio",
+      "https://www.youtube.com/watch?v=dKd25JBBL3E",
+      "https://streaming.exclusive.radio/er/musiquefrancaise/icecast.audio",
+      "https://www.youtube.com/watch?v=TN-Imp3N3dM&list=PLMl0O4f3Cvd-mVdisGybFKxYTr5y_z74D&index=1",
+      "https://streaming.exclusive.radio/er/hollywoodandbroadway/icecast.audio",
+      "https://drive.uber.radio/uber/jjrbennygoodman/icecast.audio",
+      "https://asculta.radioromanian.net/8800/stream?ver=587047",
+      "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip",
+      "https://radio.nugs.net/pearljam",
+      "https://stream.lolliradio.net/lolli_italia.mp3"
+    ],
+    "week-list-1": [
+      "https://streaming.exclusive.radio/er/INXS/icecast.audio",
+      "https://www.youtube.com/watch?v=nVncHu2zAbM",
+      "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+      "https://www.youtube.com/watch?v=W5hpnLIswbQ&list=PLMEZyDHJojxObikH_duAoKPz9TfkxdQKu&index=1",
+      "https://streaming.exclusive.radio/er/joebonamassa/icecast.audio",
+      "https://streaming.exclusive.radio/er/alicecooper/icecast.audio",
+      "https://www.youtube.com/watch?v=5LqOgFrfuJY&list=PLNPGM2D7aODe7899Yra6qD_PYEHNJdzbS",
+      "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
+      "https://www.youtube.com/watch?v=zq-xBpjlYKo",
+      "https://streaming.exclusive.radio/er/arethafranklin/icecast.audio",
+      "https://www.youtube.com/watch?v=Nc7bHU6ylvM",
+      "https://streaming.exclusive.radio/er/blur/icecast.audio",
+      "https://streaming.exclusive.radio/er/blondie/icecast.audio",
+      "https://streaming.exclusive.radio/er/simongarfunkle/icecast.audio",
+      "https://streaming.exclusive.radio/er/velvetunderground/icecast.audio",
+      "https://www.youtube.com/watch?v=W9t3t2Cl0Nw",
+      "https://ais-sa5.cdnstream1.com/b87537_128mp3",
+      "https://2.mystreaming.net/uber/ghr/icecast.audio",
+      "https://nl4.mystreaming.net/uber/boomerang2000s/icecast.audio",
+      "https://www.youtube.com/watch?v=UK0D-tlCW1I"
+    ],
+    "week-list-2": [
+      {
+        "title": "Leonard Cohen - new skin for old ceremonies",
+        "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb"
+      },
+      "https://streaming.exclusive.radio/er/nirvana/icecast.audio",
+      {
+        "title": "Bruce Springtsteen - Darkness at the edge of town",
+        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1"
+      },
+      "https://streaming.exclusive.radio/er/foreigner/icecast.audio",
+      "https://www.youtube.com/watch?v=pqy9magFBNY&list=PLiN-7mukU_RE6-LmaokFMNhxBjopXjcjX&index=1",
+      "https://streaming.exclusive.radio/er/pretenders/icecast.audio",
+      "https://www.youtube.com/watch?v=jyL5pCtPr8w&list=PL6AzCsx6JyOzzjA0GPeUtYmzBPeiK2rtP&index=1",
+      "https://streaming.exclusive.radio/er/tiktoktrending/icecast.audio",
+      "https://www.youtube.com/watch?v=NrgcRvBJYBE&list=PL63NS6l4Mo09mj1-0LFmJ685dUtDRoOlZ",
+      "https://streaming.exclusive.radio/er/garymoore/icecast.audio",
+      "https://streaming.exclusive.radio/er/heart/icecast.audio",
+      "https://streaming.exclusive.radio/er/simongarfunklehits/icecast.audio",
+      "https://www.youtube.com/watch?v=_gozzJ5Yjsc",
+      "https://streaming.exclusive.radio/er/talkingheadshits/icecast.audio",
+      "https://bestofrockfm.stream.vip/rammstein/mp3-128/bestofrockfm.stream.vip",
+      "https://www.youtube.com/watch?v=PSQJexTGO24",
+      "https://bestofrockfm.stream.vip/party/mp3-128/bestofrockfm.stream.vip",
+      "https://www.youtube.com/watch?v=mr5FEI3S7L4",
+      "https://bestofrockfm.stream.vip/metallica/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/metal/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/hardrock/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/deutsch/mp3-128/bestofrockfm.stream.vip",
+      "https://bestofrockfm.stream.vip/classic/mp3-128/bestofrockfm.stream.vip",
+      "https://www.youtube.com/watch?v=g6obP-zTFUk"
+    ],
+    "week-list-3": [
+      "https://www.youtube.com/watch?v=doG9HtOnktA",
+      "https://streaming.exclusive.radio/er/beatles/icecast.audio",
+      "https://www.youtube.com/watch?v=uKsF9bzSTZA",
+      "https://streaming.exclusive.radio/er/kingsofleon/icecast.audio",
+      "https://www.youtube.com/watch?v=vPFNVJuPgAY&list=PLMl0O4f3Cvd9eIzmufgYrSabDprlsKeF9&index=2",
+      "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+      "https://www.youtube.com/watch?v=Te_-nISxLVI",
+      "https://streaming.exclusive.radio/er/joesatriani/icecast.audio",
+      "https://streaming.exclusive.radio/er/johnleehooker/icecast.audio",
+      "https://streaming.exclusive.radio/er/billyidol/icecast.audio",
+      "https://streaming.exclusive.radio/er/bodiddley/icecast.audio",
+      "https://streaming.exclusive.radio/er/bonjovi/icecast.audio",
+      "https://www.youtube.com/watch?v=s-RT3nxr3T4&list=PLxA687tYuMWimGUycWLLK1j2GxtHVYFkb&index=1",
+      "https://streaming.exclusive.radio/er/ragnboneman/icecast.audio",
+      "https://www.youtube.com/watch?v=az5f0ZFNw4E",
+      "https://streaming.exclusive.radio/er/ramones/icecast.audio",
+      "https://www.youtube.com/watch?v=Kt-tLuszKBA",
+      "https://streaming.exclusive.radio/er/kiss/icecast.audio",
+      "https://www.youtube.com/watch?v=E9Iau_oik-E",
+      "https://streaming.exclusive.radio/er/liamgallagher/icecast.audio",
+      "https://www.youtube.com/watch?v=4hfREHh-uA0&list=PLMl0O4f3Cvd-C6T60pjuX92uQDfR4JIFz&index=1",
+      "https://streaming.exclusive.radio/er/lionelrichie/icecast.audio",
+      "https://www.youtube.com/watch?v=Dwqv5n1hug4&list=PLMl0O4f3Cvd-4UA5QyI8GTz_V6XZ1ofXi&index=1",
+      "https://streaming.exclusive.radio/er/robertpalmer/icecast.audio",
+      "https://streaming.exclusive.radio/er/beatles/icecast.audio"
+    ],
+    "week-list-4": [
+      "https://streaming.exclusive.radio/er/gongs/icecast.audio",
+      "https://stream.srg-ssr.ch/m/rsj/mp3_128",
+      "https://streaming.exclusive.radio/er/ericclapton/icecast.audio",
+      "https://www.youtube.com/watch?v=-0OubtmmuZs&list=PLMl0O4f3Cvd_NKAypcRIDcf0oouUJ-iI9&index=1",
+      "https://streaming.exclusive.radio/er/chuckberry/icecast.audio",
+      "https://www.youtube.com/watch?v=7OvW8Z7kiws&list=PLXhfRoiJBIiuXOUv_7EJ1i7UKj0aGfy0U&index=1",
+      "https://streaming.exclusive.radio/er/creedence/icecast.audio",
+      "https://streaming.exclusive.radio/er/blues/icecast.audio",
+      "https://streaming.exclusive.radio/er/howlinwolf/icecast.audio",
+      "https://www.youtube.com/watch?v=ifZqnS5gNHU",
+      "https://streaming.exclusive.radio/er/carpenters/icecast.audio",
+      "https://streaming.exclusive.radio/er/streisand/icecast.audio",
+      "https://www.youtube.com/watch?v=aXTCDB70Qgo&list=PLXhfRoiJBIislZ9MHBBNYK0h3N30Gv7Ja&index=1",
+      "https://streaming.exclusive.radio/er/folk/icecast.audio",
+      "https://streaming.exclusive.radio/er/lovemovies/icecast.audio",
+      "https://www.youtube.com/watch?v=hZ8QtwH7r80&list=PLpI6XGqHb_GQVh6mJKnmm3XXgj_06nJ9G&index=1",
+      "https://drive.uber.radio/uber/rtwprog/icecast.audio",
+      "https://www.youtube.com/watch?v=dFOWrM0pcN4&list=PLMl0O4f3Cvd_eC_XAmE9LdTD55ozq5sFl&index=1",
+      "https://2.mystreaming.net/uber/rtwalt/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwblues/icecast.audio",
+      "https://www.youtube.com/watch?v=WIU35gmHERk&list=PLj1SE6iDXw_Ut7Stxez9WkenZz8x6UidH&index=1",
+      "https://2.mystreaming.net/uber/rtwclassics/icecast.audio",
+      "https://www.youtube.com/watch?v=ATN17Y8SJPw&list=PLG_5Ixm1ZwTTHDkxnvawtcDzIoWlxeu_a&index=1",
+      "https://2.mystreaming.net/uber/rtwprog/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwcountry/icecast.audio",
+      "https://nl4.mystreaming.net/uber/rtwheavymetal/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwpunk/icecast.audio",
+      "https://2.mystreaming.net/uber/rtwstadium/icecast.audio"
+    ],
+    "week-list-5": [
+      "https://live.magicfm.ro/magicfm.aacp",
+      "https://streaming.exclusive.radio/er/boston/icecast.audio",
+      "https://www.youtube.com/watch?v=MznqUCF0wE0&list=PLJ2I_U9XF3oAzJfP9u6LdRiQnQNkFD01d&index=1",
+      "https://streaming.exclusive.radio/er/belindacarlisle/icecast.audio",
+      "https://www.youtube.com/watch?v=dPcEC-bKb0A&list=PL9nsRNB6in8si4CXgLn0mS21tZRy0Zi7S&index=1",
+      "https://streaming.exclusive.radio/er/camilacabello/icecast.audio",
+      "https://streaming.exclusive.radio/er/christinaaguilera/icecast.audio",
+      "https://www.youtube.com/watch?v=Cpz8R0e1mqI",
+      "https://streaming.exclusive.radio/er/dianaross/icecast.audio",
+      "https://www.youtube.com/watch?v=uTk8hAmyLd0",
+      "https://streaming.exclusive.radio/er/donnasummer/icecast.audio",
+      "https://www.youtube.com/watch?v=CGvFT6NBSWM",
+      "https://streaming.exclusive.radio/er/enriqueiglesias/icecast.audio",
+      "https://www.youtube.com/watch?v=FyjiwtUATvQ",
+      "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio",
+      "https://www.youtube.com/watch?v=4r1USrd4vB0",
+      "https://streaming.exclusive.radio/er/beegees/icecast.audio",
+      "https://www.youtube.com/watch?v=sW1ZJNVAc-Q&list=PLMl0O4f3Cvd_9VWPGZagkA_1Lw-1apMJS",
+      "https://streaming.exclusive.radio/er/sherylcrow/icecast.audio",
+      "https://www.youtube.com/watch?v=d58VJ-sC1uY&list=PLMl0O4f3Cvd9ctFgKkAqYCQ_YGVPoKTXC&index=1",
+      "https://www.youtube.com/watch?v=-0a5-J2somM",
+      "https://streaming.exclusive.radio/er/shaniatwain/icecast.audio",
+      "https://www.youtube.com/watch?v=-3hyrkzFRss&list=PLMl0O4f3Cvd-nqvqTst0DWP5JnGF7w6lL&index=1",
+      "https://www.youtube.com/watch?v=zw44oG-EVQo",
+      "https://streaming.exclusive.radio/er/arcticmonkeys/icecast.audio",
+      "https://www.youtube.com/watch?v=LD2i99QPVI0",
+      "https://www.youtube.com/watch?v=oD3pm71Scm0",
+      "https://www.youtube.com/watch?v=z0tkk1CFIiU"
+    ],
+    "week-list-6": [
+      "https://streaming.exclusive.radio/er/softrock/icecast.audio",
+      "https://www.youtube.com/watch?v=HD1TwAxD4TM&list=PLMl0O4f3Cvd82NEt_f-t4AnHh5hzKnOZj&index=1",
+      "https://streaming.exclusive.radio/er/brunomars/icecast.audio",
+      "https://www.youtube.com/watch?v=a_426RiwST8&list=PLMl0O4f3Cvd8ImjGtrr28-4x9GPneb4nq&index=1",
+      "https://streaming.exclusive.radio/er/bryanferry/icecast.audio",
+      "https://streaming.exclusive.radio/er/dollyparton/icecast.audio",
+      "https://www.youtube.com/watch?v=0E273iLnz20",
+      "https://streaming.exclusive.radio/er/jerryleelewis/icecast.audio",
+      "https://www.youtube.com/watch?v=uwhDYhV1_yw&list=PL6s5zI4bloHQd9r00LklgJp71J-Ozes2d&index=1",
+      "https://streaming.exclusive.radio/er/eagles/icecast.audio",
+      "https://streaming.exclusive.radio/er/sia/icecast.audio",
+      "https://streaming.exclusive.radio/er/yes/icecast.audio",
+      "https://streaming.broadcastradio.com:11135/celtic",
+      "https://streaming.exclusive.radio/er/whitneyhouston/icecast.audio",
+      "https://www.youtube.com/watch?v=qnPU5GNeuHU&list=PLMl0O4f3Cvd-J35g016m9PZP50fcyhf5Y&index=1",
+      "https://streaming.exclusive.radio/er/shakira/icecast.audio",
+      "https://www.youtube.com/watch?v=TEjETwCXNzM&list=PLMl0O4f3Cvd8tXwTOCjgVlwepXi6AGX1T&index=1",
+      "https://streaming.exclusive.radio/er/savagegarden/icecast.audio",
+      "https://www.youtube.com/watch?v=YQpqz5Y_jbg&list=PLMl0O4f3Cvd-44q3lzxmyRMi9f6aAgVdB&index=1",
+      "https://streaming.exclusive.radio/er/mileycyrus/icecast.audio",
+      "https://www.youtube.com/watch?v=91jcrBzRIjE&list=PLNOMOql-VSWmwiH8MNxFI_Pjf2B7RIJtY",
+      "https://streaming.exclusive.radio/er/pussycatdolls/icecast.audio",
+      "https://www.youtube.com/watch?v=cxd_yPHUFZg",
+      "https://streaming.exclusive.radio/er/prince/icecast.audio",
+      "https://streaming.exclusive.radio/er/pink/icecast.audio"
+    ],
+    "week-list-7": [
+      "https://streaming.exclusive.radio/er/goodnight/icecast.audio",
+      "https://www.youtube.com/watch?v=13m5-0EOwIM",
+      "https://streaming.exclusive.radio/er/stonetemplepilots/icecast.audio",
+      "https://www.youtube.com/watch?v=umj1X4jo1tE",
+      "https://streaming.exclusive.radio/er/bodiddley/icecast.audio",
+      "https://www.youtube.com/watch?v=a79YXmeIPRQ",
+      "https://streaming.exclusive.radio/er/bobmarley/icecast.audio",
+      "https://www.youtube.com/watch?v=l3hOg4frKZY",
+      "https://streaming.exclusive.radio/er/annielennox/icecast.audio",
+      "https://www.youtube.com/watch?v=HkVNiMCu9aA",
+      "https://streaming.exclusive.radio/er/billwithers/icecast.audio",
+      "https://www.youtube.com/watch?v=PCtcRfvcOqs",
+      "https://streaming.exclusive.radio/er/billyidol/icecast.audio",
+      "https://www.youtube.com/watch?v=ZICZtphhaKA",
+      "https://streaming.exclusive.radio/er/billyjoel/icecast.audio",
+      "https://www.youtube.com/watch?v=yHb4yLpfrCQ",
+      "https://streaming.exclusive.radio/er/defleppard/icecast.audio",
+      "https://www.youtube.com/watch?v=mlfMQxl0NTI&list=PLMl0O4f3Cvd8K1uXYBj6XBrpXiqyza072&index=1",
+      "https://streaming.exclusive.radio/er/depechemode/icecast.audio",
+      "https://www.youtube.com/watch?v=ZsZd4wrlbic&list=PLMl0O4f3Cvd-P5Ir55uLVpq54H1dmN1rO&index=1",
+      "https://streaming.exclusive.radio/er/eurythmics/icecast.audio",
+      "https://www.youtube.com/watch?v=bRDCJYC0rwQ&list=PLMl0O4f3Cvd9m2UJuBx9kQkvoh42emrO6&index=1",
+      "https://streaming.exclusive.radio/er/foofighters/icecast.audio",
+      "https://www.youtube.com/watch?v=q9crwJYuALY",
+      "https://streaming.exclusive.radio/er/michaeljackson/icecast.audio",
+      "https://www.youtube.com/watch?v=rqRcwbdIIS0&list=PLMl0O4f3Cvd_trYeti5JK1fHzFKu1yu9-&index=1",
+      "https://streaming.exclusive.radio/er/muddywaters/icecast.audio",
+      "https://www.youtube.com/watch?v=LQ3G7QaYgMA"
+    ],
+    "goodies-1": [
+      "https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio",
+      "https://www.youtube.com/watch?v=QnXOSUQ5HJY",
+      "https://streaming.exclusive.radio/er/howlinwolf/icecast.audio",
+      "https://www.youtube.com/watch?v=oD3pm71Scm0",
+      "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
+      "https://www.youtube.com/watch?v=91vU3kHtnoU",
+      "https://streaming.exclusive.radio/er/deeppurple/icecast.audio",
+      "https://www.youtube.com/watch?v=iPZNZLngvQg&list=PLMl0O4f3Cvd8R6uagnEKo7ZNmVw0UIZnn&index=1",
+      "https://streaming.exclusive.radio/er/whitestripes/icecast.audio",
+      "https://streaming.exclusive.radio/er/rorygallagher/icecast.audio",
+      "https://streaming.exclusive.radio/er/springsteen/icecast.audio",
+      "https://streaming.exclusive.radio/er/ledzeppelin/icecast.audio",
+      "https://streaming.exclusive.radio/er/doors/icecast.audio",
+      "https://streaming.exclusive.radio/er/greenday/icecast.audio",
+      "https://www.youtube.com/watch?v=1UHpCzhvQ3s"
+    ],
+    "goodies-2": [
+      "https://streaming.exclusive.radio/er/michaelbolton/icecast.audio",
+      "https://www.youtube.com/watch?v=BLs2uzaHYBw",
+      "https://streaming.exclusive.radio/er/bobdylan/icecast.audio",
+      "https://www.youtube.com/watch?v=90zyF3gPF8M",
+      "https://streaming.exclusive.radio/er/elvispresleyhits/icecast.audio",
+      "https://www.youtube.com/watch?v=INjCV5PuuQM",
+      "https://streaming.exclusive.radio/er/franksinatra/icecast.audio",
+      "https://www.youtube.com/watch?v=DEf0iT6r7z4",
+      "https://streaming.exclusive.radio/er/gloriaestefan/icecast.audio",
+      "https://www.youtube.com/watch?v=Nc7bHU6ylvM&t=17s",
+      "https://streaming.exclusive.radio/er/rollingstones/icecast.audio",
+      "https://www.youtube.com/watch?v=D4KQae9oMWs",
+      "https://streaming.exclusive.radio/er/tompetty/icecast.audio",
+      "https://www.youtube.com/watch?v=klVu1sf6HO4",
+      "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+      "https://www.youtube.com/watch?v=yTp5runGeBM",
+      "https://streaming.exclusive.radio/er/tomwaits/icecast.audio",
+      "https://www.youtube.com/watch?v=PzehKBGFR_4",
+      "https://streaming.exclusive.radio/er/lanadelrey/icecast.audio",
+      "https://www.youtube.com/watch?v=ECj6yy5hOLE",
+      "https://streaming.exclusive.radio/er/leonardcohen/icecast.audio",
+      "https://www.youtube.com/watch?v=adWscc_KpTo",
+      "https://streaming.exclusive.radio/er/adele/icecast.audio",
+      "https://streaming.exclusive.radio/er/meatloaf/icecast.audio"
+    ],
+    "goodies-3": [
+      "https://streaming.exclusive.radio/er/queen/icecast.audio",
+      "https://www.youtube.com/watch?v=cOtMZW2jkIo",
+      "https://streaming.exclusive.radio/er/metallica/icecast.audio",
+      "https://streaming.exclusive.radio/er/texas/icecast.audio",
+      "https://streaming.exclusive.radio/er/stevierayvaughan/icecast.audio",
+      "https://www.youtube.com/watch?v=6Ymjklj0RZQ",
+      "https://streaming.exclusive.radio/er/jimmycliff/icecast.audio",
+      "https://www.youtube.com/watch?v=1fAyQyBZJVA&list=PLudVi421d2lLWX1CiXf1BtMJYPvrI3nTz",
+      "https://www.youtube.com/watch?v=fWvKvOViM3g",
+      "https://streaming.exclusive.radio/er/joanjett/icecast.audio",
+      "https://www.youtube.com/watch?v=31vjCNgsGy0",
+      "https://streaming.exclusive.radio/er/joanbaez/icecast.audio",
+      "https://www.youtube.com/watch?v=1hVCNJQoH-0",
+      "https://streaming.exclusive.radio/er/sting/icecast.audio",
+      "https://www.youtube.com/watch?v=TnF0vlnNLks",
+      "https://streaming.exclusive.radio/er/rodstewart/icecast.audio",
+      "https://www.youtube.com/watch?v=fdrJ7sAFmHU",
+      "https://streaming.exclusive.radio/er/bryanadams/icecast.audio",
+      "https://www.youtube.com/watch?v=zbml_RkW5I8",
+      "https://streaming.exclusive.radio/er/davidbowie/icecast.audio",
+      "https://www.youtube.com/watch?v=-eHkDbuRKIo",
+      "https://streaming.exclusive.radio/er/beatles/icecast.audio",
+      "https://www.youtube.com/watch?v=sdNqk_CEYh0"
+    ],
+    "goodies-4": [
+      "https://streaming.exclusive.radio/er/jazz/icecast.audio",
+      "https://www.youtube.com/watch?v=jahKyTWI5AM",
+      "https://www.youtube.com/watch?v=BIzgbQHoJ1c",
+      "https://streaming.exclusive.radio/er/bbking/icecast.audio",
+      "https://www.youtube.com/watch?v=q5Wo1vnt6iI",
+      "https://streaming.exclusive.radio/er/ettajames/icecast.audio",
+      "https://www.youtube.com/watch?v=1eNSWZ4x2ZU",
+      "https://streaming.exclusive.radio/er/joesatriani/icecast.audio",
+      "https://www.youtube.com/watch?v=PjkOLjJgNBo",
+      "https://streaming.exclusive.radio/er/raycharles/icecast.audio",
+      "https://www.youtube.com/watch?v=iHaGtlV0l7w&list=PLMl0O4f3Cvd8QrUCV2R7FvK0aJGHKst8_&index=1",
+      "https://streaming.exclusive.radio/er/jamesblunt/icecast.audio",
+      "https://www.youtube.com/watch?v=uejFzUuGS38",
+      "https://streaming.exclusive.radio/er/jamesbrown/icecast.audio",
+      "https://www.youtube.com/watch?v=W9t3t2Cl0Nw",
+      "https://streaming.exclusive.radio/er/irishfolk/icecast.audio",
+      "https://streaming.exclusive.radio/er/chrisrea/icecast.audio",
+      "https://streaming.exclusive.radio/er/chilipeppers/icecast.audio",
+      "https://streaming.exclusive.radio/er/robbiewilliams/icecast.audio",
+      "https://streaming.exclusive.radio/er/gunsnroses/icecast.audio",
+      "https://streaming.exclusive.radio/er/ironmaiden/icecast.audio"
+    ],
+    "goodies-5": [
+      "https://streaming.exclusive.radio/er/blacksabbath/icecast.audio",
+      "https://www.youtube.com/watch?v=ijhpg65oOUg",
+      "https://streaming.exclusive.radio/er/acdc/icecast.audio",
+      "https://www.youtube.com/watch?v=rOnrA9SKaG0",
+      "https://www.youtube.com/watch?v=N_lb1NmHIls",
+      "https://streaming.exclusive.radio/er/vanmorrison/icecast.audio",
+      "https://www.youtube.com/watch?v=fWvKvOViM3g",
+      "https://streaming.exclusive.radio/er/katebush/icecast.audio",
+      "https://streaming.exclusive.radio/er/bobseger/icecast.audio",
+      "https://streaming.exclusive.radio/er/catstevens/icecast.audio",
+      "https://streaming.exclusive.radio/er/direstraits/icecast.audio",
+      "https://www.youtube.com/watch?v=7bm2C5kmFmw&list=PLMl0O4f3Cvd9eZJ1JBb_L3-HWTpP_Scv8",
+      "https://streaming.exclusive.radio/er/genesis/icecast.audio",
+      "https://www.youtube.com/watch?v=e0-iUrRN8R8",
+      "https://streaming.exclusive.radio/er/afternoon/icecast.audio",
+      "https://www.youtube.com/watch?v=fTi7EgmPc40"
+    ],
+    "goodies-6": [
+      "https://streaming.exclusive.radio/er/softrock/icecast.audio",
+      "https://www.youtube.com/watch?v=VuBRgq6nT7s&list=PLiN-7mukU_RFqvqmtFllVdTqu9avnaE-c",
+      "https://streaming.exclusive.radio/er/abba/icecast.audio",
+      "https://www.youtube.com/watch?v=fc4Dhpjwx3g&list=PLokPvQ9_SPn_sippdWrmmy_5EXzPels5I",
+      "https://streaming.exclusive.radio/er/amywinehouse/icecast.audio",
+      "https://streaming.exclusive.radio/er/barrywhite/icecast.audio",
+      "https://www.youtube.com/watch?v=beFo9WgmwXg",
+      "https://streaming.exclusive.radio/er/streisandhits/icecast.audio",
+      "https://www.youtube.com/watch?v=4Y8kJGK2C0Y",
+      "https://streaming.exclusive.radio/er/everlybrothers/icecast.audio",
+      "https://www.youtube.com/watch?v=_3yosg1YE68",
+      "https://streaming.exclusive.radio/er/evacassidy/icecast.audio",
+      "https://streaming.exclusive.radio/er/fatsdomino/icecast.audio",
+      "https://streaming.exclusive.radio/er/fleetwoodmac/icecast.audio",
+      "https://streaming.exclusive.radio/er/thejesusandmarychain/icecast.audio",
+      "https://streaming.exclusive.radio/er/thecure/icecast.audio",
+      "https://streaming.exclusive.radio/er/thekinks/icecast.audio",
+      "https://streaming.exclusive.radio/er/thewho/icecast.audio",
+      "https://streaming.exclusive.radio/er/beachboys/icecast.audio",
+      "https://streaming.exclusive.radio/er/royorbison/icecast.audio",
+      "https://streaming.exclusive.radio/er/pattismith/icecast.audio",
+      "https://streaming.exclusive.radio/er/roxette/icecast.audio"
+    ],
+    "goodies-7": [
+      "https://streaming.exclusive.radio/er/santana/icecast.audio",
+      "https://www.youtube.com/playlist?list=PLMl0O4f3Cvd8KuGAh0snWm3emIQch4BhT",
+      "https://streaming.exclusive.radio/er/scorpions/icecast.audio",
+      "https://www.youtube.com/watch?v=fOVfeui3KwE",
+      "https://streaming.exclusive.radio/er/neilyoung/icecast.audio",
+      "https://www.youtube.com/watch?v=Xl8LLQx8phc",
+      "https://streaming.exclusive.radio/er/ninasimone/icecast.audio",
+      "https://www.youtube.com/watch?v=K8-AbI3b6e8",
+      "https://streaming.exclusive.radio/er/norahjones/icecast.audio",
+      "https://www.youtube.com/watch?v=idxfd3t1Goo",
+      "https://streaming.exclusive.radio/er/otisredding/icecast.audio",
+      "https://www.youtube.com/watch?v=FfIZr38DLSg&list=PL9DIppW0sLtLLMhM7GivJCAVQvJxunJtg",
+      "https://streaming.exclusive.radio/er/ub40/icecast.audio",
+      "https://streaming.exclusive.radio/er/police/icecast.audio",
+      "https://streaming.exclusive.radio/er/neildiamond/icecast.audio",
+      "https://streaming.exclusive.radio/er/elvispresley/icecast.audio",
+      "https://streaming.exclusive.radio/er/thesmiths/icecast.audio",
+      "https://streaming.exclusive.radio/er/aerosmith/icecast.audio",
+      "https://streaming.exclusive.radio/er/whitesnake/icecast.audio",
+      "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
+      "https://streaming.exclusive.radio/er/thinlizzy/icecast.audio",
+      "https://streaming.exclusive.radio/er/pulp/icecast.audio",
+      "https://streaming.exclusive.radio/er/radiohead/icecast.audio",
+      "https://streaming.exclusive.radio/er/rem/icecast.audio"
+    ]
+  },
+  "shows": [
+    {
+      "name": "any_morning",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_06:55:00_AND_10:40:00",
+      "strategy": "stream-first",
+      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp", "${local-mixed}"],
+      "volume": "25%"
+    },
+
+
+
+    {
+      "name": "weekdays_10-40_11-40",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
+      "strategy": "local-first",
+      "sources": ["${local-mixed}", "${local-all}", "${generic-radios}"],
+      "volume": "35%"
+    },
+    {
+      "name": "weekdays_carols_10-40_11-40",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
+      "strategy": "stream",
+      "sources": [
+        "${christmas-romanian}"
+      ],
+      "volume": "35%"
+    },
+
+
+
+    {
+      "name": "weekdays_11-40_12-20",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_11:40:00_AND_12:20:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-1}", "${local-mixed}"],
+      "volume": "40%"
+    },
+    {
+      "name": "weekdays_carols_11-40_12-20",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_11:40:00_AND_12:20:00",
+      "strategy": "stream",
+      "sources": ["${christmas}"],
+      "volume": "40%"
+    },
+
+
+
+    {
+      "name": "weekdays_12-20_13-10",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_12:20:00_AND_13:10:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-2}", "${local-mixed}"]
+    },
+    {
+      "name": "weekdays_carols_12-20_13-10",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_12:20:00_AND_13:10:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+    {
+      "name": "weekdays_13-10_14",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
+      "strategy": "local-first",
+      "sources": ["${relax}",  "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_13-10_14",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"],
+      "volume": "50%"
+    },
+
+
+
+    {
+      "name": "weekdays_14_15",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-3}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_14_15",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+    {
+      "name": "weekdays_15_16",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-4}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_15_16",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+    {
+      "name": "weekdays_16_17",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-5}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_16_17",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+    {
+      "name": "weekdays_17_18",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-6}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_17_18",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+    {
+      "name": "weekdays_18_19",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "local-first",
+      "sources": ["${week-list-7}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_18_19",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "stream",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+
+
+    {
+      "name": "any_monday_wednesday_19_20",
+      "day": "monday_wednesday",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "stream-first",
+      "sources": [
+        "https://live.rockfm.ro:8443/rockfm.aacp", "${local-all}"
+      ]
+    },
+
+
+    {
+      "name": "any_other_19_20",
+      "day": "tuesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-1}", "${local-all}"]
+    },
+
+
+    {
+      "name": "any_other_carols_19_20",
+      "day": "tuesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+    {
+      "name": "weekdays_20_21",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-2}", "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_20_21",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+    {
+      "name": "weekdays_21_22_summer",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:october,november,december,january,february,march",
+      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
+      "strategy": "stream",
+      "sources": ["${goodies-3}", "${goodies-5}", "${local-all}"]
+    },
+
+    {
+      "name": "weekdays_nights_22_23_summer",
+      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday EXCEPT:october,november,december,january,february,march,april,may",
+      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_23:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-1}", "${goodies-2}", "${goodies-4}", "${generic-radios}", "${goodies-6}", "${local-mixed}"]
+    },
+
+    {
+      "name": "weekdays_21_22_autumn",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:april,may,june,july,august,september,december",
+      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
+      "strategy": "stream",
+      "sources": ["${goodies-4}", "${goodies-6}",  "${local-all}"]
+    },
+    {
+      "name": "weekdays_carols_21_22",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
+      "strategy": "local-first",
+      "sources": ["${christmas}", "${christmas-romanian}"]
+    },
+
+
+
+
+
+    {
+      "name": "weekend_9-15_10-20",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_09:15:00_AND_10:20:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-7}", "${local-all}"],
+      "volume": "30%"
+    },
+    {
+      "name": "weekend_10-20_11-45",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_10:20:00_AND_11:45:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-5}", "${local-all}"]
+    },
+    {
+      "name": "weekend_11-45_13",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_11:45:00_AND_13:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-4}", "${local-all}"]
+    },
+    {
+      "name": "weekend_13-14",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-3}", "${local-all}"]
+    },
+    {
+      "name": "weekend_14-15",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
+      "strategy": "loal-first",
+      "sources": ["${goodies-2}", "${local-all}"]
+    },
+    {
+      "name": "weekend_15-16",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-1}", "${local-all}"]
+    },
+    {
+      "name": "weekend_16-17",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-2}", "${local-all}"]
+    },
+    {
+      "name": "weekend_17-18",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-3}"]
+    },
+    {
+      "name": "weekend_18-19",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-4}", "${local-all}", "${local-sounds}"]
+    },
+    {
+      "name": "weekend_19-20",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
+      "strategy": "local-first",
+      "sources": [
+        "${local-mixed}",
+        "${local-all}",
+        "${goodies-5}",
+        "${generic-radios}"
+      ]
+    },
+    {
+      "name": "weekend_20-21",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_20:00:00_AND_20:00:01",
+      "strategy": "local-first",
+      "sources": ["${goodies-6}", "${local-all}", "${local-sounds}"]
+    },
+    {
+      "name": "weekend_21-22",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_20:00:01_AND_22:00:00",
+      "strategy": "local-first",
+      "sources": ["${goodies-7}", "${local-all}"]
+    }
+  ]
+}

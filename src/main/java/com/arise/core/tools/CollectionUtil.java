@@ -196,7 +196,7 @@ public class CollectionUtil {
             l = storeList(k, s, 0);
         }
         int i = l.getIndex();
-        storeList(k, l.getItems(), i + 1);
+        storeList(k, l.getItems(), l.getIndex() + 1);
         return l.getItems().get(i);
     }
 

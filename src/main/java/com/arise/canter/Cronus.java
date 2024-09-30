@@ -352,7 +352,7 @@ public class Cronus {
         }
 
         if(moment.startsWith("random_day:")) {
-            System.out.println(moment);
+//            System.out.println(moment);
             return calc_random(moment);
         }
 
