@@ -139,6 +139,7 @@ public class ContentInfoProvider {
         if(StringUtil.hasText(durationVal)){
             int duration = Integer.parseInt(durationVal);
             DURATIONS.put(cI.getPath(), duration * 60);
+            cI.setDuration(duration * 60);
         }
 
 

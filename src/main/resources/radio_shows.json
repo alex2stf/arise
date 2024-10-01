@@ -243,7 +243,11 @@
       "https://www.youtube.com/watch?v=dFOWrM0pcN4&list=PLMl0O4f3Cvd_eC_XAmE9LdTD55ozq5sFl&index=1",
       "https://2.mystreaming.net/uber/rtwalt/icecast.audio",
       "https://nl4.mystreaming.net/uber/rtwblues/icecast.audio",
-      "https://www.youtube.com/watch?v=WIU35gmHERk&list=PLj1SE6iDXw_Ut7Stxez9WkenZz8x6UidH&index=1",
+      {
+        "title": "Trooper - Strigat",
+        "path": "https://www.youtube.com/watch?v=WIU35gmHERk&list=PLj1SE6iDXw_Ut7Stxez9WkenZz8x6UidH&index=1",
+        "duration": "94"
+      },
       "https://2.mystreaming.net/uber/rtwclassics/icecast.audio",
       "https://www.youtube.com/watch?v=ATN17Y8SJPw&list=PLG_5Ixm1ZwTTHDkxnvawtcDzIoWlxeu_a&index=1",
       "https://2.mystreaming.net/uber/rtwprog/icecast.audio",
@@ -294,6 +298,14 @@
       "https://www.youtube.com/watch?v=uwhDYhV1_yw&list=PL6s5zI4bloHQd9r00LklgJp71J-Ozes2d&index=1",
       "https://streaming.exclusive.radio/er/eagles/icecast.audio",
       "https://streaming.exclusive.radio/er/sia/icecast.audio",
+      {
+        "title": "Alan Parson Project",
+        "path": "https://www.youtube.com/watch?v=UywKZcH_Wk0&list=PLrnz4iRZQNld01i_kUviwGp7xHSm0Hegy"
+      },
+      {
+        "title": "Simon and Garfunkle Best of",
+        "path": "https://www.youtube.com/watch?v=91HkvzUiFhs&list=PLgaFNC_I_ZkmkURVTz9EEVZ6ukKBJ0uGs"
+      },
       "https://streaming.exclusive.radio/er/yes/icecast.audio",
       "https://streaming.broadcastradio.com:11135/celtic",
       "https://streaming.exclusive.radio/er/whitneyhouston/icecast.audio",
@@ -479,12 +491,50 @@
       "https://streaming.exclusive.radio/er/vanmorrison/icecast.audio",
       "https://www.youtube.com/watch?v=fWvKvOViM3g",
       "https://streaming.exclusive.radio/er/katebush/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=o9WyWlgpn8I&list=PL1BE30E0DFEB2C987",
+        "title": "Fabrizio de Andre - Storia di un impiegato",
+        "duration": "39",
+        "thumbnail": "https://www.mondadoriperte.it/media/catalog/product/cache/2/image_detail/9df78eab33525d08d6e5fb8d27136e95/p/r/prodotto_cd-fabrizio-de-andre-06-min.jpg"
+      },
       "https://streaming.exclusive.radio/er/bobseger/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=V2umZDcVyEo&list=PLMl0O4f3Cvd-Qdwa5ONVPcAmRnLEgfLeN&index=1",
+        "title": "Zoltan Butuc"
+      },
       "https://streaming.exclusive.radio/er/catstevens/icecast.audio",
+      {
+        "title": "Queen - sheer heart attack",
+        "path": "https://www.youtube.com/watch?v=BUt_7TQCWtU&list=OLAK5uy_kDNIguZqTs7T3bsD2HY__zxftGeDxPNOQ"
+      },
       "https://streaming.exclusive.radio/er/direstraits/icecast.audio",
+      {
+        "title": "Iris - Mirage",
+        "path": "https://www.youtube.com/watch?v=y8NfroFSf7Y&list=PLjLlTP7TOdelUAMpJJE3hxIpwbtxRXUQY"
+      },
+      {
+        "title": "Iris 93",
+        "path": "https://www.youtube.com/watch?v=ZEYDaDeeeWw&list=PL_ouDYtiNR5jfYyRZYQv1eW58toPGX3wy",
+        "duration": "38"
+      },
       "https://www.youtube.com/watch?v=7bm2C5kmFmw&list=PLMl0O4f3Cvd9eZJ1JBb_L3-HWTpP_Scv8",
       "https://streaming.exclusive.radio/er/genesis/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=ROo0ln4U8oI",
+        "title": "Iris 84",
+        "duration": "38"
+      },
+      {
+        "title": "Iris - Vol 2",
+        "path": "https://www.youtube.com/watch?v=T0GTM3XX2Jo&list=OLAK5uy_n0K0ifyHKy03yFW2NQMTA4Vra1HBe96As",
+        "duration": "38"
+      },
       "https://www.youtube.com/watch?v=e0-iUrRN8R8",
+      {
+        "title": "Kempes - Regasire",
+        "path": "https://www.youtube.com/watch?v=Hmc8u8OtKug&list=PL4LPs63Xbnv8G2azeumYzfrBGHp9kbRYx",
+        "duration": "38"
+      },
       "https://streaming.exclusive.radio/er/afternoon/icecast.audio",
       "https://www.youtube.com/watch?v=fTi7EgmPc40"
     ],
@@ -497,14 +547,70 @@
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/b6/Springsteen_The_Rising.jpg"
       },
       "https://www.youtube.com/watch?v=VuBRgq6nT7s&list=PLiN-7mukU_RFqvqmtFllVdTqu9avnaE-c",
+      "https://www.youtube.com/watch?v=6BT-ov1lngY",
+      "https://www.youtube.com/watch?v=0cPjchwUND8&list=PLI2tegkh3QUfl_NhkFLv7NoMLx65fHEff",
+      {
+        "title": "Pink Floyd - Meddle (1971)",
+        "path": "https://www.youtube.com/watch?v=C9BfPVYKqIo&list=PLpI6XGqHb_GSjnwpef14jTrS5FcHkPsPL",
+        "duration": "48",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/d/d4/MeddleCover.jpeg"
+      },
       "https://streaming.exclusive.radio/er/abba/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=Z4Oc6p7A1xw&list=PLpI6XGqHb_GRijVyF2y_LqAjkdkd9Lxr5",
+        "duration": "42",
+        "title": "Pink Floyd - Obscured by Clouds (1972)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ef/Pink_Floyd_-_Obscured_by_Clouds.jpg"
+      },
       "https://www.youtube.com/watch?v=fc4Dhpjwx3g&list=PLokPvQ9_SPn_sippdWrmmy_5EXzPels5I",
+      {
+        "duration": "43",
+        "path": "https://www.youtube.com/watch?v=FEacDWPWfJU&list=OLAK5uy_l1x-JAx0w53suECoCI0YJtW6VB8DBQWRQ",
+        "title": "Pink Floyd -The Dark Side of the Moon (1973)",
+        "thumbnail": "https://en.wikipedia.org/wiki/File:Dark_Side_of_the_Moon.png"
+      },
       "https://streaming.exclusive.radio/er/amywinehouse/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=TMy_mYkwl4M",
+        "title": "Pink Floyd - Wish You Were Here (1975)",
+        "duration": "45",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/a4/Pink_Floyd%2C_Wish_You_Were_Here_%281975%29.png"
+      },
       "https://streaming.exclusive.radio/er/barrywhite/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=D4KQae9oMWs",
+        "title": "Pink Floyd - Animals (1977)",
+        "duration": "42",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/74/Pink_Floyd-Animals-Frontal.jpg"
+      },
       "https://www.youtube.com/watch?v=beFo9WgmwXg",
+      {
+        "path": "https://www.youtube.com/watch?v=iLFwTqdsuxw&list=PLyDzU3p8FP24syYfTXpGqTDHsQhlxwllS",
+        "duration": "82",
+        "title": "Pink Floyd  - The Wall (1979)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/13/PinkFloydWallCoverOriginalNoText.jpg"
+      },
       "https://streaming.exclusive.radio/er/streisandhits/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=PRJia6v6mf4&list=PLA9-lU434qduLdhTQ3tT9bI8FttA82CEd",
+        "duration": "48",
+        "title": "Pink Floyd  - The Final Cut (1983)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e4/FloydFC-Cover01.jpg"
+      },
       "https://www.youtube.com/watch?v=4Y8kJGK2C0Y",
+      {
+        "path": "https://www.youtube.com/watch?v=9s4JU5gJ1zQ&list=PLA9-lU434qdswrM7DxBKg8QLJWuUGkwiE",
+        "duration": "53",
+        "title": "Pink Floyd  - A Momentary Lapse of Reason (1987)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4e/MLoRLP01.jpg"
+      },
       "https://streaming.exclusive.radio/er/everlybrothers/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=KmlZ1WhlYsM&list=PLycVTiaj8OI-jL8Ebr_XnODDLvm2hY83D",
+        "duration": "68",
+        "title": "Pink Floyd  - The Division Bell (1994)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/6/6e/Pink_Floyd_-_Division_Bell.jpg"
+      },
       "https://www.youtube.com/watch?v=_3yosg1YE68",
       "https://streaming.exclusive.radio/er/evacassidy/icecast.audio",
       {
@@ -514,11 +620,8 @@
         "duration": "60"
       },
 
-      {
-        "title": "within temptation - bleed out",
-        "path": "https://www.youtube.com/watch?v=Y1QAMCYmAcY&list=PLbCRk_34_-dnHH3o82qGn19sMExAcEyp7",
-        "duration": "50"
-      },
+
+      "https://www.youtube.com/watch?v=Y1QAMCYmAcY&list=PLbCRk_34_-dnHH3o82qGn19sMExAcEyp7",
       {
         "title": "Bruce Springsteen - The ghost of Tom Joad",
         "path": "https://www.youtube.com/watch?v=CumZ9dugKKU&list=PLNPGM2D7aODew2hs5OVlHiMAkWi_UYH_h",
@@ -570,14 +673,59 @@
         "duration": "40"
       },
       "https://streaming.exclusive.radio/er/beachboys/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=8UbNbor3OqQ&list=PL0SqtI95X6o0UYiDahh6KzAypztqUAopW",
+        "duration": "46",
+        "title": "Pink Floyd - Piper at the gates of dawn",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3c/PinkFloyd-album-piperatthegatesofdawn_300.jpg"
+      },
+      "https://www.youtube.com/watch?v=ZfTnAY34T-A&list=PLc2nVpqiyuiwYo8XBpG08aTbf5ciZe619",
+      {
+        "path": "https://www.youtube.com/watch?v=fcFrivOpCwc&list=PLn_HrLivU4eraqCFUNlxVj_V2BmVXiLBe",
+        "duration": "40",
+        "title": "Pink Floyd - A Saucerful of Secrets",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/54/Saucerful_of_secrets2.jpg"
+      },
       "https://streaming.exclusive.radio/er/royorbison/icecast.audio",
+      {
+        "path": "https://www.youtube.com/watch?v=GfPVM5dFlp8&list=PLfimnwaZdumi4h5H4u9UTGqkDbmYPrhuD",
+        "duration": "46",
+        "title": "Pink Floyd - More",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/40/MoreCover.jpg"
+      },
+      "https://www.youtube.com/watch?v=WjYOdTl7nxM&list=PLFfDTu7b6FEBXlDz18cghi4zCcBVUN4Um",
+      {
+        "path": "https://www.youtube.com/watch?v=6Dn9WoEHs5g&list=PLUPLEaMRcaeuhUEmKt23jKwwsEUY8CoGy",
+        "duration": "90",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/16/PinkFloyd-album-ummagummastudio-300.jpg",
+        "title": "Pink Floyd - Ummagumma (1969)"
+      },
       "https://streaming.exclusive.radio/er/pattismith/icecast.audio",
+      {
+        "title": "Pink Floyd - Atom Heart Mother (1970)",
+        "path": "https://www.youtube.com/watch?v=uUHb3cBvWMY&list=PLHTo__bpnlYUscAttZc6Ouoafj8rrw8x5",
+        "duration": "54",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2e/AtomHeartMotherCover.jpeg"
+      },
       "https://streaming.exclusive.radio/er/roxette/icecast.audio"
     ],
     "goodies-7": [
       "https://streaming.exclusive.radio/er/santana/icecast.audio",
+      "https://www.youtube.com/watch?v=esW_mALuhAU",
+      {
+        "path": "https://www.youtube.com/watch?v=UeeuEplH3D0&list=PLql8omFpVUmGCp4eJ8B6AhejuOdO0psuU",
+        "duration": "55",
+        "title": "Pink Floyd   - The Endless River (2014)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/be/Pink_Floyd_-_The_Endless_River_%28Artwork%29.jpg"
+      },
       "https://www.youtube.com/playlist?list=PLMl0O4f3Cvd8KuGAh0snWm3emIQch4BhT",
+      "https://www.youtube.com/watch?v=stq4-99-J74&list=PLy8mdGQNL2la9FqvUka2H9HCfrdqj__Bg",
       "https://streaming.exclusive.radio/er/scorpions/icecast.audio",
+      "https://www.youtube.com/watch?v=w9pdWQT1_8E&list=PL7B70DCED420C9ED3",
+      "https://www.youtube.com/watch?v=ISYwosO04fg&list=PL5huD83OHM5jiGbXOJKI5b9hE933YnWmx",
+      "https://www.youtube.com/watch?v=3nYaq9C9rUs",
+      "https://www.youtube.com/watch?v=W2bxOJX-E3M",
+      "https://www.youtube.com/watch?v=tsgsi7o1K_g&list=PL7FE31A0CF60C2337",
       "https://www.youtube.com/watch?v=fOVfeui3KwE",
       "https://streaming.exclusive.radio/er/neilyoung/icecast.audio",
       "https://www.youtube.com/watch?v=Xl8LLQx8phc",
@@ -644,7 +792,7 @@
       },
       "https://streaming.exclusive.radio/er/hendrix/icecast.audio",
       {
-        "tile": "Bruce Springsteen  - Only the strong survive",
+        "title": "Bruce Springsteen - Only the strong survive",
         "path": "https://www.youtube.com/watch?v=p-yndasQvY8&list=PLxA687tYuMWgPE96YSx67JGzBayn9_u1a",
         "duration": "51",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/73/Bruce_Springsteen_-_Only_the_Strong_Survive.png"

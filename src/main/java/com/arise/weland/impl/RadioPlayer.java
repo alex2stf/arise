@@ -222,9 +222,10 @@ public class RadioPlayer {
                                 if(StringUtil.hasText(zmp)){
                                     c.add(zmp);
                                     if(null != contentInfoProvider){
-                                        contentInfoProvider.mergeContent(
-                                                contentInfoProvider.fromMap(zm), Playlist.STREAMS
-                                        );
+                                        ContentInfo lc = contentInfoProvider.fromMap(zm);
+                                        if(lc.getDuration() > 0) {
+                                            contentInfoProvider.mergeContent(lc, Playlist.STREAMS);
+                                        }
                                     }
                                 }
                             }
