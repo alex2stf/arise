@@ -187,16 +187,20 @@ public class CollectionUtil {
     }
 
     public static String pickFromPersistentList(List<String> s, boolean dSh, String name) {
-        String k = "L_" + dSh + StringUtil.sanitizeAppId(name);
+        String k = "L_" + (dSh ? "_linear" : "_shuffled") + "_" +  StringUtil.sanitizeAppId(name);
         AppCache.StoredList l = AppCache.getStoredList(k);
         if (l.isEmpty() || l.isIndexExceeded()){
             if(dSh){
+                Mole.getInstance("CLCTC_UTI").info("shuffle " + k);
                 shuffle(s);
+            } else {
+                Mole.getInstance("CLCTC_UTI").info("shuffl");
             }
             l = storeList(k, s, 0);
         }
         int i = l.getIndex();
         storeList(k, l.getItems(), l.getIndex() + 1);
+        Mole.getInstance("CLCTC_UTI").info(  k + " ret = " + i);
         return l.getItems().get(i);
     }
 

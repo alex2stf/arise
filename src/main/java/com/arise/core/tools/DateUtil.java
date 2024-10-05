@@ -1,6 +1,7 @@
 package com.arise.core.tools;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -8,6 +9,13 @@ import java.util.Date;
  */
 public class DateUtil {
     public static String nowHour(){
-        return new SimpleDateFormat("HH:ss").format(new Date());
+        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+    }
+
+
+    public static String nowAddMillis(int milis){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MILLISECOND, milis);
+        return new SimpleDateFormat("HH:mm:ss").format(c.getTime());
     }
 }

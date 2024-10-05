@@ -80,14 +80,18 @@ public class ThreadUtil {
         return timerResult;
     }
 
-    public static void closeTimer(TimerResult result){
-        if (result == null){
+    public static void closeTimer(TimerResult t){
+        if (t == null){
             return;
         }
-        result.canRun = false;
-        result.timerTask.cancel();
-        result.timer.cancel();
-        result.timer.purge();
+        t.canRun = false;
+        try {
+            t.timerTask.cancel();
+            t.timer.cancel();
+            t.timer.purge();
+        } catch (Exception e){
+
+        }
     }
 
     private static String threadId(String id) {

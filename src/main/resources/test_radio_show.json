@@ -1,0 +1,31 @@
+{
+  "lists": {
+    "test": [
+      "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"
+    ]
+  },
+  "shows": [
+    {
+      "name": "t2",
+      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_21:36:00_AND_21:37:00",
+      "strategy": "local-first",
+      "sources": [
+
+        {
+          "title": "test",
+          "path": "https://streaming.exclusive.radio/er/radiohead/icecast.audio",
+          "duration": "1"
+        }
+      ]
+    },
+    {
+      "name": "t1",
+      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_21:36:00_AND_21:38:00",
+      "strategy": "local-first",
+      "sources": ["https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"]
+    }
+
+  ]
+}

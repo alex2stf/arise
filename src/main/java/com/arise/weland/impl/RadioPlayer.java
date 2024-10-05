@@ -314,26 +314,6 @@ public class RadioPlayer {
         throw new LogicalException("At least one valid fallback should be defined");
     }
 
-    static String smartPick(List<String> urls, boolean streamsFirst, String name){
-        List<String> strms = new ArrayList<>();
-        List<String> lcls = new ArrayList<>();
-
-        for (String s: urls){
-            if(s.startsWith("file:")) {
-                lcls.add(s);
-            } else {
-                strms.add(s);
-            }
-        }
-
-        List<String> lstr;
-        if(streamsFirst) {
-            lstr = CollectionUtil.concat(strms, lcls);
-        } else {
-            lstr = CollectionUtil.concat(lcls, strms);
-        }
-        return CollectionUtil.pickFromPersistentList(lstr, false, name);
-    }
 
     public void setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
         this.contentInfoProvider = contentInfoProvider;

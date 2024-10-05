@@ -20,7 +20,6 @@ import static com.arise.core.tools.StringUtil.hasContent;
 import static com.arise.core.tools.ThreadUtil.closeTimer;
 import static com.arise.core.tools.ThreadUtil.delayedTask;
 import static com.arise.core.tools.Util.nowCalendar;
-import static com.arise.weland.impl.RadioPlayer.smartPick;
 import static java.lang.System.getProperty;
 
 /**
@@ -156,7 +155,7 @@ public class Show {
     }
 
     void play_stream_url(String pdir, Handler<Show> c, final long finalExp){
-        log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end in " + strfMillis(finalExp));
+        log.info(n + "] start stream show at " + DateUtil.nowHour() +" with url " + pdir + " and should end at " + DateUtil.nowAddMillis((int) finalExp));
         clear_sys_props();
         set_current_path(pdir);
         _playing = true;
@@ -165,6 +164,7 @@ public class Show {
     }
 
     void play_from_list_of_strings(final Handler<Show> c, final List<String> sources, final int retryIndex) {
+        closeTimer(t);
         close_all_resources(new Handler<Object>() {
             @Override
             public void handle(Object o) {
@@ -193,14 +193,8 @@ public class Show {
                     pdir = getProperty("radio.forced.path");
                     clear_sys_props();
                 }
-                else if (_m.toLowerCase().indexOf("linear-pick") > -1) {
+                else if (_m.toLowerCase().indexOf("linear") > -1) {
                     pdir = CollectionUtil.pickFromPersistentList(sources, false, _LiD);
-                }
-                else if(_m.toLowerCase().indexOf("stream-first") > -1) {
-                    pdir = smartPick(sources, true, _LiD);
-                }
-                else if(_m.toLowerCase().indexOf("local-first") > -1) {
-                    pdir = smartPick(sources, false, _LiD);
                 }
                 else {
                     pdir = CollectionUtil.randomPickFromPersistentList(sources, _LiD);
@@ -226,7 +220,7 @@ public class Show {
                     String path = pdir.substring("file:".length());
                     File file = new File(apply_variables(path));
                     if (!file.exists()) {
-                        log.warn(n + "] file " + file.getAbsolutePath() + " does not exist");
+                        log.warn(n + "] file/directory " + file.getAbsolutePath() + " does not exist");
                         continue_pick(c, sources, retryIndex + 1);
                         return;
                     }
@@ -316,7 +310,7 @@ public class Show {
                         continue_pick(c, sources, retryIndex + 1);
                         return;
                     }
-                    log.info(n + "] start vlc playlist at " + DateUtil.nowHour() +" with path " + f.getAbsolutePath() + " and should end in " + strfMillis(exp));
+                    log.info(n + "] start vlc playlist at " + DateUtil.nowHour() +" with path " + f.getAbsolutePath() + " and should end at " + DateUtil.nowAddMillis((int) exp));
 
                     CommandRegistry.getInstance().execute("vlc-open", new String[]{f.getAbsolutePath()});
                     setup_stream_close(c, exp);
