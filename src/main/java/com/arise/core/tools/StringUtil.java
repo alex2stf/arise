@@ -446,6 +446,14 @@ public class StringUtil {
                 .replaceAll("generic", "89")
                 .replaceAll("htchtchtc", "3htc")
                 .replaceAll("alex", "SAP")
+                .replaceAll("\\[", "T")
+                .replaceAll("]", "Z")
+                .replaceAll("\\)", "L")
+                .replaceAll("\\(", "I")
+                .replaceAll("}", "H")
+                .replaceAll("\\{", "D")
+                .replaceAll(",", "F")
+                .replaceAll("\\$", "X")
                 .toLowerCase()
                 ;
     }

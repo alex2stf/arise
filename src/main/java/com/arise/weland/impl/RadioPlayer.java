@@ -245,7 +245,8 @@ public class RadioPlayer {
                 s._h = getString(h, "hour");
                 s._d = getString(h, "day");
                 List list = getList(h, "sources");
-                s._LiD = s.n; //UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
+                s._LiD = StringUtil.sanitizeAppId(getString(h, "sources"));
+//                s._LiD = s.n; //UUID.nameUUIDFromBytes(StringUtil.join(list, "_").getBytes()).toString();
                 s._s = merge(list, lists);
                 s._m = getString(h, "strategy");
                 s._f = getString(h, "fallback");

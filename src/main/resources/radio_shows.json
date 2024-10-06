@@ -822,8 +822,8 @@
       "name": "any_morning",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_06:55:00_AND_10:40:00",
-      "strategy": "stream-first",
-      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"],
+      "strategy": "linear",
+      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp", "${local-all}"],
       "volume": "25%"
     },
 
@@ -833,7 +833,7 @@
       "name": "weekdays_10-40_11-40",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
-      "strategy": "local-first",
+      "strategy": "linear",
       "sources": ["${generic-radios}"],
       "volume": "35%"
     },
@@ -841,7 +841,7 @@
       "name": "weekdays_carols_10-40_11-40",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
-      "strategy": "stream",
+      "strategy": "linear",
       "sources": [
         "${christmas}"
       ],
@@ -1138,7 +1138,7 @@
       "name": "weekend_21-22",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
-      "strategy": "local-first",
+      "strategy": "random",
       "sources": ["${contents}", "${local-all}"]
     }
   ]
