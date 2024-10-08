@@ -1232,8 +1232,6 @@
       "volume": "25%"
     },
 
-
-
     {
       "name": "weekdays_10-40_11-40",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
@@ -1260,7 +1258,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_11:40:00_AND_12:20:00",
       "strategy": "local-first",
-      "sources": ["${links}"],
+      "sources": ["${links}", "${local-all}"],
       "volume": "40%"
     },
     {
@@ -1279,7 +1277,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_12:20:00_AND_13:10:00",
       "strategy": "local-first",
-      "sources": ["${links}"]
+      "sources": ["${links}", "${local-all}"]
     },
     {
       "name": "weekdays_carols_12-20_13-10",
@@ -1288,8 +1286,6 @@
       "strategy": "local-first",
       "sources": ["${christmas}"]
     },
-
-
 
     {
       "name": "weekdays_13-10_14",
@@ -1307,8 +1303,6 @@
       "volume": "50%"
     },
 
-
-
     {
       "name": "weekdays_14_15",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
@@ -1323,8 +1317,6 @@
       "strategy": "local-first",
       "sources": ["${christmas}"]
     },
-
-
 
     {
       "name": "weekdays_15_16",
@@ -1347,7 +1339,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "local-first",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
     {
       "name": "weekdays_carols_16_17",
@@ -1364,7 +1356,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "local-first",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
     {
       "name": "weekdays_carols_17_18",
@@ -1379,7 +1371,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "local-first",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
     {
       "name": "weekdays_carols_18_19",
@@ -1388,9 +1380,6 @@
       "strategy": "stream",
       "sources": ["${christmas}"]
     },
-
-
-
 
 
     {
@@ -1403,13 +1392,12 @@
       ]
     },
 
-
     {
       "name": "any_other_19_21",
       "day": "tuesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "local-first",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
 
 
@@ -1423,28 +1411,13 @@
 
 
     {
-      "name": "weekdays_21_22_summer",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:october,november,december,january,february,march",
+      "name": "weekdays_21_22",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",
-      "sources": ["${contents}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
 
-    {
-      "name": "weekdays_nights_22_23_summer",
-      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday EXCEPT:october,november,december,january,february,march,april,may",
-      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_23:00:00",
-      "strategy": "local-first",
-      "sources": ["${links}", "${contents}", "${generic-radios}"]
-    },
-
-    {
-      "name": "weekdays_21_22_autumn",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:april,may,june,july,august,september,december",
-      "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
-      "strategy": "stream",
-      "sources": ["${contents}",  "${local-all}"]
-    },
     {
       "name": "weekdays_carols_21_22",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
@@ -1452,6 +1425,20 @@
       "strategy": "local-first",
       "sources": ["${christmas}"]
     },
+
+
+    {
+      "name": "weekdays_nights_22_23_summer",
+      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday EXCEPT:october,november,december,january,february,march,april,may",
+      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_23:00:00",
+      "strategy": "local-first",
+      "sources": ["${contents}", "${local-all}"]
+    },
+
+
+
+
+
 
 
 
@@ -1498,7 +1485,7 @@
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "local-first",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${links}", "${contents}", "${local-all}"]
     },
     {
       "name": "weekend_16-17",
@@ -1526,11 +1513,7 @@
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "local-first",
-      "sources": [
-        "${local-all}",
-        "${contents}",
-        "${generic-radios}"
-      ]
+      "sources": ["${contents}", "${local-all}"]
     },
     {
       "name": "weekend_20-21",
