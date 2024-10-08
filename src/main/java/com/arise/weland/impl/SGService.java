@@ -105,8 +105,13 @@ public enum  SGService {
             scrieCevaDinLocal();
         }
 
+
         if(tmpDesk().exists()) {
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{tmpDesk().getAbsolutePath(), out.getAbsolutePath(), desktopImage });
+            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
+                    tmpDesk().getAbsolutePath(),
+                    out.getAbsolutePath(),
+                    ContentInfoProvider.findTitle(desktopImage)
+            });
         } else {
 			System.out.println("NU EXISTA TMP-UL");
 		}

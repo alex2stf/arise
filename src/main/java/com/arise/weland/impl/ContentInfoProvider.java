@@ -30,6 +30,7 @@ public class ContentInfoProvider {
     private int fcnt = 0;
     private int lsc = 0;
     private static final Map<String, Integer> DURATIONS = new HashMap<>();
+    private static final Map<String, String> TITLES = new HashMap<>();
 
 
     public ContentInfoProvider(ContentInfoDecoder decoder){
@@ -139,7 +140,12 @@ public class ContentInfoProvider {
         if(StringUtil.hasText(durationVal)){
             int duration = Integer.parseInt(durationVal);
             DURATIONS.put(cI.getPath(), duration * 60);
+
             cI.setDuration(duration * 60);
+        }
+
+        if(StringUtil.hasText(cI.getTitle())){
+            TITLES.put(cI.getPath(), cI.getTitle());
         }
 
 
@@ -537,10 +543,17 @@ public class ContentInfoProvider {
     }
 
 
-    public int getDuration(String pdir) {
+    public static int getDuration(String pdir) {
         if(DURATIONS.containsKey(pdir)){
             return DURATIONS.get(pdir);
         }
         return -1;
+    }
+
+    public static String findTitle(String path) {
+        if(TITLES.containsKey(path)){
+            return TITLES.get(path);
+        }
+        return path;
     }
 }

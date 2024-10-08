@@ -15,14 +15,6 @@
     ],
 
     "relax": [
-      {
-        "title": "Leonard Cohen - Old ideas",
-        "path": "https://www.youtube.com/watch?v=sc_J0_WAIuM&list=PLNDXDJtQAOanpjrFnzTmg158aSpDRe7D3"
-      },
-      {
-        "title": "Songs of Leonard Cohen",
-        "path": "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO"
-      },
       "https://www.youtube.com/watch?v=L86tbBjkCOY",
       "https://www.youtube.com/watch?v=ekAWjg-y3EI",
       "https://www.youtube.com/watch?v=h8l84GLG-lI",
@@ -80,6 +72,7 @@
       "https://www.youtube.com/watch?v=QSnDaQ2nCy8"
     ],
     "christmas": [
+      {"path": "https://www.youtube.com/watch?v=l7KLGMM2YR8&list=PL3ZM9bgCxeqWG-18OOv02Jr48oyTA2uNC", "duration": "50", "title": "Bob Dylan - Christmas in heart"},
       "file:/storage/emulated/0/Documents/arise-app/",
       "http://colinde.radiohot.ro:8000/;",
       "http://colinde2.radioplay.ro:9292/;stream.nsv",
@@ -381,6 +374,7 @@
       "https://streaming.exclusive.radio/er/royorbison/icecast.audio",
       "https://www.youtube.com/watch?v=WjYOdTl7nxM&list=PLFfDTu7b6FEBXlDz18cghi4zCcBVUN4Um",
       "https://streaming.exclusive.radio/er/roxette/icecast.audio",
+      "https://www.youtube.com/watch?v=yl-lcMf4UkE",
       "https://streaming.exclusive.radio/er/santana/icecast.audio",
       "https://www.youtube.com/watch?v=esW_mALuhAU",
       "https://www.youtube.com/playlist?list=PLMl0O4f3Cvd8KuGAh0snWm3emIQch4BhT",
@@ -434,20 +428,87 @@
       "https://streaming.exclusive.radio/er/thekinks/icecast.audio",
       "https://streaming.exclusive.radio/er/thewho/icecast.audio",
       "https://streaming.exclusive.radio/er/beachboys/icecast.audio",
+      "https://www.youtube.com/watch?v=bRDCJYC0rwQ",
       "https://www.youtube.com/watch?v=ZfTnAY34T-A&list=PLc2nVpqiyuiwYo8XBpG08aTbf5ciZe619",
-      "https://www.youtube.com/watch?v=Y1QAMCYmAcY&list=PLbCRk_34_-dnHH3o82qGn19sMExAcEyp7"
+      "https://www.youtube.com/watch?v=Y1QAMCYmAcY&list=PLbCRk_34_-dnHH3o82qGn19sMExAcEyp7",
+      "https://www.youtube.com/watch?v=cV6eges3USQ&list=PLFb6YOw5k-f4k2oOnpj6clT6XBvi6EA_g"
     ],
     "contents": [
+      {
+        "path": "https://www.youtube.com/watch?v=SMR8S154_zA&list=PLf3Y5wk6fWmdJMQdx-Iq6dBG3CRYJwARc",
+        "duration": "110",
+        "title": "Joe Dassin - Best of"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=FVPtLEVp98E&list=PLiN-7mukU_REfNXTPYpyOepMA5YnKCOXX",
+        "duration": "50",
+        "title": "Leonard Cohen - Songs from a Room (1969 - Full Album)"
+      },
+      {
+        "path":"https://www.youtube.com/watch?v=3f0ADuVJhYQ&list=PLn_B3AdV8fBS-_b5TP30Dt_ISRL-xPEgC",
+        "duration": "60",
+        "title": "Leonard Cohen - Songs of Love and Hate (full album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Jue5mx10fDw&list=PLMNMmvIC2uGb7DX3c-YXaVP7yQv1fiozV",
+        "duration": "61",
+        "title": "Leonard Cohen - Death of a Ladies' Man (Full album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=NPvYnJHHiys&list=PLVxGUH-JKEkY8iU1BTTTebYuTVmg418T-",
+        "duration": "69",
+        "title": "Leonard Cohen - Recent Songs"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=8StKOyYY3Gs&list=PL_IzBVwc567ZiTNJwOtIsW6eoAbJQrlgo",
+        "duration": "50",
+        "title": "Leonard Cohen - Various Positions"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Q60wxayHW9c&list=PLiN-7mukU_REGuNf3w8-TQb0JJsqVotjq",
+        "duration": "60",
+        "title": "Leonard Cohen - I’m Your Man (1988 - Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=3VAxwimExn0&list=PLQ3tnR5_h9v52mGjjJ7LbOCsI0sH6b2GX",
+        "duration": "70",
+        "title": "Leonard Cohen - The Future"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=dMyAEP0zCJw&list=PLiN-7mukU_RETtiMnlPU9k_vPXoAXZrfI",
+        "duration": "70",
+        "title": "Leonard Cohen - Ten new songs"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=uX9EVnbYjhI&list=PLYcuDqKgaxyWB19iYjmnbhISSdohXMKzQ",
+        "duration": "60",
+        "title": "Leonard Cohen - Dear Heather"
+      },
       {
         "title": "Leonard Cohen - new skin for old ceremonies",
         "path": "https://www.youtube.com/watch?v=jKosiPw-85k&list=PLiN-7mukU_RGnkIyW5FBHmmR-oXKMxTxb",
         "duration": "47"
       },
       {
-        "title": "Bruce Springtsteen - Darkness at the edge of town",
-        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/af/BruceSpringsteenDarknessontheEdgeofTown.jpg",
-        "duration": "55"
+        "title": "Leonard Cohen - Old ideas",
+        "path": "https://www.youtube.com/watch?v=sc_J0_WAIuM&list=PLNDXDJtQAOanpjrFnzTmg158aSpDRe7D3",
+        "duration": "60"
+      },
+      {
+        "title": "Leonard Cohen - Songs of Leonard Cohen",
+        "path": "https://www.youtube.com/watch?v=b1D3tOhXvxw&list=PLiN-7mukU_RF4Iu2aXWX3r86G7hgSidbO",
+        "duration": "60"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=f7j4s2FURH8&list=PLiN-7mukU_RF8CdhBtdgdYyLx_LaCl0-6",
+        "duration": "50",
+        "title": "Leonard Cohen - You Want It Darker (2016 - Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=yvKRe8g7wXA&list=PLiN-7mukU_RFD26_nO906ObKgZbnVKQAH",
+        "duration": "47",
+        "title": "Leonard Cohen - Popular Problems (2014 - Full Album)"
       },
       {
         "title": "Trooper - Strigat",
@@ -464,19 +525,189 @@
         "path": "https://www.youtube.com/watch?v=UywKZcH_Wk0&list=PLrnz4iRZQNld01i_kUviwGp7xHSm0Hegy"
       },
       {
-        "title": "Simon and Garfunkle Best of",
+        "title": "Simon and Garfunkle - Best of",
         "path": "https://www.youtube.com/watch?v=91HkvzUiFhs&list=PLgaFNC_I_ZkmkURVTz9EEVZ6ukKBJ0uGs"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=BNtSIXsE2hY",
+        "title": "Nirvana - more than rare",
+        "duration": "90"
+      },
+      {
+        "title": "Fabrizio de Andre - Storia di un impiegato",
+        "path": "https://www.youtube.com/watch?v=o9WyWlgpn8I&list=PL1BE30E0DFEB2C987",
+        "duration": "50",
+        "thumbnail": "https://www.mondadoriperte.it/media/catalog/product/cache/2/image_detail/9df78eab33525d08d6e5fb8d27136e95/p/r/prodotto_cd-fabrizio-de-andre-06-min.jpg"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=V2umZDcVyEo&list=PLMl0O4f3Cvd-Qdwa5ONVPcAmRnLEgfLeN&index=1",
+        "title": "Zoltan Butuc",
+        "duration": "60"
+      },
+
+      {
+        "title": "Queen - sheer heart attack",
+        "path": "https://www.youtube.com/watch?v=BUt_7TQCWtU&list=OLAK5uy_kDNIguZqTs7T3bsD2HY__zxftGeDxPNOQ"
+      },
+
+      {
+        "title": "Iris - Luna plina",
+        "path": "https://www.youtube.com/watch?v=2YsAvibvPRE&list=PLjLlTP7TOdelm-SC_IGIG1xfukyggsois",
+        "thumbnail": "https://i.discogs.com/eaRET-gWqNnCrbQGYWfkmTl7Slt7e9KTtgCG8R0-hG8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzNTg3/MTQtMTMzMjkyODM5/NC5qcGVn.jpeg",
+        "duration": "89"
+      },
+
+      {
+        "title": "Iris - Mirage",
+        "path": "https://www.youtube.com/watch?v=y8NfroFSf7Y&list=PLjLlTP7TOdelUAMpJJE3hxIpwbtxRXUQY"
+      },
+      {
+        "title": "Iris - 93",
+        "path": "https://www.youtube.com/watch?v=ZEYDaDeeeWw&list=PL_ouDYtiNR5jfYyRZYQv1eW58toPGX3wy",
+        "duration": "60"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=ROo0ln4U8oI",
+        "title": "Iris - 84",
+        "duration": "60"
+      },
+      {
+        "title": "Iris - Vol 2",
+        "path": "https://www.youtube.com/watch?v=T0GTM3XX2Jo&list=OLAK5uy_n0K0ifyHKy03yFW2NQMTA4Vra1HBe96As",
+        "duration": "60"
+      },
+
+      {
+        "title": "Kempes - Regasire",
+        "path": "https://www.youtube.com/watch?v=Hmc8u8OtKug&list=PL4LPs63Xbnv8G2azeumYzfrBGHp9kbRYx",
+        "duration": "60"
+      },
+      {
+        "title": "Pantera - Vulgar display of power",
+        "path": "https://www.youtube.com/watch?v=8hu6xDPcNlE",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/12/PanteraVulgarDisplayofPower.jpg",
+        "duration": "80"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=P_9PU0Si4b0",
+        "title": "The Stone Roses",
+        "duration": "75"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=ZXZrZ26Sgqs&list=PL1622C9F99D5CC398",
+        "title": "Phoenix - Baba Novak",
+        "duration": "60",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=UeeuEplH3D0&list=PLql8omFpVUmGCp4eJ8B6AhejuOdO0psuU",
+        "duration": "70",
+        "title": "Pink Floyd   - The Endless River (2014)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/be/Pink_Floyd_-_The_Endless_River_%28Artwork%29.jpg"
+      },
+      {
+        "title": "Pink Floyd - Meddle (1971)",
+        "path": "https://www.youtube.com/watch?v=C9BfPVYKqIo&list=PLpI6XGqHb_GSjnwpef14jTrS5FcHkPsPL",
+        "duration": "60",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/d/d4/MeddleCover.jpeg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Z4Oc6p7A1xw&list=PLpI6XGqHb_GRijVyF2y_LqAjkdkd9Lxr5",
+        "duration": "70",
+        "title": "Pink Floyd - Obscured by Clouds (1972)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ef/Pink_Floyd_-_Obscured_by_Clouds.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=PRJia6v6mf4&list=PLA9-lU434qduLdhTQ3tT9bI8FttA82CEd",
+        "duration": "60",
+        "title": "Pink Floyd  - The Final Cut (1983)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e4/FloydFC-Cover01.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=9s4JU5gJ1zQ&list=PLA9-lU434qdswrM7DxBKg8QLJWuUGkwiE",
+        "duration": "70",
+        "title": "Pink Floyd  - A Momentary Lapse of Reason (1987)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4e/MLoRLP01.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=KmlZ1WhlYsM&list=PLycVTiaj8OI-jL8Ebr_XnODDLvm2hY83D",
+        "duration": "80",
+        "title": "Pink Floyd  - The Division Bell (1994)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/6/6e/Pink_Floyd_-_Division_Bell.jpg"
+      },
+      {
+        "duration": "60",
+        "path": "https://www.youtube.com/watch?v=FEacDWPWfJU&list=OLAK5uy_l1x-JAx0w53suECoCI0YJtW6VB8DBQWRQ",
+        "title": "Pink Floyd -The Dark Side of the Moon (1973)",
+        "thumbnail": "https://en.wikipedia.org/wiki/File:Dark_Side_of_the_Moon.png"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=TMy_mYkwl4M",
+        "title": "Pink Floyd - Wish You Were Here (1975)",
+        "duration": "60",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/a4/Pink_Floyd%2C_Wish_You_Were_Here_%281975%29.png"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=D4KQae9oMWs",
+        "title": "Pink Floyd - Animals (1977)",
+        "duration": "60",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/74/Pink_Floyd-Animals-Frontal.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=iLFwTqdsuxw&list=PLyDzU3p8FP24syYfTXpGqTDHsQhlxwllS",
+        "duration": "100",
+        "title": "Pink Floyd  - The Wall (1979)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/13/PinkFloydWallCoverOriginalNoText.jpg"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=8UbNbor3OqQ&list=PL0SqtI95X6o0UYiDahh6KzAypztqUAopW",
+        "duration": "68",
+        "title": "Pink Floyd - Piper at the gates of dawn",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3c/PinkFloyd-album-piperatthegatesofdawn_300.jpg"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=fcFrivOpCwc&list=PLn_HrLivU4eraqCFUNlxVj_V2BmVXiLBe",
+        "duration": "68",
+        "title": "Pink Floyd - A Saucerful of Secrets",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/54/Saucerful_of_secrets2.jpg"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=GfPVM5dFlp8&list=PLfimnwaZdumi4h5H4u9UTGqkDbmYPrhuD",
+        "duration": "61",
+        "title": "Pink Floyd - More",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/40/MoreCover.jpg"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=6Dn9WoEHs5g&list=PLUPLEaMRcaeuhUEmKt23jKwwsEUY8CoGy",
+        "duration": "113",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/16/PinkFloyd-album-ummagummastudio-300.jpg",
+        "title": "Pink Floyd - Ummagumma (1969)"
+      },
+
+      {
+        "title": "Pink Floyd - Atom Heart Mother (1970)",
+        "path": "https://www.youtube.com/watch?v=uUHb3cBvWMY&list=PLHTo__bpnlYUscAttZc6Ouoafj8rrw8x5",
+        "duration": "72",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2e/AtomHeartMotherCover.jpeg"
+      },
+      {
+        "title": "Bruce Springtsteen - Darkness at the edge of town",
+        "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/af/BruceSpringsteenDarknessontheEdgeofTown.jpg",
+        "duration": "58"
       },
       {
         "path": "https://www.youtube.com/watch?v=klVu1sf6HO4",
         "title": "Bruce Springsteen - The River",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/c/cc/The_River_%28Bruce_Springsteen%29_%28Front_Cover%29.jpg",
         "duration": "100"
-      },
-      {
-        "path": "https://www.youtube.com/watch?v=BNtSIXsE2hY",
-        "title": "Nirvana - more than rare",
-        "duration": "90"
       },
       {
         "path": "https://www.youtube.com/watch?v=hCpL_ImsiDo&list=PLiN-7mukU_REqiENrjkvrz8IjpBwQKgSl",
@@ -503,22 +734,15 @@
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/5f/Bruce_Springsteen_-_Human_Touch_-_coverart_-_I.jpg"
       },
       {
-        "path": "https://www.youtube.com/watch?v=UeeuEplH3D0&list=PLql8omFpVUmGCp4eJ8B6AhejuOdO0psuU",
-        "duration": "70",
-        "title": "Pink Floyd   - The Endless River (2014)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/be/Pink_Floyd_-_The_Endless_River_%28Artwork%29.jpg"
-      },
-
-      {
         "path": "https://www.youtube.com/watch?v=4jMqtRFq0q8&list=PLiN-7mukU_RHDB8v24oraagEJv57ctTNG",
         "title": "Bruce Springsteen  - Devils and dust",
         "duration": "90",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e3/Bruce_Springsteen_-_Devils_%26_Dust.jpg"
       },
       {
+        "title": "Bruce Springsteen  - We Shall Overcome: The Seeger Sessions",
         "path": "https://www.youtube.com/watch?v=OG1ctA7FXyU&list=PLiN-7mukU_RHGX-zktjaT4lO0oApwT60_",
         "duration": "100",
-        "title": "Bruce Springsteen  - We Shall Overcome: The Seeger Sessions",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/6/6d/Seeger_sessions.jpg"
       },
 
@@ -535,48 +759,12 @@
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/25/Lucky_Town.jpg"
       },
       {
-        "path": "https://www.youtube.com/watch?v=o9WyWlgpn8I&list=PL1BE30E0DFEB2C987",
-        "title": "Fabrizio de Andre - Storia di un impiegato",
-        "duration": "50",
-        "thumbnail": "https://www.mondadoriperte.it/media/catalog/product/cache/2/image_detail/9df78eab33525d08d6e5fb8d27136e95/p/r/prodotto_cd-fabrizio-de-andre-06-min.jpg"
+        "title": "Bruce Springsteen - The ghost of Tom Joad",
+        "path": "https://www.youtube.com/watch?v=CumZ9dugKKU&list=PLNPGM2D7aODew2hs5OVlHiMAkWi_UYH_h",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ea/The_Ghost_of_Tom_Joad.jpg",
+        "duration": "70"
       },
 
-      {
-        "path": "https://www.youtube.com/watch?v=V2umZDcVyEo&list=PLMl0O4f3Cvd-Qdwa5ONVPcAmRnLEgfLeN&index=1",
-        "title": "Zoltan Butuc"
-      },
-
-      {
-        "title": "Queen - sheer heart attack",
-        "path": "https://www.youtube.com/watch?v=BUt_7TQCWtU&list=OLAK5uy_kDNIguZqTs7T3bsD2HY__zxftGeDxPNOQ"
-      },
-
-      {
-        "title": "Iris - Mirage",
-        "path": "https://www.youtube.com/watch?v=y8NfroFSf7Y&list=PLjLlTP7TOdelUAMpJJE3hxIpwbtxRXUQY"
-      },
-      {
-        "title": "Iris 93",
-        "path": "https://www.youtube.com/watch?v=ZEYDaDeeeWw&list=PL_ouDYtiNR5jfYyRZYQv1eW58toPGX3wy",
-        "duration": "60"
-      },
-
-      {
-        "path": "https://www.youtube.com/watch?v=ROo0ln4U8oI",
-        "title": "Iris 84",
-        "duration": "60"
-      },
-      {
-        "title": "Iris - Vol 2",
-        "path": "https://www.youtube.com/watch?v=T0GTM3XX2Jo&list=OLAK5uy_n0K0ifyHKy03yFW2NQMTA4Vra1HBe96As",
-        "duration": "60"
-      },
-
-      {
-        "title": "Kempes - Regasire",
-        "path": "https://www.youtube.com/watch?v=Hmc8u8OtKug&list=PL4LPs63Xbnv8G2azeumYzfrBGHp9kbRYx",
-        "duration": "60"
-      },
       {
         "path": "https://www.youtube.com/watch?v=VuBRgq6nT7s&list=PLiN-7mukU_RFqvqmtFllVdTqu9avnaE-c",
         "title": "Bruce Springsteen  - The rising",
@@ -584,100 +772,6 @@
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/b6/Springsteen_The_Rising.jpg"
       },
 
-      {
-        "title": "Pink Floyd - Meddle (1971)",
-        "path": "https://www.youtube.com/watch?v=C9BfPVYKqIo&list=PLpI6XGqHb_GSjnwpef14jTrS5FcHkPsPL",
-        "duration": "60",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/d/d4/MeddleCover.jpeg"
-      },
-
-      {
-        "path": "https://www.youtube.com/watch?v=Z4Oc6p7A1xw&list=PLpI6XGqHb_GRijVyF2y_LqAjkdkd9Lxr5",
-        "duration": "70",
-        "title": "Pink Floyd - Obscured by Clouds (1972)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ef/Pink_Floyd_-_Obscured_by_Clouds.jpg"
-      },
-      {
-        "path": "https://www.youtube.com/watch?v=PRJia6v6mf4&list=PLA9-lU434qduLdhTQ3tT9bI8FttA82CEd",
-        "duration": "60",
-        "title": "Pink Floyd  - The Final Cut (1983)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e4/FloydFC-Cover01.jpg"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=9s4JU5gJ1zQ&list=PLA9-lU434qdswrM7DxBKg8QLJWuUGkwiE",
-        "duration": "70",
-        "title": "Pink Floyd  - A Momentary Lapse of Reason (1987)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4e/MLoRLP01.jpg"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=KmlZ1WhlYsM&list=PLycVTiaj8OI-jL8Ebr_XnODDLvm2hY83D",
-        "duration": "80",
-        "title": "Pink Floyd  - The Division Bell (1994)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/6/6e/Pink_Floyd_-_Division_Bell.jpg"
-      },
-
-      {
-        "title": "Pantera - Vulgar display of power",
-        "path": "https://www.youtube.com/watch?v=8hu6xDPcNlE",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/12/PanteraVulgarDisplayofPower.jpg",
-        "duration": "80"
-      },
-
-
-      {
-        "title": "Bruce Springsteen - The ghost of Tom Joad",
-        "path": "https://www.youtube.com/watch?v=CumZ9dugKKU&list=PLNPGM2D7aODew2hs5OVlHiMAkWi_UYH_h",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ea/The_Ghost_of_Tom_Joad.jpg",
-        "duration": "70"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=P_9PU0Si4b0",
-        "title": "The Stone Roses",
-        "duration": "75"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=ZXZrZ26Sgqs&list=PL1622C9F99D5CC398",
-        "title": "Phoenix - Baba Novak",
-        "duration": "60",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
-      },
-      {
-        "duration": "60",
-        "path": "https://www.youtube.com/watch?v=FEacDWPWfJU&list=OLAK5uy_l1x-JAx0w53suECoCI0YJtW6VB8DBQWRQ",
-        "title": "Pink Floyd -The Dark Side of the Moon (1973)",
-        "thumbnail": "https://en.wikipedia.org/wiki/File:Dark_Side_of_the_Moon.png"
-      },
-
-      {
-        "path": "https://www.youtube.com/watch?v=TMy_mYkwl4M",
-        "title": "Pink Floyd - Wish You Were Here (1975)",
-        "duration": "60",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/a4/Pink_Floyd%2C_Wish_You_Were_Here_%281975%29.png"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=D4KQae9oMWs",
-        "title": "Pink Floyd - Animals (1977)",
-        "duration": "60",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/74/Pink_Floyd-Animals-Frontal.jpg"
-      },
-
-
-      {
-        "path": "https://www.youtube.com/watch?v=iLFwTqdsuxw&list=PLyDzU3p8FP24syYfTXpGqTDHsQhlxwllS",
-        "duration": "100",
-        "title": "Pink Floyd  - The Wall (1979)",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/13/PinkFloydWallCoverOriginalNoText.jpg"
-      },
       {
         "path": "https://www.youtube.com/watch?v=KONChf3gjnc&list=PLZQ-eoXvkD1ARztHcNiQGT4O0i5gHZXUK",
         "title": "Bruce Springsteen - 18 tracks",
@@ -688,80 +782,47 @@
         "path": "https://www.youtube.com/watch?v=7Iaca30QbOo&list=PLgC_M284OGYeQeSsFnzpbJAPLSlsri9R0",
         "title": "Bruce Springsteen - Greetings from Asbury Park ",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2f/Greetings_from_Asbury_Park_NJ.jpg",
-        "duration": "60"
+        "duration": "67"
       },
 
       {
         "path": "https://www.youtube.com/watch?v=LWLMaZ7H3B0&list=PLX66jEixZe1xSgBpHL1OWKoGs_S7AKJU_",
         "title": "Bruce Springsteen - The Wild, the Innocent & the E Street Shuffle",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/1f/TheWildTheInnocent.jpg",
-        "duration": "60"
+        "duration": "67"
       },
 
       {
         "path": "https://www.youtube.com/watch?v=W2X0Gf9jfz8&list=PLiN-7mukU_RERSYl0eVI_Qdsk2i7mlCBo",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/7a/Born_to_Run_%28Front_Cover%29.jpg",
         "title": "Bruce Springsteen  - Born to Run",
-        "duration": "60"
+        "duration": "67"
       },
 
-      {
-        "path": "https://www.youtube.com/watch?v=8UbNbor3OqQ&list=PL0SqtI95X6o0UYiDahh6KzAypztqUAopW",
-        "duration": "60",
-        "title": "Pink Floyd - Piper at the gates of dawn",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3c/PinkFloyd-album-piperatthegatesofdawn_300.jpg"
-      },
 
-      {
-        "path": "https://www.youtube.com/watch?v=fcFrivOpCwc&list=PLn_HrLivU4eraqCFUNlxVj_V2BmVXiLBe",
-        "duration": "60",
-        "title": "Pink Floyd - A Saucerful of Secrets",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/54/Saucerful_of_secrets2.jpg"
-      },
-
-      {
-        "path": "https://www.youtube.com/watch?v=GfPVM5dFlp8&list=PLfimnwaZdumi4h5H4u9UTGqkDbmYPrhuD",
-        "duration": "60",
-        "title": "Pink Floyd - More",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/40/MoreCover.jpg"
-      },
-
-      {
-        "path": "https://www.youtube.com/watch?v=6Dn9WoEHs5g&list=PLUPLEaMRcaeuhUEmKt23jKwwsEUY8CoGy",
-        "duration": "110",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/16/PinkFloyd-album-ummagummastudio-300.jpg",
-        "title": "Pink Floyd - Ummagumma (1969)"
-      },
-
-      {
-        "title": "Pink Floyd - Atom Heart Mother (1970)",
-        "path": "https://www.youtube.com/watch?v=uUHb3cBvWMY&list=PLHTo__bpnlYUscAttZc6Ouoafj8rrw8x5",
-        "duration": "70",
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2e/AtomHeartMotherCover.jpeg"
-      },
       {
         "path": "https://www.youtube.com/watch?v=QRA6lWzCpCQ&list=PLuFrIncMdIQzVUjxkojk31vhhCBb7Fnd3",
-        "duration": "80",
+        "duration": "84",
         "title": "Bruce Springsteen  - Working on a dream",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/1c/Working_on_a_Dream.jpg"
       },
       {
         "path": "https://www.youtube.com/watch?v=2UmI2DqoOEg&list=PLNPGM2D7aODcn0TIJWJ_6IRk-xkLRIp55",
-        "duration": "80",
+        "duration": "86",
         "title": "Bruce Springsteen  - Wrecking ball",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e3/Wreckingball.jpg"
       },
 
       {
-        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/8/84/High_Hopes_album_Bruce_Springsteen.jpg",
         "title": "Bruce Springsteen  - High hopes",
         "path": "https://www.youtube.com/watch?v=OGdNarT90hk&list=PLuFrIncMdIQwRcVh-e-GkHaP_6w9TatsW&index=1",
-        "duration": "80"
+        "duration": "88",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/8/84/High_Hopes_album_Bruce_Springsteen.jpg"
       },
 
       {
         "path": "https://www.youtube.com/watch?v=fX784eWx4Qk&list=PLiN-7mukU_REK8CHqSRqVqKgIwG3sAekz",
-        "duration": "100",
+        "duration": "104",
         "title": "Bruce Springsteen  - Western Stars",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4e/Bruce_Springsteen_-_Western_Stars.png"
       },
@@ -769,30 +830,334 @@
       {
         "title": "Bruce Springsteen  - Letter to you",
         "path": "https://www.youtube.com/watch?v=s-RT3nxr3T4&list=PLxA687tYuMWimGUycWLLK1j2GxtHVYFkb",
-        "duration": "80",
+        "duration": "84",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/7e/Lettertoyou.jpg"
       },
 
       {
         "title": "Bruce Springsteen - Only the strong survive",
         "path": "https://www.youtube.com/watch?v=p-yndasQvY8&list=PLxA687tYuMWgPE96YSx67JGzBayn9_u1a",
-        "duration": "80",
+        "duration": "87",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/73/Bruce_Springsteen_-_Only_the_Strong_Survive.png"
       },
 
-      {
-        "path": "https://www.youtube.com/watch?v=2YsAvibvPRE&list=PLjLlTP7TOdelm-SC_IGIG1xfukyggsois",
-        "title": "Iris - Luna plina",
-        "thumbnail": "https://i.discogs.com/eaRET-gWqNnCrbQGYWfkmTl7Slt7e9KTtgCG8R0-hG8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzNTg3/MTQtMTMzMjkyODM5/NC5qcGVn.jpeg",
-        "duration": "80"
-      },
+
 
       {
         "path": "https://www.youtube.com/watch?v=MVl7taUQVLw&list=PL1Zw2Z8NKVUw-TRG8rTXDVZLWkSwJJv46",
         "title": "Audioslave",
         "duration": "80",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/ac/Audioslave_-_Audioslave.jpg"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=j8sn-c1NM5Y&list=PL5C9D1FA49F73556F",
+        "title": "Mircea Baniciu - Tristeti provinciale - 1981",
+        "duration": "70"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=AgVJ7riX2SY&list=PL074B70CA723C6ADB",
+        "title": "Mircea Baniciu - Secunda 1 (1988)",
+        "duration": "65"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=XIjlN8_kKfQ&list=PL30F4FA571FC528E3",
+        "title": "Mircea Baniciu - ALBUM Secunda 2 (1992)",
+        "duration": "60"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=086PNBXh4tQ&list=PLRNLj7fYfnZbfSnwxCq3tlYECexFxD7MV",
+        "title": "Nicu Alifantis - Piata Romana nr 9",
+        "duration": "58"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=3WreEj6zqTw&list=PLCEAfaxgr2G4mSL9lsBF6Qdz62TeK9Yv2",
+        "title": "Nicu Alifantis - Masina de scris",
+        "duration": "60"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=whUoPD0E-uE&list=PLRNLj7fYfnZZUc55edDiRdm2GzdWSyVH4",
+        "duration": "60",
+        "title": "Nicu Alifantis - Risipitorul de iubire"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=7Kp1mawNJMM&list=PLYq_mcte9NvCCthOQhYEWbjYMVVseFfqz",
+        "title": "Bob Dylan - (Debut Album – 1962)",
+        "duration": "63"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=MMFj8uDubsE&list=PLfGibfZATlGpj4XK7uSPrgpRiTXcI_VP1",
+        "duration": "80",
+        "title" : "Bob Dylan - The Freewheelin' Bob Dylan ~ Full Original Album"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=PDJhPGoYL4k&list=PLiN-7mukU_RFRlyPb7iOfOVSg10Hyv3qX",
+        "duration": "63",
+        "title": "Bob Dylan - The Times They Are a-Changin' (1964 - Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=MH60aiybqjY&list=PLKZWLu6q09LNjwvtWl7fh0NCNJg-0pxWD",
+        "duration": "80",
+        "title": "Bob Dylan - Another Side of Bob Dylan (Full Album) (Explicit)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=HNI-RQKA-cg&list=PLs-kSlFHGBGXY9nzOJ0CgWVGdEI2XXSvH",
+        "duration": "60",
+        "title": "Bob Dylan - Bringing It All Back Home (Full Album)"
+      },
+      {
+        "path":"https://www.youtube.com/watch?v=IwOfCgkyEj0&list=PLXRKTcRs-Xs7rr36o5_Cs7fBn8B7KsmRG",
+        "duration":"70",
+        "title": "Bob Dylan - Highway 61 Revisited"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=fm-po_FUmvM&list=PLXRKTcRs-Xs75Lys27wNEeAFjTVKMfKQ7",
+        "duration": "90",
+        "title": "Bob Dylan - Blonde On Blonde"
+      },
+      {
+        "path":"https://www.youtube.com/watch?v=22THbJc39ss&list=PLfGibfZATlGoJ-2q2AEk8dv0SXl768Isr",
+        "duration": "50",
+        "title": "Bob Dylan ~ John Wesley Harding"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Je4Eg77YSSA&list=PLXRKTcRs-Xs5zRFtxZGOJsIcwjU0qbQMi",
+        "duration": "40",
+        "title": "Bob Dylan - Nashville Skyline"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=qKCepuQ-W_k&list=PLKZWLu6q09LNIov8Z7Xz-zBoZpeJH6jTW",
+        "duration": "84",
+        "title": "Bob Dylan - Self Portrait(Full Album) (Explicit)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=hmrdHVS0_cU&list=PLx252NeXW5_rQDnY7eixqIhRAEdDXSbJY",
+        "title": "Bob Dylan - New Morning 1970",
+        "duration": "50"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=GFsPZdkshJA&list=PLKZWLu6q09LOCvL-VvaDjTOE0e6WC2lyR",
+        "duration": "50",
+        "title": "Bob Dylan - Pat Garrett & Billy the Kid "
+      },
+      {
+        "path" : "https://www.youtube.com/watch?v=w6UdWdZRMyA&list=PLx252NeXW5_oVGEUE_KesyH7CKMr2wghR",
+        "duration": "40",
+        "title": "Bob Dylan - Dylan 1973"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=IUoEJvgyqxA&list=PLKZWLu6q09LODccPbSTdltgitPTn-F8tk",
+        "duration": "60",
+        "title": "Bob Dylan - Planet Waves"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=8NfDUn4Cy4I&list=PLs-kSlFHGBGUd0d_513ta7EwBMBKgG_Hs",
+        "duration": "70",
+        "title": "Bob Dylan - Blood on the Tracks (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=sEFZ8giU7jY&list=PLiqWX7AXe4iRr9qpqzw8Q2AO4b2ZSoxIb",
+        "duration": "90",
+        "title": "Bob Dylan - & The Band - The Basement Tapes"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=bpZvg_FjL3Q&list=PLfGibfZATlGojRzwpyquwGnYK-MuWY4_G",
+        "duration": "72",
+        "title": "Bob Dylan ~ Desire ~ Full Album (Complete & Updated)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=uX5awkKsnu0&list=PLKZWLu6q09LN2yum_Ow72ywcW_Y2cvQ3W",
+        "duration": "65",
+        "title": "Bob Dylan - Street Legal"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=JOK0v2QYy9Y&list=PLKZWLu6q09LOKUaiF9hWP5n5KOmF2ybl1",
+        "duration": "65",
+        "title": "Bob Dylan - Slow Train Coming"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=mgQhDucUCVQ&list=PLKZWLu6q09LMZKpc9tJQ8ziq6PUnrmyJE",
+        "duration": "61",
+        "title": "Bob Dylan - Saved"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=KlfbUAabhmc&list=PLKZWLu6q09LO8_5x_yDcWOS9LHDhGm6QS",
+        "duration": "59",
+        "title": "Bob Dylan - Shot of Love"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=gtdq6D6aiu8&list=PLhDZGzKzalHmVqXcrfVULGDSOHXRHPfb4",
+        "duration": "58",
+        "title": "Bob Dylan - Infidels"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=VnCwdR6KqC4&list=PLKZWLu6q09LM4sJFnu5fJPomzVsgS_j-m",
+        "duration": "60",
+        "title": "Bob Dylan - Empire Burlesque"
+      },
+      {
+        "path":"https://www.youtube.com/watch?v=P6ADBTMBO4A&list=PLKZWLu6q09LO2YR99M_0iFj1KSR7FO6v9",
+        "duration": "50",
+        "title": "Bob Dylan - Knocked Out Loaded (Full Album) (Explicit)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=eruDsWHPkKY&list=PLKZWLu6q09LN_yHiIh1suwuMgCYPSWN_j",
+        "duration": "50",
+        "title": "Bob Dylan - Down in the Groove (Full Album) (Explicit)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=616VCMzBH-A&list=PLr-tFaqJ0ga_q_oEn_dHX3XWP2hpjWhpv",
+        "duration": "55",
+        "title": "Bob Dylan - Oh Mercy (1989)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=7akC0uCnV90&list=PLKZWLu6q09LMZD_wLFgC7QlyIGjf9pLg1",
+        "duration": "50",
+        "title": "Bob Dylan - Under the Red Sky "
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=7WM4lnTRi8o&list=PLKZWLu6q09LN1OOWzVTt5I1vmXIYtexj6",
+        "duration": "70",
+        "title": "Bob Dylan - Good As I Been To You (Full Album) (Explicit)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=qaFbCrEBob0&list=PLx252NeXW5_qHKkLaYoocVstVvrpNUYYR",
+        "duration": "60",
+        "title": "Bob Dylan - World Gone Wrong ‘93"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=5y_VTtGujPI&list=PLN252wGKiRTuTd8GdpHCxwwYFNH_8zVkN",
+        "duration": "100",
+        "title": "Bob Dylan - Time Out Of Mind Full Album"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Odp6ARgXu10&list=PLNPGM2D7aODfeFTM5_aH6FT9MlH60C2dR",
+        "duration": "70",
+        "title": "Bob Dylan - Love and Theft (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=zxxjD3ZWZeg&list=PLNPGM2D7aODdJ9dAKEM0GpdYNsLj3FNcR",
+        "duration": "70",
+        "title": "Bob Dylan - Modern Times (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=3OK9271n9KA&list=PLx252NeXW5_pk9H1PZGLrHQt9JP8MXiym",
+        "duration": "58",
+        "title": "Bob Dylan Together Thru Life"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=f9vspWW_NoQ&list=PLx252NeXW5_oNPCLVZ7cZ-3HNzB92B1AZ",
+        "duration": "80",
+        "title": "Bob Dylan - Tempest 2012"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=mABQIejX45o&list=PLQ3tnR5_h9v4XsIuXbKIakOM_N2gR6L14",
+        "duration": "57",
+        "title": "Bob Dylan - Shadows in the Night"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=JPsfpnXR3CU&list=PLVC-R5lqKHRG_o-wSVUSsXJEIkUymCgn_",
+        "duration": "47",
+        "title": "Bob Dylan - Fallen angels"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=5qpLCRVUmDo&list=PLx252NeXW5_pN3MxwJCXgenfPMDZOxB9C",
+        "duration": "110",
+        "title": "Bob Dylan Triplicate 2017"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=CU-e3os7QBk&list=PLxA687tYuMWgO7K2Tv4joWaUg0GKoL-UV",
+        "duration": "80",
+        "title": "Bob Dylan - Rough and Rowdy Ways (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=B2H_RlYdukQ&list=PLiN-7mukU_RFUPi7wDlbP4zRi7eIXw0gS",
+        "duration": "74",
+        "title": "Bob Dylan - Shadow Kingdom (2023 - Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Ws4F5ZYukjw&list=PLYfQcxKIwlEGO2U2FQcgg_tPwmuL-STC-",
+        "duration": "65",
+        "title": "Vama Veche - Vama Veche 1999"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=td84duFmPXo&list=PLYfQcxKIwlEFzn1cUoNo-0KPcZ1UUbI4p",
+        "duration": "110",
+        "title": "Vama Veche - Am sa ma intorc barbat (2003)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=hNF9z8gM59A&list=PLYfQcxKIwlEHDOJZgiRNm1Uc-KfBix-Wi",
+        "duration": "60",
+        "title": "Vama Veche - Fericire in rate [2006]"
+      },
+
+
+
+
+
+
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=RS8MCsRxhcg&list=PLYfQcxKIwlEFT6oDkrnEJ78Ha9rnsw1RZ",
+        "duration": "70",
+        "title": "Vama  Veche - Nu am chef azi"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=TbbUEEIhhrI&list=PL657A7A9263615B3C",
+        "duration": "54",
+        "title": "Timpuri Noi - 1992"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=msfwcKRpd8k&list=PL7FFBAFD32D3CA9C5",
+        "duration": "70",
+        "title": "Timpuri noi - 1998 - Basca abundentei"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=9obIO_UiFzg&list=PLY8GSi_xpp_UEXAOLOg2rysUdT-M5bRDF",
+        "duration": "60",
+        "title": "Timpuri Noi - De regiune superior"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Vjpo4fSWFKI&list=PL2GQFZxmssdqJ1LtcQa1ou7tp7GzrWjZZ",
+        "duration": "70",
+        "title": "Lucky Nights (Unplugged Live Tour / 2000) · Vita de Vie, Timpuri Noi Full Album"
+      },
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=EJRdDhnTRoo&list=PLiN-7mukU_RGbkLwK8g0SIBCAwLlgKwnb",
+        "duration": "60",
+        "title": "The Rolling Stones - Let It Bleed (1969 - Full Album)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=w5HP2Xcy_eQ&list=PLWYs5zVlt6JAZ_8G9PMtNvDlxGX08ZRHo&index=1",
+        "duration": "77",
+        "title": "THe Rolling Stones - Exile On Main Street (full album, correct order)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=Bar7SzNLnY0&list=PLu1hvmv2UyrqnZzJwPvEvA9PWIyo5M9bb",
+        "duration": "60",
+        "title": "The Rolling Stones - Sticky Fingers (Full album)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=_GQdRdV1Kvs&list=PLsT9douBcx9_GI1tltFktgcIzBUMFo5z3",
+        "duration": "65",
+        "title": "The Rolling Stones - Emotional Rescue"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=kfSQkZuIx84&list=PLycVTiaj8OI9Ptzsl9nzxfwUgZ0jx-Hyb",
+        "duration": "50",
+        "title": "The Beatles - Rubber soul (Full album)"
       }
+
+
     ],
     "generic-radios": [
       "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
