@@ -553,6 +553,40 @@
       },
 
       {
+        "path": "https://www.youtube.com/watch?v=81t8mi5i0X0&list=PLBnJv6rImVe9XXPLwK2CvysVd_CnrYB81",
+        "title": "Queen - A Night at the Opera (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=oZudfID2HUk&list=PLnif9Rfb5AdkHq0Q8BSQBNYqzt4Pd91Ek",
+        "duration": "70",
+        "title": "Queen - A Day At The Races (Full Album HQ)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=NNXEarSxGQ0&list=PLBnJv6rImVe_RJ8-fSQ3OQkYnGxLDFYc-",
+        "title": "Queen - Queen (Full Album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=xi0Y-kS5icI&list=PL-v2ZeBazuxGotJIF2jpgilbb1sWs_HIR",
+        "duration": "70",
+        "title": "Queen - Innuendo (1991) - FULL ALBUM"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=9zrYXvUXiQk&list=PLTzFYtbDKXFcBRMDuN9oAQdgHxD3JZghW",
+        "title": "Queen - A kind of magic"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=2ObjtVdsV3I&list=PL6ogdCG3tAWiH0E0OF6d97Ahfrq2xz8fj",
+        "duration": "70",
+        "title": "David Bowie - Ziggy Stardust Full Album"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=eQGobt4ub6U&list=PL6ogdCG3tAWjqM4m8hHMh5jaab6rs3K_i",
+        "title": "David Bowie -  Aladdin Sane Full Album"
+      },
+
+
+      {
         "title": "Iris - Luna plina",
         "path": "https://www.youtube.com/watch?v=2YsAvibvPRE&list=PLjLlTP7TOdelm-SC_IGIG1xfukyggsois",
         "thumbnail": "https://i.discogs.com/eaRET-gWqNnCrbQGYWfkmTl7Slt7e9KTtgCG8R0-hG8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzNTg3/MTQtMTMzMjkyODM5/NC5qcGVn.jpeg",
@@ -1149,6 +1183,12 @@
         "path": "https://www.youtube.com/watch?v=_GQdRdV1Kvs&list=PLsT9douBcx9_GI1tltFktgcIzBUMFo5z3",
         "duration": "65",
         "title": "The Rolling Stones - Emotional Rescue"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=ZHKz7FBUF1w&list=PLSzQ5tXtxOEbf-9G7MvjU3k4SFdvKaylC",
+        "duration": "110",
+        "title": "The Rolling Stones - “Hot Rocks 1962-1971” full Lp"
       },
 
       {
