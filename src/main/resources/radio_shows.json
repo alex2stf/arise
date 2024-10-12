@@ -178,7 +178,7 @@
       "https://www.youtube.com/watch?v=ifZqnS5gNHU",
       "https://streaming.exclusive.radio/er/carpenters/icecast.audio",
       "https://streaming.exclusive.radio/er/streisand/icecast.audio",
-      "https://www.youtube.com/watch?v=aXTCDB70Qgo&list=PLXhfRoiJBIislZ9MHBBNYK0h3N30Gv7Ja&index=1",
+
       "https://streaming.exclusive.radio/er/folk/icecast.audio",
       "https://streaming.exclusive.radio/er/lovemovies/icecast.audio",
       "https://www.youtube.com/watch?v=hZ8QtwH7r80&list=PLpI6XGqHb_GQVh6mJKnmm3XXgj_06nJ9G&index=1",
@@ -393,7 +393,6 @@
       "https://streaming.exclusive.radio/er/norahjones/icecast.audio",
       "https://www.youtube.com/watch?v=idxfd3t1Goo",
       "https://streaming.exclusive.radio/er/otisredding/icecast.audio",
-      "https://www.youtube.com/watch?v=FfIZr38DLSg&list=PL9DIppW0sLtLLMhM7GivJCAVQvJxunJtg",
       "https://streaming.exclusive.radio/er/ub40/icecast.audio",
       "https://streaming.exclusive.radio/er/neildiamond/icecast.audio",
       "https://streaming.exclusive.radio/er/elvispresley/icecast.audio",
@@ -1189,6 +1188,77 @@
         "path": "https://www.youtube.com/watch?v=ZHKz7FBUF1w&list=PLSzQ5tXtxOEbf-9G7MvjU3k4SFdvKaylC",
         "duration": "110",
         "title": "The Rolling Stones - “Hot Rocks 1962-1971” full Lp"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=7OvW8Z7kiws&list=PLXhfRoiJBIiuXOUv_7EJ1i7UKj0aGfy0U",
+        "duration": "75",
+        "title": "King Crimson - In The Court Of The Crimson King"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=aXTCDB70Qgo&list=PLXhfRoiJBIislZ9MHBBNYK0h3N30Gv7Ja&index=1",
+        "title": "King Crimson - Red",
+        "duration": "80"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=zqhhZRcFlws&list=PL3PhWT10BW3VfS-Li7DhUqW8k-lfy1tvo",
+        "duration":"55",
+        "title": "King Crimson - Discipline (Full Album)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=FfIZr38DLSg&list=PL9DIppW0sLtLLMhM7GivJCAVQvJxunJtg",
+        "title": "Guns n Roses - Chinese democracy",
+        "duration": "80"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=0CNPR2qNzxk&list=PL6ogdCG3tAWiPhX1-iTHcvnsO2ek1nlJl",
+        "duration": "70",
+        "title": "Guns n Roses - Apetite for destruction"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=G4CfGsBz9aY&list=PL4J5vKEAoxN1JYfU1b76ApIOiQMXUIH4W",
+        "duration": "50",
+        "title": "Guns n Roses - Lies"
+      },
+
+      {
+        "path":"https://www.youtube.com/watch?v=Zqo7j2yFoFs&list=PL4J5vKEAoxN01Z3E7gztv6CNvSLALN_cA",
+        "duration": "85",
+        "title": "Guns n Roses - Use your illusion I"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=isCh4kCeNYU&list=PL4J5vKEAoxN14WAHr_kIcpVBcsn24oa3m",
+        "duration": "84",
+        "title": "Guns n Roses - Use your illusion II"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=mmB0URLdwpE&list=PLVMgMdYqIEkY42B3shInBQuEiesEzl4_-",
+        "duration": "68",
+        "title": "Guns n Roses - The spaghetti incident"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=VA3SbP6IlA8&list=PLLsvoQDqi92ualuUhyFJIvUSPiPGogf1n",
+        "duration": "60",
+        "title": "Otis Redding - Best of"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=JqYIwJDsinM&list=PLUihDZDRJtI5Pgnn00xaoxG7b6hwnBRiY",
+        "duration": "65",
+        "title": "Pearl Jam - Ten"
+      },
+      {
+        "path":"https://www.youtube.com/watch?v=XUi580gA5BQ&list=PLcxGlEuFOO3USm9h3XdBFx2mnmLv7ybPj&index=1",
+        "duration": "67",
+        "title": "Gil Scot Heron - Pieces of a man"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=v_VJrFZPTIo&list=PL9B3FC25FE66FC10B&index=1",
+        "duration": "35",
+        "title": "Gil Scot Heron - I'm new here"
       },
 
       {
