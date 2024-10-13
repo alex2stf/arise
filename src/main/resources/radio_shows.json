@@ -674,7 +674,7 @@
       {
         "duration": "60",
         "path": "https://www.youtube.com/watch?v=FEacDWPWfJU&list=OLAK5uy_l1x-JAx0w53suECoCI0YJtW6VB8DBQWRQ",
-        "title": "Pink Floyd -The Dark Side of the Moon (1973)",
+        "title": "Pink Floyd - The Dark Side of the Moon (1973)",
         "thumbnail": "https://en.wikipedia.org/wiki/File:Dark_Side_of_the_Moon.png"
       },
       {
@@ -731,7 +731,7 @@
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/2e/AtomHeartMotherCover.jpeg"
       },
       {
-        "title": "Bruce Springtsteen - Darkness at the edge of town",
+        "title": "Bruce Springsteen - Darkness at the edge of town",
         "path": "https://www.youtube.com/watch?v=SDlSCeQXbPo&list=PLX66jEixZe1w-60nMwFuSbaxftwbMBW4i&index=1",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/en/a/af/BruceSpringsteenDarknessontheEdgeofTown.jpg",
         "duration": "58"
@@ -897,6 +897,12 @@
         "title": "Mircea Baniciu - ALBUM Secunda 2 (1992)",
         "duration": "60"
       },
+
+      {
+        "path": "https://www.youtube.com/watch?v=_H9xElUcH44&list=PLBC94AB85D5E20301",
+        "duration": "44",
+        "title": "Mircea Baniciu - Ploaia"
+      },
       {
         "path": "https://www.youtube.com/watch?v=086PNBXh4tQ&list=PLRNLj7fYfnZbfSnwxCq3tlYECexFxD7MV",
         "title": "Nicu Alifantis - Piata Romana nr 9",
@@ -950,7 +956,7 @@
       {
         "path":"https://www.youtube.com/watch?v=22THbJc39ss&list=PLfGibfZATlGoJ-2q2AEk8dv0SXl768Isr",
         "duration": "50",
-        "title": "Bob Dylan ~ John Wesley Harding"
+        "title": "Bob Dylan - John Wesley Harding"
       },
       {
         "path": "https://www.youtube.com/watch?v=Je4Eg77YSSA&list=PLXRKTcRs-Xs5zRFtxZGOJsIcwjU0qbQMi",
@@ -995,7 +1001,7 @@
       {
         "path": "https://www.youtube.com/watch?v=bpZvg_FjL3Q&list=PLfGibfZATlGojRzwpyquwGnYK-MuWY4_G",
         "duration": "72",
-        "title": "Bob Dylan ~ Desire ~ Full Album (Complete & Updated)"
+        "title": "Bob Dylan - Desire ~ Full Album (Complete & Updated)"
       },
       {
         "path": "https://www.youtube.com/watch?v=uX5awkKsnu0&list=PLKZWLu6q09LN2yum_Ow72ywcW_Y2cvQ3W",
@@ -1077,7 +1083,7 @@
       {
         "path": "https://www.youtube.com/watch?v=3OK9271n9KA&list=PLx252NeXW5_pk9H1PZGLrHQt9JP8MXiym",
         "duration": "58",
-        "title": "Bob Dylan Together Thru Life"
+        "title": "Bob Dylan - Together Thru Life"
       },
       {
         "path": "https://www.youtube.com/watch?v=f9vspWW_NoQ&list=PLx252NeXW5_oNPCLVZ7cZ-3HNzB92B1AZ",
@@ -1097,7 +1103,7 @@
       {
         "path": "https://www.youtube.com/watch?v=5qpLCRVUmDo&list=PLx252NeXW5_pN3MxwJCXgenfPMDZOxB9C",
         "duration": "110",
-        "title": "Bob Dylan Triplicate 2017"
+        "title": "Bob Dylan - Triplicate 2017"
       },
       {
         "path": "https://www.youtube.com/watch?v=CU-e3os7QBk&list=PLxA687tYuMWgO7K2Tv4joWaUg0GKoL-UV",
@@ -1136,7 +1142,7 @@
       {
         "path": "https://www.youtube.com/watch?v=RS8MCsRxhcg&list=PLYfQcxKIwlEFT6oDkrnEJ78Ha9rnsw1RZ",
         "duration": "70",
-        "title": "Vama  Veche - Nu am chef azi"
+        "title": "Vama Veche - Nu am chef azi"
       },
       {
         "path": "https://www.youtube.com/watch?v=TbbUEEIhhrI&list=PL657A7A9263615B3C",
@@ -1187,7 +1193,7 @@
       {
         "path": "https://www.youtube.com/watch?v=ZHKz7FBUF1w&list=PLSzQ5tXtxOEbf-9G7MvjU3k4SFdvKaylC",
         "duration": "110",
-        "title": "The Rolling Stones - “Hot Rocks 1962-1971” full Lp"
+        "title": "The Rolling Stones - Hot Rocks 1962-1971"
       },
 
       {
@@ -1262,9 +1268,119 @@
       },
 
       {
+        "path": "https://www.youtube.com/watch?v=GMwfCVv9p8Q&list=OLAK5uy_nOkitaQWdpfaD31Tmq1UDWUAETMhs2430",
+        "duration": "40",
+        "title": "Laura Stoica - Focul"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=P2m5oiXJY2k&list=PLk9ScR4ldOjE9Jh6q1zJCavNihkZqSDjJ",
+        "duration": "45",
+        "title": "Ada Milea - Republica Mioritică România"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=4GNJEItKbGM&list=PL526MMAojqtw6OFMQguBeD4uqK9USVj6H",
+        "duration": "50",
+        "title": "Sarmalele Reci - Tara Te Vrea Prost"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=WNpfz9E1ppA&list=OLAK5uy_l9fu4idgnMzNVXZVKS-MEm5ndNMqS0rZo",
+        "duration": "52",
+        "title": "Sarmalele Reci - Rapirea din Serai"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=1pWQAZsV-4Q&list=PLJ2I_U9XF3oDPMAgmbTgyUgKalkFc3unb",
+        "duration": "60",
+        "title": "Anda Calugareanu - CD 2"
+      },
+
+      {
         "path": "https://www.youtube.com/watch?v=kfSQkZuIx84&list=PLycVTiaj8OI9Ptzsl9nzxfwUgZ0jx-Hyb",
         "duration": "50",
         "title": "The Beatles - Rubber soul (Full album)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=F_zMJ2Knao8&list=PL7DB7A2E8D4FF2854&index=2",
+        "duration": "80",
+        "title": "Muzica romaneasca - Dan Spataru"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=BerwZpwOJnY",
+        "duration": "70",
+        "title": "Muzica romaneasca - Madalina Manole"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=V1OfCmY-ZRw&list=PLd6a_q1WIq8Y334HWkZR_J27uBLGzBNKX",
+        "duration": "80",
+        "title": "Muzica romaneasca - Bosquito (sus)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Vk02jXr6oyA&list=PLJ2I_U9XF3oDcMhCmWpjiokFngsYNrrix",
+        "duration": "80",
+        "title": "Muzica romaneasca - Mihaela Runceanu"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=Bsk7R_CQzKc&list=PL9Uwzf59Sx8lHrVZp6FcQkvT4cTdwLtUI&index=1",
+        "duration": "30",
+        "title": "Muzica romaneasca - Loredana Groza"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=XprrYmyH8P4&list=PLGfb2R92OHul2WHFj2P01YSdntalrr85c",
+        "duration": "50",
+        "title": "Muzica romaneasca - FFN - Zece pasi"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=onQE3y2D2rk&list=PLFs0YEwRYYEYtiv9NkZmk9c3jZY8WTURZ",
+        "duration": "60",
+        "title": "Muzica romaneasca - Sfinx Experience"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=UFuNeUrl9mo",
+        "duration": "70",
+        "title": "Muzica romaneasca - Coma (light)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=wEMqZNEcirc&list=OLAK5uy_lO1eDIAGJ_43D_OzyI6PNqQXNe6GauSFU",
+        "duration": "48",
+        "title": "Muzica romaneasca - Laura Stoica (Vino)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=X6TV1QUNc1I&list=PL2wUhtBLvKtl14jR--rK9H204lHGs-j8E",
+        "duration": "45",
+        "title": "Muzica romaneasca - Ana Manole (Fericirea de luni)"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=mIZTTzwz4TI",
+        "duration": "65",
+        "title": "Muzica romaneasca - OCS - Ne punem in cap"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=S27mhpiXZL8&list=PLphqXOpbbpoUzigNNMvd1-ABUMEaS7mFU&index=1",
+        "duration": "50",
+        "title": "Muzica romaneasca - Travka"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=NoNQUY0SDW0&list=PLoJql_cgcgQy_aqPTgGwmUvqcJSNiT3hX&index=1",
+        "duration": "30",
+        "title": "Muzica romaneasca - Ada Milea - De ce fierbe copilul in mamaliga"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=WQH3M6omjB0&list=PLJ2I_U9XF3oDGMM2UEb0FWS3gIo0BYos2",
+        "duration": "55",
+        "title": "Muzica romaneasca - Culegere de cântece românești, vol. 1"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=z5MZS1fgc34&list=PLJ2I_U9XF3oAHmqLC-dTSr2EzaMTmB5U-&index=1",
+        "duration": "55",
+        "title": "Muzica romaneasca - Muzică Folk, vol. 2"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=y15z9qBOjDE&list=PLJ2I_U9XF3oClQa5h7vYguy6q3KL7V9HC",
+        "duration": "52",
+        "title": "Muzica romaneasca - Caseta Folk 3"
       }
 
 

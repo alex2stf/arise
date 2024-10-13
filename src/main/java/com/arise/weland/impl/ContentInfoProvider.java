@@ -33,6 +33,7 @@ public class ContentInfoProvider {
     private static final Map<String, String> TITLES = new HashMap<>();
 
 
+
     public ContentInfoProvider(ContentInfoDecoder decoder){
         this.decoder = decoder;
         decoder.setProvider(this);
@@ -41,6 +42,10 @@ public class ContentInfoProvider {
     public static Map packageInfoProps(File f) throws IOException {
         String content = FileUtil.read(f);
         return (Map) Groot.decodeBytes(content.replaceAll("\\s+", " ").getBytes());
+    }
+
+    public static Map<String, String> getTitles() {
+        return Collections.unmodifiableMap(TITLES);
     }
 
     private void integrityCheck(Playlist playlist){

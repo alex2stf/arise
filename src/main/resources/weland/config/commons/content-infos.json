@@ -30,7 +30,7 @@
     "path": "https://streaming.exclusive.radio/er/springsteen/icecast.audio"
   },
   {
-    "title": "Metallica",
+    "title": "Metallica - Exclusive FM",
     "path": "https://streaming.exclusive.radio/er/metallica/icecast.audio"
   },
   {
@@ -49,7 +49,7 @@
     "thumbnail": "classpath:pictures/radio_swiss_jazz.png"
   },
   {
-    "title": "Pink Floyd ExclusiveFM",
+    "title": "Pink Floyd - ExclusiveFM",
     "thumbnail": "classpath:pictures/pink_floyd.jpg",
     "path": "https://streaming.exclusive.radio/er/pinkfloyd/icecast.audio"
   },
@@ -102,7 +102,7 @@
     "path": "https://streaming.exclusive.radio/er/lanadelrey/icecast.audio"
   },
   {
-    "title": "Vivaldi ExclusiveFM",
+    "title": "Vivaldi - ExclusiveFM",
     "path": "https://streaming.exclusive.radio/er/vivaldi/icecast.audio"
   },
   {
@@ -110,11 +110,11 @@
     "path": "https://live.magicfm.ro/magic.gold.hits"
   },
   {
-    "title": "UB40 ExclusiveFM",
+    "title": "UB40 - ExclusiveFM",
     "path": "https://streaming.exclusive.radio/er/ub40/icecast.audio"
   },
   {
-    "title": "Tom Waits ExclusiveFM",
+    "title": "Tom Waits - ExclusiveFM",
     "path": "https://streaming.exclusive.radio/er/tomwaits/icecast.audio"
   },
   {
@@ -146,11 +146,11 @@
     "path": "https://radio.cloud23.eu/magiainimiitale"
   },
   {
-    "title": "Deep Purple ExclusiveFM",
+    "title": "Deep Purple - ExclusiveFM",
     "path": "https://streaming.exclusive.radio/er/deeppurple/icecast.audio"
   },
   {
-    "title": "Nirvana",
+    "title": "Nirvana - Exclusive FM",
     "path": "https://streaming.exclusive.radio/er/nirvana/icecast.audio"
   },
   {

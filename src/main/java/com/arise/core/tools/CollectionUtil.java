@@ -1,6 +1,10 @@
 package com.arise.core.tools;
 
 import com.arise.core.exceptions.LogicalException;
+import com.arise.weland.dto.ContentInfo;
+import com.arise.weland.impl.ContentInfoProvider;
+import com.sun.org.apache.xerces.internal.xs.StringList;
+import org.omg.CORBA.MARSHAL;
 
 import java.util.*;
 
@@ -195,7 +199,7 @@ public class CollectionUtil {
         if (l.isEmpty() || l.isIndexExceeded()){
             if(dSh){
                 Mole.getInstance("CLCTC_UTI").info("shuffle " + k);
-                shuffle(s);
+                shuffleList(s);
             }
             l = storeList(k, s, 0);
         }
@@ -204,6 +208,93 @@ public class CollectionUtil {
         Mole.getInstance("CLCTC_UTI").info(  k + " return index = " + i);
         return l.getItems().get(i);
     }
+
+
+    private static void shuffleList(List<String> s){
+
+        shuffle(s);
+        Map<String, String> t = ContentInfoProvider.getTitles();
+        Map<String, String> artisti = new HashMap<>();
+        for (Map.Entry<String, String> e: t.entrySet()){
+            artisti.put(e.getKey(), getArtist(e.getValue()));
+        }
+
+        Map<String, List<String>> buf = new HashMap<>();
+
+        for (String p : s){
+            String k = StringUtil.hasContent(artisti.get(p)) ? artisti.get(p) : "null";
+            MapUtil.addItemToArrayList(buf, k, p);
+        }
+
+        Set<String> toremove = new HashSet<>();
+        List<String> onepound = new ArrayList<>();
+        for (Map.Entry<String, List<String>> e: buf.entrySet()){
+            if(e.getValue().size() == 1){
+                onepound.add(e.getValue().get(0));
+                toremove.add(e.getKey());
+            }
+        }
+
+        for (String k: toremove){
+            buf.remove(k);
+        }
+        buf.put(UUID.randomUUID().toString(), onepound);
+
+
+        List<String> shArts = new ArrayList<>(buf.keySet());
+        Collections.shuffle(shArts);
+        int maxSize = 1;
+
+        for (String a: shArts){
+            shuffle(buf.get(a));
+            if(buf.get(a).size() > maxSize){
+                maxSize = buf.get(a).size();
+            }
+        }
+
+
+        List<String> res = new ArrayList<>();
+
+        for (int i = 0; i < maxSize; i++){
+            for (String artist: shArts) {
+                List<String> pl = buf.get(artist);
+                if(pl.size() > i){
+                    res.add(pl.get(i));
+                }
+            }
+        }
+
+
+        //afla coliziunile:
+        int coliziuni = 0;
+        for (int i = 0; i <  res.size(); i++){
+            String curr = res.get(i);
+            String prev = "";
+            if(i > 0){
+                prev = res.get(i-1);
+            }
+            String currArt = artisti.get(curr) + "";
+            String preArt = artisti.get(prev) + "";
+
+            if(currArt.equals(preArt) && !"null".equals(currArt) && !"null".equals(preArt)){
+                coliziuni++;
+            }
+        }
+
+        System.out.println("NR DE COLIZIUNI IN RANDOM = " + coliziuni);
+
+
+
+    }
+
+    private static String getArtist(String s){
+        return String.valueOf((s + "").split("-")[0].trim().toLowerCase());
+    }
+
+
+
+
+
 
 
 

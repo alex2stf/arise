@@ -113,6 +113,18 @@ public class MapUtil {
         }
     }
 
+    public static <K, V> void addItemToArrayList(Map<K, List<V>> buffer, K k, V p) {
+        List<V> items;
+        if(buffer.containsKey(k)){
+            items = buffer.get(k);
+        } else {
+            items = new ArrayList<V>();
+        }
+        items.add(p);
+        buffer.put(k, items);
+
+    }
+
 
     public static class MapBuilder<K, V> {
         final Map<K, V> x;
