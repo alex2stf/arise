@@ -210,9 +210,8 @@ public class CollectionUtil {
     }
 
 
-    private static void shuffleList(List<String> s){
+    private static synchronized void shuffleList(List<String> s){
 
-        shuffle(s);
         Map<String, String> t = ContentInfoProvider.getTitles();
         Map<String, String> artisti = new HashMap<>();
         for (Map.Entry<String, String> e: t.entrySet()){
