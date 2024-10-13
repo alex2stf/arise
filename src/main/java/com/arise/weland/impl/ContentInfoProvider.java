@@ -14,6 +14,7 @@ import com.arise.weland.dto.Playlist;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.arise.weland.dto.Playlist.MUSIC;
@@ -30,7 +31,7 @@ public class ContentInfoProvider {
     private int fcnt = 0;
     private int lsc = 0;
     private static final Map<String, Integer> DURATIONS = new HashMap<>();
-    private static final Map<String, String> TITLES = new HashMap<>();
+    private static final Map<String, String> TITLES = new ConcurrentHashMap<>();
 
 
 
