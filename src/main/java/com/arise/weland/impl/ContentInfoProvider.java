@@ -30,7 +30,7 @@ public class ContentInfoProvider {
     private volatile boolean _scanning = false;
     private int fcnt = 0;
     private int lsc = 0;
-    private static final Map<String, Integer> DURATIONS = new HashMap<>();
+    private static final Map<String, Integer> DURATIONS = new ConcurrentHashMap<>();
     private static final Map<String, String> TITLES = new ConcurrentHashMap<>();
 
 
