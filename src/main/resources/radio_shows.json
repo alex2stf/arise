@@ -1414,7 +1414,7 @@
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_06:55:00_AND_10:40:00",
       "strategy": "linear",
-      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp", "${local-all}"],
+      "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"],
       "volume": "25%"
     },
 
