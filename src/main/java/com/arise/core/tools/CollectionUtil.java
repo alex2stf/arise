@@ -7,6 +7,8 @@ import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.omg.CORBA.MARSHAL;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static com.arise.core.tools.AppCache.storeList;
 import static com.arise.core.tools.StringUtil.join;
@@ -190,6 +192,10 @@ public class CollectionUtil {
        return pickFromPersistentList(s, true, name);
     }
 
+    static BlockingQueue<String> buffer = new ArrayBlockingQueue<String>(30);
+
+
+
     public static String pickFromPersistentList(List<String> s, boolean dSh, String name) {
         if(s.size() == 1){
             return s.get(0);
@@ -206,12 +212,24 @@ public class CollectionUtil {
         int i = l.getIndex();
         storeList(k, l.getItems(), l.getIndex() + 1);
         Mole.getInstance("CLCTC_UTI").info(  k + " return index = " + i);
-        return l.getItems().get(i);
+        String item = l.getItems().get(i);
+
+        if(buffer.contains(item)){
+            System.out.println("take next because " + item + " is in queue");
+            return pickFromPersistentList(s, dSh, name);
+        }
+        if(buffer.size() > 10){
+            buffer.poll();
+        }
+        buffer.add(item);
+
+        return item;
     }
 
 
     private static synchronized void shuffleList(List<String> s){
 
+        Collections.shuffle(s);
         Map<String, String> t = ContentInfoProvider.getTitles();
         Map<String, String> artisti = new HashMap<>();
         for (Map.Entry<String, String> e: t.entrySet()){
