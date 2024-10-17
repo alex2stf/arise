@@ -214,7 +214,7 @@ public class CollectionUtil {
         Mole.getInstance("CLCTC_UTI").info(  k + " return index = " + i);
         String item = l.getItems().get(i);
 
-        if(buffer.contains(item)){
+        if(buffer.contains(item) && s.size() > 20){
             System.out.println("take next because " + item + " is in queue");
             return pickFromPersistentList(s, dSh, name);
         }
