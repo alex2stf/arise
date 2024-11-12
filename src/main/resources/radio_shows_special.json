@@ -69,37 +69,37 @@
     },
     {
       "name": "adrian_berinde",
-      "day": "2024-06-18",
+      "day": "annually:06-18",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_16:00:00",
       "strategy": "stream-first",
       "sources": [
-        "https://www.youtube.com/watch?v=YsiYXMHEqTw&list=PL4zZspbjJ-iRegD7p_e66W-9jzLEQQ7PN&index=1"
+        "https://www.youtube.com/watch?v=YsiYXMHEqTw&list=PL4zZspbjJ-iRegD7p_e66W-9jzLEQQ7PN"
       ]
     },
 
     {
       "name": "bath_break_acc",
-      "day": "2024-06-18",
-      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_17:30:00",
+      "day": "annually:06-18",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_17:00:00",
       "strategy": "stream-first",
       "sources": [
-        "https://www.youtube.com/watch?v=Frj2CLGldC4&list=PLMl0O4f3Cvd_MSc_qFW01XCb4TEmXD-W1&index=1"
+        "https://www.youtube.com/watch?v=Frj2CLGldC4&list=PLMl0O4f3Cvd_MSc_qFW01XCb4TEmXD-W1"
       ]
     },
 
     {
       "name": "french",
-      "day": "2024-06-18",
+      "day": "annually:06-18",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_18:00:00",
       "strategy": "stream-first",
       "sources": [
-        "https://www.youtube.com/watch?v=7X9kpHB7Aow&list=PL4zZspbjJ-iQkNfX2UTOEqM3Phix6OlYs&index=1"
+        "https://www.youtube.com/watch?v=7X9kpHB7Aow&list=PL4zZspbjJ-iQkNfX2UTOEqM3Phix6OlYs"
       ]
     },
 
     {
       "name": "music_8d_acc",
-      "day": "2024-06-18",
+      "day": "annually:06-18",
       "hour": "EACH_SECOND BETWEEN_11:45:00_AND_13:00:00",
       "strategy": "stream-first",
       "sources": [
@@ -110,7 +110,7 @@
 
     {
       "name": "elliot_smith",
-      "day": "2024-06-18",
+      "day": "annually:06-18",
       "hour": "EACH_SECOND BETWEEN_22:00:00_AND_22:38:00",
       "strategy": "stream-first",
       "sources": [
@@ -208,6 +208,20 @@
           "path": "https://www.youtube.com/watch?v=VZHBXsvPgSQ&list=PLrNYaDWRao8kwhDet--pQb-VT9Yrh2fAv&index=1",
           "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3f/Crowangels.jpg",
           "duration": "80"
+        }
+      ]
+    },
+    {
+      "name": "Bath break",
+      "day": "annually:11-14",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_15:00:00",
+      "strategy": "stream-first",
+      "sources": [
+        {
+          "title": "Bath break",
+          "path": "https://www.youtube.com/watch?v=Frj2CLGldC4&list=PLMl0O4f3Cvd_MSc_qFW01XCb4TEmXD-W1",
+          "thumbnail": "https://upload.wikimedia.org/wikipedia/en/3/3f/Crowangels.jpg",
+          "duration": "200"
         }
       ]
     },

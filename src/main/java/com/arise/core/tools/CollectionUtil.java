@@ -192,7 +192,8 @@ public class CollectionUtil {
        return pickFromPersistentList(s, true, name);
     }
 
-    static BlockingQueue<String> buffer = new ArrayBlockingQueue<String>(30);
+    static BlockingQueue<String> urlBuffer = new ArrayBlockingQueue<String>(30);
+    static BlockingQueue<String> artistBuffer = new ArrayBlockingQueue<String>(20);
 
 
 
@@ -214,14 +215,18 @@ public class CollectionUtil {
         Mole.getInstance("CLCTC_UTI").info(  k + " return index = " + i);
         String item = l.getItems().get(i);
 
-        if(buffer.contains(item) && s.size() > 20){
+        if(urlBuffer.contains(item) && s.size() > 20){
             System.out.println("take next because " + item + " is in queue");
             return pickFromPersistentList(s, dSh, name);
         }
-        if(buffer.size() > 10){
-            buffer.poll();
+
+        //TODO artistBuffer
+//        ContentInfoProvider.findTitle(s);
+
+        if(urlBuffer.size() > 10){
+            urlBuffer.poll();
         }
-        buffer.add(item);
+        urlBuffer.add(item);
 
         return item;
     }
@@ -233,7 +238,11 @@ public class CollectionUtil {
         Map<String, String> t = ContentInfoProvider.getTitles();
         Map<String, String> artisti = new HashMap<>();
         for (Map.Entry<String, String> e: t.entrySet()){
-            artisti.put(e.getKey(), getArtist(e.getValue()));
+            String artist = ContentInfoProvider.findArtist(e.getValue());
+            if(StringUtil.hasText(artist)){
+                artisti.put(e.getKey(), ContentInfoProvider.findArtist(e.getValue()));
+            }
+
         }
 
         Map<String, List<String>> buf = new HashMap<>();
@@ -304,9 +313,7 @@ public class CollectionUtil {
 
     }
 
-    private static String getArtist(String s){
-        return String.valueOf((s + "").split("-")[0].trim().toLowerCase());
-    }
+
 
 
 

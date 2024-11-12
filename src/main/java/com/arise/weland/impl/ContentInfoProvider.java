@@ -562,4 +562,16 @@ public class ContentInfoProvider {
         }
         return path;
     }
+
+    public static String findArtist(String path){
+        String title = findTitle(path);
+        if(title.equalsIgnoreCase(path)){
+            return null;
+        }
+        try {
+            return String.valueOf(title + "").split("-")[0].trim().toLowerCase();
+        }catch (Exception e){
+            return null;
+        }
+    }
 }
