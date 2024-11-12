@@ -221,7 +221,18 @@ public class CollectionUtil {
         }
 
         //TODO artistBuffer
-//        ContentInfoProvider.findTitle(s);
+        String artist = ContentInfoProvider.findTitle(item);
+        if(null != artist){
+            if(artistBuffer.contains(artist) && ContentInfoProvider.artistsCount() > 10){
+                System.out.println("take next because arist " + artist + " is in queue");
+                return pickFromPersistentList(s, dSh, name);
+            }
+            if(artistBuffer.size() > 10){
+                artistBuffer.poll();
+            }
+            artistBuffer.add(artist);
+        }
+
 
         if(urlBuffer.size() > 10){
             urlBuffer.poll();

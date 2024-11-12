@@ -563,15 +563,26 @@ public class ContentInfoProvider {
         return path;
     }
 
-    public static String findArtist(String path){
+    public static synchronized String findArtist(String path){
+        if(ARTISTS.containsKey(path)){
+            return ARTISTS.get(path);
+        }
         String title = findTitle(path);
         if(title.equalsIgnoreCase(path)){
             return null;
         }
         try {
-            return String.valueOf(title + "").split("-")[0].trim().toLowerCase();
+            String art = String.valueOf(title + "").split("-")[0].trim().toLowerCase();
+            ARTISTS.put(path, art);
+            return art;
         }catch (Exception e){
             return null;
         }
+    }
+
+    private static final Map<String, String> ARTISTS = new ConcurrentHashMap<>();
+
+    public static synchronized int artistsCount() {
+        return ARTISTS.size();
     }
 }
