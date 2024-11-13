@@ -111,7 +111,9 @@
     ],
     "christmas": [
       {"path": "https://www.youtube.com/watch?v=l7KLGMM2YR8&list=PL3ZM9bgCxeqWG-18OOv02Jr48oyTA2uNC", "duration": "50", "title": "Bob Dylan - Christmas in heart"},
+      {"path": "https://www.youtube.com/watch?v=iV3yGUefZUE&list=PL1rsLKLsxoy0dW8avSd7KDBTdorw40eHf", "duration": "70", "title": "Emeric Imre - Iarna mea cu ochii mari"},
       "file:/storage/emulated/0/Documents/arise-app/",
+      "https://www.youtube.com/watch?v=4cc1cZvFBzs",
       "http://colinde.radiohot.ro:8000/;",
       "http://colinde2.radioplay.ro:9292/;stream.nsv",
       "http://37.251.146.169:8900/stream",
@@ -139,6 +141,22 @@
       "https://bestofrockfm.stream.vip/acdc/mp3-128/bestofrockfm.stream.vip"
     ],
     "links": [
+      "https://www.youtube.com/watch?v=WIRBshlXUDk",
+      "https://www.youtube.com/watch?v=rJ0q6KbN6Ds",
+      "https://www.youtube.com/watch?v=lrltGatijXc",
+      "https://www.youtube.com/watch?v=TneMW2fd0dc",
+      "https://www.youtube.com/watch?v=0hLESLXqBLI",
+      "https://www.youtube.com/watch?v=t3JgFvMSWJE",
+      "https://www.youtube.com/watch?v=j9QXpfvgSVk",
+      "https://www.youtube.com/watch?v=lUJuKcWv9ZA",
+      "https://www.youtube.com/watch?v=9d5ZsFQ_3t0&list=PLFZWAhRpjZtwoQIyI0VrX-Yj1lPWVD3FS",
+      "https://www.youtube.com/watch?v=-1IND7df4yk&list=PLFZWAhRpjZtxOM4awbegHPV_Us_tIrJve",
+      "https://www.youtube.com/watch?v=eyVWQH7jIg8&list=PL2iYe2558qoq-6TlRbFWNuKXDLpGuzyzy",
+      "https://www.youtube.com/watch?v=uejFzUuGS38&list=PLMl0O4f3Cvd8pTRwoZ9AwZZaKxyQaIKFq",
+      "https://www.youtube.com/watch?v=Yh4zavj1QQA",
+      "https://www.youtube.com/watch?v=stq4-99-J74&list=PLy8mdGQNL2la9FqvUka2H9HCfrdqj__Bg",
+      "https://www.youtube.com/watch?v=g0az4OkM02Y&list=OLAK5uy_mcdDsRfBo6p9yWwUCOLxjSMVV9sd2LjtU",
+      "https://www.youtube.com/watch?v=jdZdqiId0tw&list=PLGd5dMSq8qbp78MdC-5m0CP5ovm9wmLAe",
       "https://www.youtube.com/watch?v=VdOkQ6THDVw&list=PL7-ovQDmwIIzBevUXgkcL1lYdWbGZqBuK",
       "https://www.youtube.com/watch?v=drIRh_YOS1E",
       "https://streaming.exclusive.radio/er/INXS/icecast.audio",
@@ -559,11 +577,6 @@
         "duration": "104"
       },
       {
-        "title": "Radio folk",
-        "path": "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
-        "duration": "60"
-      },
-      {
         "title": "Alan Parson Project",
         "path": "https://www.youtube.com/watch?v=UywKZcH_Wk0&list=PLrnz4iRZQNld01i_kUviwGp7xHSm0Hegy"
       },
@@ -690,6 +703,15 @@
         "duration": "60",
         "thumbnail": "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
       },
+
+      {
+        "path": "https://www.youtube.com/watch?v=jbiQKQj2YAM",
+        "duration": "134",
+        "title": "Pink Floyd - Delicate Sound of Thunder)",
+        "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/be/Pink_Floyd_-_The_Endless_River_%28Artwork%29.jpg"
+      },
+
+
       {
         "path": "https://www.youtube.com/watch?v=UeeuEplH3D0&list=PLql8omFpVUmGCp4eJ8B6AhejuOdO0psuU",
         "duration": "70",
@@ -1187,13 +1209,6 @@
         "title": "Vama Veche - Fericire in rate [2006]"
       },
 
-
-
-
-
-
-
-
       {
         "path": "https://www.youtube.com/watch?v=RS8MCsRxhcg&list=PLYfQcxKIwlEFT6oDkrnEJ78Ha9rnsw1RZ",
         "duration": "70",
@@ -1221,16 +1236,74 @@
       },
 
 
+
+
+
       {
-        "path": "https://www.youtube.com/watch?v=EJRdDhnTRoo&list=PLiN-7mukU_RGbkLwK8g0SIBCAwLlgKwnb",
-        "duration": "60",
-        "title": "The Rolling Stones - Let It Bleed (1969 - Full Album)"
+        "path": "https://www.youtube.com/watch?v=ZHKz7FBUF1w&list=PLSzQ5tXtxOEbf-9G7MvjU3k4SFdvKaylC",
+        "duration": "110",
+        "title": "The Rolling Stones - Hot Rocks 1962-1971"
       },
 
       {
-        "path": "https://www.youtube.com/watch?v=w5HP2Xcy_eQ&list=PLWYs5zVlt6JAZ_8G9PMtNvDlxGX08ZRHo&index=1",
-        "duration": "77",
-        "title": "THe Rolling Stones - Exile On Main Street (full album, correct order)"
+        "path": "https://www.youtube.com/watch?v=Q131ZJ6YkG0&list=PL22yevoIBQSGzsiUrlhqOZBCqbBJshV3T&index=1",
+        "duration": "40",
+        "title": "The Rolling Stones - 1st album"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=W3sr9Z89HyQ&list=PLI6kLIhBBwmSKc4BBX5Nly-44l1NWAOGW&index=1",
+        "duration": "37",
+        "title": "The Rolling Stones - 12x9"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=IOm8OJ11-9s&list=PLsT9douBcx98Ki8EjUCkrT3SHRMMpGkCX&index=1",
+        "duration": "60",
+        "title": "The Rolling Stones - No2"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=FOKOjy186yI&list=PLL-NbN8uTOijRy_j7d5LJPIY0rSSE_nRJ&index=1",
+        "duration": "35",
+        "title": "The Rolling Stones - Out of our heads"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=inrb3zvRxsE&list=PLL44kuYYS8ykxi4d1ihcBn9XJwTsC953N&index=1",
+        "duration": "32",
+        "title": "The Rolling Stones - December children"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=170sceOWWXc&list=PLTorhZgywVSg0TZf6lMFWyHpRCXDIPtOR&index=1",
+        "duration": "47",
+        "title": "The Rolling Stones - Aftermath"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=1k9qy-c1XXk&list=PLijPiy4xM0hfQVCZwNGyZyDaczLwTkCSZ&index=1",
+        "duration": "41",
+        "title": "The Rolling Stones - Between the buttons"
+      },
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=8QmcgU0pk9s&list=PLL44kuYYS8yknyo6BY5kp75ew_gB9DtEZ&index=1",
+        "duration": "55",
+        "title": "The Rolling Stones - Their Satanic Majesties Request"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=DfgmjtukS7g&list=PLNPGM2D7aODfs8S5WxhUCsIIZpG9QmZbl&index=1",
+        "duration": "41",
+        "title": "The Rolling Stones - Beggars banquet"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=EJRdDhnTRoo&list=PLiN-7mukU_RGbkLwK8g0SIBCAwLlgKwnb&index=1",
+        "duration": "60",
+        "title": "The Rolling Stones - Let It Bleed (1969 - Full Album)"
       },
 
       {
@@ -1240,16 +1313,110 @@
       },
 
       {
-        "path": "https://www.youtube.com/watch?v=_GQdRdV1Kvs&list=PLsT9douBcx9_GI1tltFktgcIzBUMFo5z3",
+        "path": "https://www.youtube.com/watch?v=w5HP2Xcy_eQ&list=PLWYs5zVlt6JAZ_8G9PMtNvDlxGX08ZRHo&index=1",
+        "duration": "77",
+        "title": "The Rolling Stones - Exile On Main Street (full album, correct order)"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=r6huPIAdhh0&list=PLsT9douBcx9-bvZUJUv7HB3UdOp03DU8y&index=1",
+        "duration": "51",
+        "title": "The Rolling Stones - Goats head soup"
+      },
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=pyKD42lPQaY&list=PLo2aaBamFnLSaRINmGjaCKdFwMVTFvoQm&index=1",
+        "duration": "44",
+        "title": "The Rolling Stones - Black and blue"
+      },
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=PKVXSo9ROpg&list=PLsT9douBcx99oJFjJm7ICcTGcVFCUae6L&index=2",
+        "duration": "46",
+        "title": "The Rolling Stones - Some girls"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=_GQdRdV1Kvs&list=PLsT9douBcx9_GI1tltFktgcIzBUMFo5z3&index=1",
         "duration": "65",
         "title": "The Rolling Stones - Emotional Rescue"
       },
 
+
       {
-        "path": "https://www.youtube.com/watch?v=ZHKz7FBUF1w&list=PLSzQ5tXtxOEbf-9G7MvjU3k4SFdvKaylC",
-        "duration": "110",
-        "title": "The Rolling Stones - Hot Rocks 1962-1971"
+        "path": "https://www.youtube.com/watch?v=VRwn2DeXhLs&list=PL1o4AQaFJNt12xyrMN_PbDL1NVm4y7kMy&index=1",
+        "duration": "100",
+        "title": "The Rolling Stones - Tatoo you"
       },
+
+      {
+        "path": "https://www.youtube.com/watch?v=f3hHlYHZaGQ",
+        "duration": "49",
+        "title": "The Rolling Stones - Undercover"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=f3hHlYHZaGQ",
+        "duration": "49",
+        "title": "The Rolling Stones - Undercover"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=QKyGvgH4-fc&list=PLL44kuYYS8yno6FrjWHwKAPsjA0tFk4JL&index=1",
+        "duration": "42",
+        "title": "The Rolling Stones - Dirty work"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=ARFqK4kKg5s&list=PLL44kuYYS8ymag8ek3DtL-t4mXzTrbbyO&index=1",
+        "duration": "61",
+        "title": "The Rolling Stones - Steel wheels"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=NeI1EaVXfXw&list=PLsT9douBcx99IGzi3f0iwI4_eQMmkAWL1&index=1",
+        "duration": "65",
+        "title": "The Rolling Stones - Voodoo lounge"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=dbm1dWfZej8&list=PLL44kuYYS8ynbVjzJxGWjPyOcACtiz-IZ&index=1",
+        "duration": "67",
+        "title": "The Rolling Stones - Bridges to babylon"
+      },
+
+
+      {
+        "path": "https://www.youtube.com/watch?v=uWphbRxtAgE&list=PLn0MOb0Hl0qoEsIVkDap_i88-lJIR2akN&index=1",
+        "duration": "68",
+        "title": "The Rolling Stones - A bigger bang"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=Tm_FMzWVplU&list=PLL44kuYYS8ylXRHCwQtswe8P9B-sKS-Zu&index=1",
+        "duration": "48",
+        "title": "The Rolling Stones - Blue and lonesome"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=_ePte74_qiU&list=PLIKpCFu8FpmkKp5Py_V5uJMgzWa-yaQ2k&index=1",
+        "duration": "50",
+        "title": "The Rolling Stones - Hackney Diamonds"
+      },
+
+      {
+        "path": "https://www.youtube.com/watch?v=wM2lLtc-J_I&list=PL4cFJtUcmjZmlgpUXcwckKM4ew8lUQLBM&index=1",
+        "duration": "102",
+        "title": "The Rolling Stones - Shine a light concert"
+      },
+
+
+
+
+
+
 
       {
         "path": "https://www.youtube.com/watch?v=7OvW8Z7kiws&list=PLXhfRoiJBIiuXOUv_7EJ1i7UKj0aGfy0U",
@@ -1543,6 +1710,66 @@
         "path": "https://www.youtube.com/watch?v=gtIuwTFjubU",
         "duration": "78",
         "title": "Alexandru Andries - Vecinele mele"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=lHSucJRndO0",
+        "duration": "40",
+        "title": "Roy Orbison - Mistery girl"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=e0vJNp5asqc&list=PLNPGM2D7aODegl9FxK5MdCZrx7yr4z4H9",
+        "duration": "38",
+        "title": "Linda Ronstadt - Heart Like a Wheel"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=oeHFiE8Kfrs&list=PL7V-LJGDr4W_ZOXqhvIXf2Osuc6TuWyFv",
+        "title": "Lana del Rey - Ultraviolence",
+        "duration": "82"
+      },
+      {
+        "path": "https://www.youtube.com/watch?v=L34wcarloaA&list=PLFAcddgaFN8zbOtM8heHITUg5d1zK2atJ&index=1",
+        "title": "Lana del Rey - Born to die",
+        "duration": "55"
+      },
+      {
+        "title": "Mix_1 - Radio folk",
+        "path": "https://azura.ebsmedia.ro/radio/8150/romanianfolk128.mp3",
+        "duration": "60"
+      },
+      {
+        "title": "Mix_1 - The Hollies - Greatest hits",
+        "path": "https://www.youtube.com/watch?v=OC_tv6MdMgM&list=PLWtoQB7aqwaDeT04QxTTbt_P59ivJdCYt&index=1",
+        "duration": "160"
+      },
+      {
+        "title": "Mix_1 - Smokie - Greatest hits",
+        "path": "https://www.youtube.com/watch?v=Ka0Rf6E19KA&t=0",
+        "duration": "170"
+      },
+      {
+        "title": "Mix_1 - Nina Simone - Greatest hits",
+        "path": "https://www.youtube.com/watch?v=CSfBZe_eof4&t=0",
+        "duration": "70"
+      },
+      {
+        "title": "Mix_1 - Marriane Faithfull - Greatest hits",
+        "path": "https://www.youtube.com/watch?v=_ReNfgZ4A1w&list=PLAJmEa2yMEbTSD8OE-Flidjf120Lh_zaO&index=1",
+        "duration": "50"
+      },
+      {
+        "title": "Mix_1 - Suzi Quatro - 48 Crash - 1973",
+        "path": "https://www.youtube.com/watch?v=U1hggrCTLug&list=PLJTAVb1bdOBgoRpcOkHxzOKFuuVYfC_PE&index=1",
+        "duration": "50"
+      },
+      {
+        "title": "Mix_1 - Suzi Quatro - If you knew",
+        "path": "https://www.youtube.com/watch?v=525K4d2Saa0&list=PLdjk5wAvKa-cR0C-EAXeAfHl8mLhAFMjN&index=1",
+        "duration": "41"
+      },
+      {
+        "title": "Mix_1 - Abba - Greatest hits",
+        "path": "https://www.youtube.com/watch?v=Yy4BCnGCEhQ",
+        "duration": "65"
       }
 
     ],

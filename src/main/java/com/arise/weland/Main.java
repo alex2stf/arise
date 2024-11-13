@@ -12,6 +12,7 @@ import com.arise.core.AppSettings.Keys;
 import com.arise.core.models.Handler;
 import com.arise.core.tools.*;
 import com.arise.weland.desk.DesktopContentHandler;
+import com.arise.weland.dto.ContentInfo;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.*;
 import com.arise.weland.model.MediaPlayer;
@@ -200,6 +201,8 @@ public class Main {
             rplayer.loadShowsResourcePath("radio_shows_special.json");
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
+
+
             if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){
                 RadioPlayer.getMediaPlayer().stop(new Handler<MediaPlayer>() {
                     @Override
@@ -221,6 +224,8 @@ public class Main {
                     DeviceStat.getInstance().setProp("rplayer.play", "false");
                 }
             });
+
+            ContentInfoProvider.printReport();
 
             rplayer.onStreamChanged(new Handler<Show>() {
                 @Override
@@ -277,6 +282,8 @@ public class Main {
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);
                 log.info("SERVER STARTED at http://" + NetworkUtil.getCurrentIPV4AddressSync() + ":"+port+"/app");
+
+
                 try {
                     ioServer.start();
                 } catch (Exception e) {

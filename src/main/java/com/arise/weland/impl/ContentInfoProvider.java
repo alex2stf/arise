@@ -152,6 +152,7 @@ public class ContentInfoProvider {
 
         if(StringUtil.hasText(cI.getTitle())){
             TITLES.put(cI.getPath(), cI.getTitle());
+            findArtist(cI.getPath());
         }
 
 
@@ -575,7 +576,7 @@ public class ContentInfoProvider {
             String art = String.valueOf(title + "").split("-")[0].trim().toLowerCase();
             ARTISTS.put(path, art);
             return art;
-        }catch (Exception e){
+        } catch (Exception e){
             return null;
         }
     }
@@ -584,5 +585,39 @@ public class ContentInfoProvider {
 
     public static synchronized int artistsCount() {
         return ARTISTS.size();
+    }
+
+    public static void printReport(){
+        Map<String, Integer> aristsCount = new HashMap<>();
+
+
+        for (Map.Entry<String, String> e: ARTISTS.entrySet()){
+            String a = e.getValue();
+
+            if(!aristsCount.containsKey(a)){
+                aristsCount.put(a, 1);
+            } else {
+                int i =aristsCount.get(a);
+                aristsCount.put(a, i + 1);
+            }
+        }
+
+        List<Map.Entry<String, Integer>> ints =new ArrayList<>( aristsCount.entrySet());
+
+        Collections.sort(ints, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        for (int i = 0; i < ints.size(); i++){
+            Map.Entry<String, Integer> e = ints.get(i);
+            System.out.println("\t\t\t\t" + i + ") " + e.getValue() + " " + e.getKey() );
+        }
+
+//        for (Map.Entry<String, Integer> e: aristsCount.entrySet()){
+//            System.out.println("\t\t\t\t" + e.getValue() + " " + e.getKey() );
+//        }
+
     }
 }
