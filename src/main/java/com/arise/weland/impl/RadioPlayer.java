@@ -249,9 +249,11 @@ public class RadioPlayer {
                         pune_in_lista((String)e.getKey(), listImport, lists);
                     }
                 }
-            } else {
-                System.out.println(" NU AI DEFINT NICI O LISTA");
             }
+
+//            else {
+//                System.out.println(" NU AI DEFINT NICI O LISTA");
+//            }
 
             List<Map> x = getList(m, "shows");
             for (Map h : x) {

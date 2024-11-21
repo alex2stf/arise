@@ -188,20 +188,18 @@ public class Main {
 
         desktopContentHandler = new DesktopContentHandler(contentInfoProvider);
 
-        Cronus cronus = null;
 
-        if (!AppSettings.isFalse(Keys.CRONUS_ENABLED)){
-            cronus = new Cronus(AppSettings.getProperty(Keys.CRONUS_CONFIG_FILE, "resources#weland/config/cronus.json"));
-        }
 
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
             rplayer.setContentInfoProvider(contentInfoProvider);
 //            rplayer.loadShowsResourcePath("test_radio_show.json");
-//            rplayer.loadShowsResourcePath("radio_shows_special.json");
+            rplayer.loadShowsResourcePath("radio_shows_special.json");
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
 
+
+            ContentInfoProvider.printReport();
 
             if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){
                 RadioPlayer.getMediaPlayer().stop(new Handler<MediaPlayer>() {
@@ -225,7 +223,7 @@ public class Main {
                 }
             });
 
-            ContentInfoProvider.printReport();
+
 
             rplayer.onStreamChanged(new Handler<Show>() {
                 @Override

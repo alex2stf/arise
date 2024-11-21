@@ -249,10 +249,11 @@ public class CollectionUtil {
         Map<String, String> t = ContentInfoProvider.getTitles();
         Map<String, String> artisti = new HashMap<>();
         for (Map.Entry<String, String> e: t.entrySet()){
-            String artist = ContentInfoProvider.findArtist(e.getValue());
-            if(StringUtil.hasText(artist)){
-                artisti.put(e.getKey(), ContentInfoProvider.findArtist(e.getValue()));
-            }
+//            String artist = ContentInfoProvider.findArtist(e.getValue());
+//            if(StringUtil.hasText(artist)){
+//                artisti.put(e.getKey(), artist);
+//            }
+            //TODO modifica aici
 
         }
 

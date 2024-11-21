@@ -137,7 +137,7 @@ public class ContentInfoProvider {
     }
 
 
-    public ContentInfo fromMap(Map map) {
+    public synchronized ContentInfo fromMap(Map map) {
         ContentInfo cI = new ContentInfo();
         cI.setTitle(MapUtil.getString(map, "title"));
         cI.setPath(MapUtil.getString(map, "path"));
@@ -148,18 +148,27 @@ public class ContentInfoProvider {
             try{
                 duration = Integer.parseInt(durationVal);
             }catch (Exception e){
+                e.printStackTrace();
                 System.out.println(map);
                 System.exit(-1);
             }
             DURATIONS.put(cI.getPath(), duration * 60);
-
             cI.setDuration(duration * 60);
         }
 
+
+
         if(StringUtil.hasText(cI.getTitle())){
             TITLES.put(cI.getPath(), cI.getTitle());
-            findArtist(cI.getPath());
+            String artist = extrageArtist(cI.getTitle());
+
+            if(ARTISTS.containsKey(cI.getPath())){
+                System.out.println(">>>>>>>>>>>>>>>> duplicate url " + cI.getPath() + " pentru titlul " + cI.getTitle() + " deja pus la " + TITLES.get(cI.getPath()));
+            } else {
+                ARTISTS.put(cI.getPath(), artist);
+            }
         }
+
 
 
         String thumbnail = null;
@@ -570,22 +579,28 @@ public class ContentInfoProvider {
         return path;
     }
 
-    public static synchronized String findArtist(String path){
-        if(ARTISTS.containsKey(path)){
-            return ARTISTS.get(path);
-        }
-        String title = findTitle(path);
-        if(title.equalsIgnoreCase(path)){
-            return null;
-        }
-        try {
-            String art = String.valueOf(title + "").split("-")[0].trim().toLowerCase();
-            ARTISTS.put(path, art);
-            return art;
-        } catch (Exception e){
-            return null;
-        }
+    static String extrageArtist(String title){
+        return String.valueOf(title + "").split("-")[0].trim().toLowerCase();
     }
+
+//    public static synchronized String findArtist(String path){
+//        if(ARTISTS.containsKey(path)) {
+//            return ARTISTS.get(path);
+//        }
+//
+//        String title = findTitle(path);
+//        if(title.equalsIgnoreCase(path)) {
+//            return null;
+//        }
+//        try {
+//            String art = extrageArtist(title);
+//            ARTISTS.put(path, art);
+//            return art;
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     private static final Map<String, String> ARTISTS = new ConcurrentHashMap<>();
 
@@ -593,13 +608,12 @@ public class ContentInfoProvider {
         return ARTISTS.size();
     }
 
-    public static void printReport(){
+    public static synchronized void printReport(){
         Map<String, Integer> aristsCount = new HashMap<>();
 
 
         for (Map.Entry<String, String> e: ARTISTS.entrySet()){
-            String a = e.getValue();
-
+            String a = e.getValue().trim().toLowerCase();
             if(!aristsCount.containsKey(a)){
                 aristsCount.put(a, 1);
             } else {
@@ -608,7 +622,7 @@ public class ContentInfoProvider {
             }
         }
 
-        List<Map.Entry<String, Integer>> ints =new ArrayList<>( aristsCount.entrySet());
+        List<Map.Entry<String, Integer>> ints = new ArrayList<>( aristsCount.entrySet());
 
         Collections.sort(ints, new Comparator<Map.Entry<String, Integer>>() {
             @Override
@@ -616,6 +630,7 @@ public class ContentInfoProvider {
                 return o1.getValue().compareTo(o2.getValue());
             }
         });
+
         for (int i = 0; i < ints.size(); i++){
             Map.Entry<String, Integer> e = ints.get(i);
             System.out.println("\t\t\t\t" + i + ") " + e.getValue() + " " + e.getKey() );
