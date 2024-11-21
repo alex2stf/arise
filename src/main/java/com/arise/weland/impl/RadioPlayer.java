@@ -201,41 +201,56 @@ public class RadioPlayer {
         shows.add(s);
     }
 
+
+    void pune_in_lista(String cheie, List itemi, Map<String, List<String>> destinatie){
+        Set<String> c = new HashSet<>();
+        for (Object zz : itemi) {
+            if (zz instanceof String) {
+                c.add(zz + "");
+            } else if (zz instanceof Map) {
+                Map zm = (Map) zz;
+                String zmp = MapUtil.getString(zm, "path");
+                if(StringUtil.hasText(zmp)){
+                    c.add(zmp);
+                    if(null != contentInfoProvider){
+                        ContentInfo lc = contentInfoProvider.fromMap(zm);
+                        if(lc.getDuration() > 0) {
+                            contentInfoProvider.mergeContent(lc, Playlist.STREAMS);
+                        }
+                    }
+                }
+            }
+        }
+        String k = cheie + "";
+        if (!destinatie.containsKey(k)) {
+            destinatie.put(k, new ArrayList<String>(c));
+        }
+    }
+
     public void loadShowsResourcePath(String p) {
         try {
 
 
             Map m = (Map) decodeBytes(toBytes(findStream(p)));
+
             Map<Object, Object> lx = getMap(m, "lists");
             Map<String, List<String>> lists = new HashMap<>();
 
             if (!isEmpty(lx)) {
                 for (Map.Entry<Object, Object> e : lx.entrySet()) {
                     if (e.getValue() instanceof List) {
-                        Set<String> c = new HashSet<>();
-                        for (Object zz : ((List) e.getValue())) {
-                            if (zz instanceof String) {
-                                c.add(zz + "");
-                            } else if (zz instanceof Map) {
-                                Map zm = (Map) zz;
-                                String zmp = MapUtil.getString(zm, "path");
-                                if(StringUtil.hasText(zmp)){
-                                    c.add(zmp);
-                                    if(null != contentInfoProvider){
-                                        ContentInfo lc = contentInfoProvider.fromMap(zm);
-                                        if(lc.getDuration() > 0) {
-                                            contentInfoProvider.mergeContent(lc, Playlist.STREAMS);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        String k = e.getKey() + "";
-                        if (!lists.containsKey(k)) {
-                            lists.put(k, new ArrayList<String>(c));
-                        }
+                        pune_in_lista((String)e.getKey(), (List) e.getValue(), lists);
+                    }
+                    //daca nu e lista, e import:
+                    else if(e.getValue() instanceof String && String.valueOf(e.getValue()).startsWith("@import:")) {
+                        String calefisier = String.valueOf(e.getValue()).replaceAll("@import:", "");
+                        log.info("import file list " + calefisier);
+                        List listImport = (List) decodeBytes(toBytes(findStream(calefisier)));
+                        pune_in_lista((String)e.getKey(), listImport, lists);
                     }
                 }
+            } else {
+                System.out.println(" NU AI DEFINT NICI O LISTA");
             }
 
             List<Map> x = getList(m, "shows");

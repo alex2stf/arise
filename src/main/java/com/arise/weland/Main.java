@@ -198,7 +198,7 @@ public class Main {
             rplayer = new RadioPlayer();
             rplayer.setContentInfoProvider(contentInfoProvider);
 //            rplayer.loadShowsResourcePath("test_radio_show.json");
-            rplayer.loadShowsResourcePath("radio_shows_special.json");
+//            rplayer.loadShowsResourcePath("radio_shows_special.json");
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
 

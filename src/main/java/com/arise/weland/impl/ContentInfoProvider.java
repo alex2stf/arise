@@ -144,7 +144,13 @@ public class ContentInfoProvider {
 
         String durationVal = MapUtil.getString(map, "duration");
         if(StringUtil.hasText(durationVal)){
-            int duration = Integer.parseInt(durationVal);
+            int duration = 0;
+            try{
+                duration = Integer.parseInt(durationVal);
+            }catch (Exception e){
+                System.out.println(map);
+                System.exit(-1);
+            }
             DURATIONS.put(cI.getPath(), duration * 60);
 
             cI.setDuration(duration * 60);

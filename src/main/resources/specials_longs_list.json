@@ -1,0 +1,70 @@
+[
+  {
+    "title": "David Bowie - Rock 'n' Roll Star!",
+    "path": "https://www.youtube.com/watch?v=_GAnCLvqk3g&list=OLAK5uy_klqVauhGQTIHXtb-G_imsekLSh6FqJ3M0&index=1",
+    "duration": "229"
+  },
+  {
+    "title": "David Bowie - Loving the Alien (1983 - 1988)",
+    "path": "https://www.youtube.com/watch?v=HivQqTtiHVw&list=OLAK5uy_knw5iPuWEJfmCrX46K8_YUq2jKaa-Ttx0&index=1",
+    "duration": "590"
+  },
+  {
+    "title": "Mix 2 - David Bowie Nothing Has Changed (The Best of David Bowie) (Deluxe Edition)",
+    "path": "https://www.youtube.com/watch?v=nFX1y62l9C4&list=OLAK5uy_lwxdnFwa96L96WMJ7IfN2kzndZ7xizJGw&index=1",
+    "duration": "237"
+  },
+  {
+    "title": "David Bowie - Who Can I Be Now? [1974 - 1976]",
+    "path": "https://www.youtube.com/watch?v=Qczxei3NpBQ&list=OLAK5uy_kypXm3wqGczb0-BcbixZ7XCyqV2Nkh2lg&index=1",
+    "duration": "506"
+  },
+
+  {
+    "title": "Metallica - The Metallica Blacklist",
+    "path": "https://www.youtube.com/watch?v=9tKQgesCcTc&list=OLAK5uy_mDgTqJBGvC3qjFodyXXRn7MK_TVZ9Iod8&index=1",
+    "duration": "249"
+  },
+  {
+    "title": "David Bowie - Sound + Vision",
+    "path": "https://www.youtube.com/watch?v=HhL_lUnwMgw&list=OLAK5uy_k8P3CJjwe_Jfnwky3BUYCK24NOqpezfuw&index=1",
+    "duration": "287"
+  },
+  {
+    "path" : "https://www.youtube.com/watch?v=79DijItQXMM&list=PLiNVoBckLqLmdcbotc6n_MjdTDCHLiYDo&index=1",
+    "duration": "660",
+    "title": "Dysney greatest hits"
+  },
+  {
+    "path" : "https://www.youtube.com/watch?v=RGZwOoUy_HE&list=PLte4yNkYg3871H6W-q8NmpIVotJYGtGi-&index=1",
+    "duration": "130",
+    "title": "Vladimir Visostky - greatest hits"
+  },
+  {
+    "path" : "https://www.youtube.com/watch?v=zrzJq_PeqX8&list=PL0-uJBZChrjqqTT3n0GR7LvXo7OL7G1f7&index=1",
+    "duration": "270",
+    "title": "Rod Stewart - greatest hits"
+  },
+  {
+    "path" : "https://www.youtube.com/watch?v=ECE27vtp4WU&list=PLImEsAJ7sjmDWyl3dJCrDrVNgl8NC38oO&index=1",
+    "duration": "180",
+    "title": "Korn - Official Music Videos"
+  },
+
+  {
+    "path" : "https://www.youtube.com/watch?v=NVXxXclLNyE&list=PL2D4A44B959D87893&index=1",
+    "duration": "360",
+    "title": "Metallica - Official music videos"
+  },
+
+  {
+    "path" : "https://www.youtube.com/watch?v=_GmPWqn72c0&list=PLbgcTdi8IGo15SoQ3OAAF1uRUCDTZq82G&index=1",
+    "duration": "218",
+    "title": "Gianna Nannini - Official music videos"
+  },
+  {
+    "path" : "https://www.youtube.com/watch?v=nsYZiO1FotI&list=OLAK5uy_mcmW5qXb47CzT0OyaPcISAoWsK_Trn9q4&index=1",
+    "duration": "240",
+    "title": "Nirvana - Official music videos"
+  }
+]
