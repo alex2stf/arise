@@ -159,11 +159,15 @@ public class ContentInfoProvider {
 
 
         if(StringUtil.hasText(cI.getTitle())){
-            TITLES.put(cI.getPath(), cI.getTitle());
+            if(TITLES.containsKey(cI.getPath())){
+                System.out.println("> >>>>>>>>>>>>>>> duplicate url for "  + cI.getPath() + " for title [[[" + cI.getTitle() + "]]] already used " + TITLES.get(cI.getPath()));
+            } else {
+                TITLES.put(cI.getPath(), cI.getTitle());
+            }
             String artist = extrageArtist(cI.getTitle());
 
             if(ARTISTS.containsKey(cI.getPath())){
-                System.out.println(">>>>>>>>>>>>>>>> duplicate url " + cI.getPath() + " pentru titlul " + cI.getTitle() + " deja pus la " + TITLES.get(cI.getPath()));
+//                System.out.println(">>>>>>>>>>>>>>>> duplicate url " + cI.getPath() + " pentru titlul " + cI.getTitle() + " deja pus la " + TITLES.get(cI.getPath()));
             } else {
                 ARTISTS.put(cI.getPath(), artist);
             }

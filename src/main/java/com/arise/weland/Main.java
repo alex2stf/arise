@@ -200,6 +200,7 @@ public class Main {
 
 
             ContentInfoProvider.printReport();
+            System.exit(-1);
 
             if(isTrue(Keys.FORCE_CLOSE_ON_STARTUP)){
                 RadioPlayer.getMediaPlayer().stop(new Handler<MediaPlayer>() {
