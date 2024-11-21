@@ -165,12 +165,7 @@ public class ContentInfoProvider {
                 TITLES.put(cI.getPath(), cI.getTitle());
             }
             String artist = extrageArtist(cI.getTitle());
-
-            if(ARTISTS.containsKey(cI.getPath())){
-//                System.out.println(">>>>>>>>>>>>>>>> duplicate url " + cI.getPath() + " pentru titlul " + cI.getTitle() + " deja pus la " + TITLES.get(cI.getPath()));
-            } else {
-                ARTISTS.put(cI.getPath(), artist);
-            }
+            ARTISTS.put(cI.getPath(), artist);
         }
 
 
