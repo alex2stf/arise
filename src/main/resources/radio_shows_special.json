@@ -40,6 +40,7 @@
         "https://www.youtube.com/watch?v=pOyqfQDKX7A&list=PL4zZspbjJ-iQmY7-pZgk2FyfKjlKlj_3n&index=1"
       ]
     },
+
     {
       "name": "bossa_nova",
       "day": "2024-06-18",
@@ -51,7 +52,7 @@
     },
     {
       "name": "queen",
-      "day": "2024-06-18",
+      "day": "annually:05-05",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_18:45:00",
       "strategy": "stream-first",
       "sources": [
@@ -60,7 +61,7 @@
     },
     {
       "name": "fabrizio_de_andre",
-      "day": "2024-06-18",
+      "day": "annually:06-17",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:34:00",
       "strategy": "stream-first",
       "sources": [
