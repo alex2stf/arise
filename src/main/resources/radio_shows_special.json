@@ -238,7 +238,15 @@
       "day": "22-08-2024",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_23:00:00",
       "strategy": "stream-first",
-      "sources": ["https://www.youtube.com/watch?v=-1AeP3R5UdI&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC"]
+      "sources": ["https://www.youtube.com/watch?v=tBzfEceZtWI&list=PL4zZspbjJ-iS1NLS15oe7LJGY3nngMrQC"]
+    },
+
+    {
+      "name": "1 decembrie",
+      "day": "annually:12-01",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_17:20:00",
+      "strategy": "stream-first",
+      "sources": ["https://www.youtube.com/watch?v=1_jVKm-62hA&list=PLMl0O4f3Cvd-IDLlliJ3tmzDqYOpnfeik"]
     }
 
 
