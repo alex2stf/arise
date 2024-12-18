@@ -146,7 +146,7 @@
 
     {
       "name": "weekdays_13-10_14",
-      "day": "monday_tuesday_wednesday_thursday_friday",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
       "strategy": "random",
       "sources": ["${relax}",  "${local-all}"]

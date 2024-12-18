@@ -19,7 +19,6 @@
     "path": "https://www.youtube.com/watch?v=Qczxei3NpBQ&list=OLAK5uy_kypXm3wqGczb0-BcbixZ7XCyqV2Nkh2lg&index=1",
     "duration": "506"
   },
-
   {
     "title": "Metallica - The Metallica Blacklist",
     "path": "https://www.youtube.com/watch?v=9tKQgesCcTc&list=OLAK5uy_mDgTqJBGvC3qjFodyXXRn7MK_TVZ9Iod8&index=1",
@@ -31,40 +30,108 @@
     "duration": "287"
   },
   {
-    "path" : "https://www.youtube.com/watch?v=79DijItQXMM&list=PLiNVoBckLqLmdcbotc6n_MjdTDCHLiYDo&index=1",
+    "path": "https://www.youtube.com/watch?v=79DijItQXMM&list=PLiNVoBckLqLmdcbotc6n_MjdTDCHLiYDo&index=1",
     "duration": "660",
     "title": "Dysney greatest hits"
   },
   {
-    "path" : "https://www.youtube.com/watch?v=RGZwOoUy_HE&list=PLte4yNkYg3871H6W-q8NmpIVotJYGtGi-&index=1",
+    "path": "https://www.youtube.com/watch?v=RGZwOoUy_HE&list=PLte4yNkYg3871H6W-q8NmpIVotJYGtGi-&index=1",
     "duration": "130",
     "title": "Vladimir Visostky - greatest hits"
   },
   {
-    "path" : "https://www.youtube.com/watch?v=zrzJq_PeqX8&list=PL0-uJBZChrjqqTT3n0GR7LvXo7OL7G1f7&index=1",
+    "path": "https://www.youtube.com/watch?v=zrzJq_PeqX8&list=PL0-uJBZChrjqqTT3n0GR7LvXo7OL7G1f7&index=1",
     "duration": "270",
     "title": "Rod Stewart - greatest hits"
   },
   {
-    "path" : "https://www.youtube.com/watch?v=ECE27vtp4WU&list=PLImEsAJ7sjmDWyl3dJCrDrVNgl8NC38oO&index=1",
+    "path": "https://www.youtube.com/watch?v=ECE27vtp4WU&list=PLImEsAJ7sjmDWyl3dJCrDrVNgl8NC38oO&index=1",
     "duration": "180",
     "title": "Korn - Official Music Videos"
   },
-
   {
-    "path" : "https://www.youtube.com/watch?v=NVXxXclLNyE&list=PL2D4A44B959D87893&index=1",
+    "path": "https://www.youtube.com/watch?v=NVXxXclLNyE&list=PL2D4A44B959D87893&index=1",
     "duration": "360",
     "title": "Metallica - Official music videos"
   },
-
   {
-    "path" : "https://www.youtube.com/watch?v=_GmPWqn72c0&list=PLbgcTdi8IGo15SoQ3OAAF1uRUCDTZq82G&index=1",
+    "path": "https://www.youtube.com/watch?v=_GmPWqn72c0&list=PLbgcTdi8IGo15SoQ3OAAF1uRUCDTZq82G&index=1",
     "duration": "218",
     "title": "Gianna Nannini - Official music videos"
   },
   {
-    "path" : "https://www.youtube.com/watch?v=nsYZiO1FotI&list=OLAK5uy_mcmW5qXb47CzT0OyaPcISAoWsK_Trn9q4&index=1",
+    "path": "https://www.youtube.com/watch?v=nsYZiO1FotI&list=OLAK5uy_mcmW5qXb47CzT0OyaPcISAoWsK_Trn9q4&index=1",
     "duration": "240",
     "title": "Nirvana - Official music videos"
+  },
+  {
+    "path": "https://www.youtube.com/watch?v=AkFqg5wAuFk&list=PLxYReOMcJaFfGz1daUgyTUh9SerOLl3Vz",
+    "title": "Pantera - Official videos",
+    "duration": "82"
+  },
+  {
+    "title": "Johnny Cash - Masterpieces presents Johnny Cash: Hits & Rarities, Vol. 1 (54 Tracks)",
+    "path": "https://www.youtube.com/watch?v=zNH9RFYuOAg&list=OLAK5uy_mAbKMnAJDHtcZtGRSLP8davcwZB8PKplU&index=1",
+    "duration": "123"
+  },
+  {
+    "title": "Johnny Cash - Different Faces - The Very Best of Johny Cash - The Ultimate Legend",
+    "path": "https://www.youtube.com/watch?v=s7Jm_-f-Ls4&list=OLAK5uy_kocsi7O9hh3hwD0fmuIIxfyoKvSUhbUSM&index=1",
+    "duration": "230"
+  },
+  {
+    "title": "Johnny Cash - Singles Collection 1955-1962",
+    "path": "https://www.youtube.com/watch?v=aJ8HRfSoILA&list=OLAK5uy_noNuwVDA5QE7ej7ZJsuCQU0WtGVK-w9XA&index=1",
+    "duration": "200"
+  },
+  {
+    "title": "Judas Priest - The Essential Judas Priest",
+    "path": "https://www.youtube.com/watch?v=_J_spYFv-9s&list=OLAK5uy_mMZjws0YKCq6cYE-o-HkAZsaM4BTpHQ8I&index=1",
+    "duration": "153"
+  },
+  {
+    "title": "Oasis - Be Here Now (Deluxe Remastered Edition)",
+    "path": "https://www.youtube.com/watch?v=GjwRIjrC4io&list=OLAK5uy_nqhqz8GP2n5DJB-jpMnl-ydnDQwx0Y5BY&index=1",
+    "duration": "213"
+  },
+  {
+    "title": "Oasis - Time Flies… (1994 - 2009)",
+    "path": "https://www.youtube.com/watch?v=BJKpUH2kJQg&list=OLAK5uy_kRjtdJNkZ-tAPBhKxXW5mEfjTHn-LnxQY&index=1",
+    "duration": "122"
+  },
+  {
+    "title": "Genesis - Archive #1 (1967 - 1975)",
+    "path": "https://www.youtube.com/watch?v=KvpOrga4HeI&list=OLAK5uy_kushs4cemsyi45bVouP3lePrXAI75S7XM&index=1",
+    "duration": "251"
+  },
+  {
+    "title": "Genesis - Archive #2 (1976 - 1992)",
+    "path": "https://www.youtube.com/watch?v=sBtQhwZkVWY&list=OLAK5uy_lvjhoIsDC-zukXwBpfS86fY_YhpM-mn9A&index=1",
+    "duration": "206"
+  },
+  {
+    "title": "Genesis - The Last Domino?",
+    "path": "https://www.youtube.com/watch?v=JQ_vr9_a6z0&list=OLAK5uy_nq8S4G9HOp9yBTaGRHM0g4OVRK-Ux1IKg&index=1",
+    "duration": "160"
+  },
+  {
+    "title": "Genesis - Platinum Collection",
+    "path": "https://www.youtube.com/watch?v=cddQn1mZRfI&list=OLAK5uy_nwqgMlyj6oAmwy1OkCbGaBG3duxOhsgHs&index=1",
+    "duration": "242"
+  },
+  {
+    "title": "Steve Miller Band - Welcome To The Vault",
+    "path": "https://www.youtube.com/watch?v=mGsrvb7LNL4&list=OLAK5uy_mCl001ozbsKLwZmTaORBZVdWwm-QXnodo&index=1",
+    "duration": "213"
+  },
+  {
+    "title": "Roxette - Crash! Boom! Bang! 30th Anniversary Edition",
+    "path": "https://www.youtube.com/watch?v=Ikgo6k445Ts&list=OLAK5uy_l8axeKOSpZ2gvxfbIQaGHKr16Uv6xOeDg&index=1",
+    "duration": "153"
+  },
+  {
+    "title": "Frank Sinatra - Sinatra: The Early Years",
+    "path": "https://www.youtube.com/watch?v=bEWnYeVB72Q&list=OLAK5uy_n4Kg8FPPJByEqnO2LAD8mkuanvUq08gG8&index=1",
+    "duration": "271"
   }
 ]

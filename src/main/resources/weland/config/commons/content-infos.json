@@ -58,10 +58,6 @@
     "path": "https://streaming.exclusive.radio/er/bobdylan/icecast.audio"
   },
   {
-    "title": "Elvis Presley",
-    "path": "https://streaming.exclusive.radio/er/elvispresley/icecast.audio"
-  },
-  {
     "title": "Classic Music",
     "path": "https://streaming.exclusive.radio/er/classical/icecast.audio"
   },
@@ -142,10 +138,6 @@
     "path": "https://streaming.exclusive.radio/er/bobmarley/icecast.audio"
   },
   {
-    "title": "Magia Inimii",
-    "path": "https://radio.cloud23.eu/magiainimiitale"
-  },
-  {
     "title": "Deep Purple - ExclusiveFM",
     "path": "https://streaming.exclusive.radio/er/deeppurple/icecast.audio"
   },
@@ -189,9 +181,5 @@
     "title": "Radio DOR",
     "path": "http://zuicast.digitalag.ro:9420/dor",
     "thumbnail": "https://radiodor.net/templates/default/img/logo.png"
-  },
-  {
-    "title": "Elvis",
-    "path": "https://streaming.exclusive.radio/er/elvispresley/icecast.audio"
   }
 ]
