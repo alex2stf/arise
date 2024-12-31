@@ -247,6 +247,14 @@
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_17:20:00",
       "strategy": "stream-first",
       "sources": ["https://www.youtube.com/watch?v=1_jVKm-62hA&list=PLMl0O4f3Cvd-IDLlliJ3tmzDqYOpnfeik"]
+    },
+
+    {
+      "name": "new_year",
+      "day": "annually:01-01",
+      "hour": "EACH_SECOND BETWEEN_00:00:00_AND_01:08:00",
+      "strategy": "stream-first",
+      "sources": ["https://www.youtube.com/watch?v=3Uo0JAUWijM&list=PLMl0O4f3Cvd88cS0eovrd77ttMdODwZJ3"]
     }
 
 
