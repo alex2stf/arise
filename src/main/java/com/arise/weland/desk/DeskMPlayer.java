@@ -200,24 +200,33 @@ public class DeskMPlayer extends MediaPlayer {
 
     public void stop(Handler<MediaPlayer> comp) {
         log.info("Stop called");
-        stopClips();
-        for (Process p: proc){
-           if (p != null) {
-               p.destroy();
-               log.info("destroy process with exitValue=" + p.exitValue());
-           }
-        }
-        if(CommandRegistry.getInstance().containsCommand("browser-close")) {
-            wait_to_execute(
-                    CommandRegistry.getInstance().getCommand("browser-close").execute(), "browser-close"
-            );
 
-        }
-        if(CommandRegistry.getInstance().containsCommand("close-media")) {
-            wait_to_execute(
-                    CommandRegistry.getInstance().getCommand("close-media").execute(), "close-media"
-            );
-            log.info("media instances closed");
+        try {
+            stopClips();
+            for (Process p : proc) {
+                if (p != null) {
+                    try {
+                        p.destroy();
+                        log.info("destroy process with exitValue=" + p.exitValue());
+                    } catch (Throwable t) {
+                        log.error("Unable to close hooked process");
+                    }
+                }
+            }
+            if (CommandRegistry.getInstance().containsCommand("browser-close")) {
+                wait_to_execute(
+                        CommandRegistry.getInstance().getCommand("browser-close").execute(), "browser-close"
+                );
+
+            }
+            if (CommandRegistry.getInstance().containsCommand("close-media")) {
+                wait_to_execute(
+                        CommandRegistry.getInstance().getCommand("close-media").execute(), "close-media"
+                );
+                log.info("media instances closed");
+            }
+        } catch (Throwable t){
+            log.error("Failed to stop", t);
         }
         is_play = false;
         if(comp != null){

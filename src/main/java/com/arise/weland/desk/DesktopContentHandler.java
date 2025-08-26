@@ -93,9 +93,14 @@ public class DesktopContentHandler extends ContentHandler {
             openPicture(path);
         }
         else if (isMedia(path)){
-            deskMPlayer.stop(null);
-            AppDispatcher.tick();
-            deskMPlayer.play(path);
+            deskMPlayer.stop(new Handler<MediaPlayer>() {
+                @Override
+                public void handle(MediaPlayer mediaPlayer) {
+                    AppDispatcher.tick();
+                    deskMPlayer.play(path);
+                }
+            });
+
         }
         else {
             SYSUtils.open(path);
