@@ -79,12 +79,11 @@ public class DesktopContentHandler extends ContentHandler {
                 deskMPlayer.stop(new Handler<MediaPlayer>() {
                     @Override
                     public void handle(MediaPlayer mediaPlayer) {
-
+                        AppDispatcher.tick();
+                        deskMPlayer.playStreamSync(path);
                     }
                 });
-                sleep(1000 * 8);
-                AppDispatcher.tick();
-                deskMPlayer.playStreamSync(path);
+
                 return deviceStat.toHttp();
             } else {
                 System.out.println("WTF????");
