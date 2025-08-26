@@ -71,7 +71,7 @@
     "commands": [
       {
         "id": "process-exec",
-        "args": ["/usr/bin/firefox", "-P", "arise", "-new_tab", "{0}"]
+        "args": ["/usr/bin/firefox", "{0}"]
       }
     ]
   },
