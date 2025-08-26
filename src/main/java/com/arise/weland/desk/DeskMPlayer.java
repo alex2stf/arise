@@ -150,7 +150,7 @@ public class DeskMPlayer extends MediaPlayer {
             try {
                 int i = ((Process) o).waitFor();
                 Process p = (Process) o;
-                log.info("process "  + " exited with " + i);
+                log.info("process " + identifier  + " exited with " + i);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
