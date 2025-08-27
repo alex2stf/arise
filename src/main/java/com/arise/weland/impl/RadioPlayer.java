@@ -288,15 +288,23 @@ public class RadioPlayer {
             return new ArrayList<>();
         }
 
+
         List<String> res = new ArrayList<>();
 
         for (Object o : src) {
+
             if(o instanceof String){
                 String s = (String) o;
                 if (s.startsWith("${") && s.endsWith("}")) {
+
                     String key = s.substring(2, s.length() - 1);
-                    for (String u : buf.get(key)) {
-                        addValidString(res, u);
+
+                    if(buf.containsKey(key)) {
+                        for (String u : buf.get(key)) {
+                            addValidString(res, u);
+                        }
+                    } else {
+                        System.out.println("No key " + key + "found in buf=" + buf);
                     }
                 } else {
                     addValidString(res, s);

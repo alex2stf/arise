@@ -1,9 +1,7 @@
 {
   "lists": {
 
-
-
-    "local-all": [
+    "local": [
       "file:${music_dir}/mixed",
       "file:${usb_drive_0}/Music/mixed",
       "file:${usb_drive_0}/Music/sounds",
@@ -15,6 +13,7 @@
       "file:${usb_drive_0}/Music/sounds",
       "file:/media/kids/407B-B087/Music/sounds"
     ],
+    "localChristmas": [],
 
     "unda-vesela": [
       "https://www.youtube.com/watch?v=oDBTrfVwNg0",
@@ -54,136 +53,111 @@
       "https://www.youtube.com/watch?v=Pyts1y1b688"
     ],
 
-    "relax": "@import:src/main/resources#relax_list.json",
+    "relax": "@import:src/main/resources#relax_tube.json",
+    "relaxTube": "@import:src/main/resources#relax_list.json",
     "christmas": "@import:src/main/resources#christmas_list.json",
+    "christmasTube": "@import:src/main/resources#christmas_tube.json",
     "links": "@import:src/main/resources#unnamed_list.json",
-    "contents": "@import:src/main/resources#goodies_list.json",
-    "rocks": "@import:src/main/resources#rocks_list.json",
-
-    "generic-radios": [
-      "https://ouifm.ice.infomaniak.ch/ouifm-high.mp3",
-      "https://ouifm3.ice.infomaniak.ch/ouifm3.mp3",
-      "https://i4.streams.ovh/sc/bluesrad/stream",
-      "https://live.rockfm.ro/ballads.rock",
-      "https://bestofrockfm.stream.vip/90rock/mp3-128/bestofrockfm.stream.vip",
-      "https://live.rockfm.ro/blues",
-      "https://bestofrockfm.stream.vip/80rock/aac-64/bestofrockfm.stream.vip",
-      "https://live.rockfm.ro/hard.rock",
-      "https://web.smartradio.ro:8443/smartnroll",
-      "https://s9.webradio-hosting.com/proxy/rgmrock/stream?ver=455053",
-      "https://streaming.exclusive.radio/er/italy/icecast.audio",
-      "https://www.youtube.com/watch?v=dKd25JBBL3E",
-      "https://streaming.exclusive.radio/er/musiquefrancaise/icecast.audio",
-      "https://www.youtube.com/watch?v=TN-Imp3N3dM&list=PLMl0O4f3Cvd-mVdisGybFKxYTr5y_z74D&index=1",
-      "https://streaming.exclusive.radio/er/hollywoodandbroadway/icecast.audio",
-      "https://drive.uber.radio/uber/jjrbennygoodman/icecast.audio",
-      "https://asculta.radioromanian.net/8800/stream?ver=587047",
-      "https://bestofrockfm.stream.vip/softrock/mp3-128/bestofrockfm.stream.vip",
-      "https://radio.nugs.net/pearljam",
-      "https://stream.lolliradio.net/lolli_italia.mp3"
-    ]
+    "linksTube": "@import:src/main/resources#unnamed_tubes.json",
+    "goodiesTube": "@import:src/main/resources#goodies_list.json",
+    "goodiesRoTube": "@import:src/main/resources#goodies_ro_tube.json",
+    "rocksTube": "@import:src/main/resources#rocks_list.json",
+    "radios": "@import:src/main/resources#generic-radios.json"
   },
   "shows": [
     {
       "name": "any_morning",
       "day": "monday_tuesday_wednesday_thursday_friday",
-      "hour": "EACH_SECOND BETWEEN_06:55:00_AND_10:40:00",
+      "hour": "EACH_SECOND BETWEEN_06:55:00_AND_10:30:00",
       "strategy": "linear",
       "sources": ["https://live.rockfm.ro:8443/rockfm.aacp"],
       "volume": "25%"
     },
 
     {
-      "name": "weekdays_10-40_11-40",
+      "name": "weekdays_local_10-30_11-00",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
+      "hour": "EACH_SECOND BETWEEN_10:30:00_AND_11:00:00",
       "strategy": "random",
-      "sources": ["${generic-radios}"],
+      "sources": ["${local}"],
       "volume": "35%"
     },
     {
-      "name": "weekdays_carols_10-40_11-40",
+      "name": "weekdays_carols_10-30_11-00",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_10:40:00_AND_11:40:00",
+      "hour": "EACH_SECOND BETWEEN_10:30:00_AND_11:00:00",
       "strategy": "random",
-      "sources": [
-        "${christmas}"
-      ],
+      "sources": ["${localChristmas}"],
       "volume": "35%"
     },
 
     {
-      "name": "weekdays_11-40_12-20",
+      "name": "weekdays_11_12_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_11:40:00_AND_12:20:00",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${local-all}"],
+      "sources": ["${links}"],
       "volume": "40%"
     },
     {
-      "name": "weekdays_carols_11-40_12-20",
+      "name": "weekdays_carols_11_12_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_11:40:00_AND_12:20:00",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "random",
       "sources": ["${christmas}"],
       "volume": "40%"
     },
 
     {
-      "name": "weekdays_12-20_13-10",
+      "name": "weekdays_12_13_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_12:20:00_AND_13:10:00",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${linksTube}"]
     },
     {
-      "name": "weekdays_carols_12-20_13-10",
+      "name": "weekdays_carols_12_13_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_12:20:00_AND_13:10:00",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
       "strategy": "random",
-      "sources": ["${christmas}"]
+      "sources": ["${christmasTube}"]
     },
 
     {
-      "name": "weekdays_13-10_14",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
-      "strategy": "random",
-      "sources": ["${relax}",  "${local-all}"]
-    },
-    {
-      "name": "weekdays_carols_13-10_14",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
-      "strategy": "random",
-      "sources": ["${christmas}"],
-      "volume": "50%"
+      "name": "weekdays_13_14_white",
+      "day": "monday_tuesday_wednesday_thursday_friday",
+      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
+      "strategy": "linear",
+      "sources": ["http://localhost:8221"],
+      "volume": "20%"
     },
 
+
     {
-      "name": "weekdays_14_15",
+      "name": "weekdays_14_15_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${local-all}"]
-    },
-    {
-      "name": "weekdays_carols_14_15",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
-      "strategy": "random",
-      "sources": ["${christmas}"]
+      "sources": ["${relaxTube}"]
     },
 
     {
-      "name": "weekdays_15_16",
+      "name": "weekdays_carols_14_15_tube",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
+      "strategy": "random",
+      "sources": ["${christmasTube}"]
+    },
+
+    {
+      "name": "weekdays_15_16_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${local-all}"]
+      "sources": ["${relax}"]
     },
     {
-      "name": "weekdays_carols_15_16",
+      "name": "weekdays_carols_15_16_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "random",
@@ -191,55 +165,55 @@
     },
 
     {
-      "name": "weekdays_16_17",
+      "name": "weekdays_16_17_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${contents}", "${local-all}"]
+      "sources": ["${rocksTube}"]
     },
     {
-      "name": "weekdays_carols_16_17",
+      "name": "weekdays_carols_16_17_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
+      "strategy": "random",
+      "sources": ["${christmasTube}"]
+    },
+
+
+
+    {
+      "name": "weekdays_17_18_free",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
+      "strategy": "random",
+      "sources": ["${links}"]
+    },
+    {
+      "name": "weekdays_carols_17_18_free",
+      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "random",
       "sources": ["${christmas}"]
     },
 
-
-
     {
-      "name": "weekdays_17_18",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
-      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
-      "strategy": "random",
-      "sources": ["${links}", "${contents}", "${local-all}"]
-    },
-    {
-      "name": "weekdays_carols_17_18",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
-      "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
-      "strategy": "random",
-      "sources": ["${christmas}"]
-    },
-
-    {
-      "name": "weekdays_18_19",
+      "name": "weekdays_18_19_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${rocks}", "${local-all}"]
+      "sources": ["${rocksTube}"]
     },
     {
-      "name": "weekdays_carols_18_19",
+      "name": "weekdays_carols_18_19_tube",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "stream",
-      "sources": ["${christmas}"]
+      "sources": ["${christmasTube}"]
     },
 
 
     {
-      "name": "any_monday_wednesday_19_21",
+      "name": "any_monday_wednesday_19_21_free",
       "day": "monday_wednesday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_21:00:00",
       "strategy": "stream-first",
@@ -249,24 +223,24 @@
     },
 
     {
-      "name": "any_other_19_20",
+      "name": "any_other_19_20_free",
       "day": "tuesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${contents}", "${local-all}"]
+      "sources": ["${radios}"]
     },
 
     {
-      "name": "any_other_20_21",
+      "name": "any_other_20_21_tube",
       "day": "tuesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "random",
-      "sources": ["${links}", "${rocks}", "${local-all}"]
+      "sources": ["${linksTube}"]
     },
 
 
     {
-      "name": "any_other_carols_19_20",
+      "name": "any_other_carols_19_20_free",
       "day": "tuesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "random",
@@ -274,39 +248,31 @@
     },
 
     {
-      "name": "any_other_carols_20_21",
+      "name": "any_other_carols_20_21_tube",
       "day": "tuesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "random",
-      "sources": ["${christmas}"]
+      "sources": ["${christmasTube}"]
     },
 
 
     {
-      "name": "weekdays_21_22",
+      "name": "weekdays_21_22_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "stream",
-      "sources": ["${links}", "${contents}", "${local-all}"]
+      "sources": ["${links}"]
     },
 
     {
-      "name": "weekdays_carols_21_22",
-      "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
+      "name": "weekdays_carols_21_22_free",
+      "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "random",
       "sources": ["${christmas}"]
     },
 
 
-    {
-      "name": "weekdays_nights_22_23_summer",
-      "day": "monday_tuesday_wednesday_thursday_friday_saturday_sunday EXCEPT:october,november,december,january,february,march,april,may",
-      "hour": "EACH_SECOND BETWEEN_22:00:00_AND_23:00:00",
-      "strategy": "random",
-      "sources": ["${contents}", "${local-all}"]
-    },
-
 
 
 
@@ -319,89 +285,96 @@
 
 
     {
-      "name": "weekend_9-15_10-20",
+      "name": "weekend_9_10_tube",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_09:15:00_AND_10:20:00",
+      "hour": "EACH_SECOND BETWEEN_09:10:00_AND_10:00:00",
       "strategy": "random",
-      "sources": ["${contents}"],
+      "sources": ["${goodiesTube}"],
       "volume": "30%"
     },
     {
-      "name": "weekend_10-20_11-45",
+      "name": "weekend_10_11_free",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_10:20:00_AND_11:45:00",
+      "hour": "EACH_SECOND BETWEEN_10:00:00_AND_11:00:00",
       "strategy": "random",
-      "sources": ["${rocks}"]
+      "sources": ["${radios}"]
     },
     {
-      "name": "weekend_11-45_13",
+      "name": "weekend_11_12_tube",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_11:45:00_AND_13:00:00",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_12:00:00",
       "strategy": "random",
-      "sources": ["${contents}"]
+      "sources": ["${goodiesRoTube}"]
     },
     {
-      "name": "weekend_13-14",
+      "name": "weekend_12_13_local",
       "day": "saturday_sunday",
-      "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
       "strategy": "random",
-      "sources": ["${contents}"]
+      "sources": ["${local}"]
     },
     {
-      "name": "weekend_14-15",
+      "name": "weekend_13-14_white",
+      "day": "saturday_sunday",
+      "hour": "EACH_SECOND BETWEEN_13:10:00_AND_14:00:00",
+      "strategy": "random",
+      "sources": ["http://localhost:8221"]
+    },
+    {
+      "name": "weekend_14-15_tube",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_14:00:00_AND_15:00:00",
-      "strategy": "loal-first",
-      "sources": ["${contents}", "${local-all}"]
+      "strategy": "random",
+      "sources": ["${rocksTube}"]
     },
     {
-      "name": "weekend_15-16",
+      "name": "weekend_15-16_free",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
       "strategy": "random",
-      "sources": ["${rocks}", "${contents}", "${local-all}"]
+      "sources": ["${links}"]
     },
     {
-      "name": "weekend_16-17",
+      "name": "weekend_16-17_tube",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_16:00:00_AND_17:00:00",
       "strategy": "random",
-      "sources": ["${rocks}", "${contents}", "${local-all}"]
+      "sources": ["${goodiesTube}"]
     },
     {
-      "name": "weekend_17-18",
+      "name": "weekend_17-18_free",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "strategy": "random",
-      "sources": ["${contents}"]
+      "sources": ["${links}"]
     },
     {
-      "name": "weekend_18-19",
+      "name": "weekend_18-19_tube",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_18:00:00_AND_19:00:00",
       "strategy": "random",
-      "sources": ["${contents}", "${local-all}"]
+      "sources": ["${goodiesTube}"]
     },
     {
-      "name": "weekend_19-20",
+      "name": "weekend_19-20_free",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "random",
-      "sources": ["${contents}", "${local-all}"]
+      "sources": ["${relax}"]
     },
     {
-      "name": "weekend_20-21",
+      "name": "weekend_20-21_tube",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_20:00:00_AND_21:00:00",
       "strategy": "random",
-      "sources": ["${contents}", "${local-all}"]
+      "sources": ["${goodiesRoTube}"]
     },
     {
-      "name": "weekend_21-22",
+      "name": "weekend_21-22_free",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_21:00:00_AND_22:00:00",
       "strategy": "random",
-      "sources": ["${contents}", "${local-all}"]
+      "sources": ["${links}"]
     }
   ]
 }
