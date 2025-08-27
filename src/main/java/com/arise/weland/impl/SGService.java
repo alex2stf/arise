@@ -108,7 +108,7 @@ public enum  SGService {
 
         if(tmpDesk().exists()) {
             String title = ContentInfoProvider.findTitle(desktopImage);
-            if(StringUtil.hasText(title)){
+            if(!StringUtil.hasText(title)){
                 title = desktopImage;
             }
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
