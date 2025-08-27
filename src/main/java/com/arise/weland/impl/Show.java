@@ -10,6 +10,7 @@ import com.arise.weland.model.MediaPlayer;
 import java.io.File;
 import java.net.URLConnection;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -193,12 +194,22 @@ public class Show {
                     pdir = getProperty("radio.forced.path");
                     clear_sys_props();
                 }
-                else if (_m.toLowerCase().indexOf("linear") > -1) {
-                    pdir = CollectionUtil.pickFromPersistentList(sources, false, _LiD);
-                }
+
                 else {
-                    pdir = CollectionUtil.randomPickFromPersistentList(sources, _LiD);
+
+                    if (_m.toLowerCase().indexOf("local") > -1) {
+                        pdir = CollectionUtil.pickFromPersistentList(
+                                fix_local_directories(sources),
+                                false, _LiD);
+                    }
+                    else if (_m.toLowerCase().indexOf("linear") > -1) {
+                        pdir = CollectionUtil.pickFromPersistentList(sources, false, _LiD);
+                    }
+                    else {
+                        pdir = CollectionUtil.randomPickFromPersistentList(sources, _LiD);
+                    }
                 }
+
 
                 //daca e fisier local
                 if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
@@ -325,6 +336,21 @@ public class Show {
         });
 
 
+    }
+
+    private List<String> fix_local_directories(List<String> sources) {
+        List<String> res = new ArrayList<>();
+        for(String s: sources){
+            if(s.startsWith("file:")){
+                File file = new File(apply_variables(s).substring("file:".length()));
+                if(file.exists()){
+                    res.add("file:" + file.getAbsolutePath());
+                }
+            } else {
+                res.add(s);
+            }
+        }
+        return res;
     }
 
     private String apply_variables(String path) {

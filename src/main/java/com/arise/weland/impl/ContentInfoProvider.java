@@ -575,7 +575,7 @@ public class ContentInfoProvider {
         if(TITLES.containsKey(path)){
             return TITLES.get(path);
         }
-        return path;
+        return null;
     }
 
     static String extrageArtist(String title){

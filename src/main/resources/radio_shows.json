@@ -11,7 +11,8 @@
       "file:/media/kids/407B-B087/Music/dance",
       "file:/media/kids/7CB607A1B6075B52/Music/dance",
       "file:${usb_drive_0}/Music/sounds",
-      "file:/media/kids/407B-B087/Music/sounds"
+      "file:/media/kids/407B-B087/Music/sounds",
+      "file:D:\\MUSIC\\Nirvana - Discography\\Nirvana - The Very Best Of"
     ],
     "localChristmas": [],
 
@@ -78,7 +79,7 @@
       "name": "weekdays_local_10-30_11-00",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_10:30:00_AND_11:00:00",
-      "strategy": "random",
+      "strategy": "local",
       "sources": ["${local}"],
       "volume": "35%"
     },
@@ -86,7 +87,7 @@
       "name": "weekdays_carols_10-30_11-00",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:january,february,march,april,may,june,july,august,september,october,november",
       "hour": "EACH_SECOND BETWEEN_10:30:00_AND_11:00:00",
-      "strategy": "random",
+      "strategy": "local",
       "sources": ["${localChristmas}"],
       "volume": "35%"
     },
@@ -127,8 +128,10 @@
       "name": "weekdays_13_14_white",
       "day": "monday_tuesday_wednesday_thursday_friday",
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
-      "strategy": "linear",
-      "sources": ["http://localhost:8221"],
+      "strategy": "linear local",
+      "sources": [
+        "${local}"
+      ],
       "volume": "20%"
     },
 
@@ -310,7 +313,7 @@
       "name": "weekend_12_13_local",
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_12:00:00_AND_13:00:00",
-      "strategy": "random",
+      "strategy": "local",
       "sources": ["${local}"]
     },
     {

@@ -227,7 +227,7 @@ public class Cronus {
         String moment = parseDayRef(d, c) + " " + parseHourRef(h, c);
         System.out.println(moment);
         String oth = EXTFMT.format(c.getTime());
-        Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
+//        Mole.getInstance(">>>>>>>>  ").info(h + "========> "  + moment + " ==  " + oth);
         return moment.equalsIgnoreCase(oth);
     }
 
