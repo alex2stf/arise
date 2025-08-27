@@ -255,7 +255,7 @@ public class Show {
                     mPlayer.play(pfl.getAbsolutePath(), new Handler<String>() {
                         @Override
                         public void handle(String s) {
-                        handle_local_finished(c);
+                            handle_local_finished(c);
                         }
                     });
                     return;

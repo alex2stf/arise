@@ -40,7 +40,7 @@ public class DeskMPlayer extends MediaPlayer {
     final Process proc[] = new Process[]{null};
     Object winst = null;
     AudioInputStream aStream = null;
-    Clip clip = null;
+    JavaxClip wavClip = null;
     private ContentInfoProvider cip;
     private volatile boolean is_play = false;
 
@@ -61,22 +61,24 @@ public class DeskMPlayer extends MediaPlayer {
         });
     }
 
-    public Object play(final String p) {
+    public synchronized Object play(final String p) {
         return play(p, null);
     }
 
-    public Object play(final String path, final Handler<String> c) {
-
-
+    public synchronized Object play(final String path, final Handler<String> c) {
 
         File fileToPlay = new File(path);
         if (isAppClosed){
             log.warn("App received shutdown hook");
             return null;
         }
-        if (!fileToPlay.exists()){
-            log.e("File " + path + " does not exists, implement error handler");
-            System.exit(-1);
+//        if (!fileToPlay.exists()){
+//            log.e("File " + path + " does not exists, implement error handler");
+//            System.exit(-1);
+//            return null;
+//        }
+        if(is_play){
+            log.info("TRYING TO PLAY but is already playing");
             return null;
         }
 
@@ -89,32 +91,27 @@ public class DeskMPlayer extends MediaPlayer {
 
 
         if (path.endsWith(".wav")){
-            stopClips();
+            stopWavClip();
             try {
                 is_play = true;
-
-
                 aStream = AudioSystem.getAudioInputStream(fileToPlay.toURI().toURL());
-                final Clip clip = AudioSystem.getClip(null);
-                clip.addLineListener(new LineListener() {
+                wavClip = new JavaxClip(AudioSystem.getClip(null));
+                wavClip.setLineListener(new LineListener() {
                     @Override
                     public void update(LineEvent event) {
-
                         boolean isStopEvent = LineEvent.Type.STOP.equals(event.getType()) || LineEvent.Type.CLOSE.equals(event.getType());
-                        if (isStopEvent){
+                        if (isStopEvent) {
                             log.trace("HANDLE STOP EVENT " + event.getType() + " for " + path);
-                            close(clip);
                             c.handle(path);
                             is_play = false;
                         } else {
                             log.trace("WAV INLINE_EVENT " + event.getType() + " for " + path);
                         }
-
                     }
                 });
 
-                clip.open(aStream);
-                clip.start();
+                wavClip.open(aStream);
+                wavClip.start();
             } catch (Exception e) {
                 is_play = true;
                 log.error("Failed to play sound " + path + " go next", e);
@@ -186,15 +183,22 @@ public class DeskMPlayer extends MediaPlayer {
     }
 
 
-    private void stopClips(){
-        if (clip != null){
+    private void stopWavClip(){
+        if (wavClip != null){
             try {
-               clip.stop();
+                wavClip.removeListeners();
+                wavClip.stop();
+                log.info("clip.stop() " + wavClip.clip().toString());
             }catch (Exception e){
+
             }
-            close(clip);
+            close(wavClip.clip());
+            wavClip = null;
         }
-        close(aStream);
+        if(aStream != null){
+            close(aStream);
+            aStream = null;
+        }
         is_play = false;
     }
 
@@ -202,7 +206,7 @@ public class DeskMPlayer extends MediaPlayer {
         log.info("Stop called");
 
         try {
-            stopClips();
+            stopWavClip();
             for (Process p : proc) {
                 if (p != null) {
                     try {

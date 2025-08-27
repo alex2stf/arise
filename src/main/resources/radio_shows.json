@@ -12,7 +12,7 @@
       "file:/media/kids/7CB607A1B6075B52/Music/dance",
       "file:${usb_drive_0}/Music/sounds",
       "file:/media/kids/407B-B087/Music/sounds",
-      "file:D:\\MUSIC\\Nirvana - Discography\\Nirvana - The Very Best Of"
+      "file:D:\\MUSIC\\SARBATORI_DE_IARNA\\colinde_copii_2"
     ],
     "localChristmas": [],
 
@@ -156,8 +156,8 @@
       "name": "weekdays_15_16_free",
       "day": "monday_tuesday_wednesday_thursday_friday EXCEPT:december",
       "hour": "EACH_SECOND BETWEEN_15:00:00_AND_16:00:00",
-      "strategy": "random",
-      "sources": ["${relax}"]
+      "strategy": "random relax local",
+      "sources": ["${local}"]
     },
     {
       "name": "weekdays_carols_15_16_free",
