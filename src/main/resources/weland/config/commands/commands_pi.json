@@ -71,7 +71,7 @@
     "commands": [
       {
         "id": "process-exec",
-        "args": ["/usr/bin/firefox", "{0}"]
+        "args": ["/home/kids/Desktop/firefox/firefox", "{0}"]
       }
     ]
   },
