@@ -107,10 +107,14 @@ public enum  SGService {
 
 
         if(tmpDesk().exists()) {
+            String title = ContentInfoProvider.findTitle(desktopImage);
+            if(StringUtil.hasText(title)){
+                title = desktopImage;
+            }
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
                     tmpDesk().getAbsolutePath(),
                     out.getAbsolutePath(),
-                    ContentInfoProvider.findTitle(desktopImage)
+                    title
             });
         } else {
 			System.out.println("NU EXISTA TMP-UL");
