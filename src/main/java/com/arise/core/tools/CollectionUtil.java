@@ -200,17 +200,24 @@ public class CollectionUtil {
         }
         String k = "L_" + (dSh ? "_shuffled" : "_linear") + "_" +  StringUtil.sanitizeAppId(name);
         AppCache.StoredList l = AppCache.getStoredList(k);
+
+        int index = l.getIndex();
+
         if (l.isEmpty() || l.isIndexExceeded()){
             if(dSh){
                 Mole.getInstance("CLCTC_UTI").info("shuffle " + k);
                 shuffleList(s);
             }
             l = storeList(k, s, 0);
+            index = 0;
         }
-        int i = l.getIndex();
-        storeList(k, l.getItems(), l.getIndex() + 1);
-        Mole.getInstance("CLCTC_UTI").info(  k + " return index = " + i);
-        String item = l.getItems().get(i);
+
+
+
+
+        storeList(k, l.getItems(), index + 1);
+        Mole.getInstance("CLCTC_UTI").info(  k + " returned index = " + index + " from " + l.getItems().size());
+        String item = l.getItems().get(index);
 
         if(urlBuffer.contains(item) && s.size() > 20){
             System.out.println("take next because " + item + " is in queue");
