@@ -54,8 +54,8 @@
       "https://www.youtube.com/watch?v=Pyts1y1b688"
     ],
 
-    "relax": "@import:src/main/resources#relax_tube.json",
-    "relaxTube": "@import:src/main/resources#relax_list.json",
+    "relax": "@import:src/main/resources#relax_list.json",
+    "relaxTube": "@import:src/main/resources#relax_tube.json",
     "christmas": "@import:src/main/resources#christmas_list.json",
     "christmasTube": "@import:src/main/resources#christmas_tube.json",
     "links": "@import:src/main/resources#unnamed_list.json",
