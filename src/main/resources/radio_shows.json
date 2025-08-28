@@ -130,7 +130,7 @@
       "hour": "EACH_SECOND BETWEEN_13:00:00_AND_14:00:00",
       "strategy": "linear local",
       "sources": [
-        "${local}"
+        "http://localhost:8221"
       ],
       "volume": "20%"
     },
