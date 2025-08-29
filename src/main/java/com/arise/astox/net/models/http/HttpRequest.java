@@ -23,6 +23,7 @@ public class HttpRequest extends ServerRequest {
     private String _mth;
     private HttpProtocol protocol = HttpProtocol.V1_0;
     private byte[] bytes;
+    private String mfileName;
 
     public boolean isHeaderReadComplete() {
         return headerReadComplete;
@@ -444,4 +445,48 @@ public class HttpRequest extends ServerRequest {
     public void setHeaderReadComplete(boolean headerReadComplete) {
         this.headerReadComplete = headerReadComplete;
     }
+
+    List<MFile> mFiles = new ArrayList<>();
+
+    public void startNewMFile() {
+        mFiles.add(new MFile());
+
+    }
+
+    public void setMfileName(String mfileName) {
+        mFiles.get(mFiles.size() - 1).name = mfileName;
+    }
+
+    public void setMfileCanRead(boolean mfileCanRead) {
+        mFiles.get(mFiles.size() - 1).canRead = mfileCanRead;
+    }
+
+    public boolean mFileCanRead() {
+        if (CollectionUtil.isEmpty(mFiles)){
+            return false;
+        }
+        return  mFiles.get(mFiles.size() - 1).canRead;
+    }
+
+    public void mfileWrite(byte[] bytes) {
+
+        if(CollectionUtil.isEmpty(mFiles)){
+            return;
+        }
+
+    }
+
+    public boolean hasMfile() {
+
+        return !CollectionUtil.isEmpty(mFiles);
+    }
+
+
+    private class MFile {
+        String name;
+        public boolean canRead;
+    }
+
+
+
 }

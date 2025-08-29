@@ -7,6 +7,7 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.*;
+import java.util.UUID;
 
 
 public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
@@ -48,29 +49,109 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
         }
     }
 
+    String getTitleFromHeaderLine(String headerLine){
+        String headerLines[] = headerLine.split("\n");
+
+        for (String hline: headerLines){
+            if(hline.indexOf(":") > -1){
+                String hparts[] = hline.split(":");
+                if (hparts.length > 1){
+                    String value = hparts[1].trim();
+                    String headerKey = hparts[0].trim();
+
+                    if (value.indexOf(";") > -1 ){
+                        String vparts[] = value.split(";");
+
+                        if (vparts.length > 0){
+                            for (String vp: vparts){
+                                if (vp.indexOf("=") > -1){
+                                    String kv[] = vp.trim().split("=");
+                                    if (kv.length > 1) {
+                                        String key = kv[0].trim();
+                                        String val = kv[1].trim();
+                                        if ("filename".equalsIgnoreCase(key)){
+                                            return val.replaceAll("\"", "");
+                                        }
+//                                        if ("name".equalsIgnoreCase(key) &&  "Content-Disposition".equalsIgnoreCase(headerKey)){
+//                                            return val.replaceAll("\"", "");
+//                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return UUID.randomUUID().toString();
+    }
+
+
     private boolean readChunk(byte[] buffer, ByteArrayOutputStream bodyBytes, HttpRequest request) throws Exception {
 
 
 
         for (int i = 0; i < buffer.length; i++){
-            bodyBytes.write(buffer[i]);
 
-            if (buffer[i] == '\n' && !request.isHeaderReadComplete()){
-                String line = bodyBytes.toString("UTF-8").trim();
-                if(line.equalsIgnoreCase("")){
-                    request.setHeaderReadComplete(true);
-                    bodyBytes.reset();
-                } else {
-                    request.putLine(line);
-                    bodyBytes.reset();
+
+            if (!request.isHeaderReadComplete() ){
+                if(buffer[i] == '\n') {
+                    String line = bodyBytes.toString("UTF-8").trim();
+                    if(line.equalsIgnoreCase("")){
+                        request.setHeaderReadComplete(true);
+                        bodyBytes.reset();
+                    } else {
+                        request.putLine(line);
+                        bodyBytes.reset();
+                    }
+                }
+                else {
+                    bodyBytes.write(buffer[i]);
                 }
             }
 
-            else if (buffer[i] == '\n' && request.isMultipartFormData()){
-                String line = bodyBytes.toString("UTF-8").trim();
-                System.out.println("multipart line: " + line);
-                bodyBytes.reset();
-            }
+            else {
+                if(request.isMultipartFormData()){
+
+
+
+                    if (request.mFileCanRead()){
+                        request.mfileWrite(bodyBytes.toByteArray());
+                    }
+
+                    else if (buffer[i] == '\n'){
+
+                        String line = bodyBytes.toString("UTF-8").trim();
+
+                        if(line.endsWith(request.getBoundary())){
+                            request.startNewMFile();
+                        }
+                        else if (line.toLowerCase().indexOf("content-disposition") > -1 && request.hasMfile()){
+                            request.setMfileName(
+                                    getTitleFromHeaderLine(line)
+                            );
+                        }
+                        else if (line.equalsIgnoreCase("") && request.hasMfile()){
+                            request.setMfileCanRead(true);
+
+                        }
+                        System.out.println("multipart line: " + line);
+                        bodyBytes.reset();
+                    }
+                    else {
+                        bodyBytes.write(buffer[i]);
+                    }
+
+                } /// exit multipart
+
+
+                else {
+                    bodyBytes.write(buffer[i]);
+                }
+
+
+
+            }//exit else body
 
         }
 
@@ -79,6 +160,7 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 
         return false;
     }
+
 
 
 //    @Override
@@ -100,6 +182,7 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
 //        };
 //        reader.readInputStream(inputStream);
 //    }
+
 
 
 
