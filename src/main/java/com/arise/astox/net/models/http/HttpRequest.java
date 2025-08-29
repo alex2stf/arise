@@ -24,9 +24,51 @@ public class HttpRequest extends ServerRequest {
     private HttpProtocol protocol = HttpProtocol.V1_0;
     private byte[] bytes;
 
+    public boolean isHeaderReadComplete() {
+        return headerReadComplete;
+    }
+
+    private boolean headerReadComplete;
+
     @Deprecated
     public HttpRequest() {
 
+    }
+
+
+    int lines = 0;
+
+    int headerLength = 0;
+
+    //todo package protected
+    public void putLine(String line){
+        if (lines == 0){
+            String parts[] = line.split(" ");
+            _mth = parts[0].trim();
+            setUri(parts[1]);
+            setProtocol(HttpProtocol.findByValue(parts[2]));
+        }
+        else {
+            addHeaderLine(line);
+        }
+        lines++;
+        headerLength += line.length();
+    }
+
+    public int getHeaderLength(){
+        return headerLength;
+    }
+
+    private void addHeaderLine(String line) {
+        if(_hd == null){
+            _hd = new HashMap<>();
+        }
+        int index = line.indexOf(":");
+        if (index > -1){
+            String key = line.substring(0, index);
+            String value = line.substring(index + 1);
+            _hd.put(key.trim(), value.trim());
+        }
     }
 
 
@@ -357,6 +399,9 @@ public class HttpRequest extends ServerRequest {
 
     @SuppressWarnings("unused")
     public boolean isMultipartFormData() {
+        if(!isHeaderReadComplete()){
+            return false;
+        }
         String ct = getHeaderParam("Content-Type");
         if (!hasText(ct)) {
             return false;
@@ -381,5 +426,22 @@ public class HttpRequest extends ServerRequest {
         }
         return null;
 
+    }
+
+    public int getContentLength() {
+        String val = getHeaderParam("Content-Length");
+        if(StringUtil.hasText(val)){
+            try{
+                return Integer.valueOf(val);
+            }catch (NumberFormatException e){
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+
+    public void setHeaderReadComplete(boolean headerReadComplete) {
+        this.headerReadComplete = headerReadComplete;
     }
 }

@@ -10,7 +10,6 @@ import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.HTTPServerHandler;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.*;
@@ -28,7 +27,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,7 +43,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   ContentHandler contentHandler;
   Whisker whisker = new Whisker()
           .setTemplatesRoot("src/main/resources#weland");
-  String appContent = StreamUtil.toString(findStream("weland/app.html"));
+  String appContent = StreamUtil.toString(findStream("weland/app_old.html"));
 
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
@@ -323,44 +321,6 @@ public class WelandServerHandler extends HTTPServerHandler {
               .allowAnyOrigin();
     }
 
-    if ("/upload".equalsIgnoreCase(req.path())){
-      String path = req.getQueryParam("file");
-      final String name = req.getQueryParam("name");
-
-
-      final File f = ContentInfo.fileFromPath(path);
-      if (!f.exists()){
-        return HttpResponse.plainText("file does not exist");
-      }
-
-      final URL url;
-      try {
-        url = new URL(req.getQueryParam("destination"));
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-        return HttpResponse.plainText("invalid destination");
-      }
-      fireAndForget(new Runnable() {
-        @Override
-        public void run() {
-          FileTransfer.Client client = new FileTransfer.Client();
-          client.setHost(url.getHost());
-          client.setPort(url.getPort());
-          client.sendAndReceive(new FileTransfer.FileRequest(f, name), new Handler<HttpResponse>() {
-            @Override
-            public void handle(HttpResponse data) {
-              System.out.println(data);
-            }
-          });
-        }
-      }, "WelandServerHandler#uploadHandle-" + UUID.randomUUID().toString() );
-
-      return HttpResponse
-              .json("{\"len\":" + f.length() + ", \"name\": "+StringUtil.jsonVal(name)+"}")
-              .allowAnyOrigin();
-    }
-
-
 
 
 
@@ -444,7 +404,7 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    return null;
+    return  HttpResponse.plainText("ROUTE NOT FOUND");
   }
 
 

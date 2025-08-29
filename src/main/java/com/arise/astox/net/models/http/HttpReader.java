@@ -45,8 +45,9 @@ public abstract class HttpReader<TYPE> {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        }
+        } else {
 
+        }
     }
 
 
@@ -123,12 +124,14 @@ public abstract class HttpReader<TYPE> {
 //            }
             //works in ndk
             if (getContentLength() > 0) {
-                while (sumRead < getContentLength() + headerLength() ){
+//                while (sumRead < getContentLength() + headerLength() ){
+                while (actualRead > 0 ){
                     actualRead = readStream(inputStream, initChunk);
                     sumRead += actualRead;
                 }
             }
 
+//            System.out.println("found " + new String(bodyBytes.toByteArray()) + " rest is ???");
             handleRest(this);
         } catch (Throwable t){
             onError(t);

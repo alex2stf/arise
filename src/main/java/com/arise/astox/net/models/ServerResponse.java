@@ -12,6 +12,7 @@ public abstract class ServerResponse  {
 
     }
 
+    @Deprecated
     public boolean isSelfManageable() {
         return false;
     }

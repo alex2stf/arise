@@ -110,21 +110,16 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                     return;
                 }
 
-                DuplexDraft draft = requestToDuplex(serverRequest);
 
                 OutputStream outputStream = getOutputStream(connection);
 
                 try {
-                    if (draft != null) {
-                        handleDuplex(connection, draft, serverRequest, outputStream);
-                    } else {
-                        if (outputStream == null) {
-                            log.error("Nothing to write into a null outputstream");
-                            close(connection);
-                            return;
-                        }
-                        handleNonDuplex(serverRequest, connection, outputStream);
+                    if (outputStream == null) {
+                        log.error("Nothing to write into a null outputstream");
+                        close(connection);
+                        return;
                     }
+                    handleNonDuplex(serverRequest, connection, outputStream);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -145,49 +140,6 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
 
 
 
-    @Deprecated
-    private void handleDuplex(CONNECTION connection, DuplexDraft draft, ServerRequest serverRequest, OutputStream outputStream) throws IOException {
-        ServerResponse serverResponse = getDuplexHandshakeResponse(draft, serverRequest);
-        if (serverResponse == null) {
-            close(connection);
-            return;
-        }
-
-        System.out.println("E DRAFT REQUEST, return " + serverResponse);
-        serverResponse.setServerName(getName());
-        byte[] response = serverResponse.bytes();
-        outputStream.write(response, 0, response.length);
-
-
-        DuplexDraft.Connection duplexConnection = draft.createConnection(this, connection, null, null);
-        requestHandler.onDuplexConnect(this, serverRequest, duplexConnection);
-
-        DuplexDraft.DuplexInputStream duplexStream = draft.buildInputStream(getInputStream(connection));
-
-
-        boolean allowWsRead = true;
-
-        while (allowWsRead) {
-            // Receive a frame from the server.
-            DuplexDraft.Frame frame = null;
-            try {
-                frame = duplexStream.readFrame();
-            } catch (Exception ex) {
-                allowWsRead = false;
-                fireError(ex);
-            } finally {
-                if (frame != null) {
-                    requestHandler.onFrame(frame, duplexConnection);
-                }
-                if (!allowWsRead || frame.isCloseFrame()) {
-                    onDuplexClose(duplexConnection);
-                    close(duplexStream);
-                    close(connection);
-                    break;
-                }
-            }
-        }
-    }
 
 
     protected void handleNonDuplex(ServerRequest serverRequest, CONNECTION connection, OutputStream outputStream) throws IOException {
@@ -225,7 +177,7 @@ public abstract class StreamedServer<CONNECTION_PROVIDER, CONNECTION> extends Ab
                     }
                 }
                 close(connection);
-                Thread.currentThread().interrupt();
+//                Thread.currentThread().interrupt();
             }
         } else {
             outputStream.write(requestHandler.getExceptionResponse(this, null).bytes());

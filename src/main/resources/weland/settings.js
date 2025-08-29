@@ -34,7 +34,7 @@ function read_ips_from_cache(){
     })
 }
 
-read_ips_from_cache();
+
 
 function place_friend_ips_for_air_play(divid, path, mode){
     for(var i in g_friends){

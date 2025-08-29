@@ -13,14 +13,6 @@ public abstract class ServerRequestBuilder<T extends ServerRequest> {
                                          Handler<T> onComplete,
                                          Handler<Throwable> onError);
 
-    public abstract void readSocketChannel(SocketChannel socketChannel,
-                                           Handler<T> onComplete,
-                                           Handler<Throwable> onError);
-
-    public abstract void readByteBuffer(ByteBuffer input,
-                                        Handler<T> onComplete,
-                                        Handler<Throwable> onError);
-
     ServerRequestBuilder<T> withConnection(Object connection) {
         this.connection = connection;
         return this;

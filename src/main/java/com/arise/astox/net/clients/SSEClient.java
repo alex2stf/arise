@@ -14,7 +14,7 @@ import java.net.Socket;
 
 import static java.util.UUID.randomUUID;
 
-
+@Deprecated
 public class SSEClient extends HttpClient {
 
     @Override

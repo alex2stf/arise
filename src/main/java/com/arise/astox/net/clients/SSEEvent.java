@@ -1,5 +1,7 @@
 package com.arise.astox.net.clients;
 
+
+@Deprecated
 public class SSEEvent {
     private String event;
     private Long retry;
