@@ -1,4 +1,4 @@
-package com.arise.weland.impl;
+package com.arise.astox.net.models.http;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,6 +22,10 @@ public class ByteQueue {
 
         bytes[index] = b;
         index++;
+    }
+
+    public void write (byte b){
+        add(b);
     }
 
 

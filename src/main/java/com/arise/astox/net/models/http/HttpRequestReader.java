@@ -4,6 +4,8 @@ import com.arise.astox.net.models.HttpProtocol;
 
 import java.util.Map;
 
+
+@Deprecated
 public abstract class HttpRequestReader extends HttpReader<HttpRequest> {
     protected HttpRequest request = new HttpRequest();
 

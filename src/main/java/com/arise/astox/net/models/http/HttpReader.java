@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+
+@Deprecated
 public abstract class HttpReader<TYPE> {
 //    protected StringBuffer builder = new StringBuffer();
     protected ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();

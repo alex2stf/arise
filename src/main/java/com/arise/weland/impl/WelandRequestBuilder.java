@@ -1,17 +1,9 @@
 package com.arise.weland.impl;
 
-import com.arise.astox.net.models.http.HttpReader;
-import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpRequestBuilder;
-import com.arise.astox.net.models.http.HttpRequestReader;
-import com.arise.core.models.Handler;
-import com.arise.core.tools.*;
+import com.arise.core.tools.Mole;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class WelandRequestBuilder extends HttpRequestBuilder {
 

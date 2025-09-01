@@ -3,11 +3,12 @@ package com.arise.astox.net.models.http;
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.core.tools.CollectionUtil;
+import com.arise.core.tools.FileUtil;
 import com.arise.core.tools.StringUtil;
+import com.arise.core.tools.Util;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -24,6 +25,9 @@ public class HttpRequest extends ServerRequest {
     private HttpProtocol protocol = HttpProtocol.V1_0;
     private byte[] bytes;
     private String mfileName;
+    private static String fileName;
+
+
 
     public boolean isHeaderReadComplete() {
         return headerReadComplete;
@@ -42,7 +46,7 @@ public class HttpRequest extends ServerRequest {
     int headerLength = 0;
 
     //todo package protected
-    public void putLine(String line){
+    public void putHeaderLine(String line){
         if (lines == 0){
             String parts[] = line.split(" ");
             _mth = parts[0].trim();
@@ -446,46 +450,146 @@ public class HttpRequest extends ServerRequest {
         this.headerReadComplete = headerReadComplete;
     }
 
-    List<MFile> mFiles = new ArrayList<>();
+    private MFile mFile = null;
 
-    public void startNewMFile() {
-        mFiles.add(new MFile());
 
+
+    public void startMFile() {
+        mFile = new MFile();
     }
 
-    public void setMfileName(String mfileName) {
-        mFiles.get(mFiles.size() - 1).name = mfileName;
+    public boolean mFileIsNull() {
+        return mFile == null;
     }
 
-    public void setMfileCanRead(boolean mfileCanRead) {
-        mFiles.get(mFiles.size() - 1).canRead = mfileCanRead;
+    public boolean mFileCanWrite() {
+        return !mFileIsNull() && mFile.canWrite;
     }
 
-    public boolean mFileCanRead() {
-        if (CollectionUtil.isEmpty(mFiles)){
-            return false;
-        }
-        return  mFiles.get(mFiles.size() - 1).canRead;
-    }
-
-    public void mfileWrite(byte[] bytes) {
-
-        if(CollectionUtil.isEmpty(mFiles)){
+    public void mFileAddHeaderLine(String line) {
+        if (line.trim().equalsIgnoreCase("")){
             return;
         }
+        mFile.addHeaderLine(line);
+    }
+
+    public void setCanWriteMfile(boolean x) {
+        mFile.canWrite  = x;
+    }
+
+    public void mFileWrite(byte b, ByteArrayOutputStream parentBytes) {
+       if(mFile != null && !mFile.write(b)){
+           startMFile();
+           parentBytes.reset();
+       }
+    }
+
+
+
+
+
+    public void closeMFilesResidue() {
 
     }
 
-    public boolean hasMfile() {
-
-        return !CollectionUtil.isEmpty(mFiles);
+    public boolean mFileHasHeaders() {
+        return mFile.fName != null;
     }
 
 
     private class MFile {
-        String name;
-        public boolean canRead;
+        public boolean canWrite;
+        String fName = null;
+        ByteQueue checkStream;
+        ByteArrayOutputStream fileStream;
+
+
+
+        public String setFileName(String fileName) {
+            checkStream = new ByteQueue(getBoundary().length() + 50);
+            fileStream = new ByteArrayOutputStream();
+            return fileName;
+        }
+
+        public void addHeaderLine(String line) {
+            if (fName == null){
+                fName = getTitleFromHeaderLine(line);
+                System.out.println(" FOUND FNAME " + fName);
+            }
+        }
+
+        boolean write(byte b) {
+            if (checkStream.endsWith("--" + getBoundary())){
+                    System.out.println("completed");
+
+                    try {
+                        FileOutputStream fos = new FileOutputStream(new File(FileUtil.getUploadDir(), fName));
+                        byte bytes[] = fileStream.toByteArray();
+
+                        fos.write(bytes, 0, bytes.length - getBoundary().getBytes().length);
+                        Util.close(fos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    return false;
+
+            }
+            else {
+                checkStream.write(b);
+                fileStream.write(b);
+                //System.out.println(fName + " writing " + b);
+            }
+            return true;
+        }
+
+        public void close() {
+
+        }
+
+        String getTitleFromHeaderLine(String headerLine) {
+            String headerLines[] = headerLine.split("\n");
+
+            for (String hline : headerLines) {
+                if (hline.indexOf(":") > -1) {
+                    String hparts[] = hline.split(":");
+                    if (hparts.length > 1) {
+                        String value = hparts[1].trim();
+                        String headerKey = hparts[0].trim();
+
+                        if (value.indexOf(";") > -1) {
+                            String vparts[] = value.split(";");
+
+                            if (vparts.length > 0) {
+                                for (String vp : vparts) {
+                                    if (vp.indexOf("=") > -1) {
+                                        String kv[] = vp.trim().split("=");
+                                        if (kv.length > 1) {
+                                            String key = kv[0].trim();
+                                            String val = kv[1].trim();
+                                            if ("filename".equalsIgnoreCase(key)) {
+                                                return setFileName(val.replaceAll("\"", ""));
+
+                                            }
+//                                        if ("name".equalsIgnoreCase(key) &&  "Content-Disposition".equalsIgnoreCase(headerKey)){
+//                                            return val.replaceAll("\"", "");
+//                                        }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return UUID.randomUUID().toString();
+        }
+
+
     }
+
+
+
 
 
 
