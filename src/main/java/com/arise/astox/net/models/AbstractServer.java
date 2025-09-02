@@ -5,10 +5,6 @@ import com.arise.core.tools.Mole;
 import com.arise.core.tools.ThreadUtil;
 
 import javax.net.ssl.SSLContext;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public abstract class AbstractServer<READABLE> extends Peer {
 
@@ -19,10 +15,7 @@ public abstract class AbstractServer<READABLE> extends Peer {
     protected RequestHandler requestHandler;
 
 
-    protected BlockingQueue<ServerMessage> messagesToWrite = new ArrayBlockingQueue<ServerMessage>(200);
 
-    private Set<DuplexDraft> duplexDrafts = new HashSet<>();
-//    private Set<ServerRequestBuilder> requestBuilderSet = new HashSet<>();
     protected ServerRequestBuilder serverRequestBuilder;
 
     public AbstractServer(){
@@ -41,14 +34,6 @@ public abstract class AbstractServer<READABLE> extends Peer {
         return (AbstractServer) super.setName(name);
     }
 
-//    public Set<ServerRequestBuilder> getBuilders() {
-//        return Collections.unmodifiableSet(requestBuilderSet);
-//    }
-
-    public AbstractServer addDuplexDraft(DuplexDraft draft){
-        duplexDrafts.add(draft);
-        return this;
-    }
 
     public AbstractServer setRequestBuilder(ServerRequestBuilder serverRequestBuilder){
         this.serverRequestBuilder = serverRequestBuilder;
@@ -58,17 +43,10 @@ public abstract class AbstractServer<READABLE> extends Peer {
 
     public abstract void write(byte[] bytes, ConnectionSolver connectionSolver, WriteCompleteEvent event);
 
-    public StateObserver getStateObserver() {
-        return stateObserver;
-    }
 
     public AbstractServer setStateObserver(StateObserver stateObserver) {
         this.stateObserver = stateObserver;
         return this;
-    }
-
-    public RequestHandler getRequestHandler() {
-        return requestHandler;
     }
 
     public AbstractServer setRequestHandler(RequestHandler requestHandler) {
@@ -154,29 +132,8 @@ public abstract class AbstractServer<READABLE> extends Peer {
 
 
 
-    @Deprecated
-    public DuplexDraft<ServerRequest, ServerResponse> requestToDuplex(ServerRequest request){
-        for (DuplexDraft<ServerRequest, ServerResponse> draft: duplexDrafts){
-            if (draft.isValidHandshakeRequest(request)){
-                return draft;
-            }
-        }
-        return null;
-    }
-
-    public ServerResponse getDuplexHandshakeResponse(DuplexDraft<ServerRequest, ServerResponse> draft, ServerRequest request){
-        try {
-            return draft.getHandshakeResponse(request);
-        } catch (Exception e) {
-            fireError(e);
-            return null;
-        }
-    }
 
 
-    protected void onDuplexClose(DuplexDraft.Connection c) {
-       requestHandler.onDuplexClose(c);
-    }
 
 
 
@@ -204,12 +161,7 @@ public abstract class AbstractServer<READABLE> extends Peer {
     public interface RequestHandler {
         ServerResponse getResponse(final AbstractServer serviceServer, ServerRequest request);
         boolean validate(ServerRequest request);
-        void onDuplexConnect(AbstractServer ioHttp, ServerRequest request, DuplexDraft.Connection connection);
-        void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection);
         ServerResponse getExceptionResponse(AbstractServer s, Throwable t);
-        void onDuplexClose(DuplexDraft.Connection c);
-
-//        ServerResponse serverError(Exception ex);
     }
 
     public abstract static class WriteCompleteEvent {

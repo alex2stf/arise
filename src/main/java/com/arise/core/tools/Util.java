@@ -48,6 +48,15 @@ public final class Util {
         if (stream == null){
             return;
         }
+
+        if(stream instanceof ByteArrayInputStream){
+            try {
+                ((ByteArrayInputStream) stream).reset();
+            }catch (Throwable e){
+
+            }
+        }
+
         if(stream instanceof ThreadUtil.TimerResult){
             ThreadUtil.closeTimer((ThreadUtil.TimerResult)stream);
             return;
@@ -57,6 +66,7 @@ public final class Util {
         } catch (Exception e){
             ;;
         }
+
     }
 
 

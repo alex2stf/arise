@@ -1,13 +1,9 @@
 package com.arise.weland.desk;
 
-import com.arise.astox.net.models.Peer;
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
 import com.arise.core.AppSettings;
-import com.arise.core.AppSettings.Keys;
-import com.arise.core.exceptions.DependencyException;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.tools.Mole;
 import com.arise.core.tools.StringUtil;
 import com.arise.weland.dto.ContentInfo;
@@ -16,17 +12,12 @@ import com.arise.weland.impl.OSProxies;
 import com.arise.weland.impl.SGService;
 import com.arise.weland.model.MediaPlayer;
 
-import javax.sound.sampled.*;
-import java.io.BufferedInputStream;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URLClassLoader;
 
-import static com.arise.cargo.management.DependencyManager.withJar;
-import static com.arise.core.AppSettings.getProperty;
-import static com.arise.core.tools.ReflectUtil.getMethod;
 import static com.arise.core.tools.StringUtil.urlEncodeUTF8;
 import static com.arise.core.tools.Util.close;
 import static java.lang.Runtime.getRuntime;

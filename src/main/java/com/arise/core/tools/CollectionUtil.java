@@ -8,7 +8,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static com.arise.core.tools.AppCache.storeList;
-import static com.arise.core.tools.StringUtil.join;
 import static com.arise.core.tools.Util.randBetween;
 import static java.util.Collections.shuffle;
 

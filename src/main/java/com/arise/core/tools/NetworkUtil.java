@@ -1,19 +1,15 @@
 package com.arise.core.tools;
 
-import com.arise.astox.net.clients.JHttpClient;
-import com.arise.astox.net.models.Peer;
-import com.arise.astox.net.models.http.HttpRequest;
-import com.arise.core.exceptions.CommunicationException;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.arise.core.tools.Util.close;
 
 public class NetworkUtil {
     private static final Mole log = Mole.getInstance("NETWORKUT");

@@ -2,7 +2,6 @@ package com.arise.weland.impl;
 
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.ContentType;
 import com.arise.core.tools.FileUtil;

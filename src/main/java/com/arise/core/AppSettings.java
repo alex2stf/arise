@@ -72,6 +72,7 @@ public class AppSettings {
     }
 
 
+    @Deprecated
     public static List<File> getScannableLocations(){
         String val = applicationProperties.getProperty("scan.locations");
         String keys[] = val.split(",");

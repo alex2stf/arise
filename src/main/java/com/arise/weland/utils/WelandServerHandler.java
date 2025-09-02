@@ -2,14 +2,12 @@ package com.arise.weland.utils;
 
 
 import com.arise.astox.net.models.AbstractServer;
-import com.arise.astox.net.models.DuplexDraft;
 import com.arise.astox.net.models.ServerRequest;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpRequest;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.astox.net.servers.HTTPServerHandler;
 import com.arise.canter.CommandRegistry;
-import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.serializers.parser.Whisker;
 import com.arise.core.tools.*;
@@ -19,13 +17,10 @@ import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
 import com.arise.weland.impl.SGService;
 import com.arise.weland.model.ContentHandler;
-import com.arise.weland.model.FileTransfer;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +29,6 @@ import static com.arise.astox.net.models.http.HttpResponse.oK;
 import static com.arise.core.tools.FileUtil.findStream;
 import static com.arise.core.tools.StringUtil.hasText;
 import static com.arise.core.tools.StringUtil.urlDecodeUTF8;
-import static com.arise.core.tools.ThreadUtil.fireAndForget;
 import static com.arise.core.tools.Util.now;
 
 public class WelandServerHandler extends HTTPServerHandler {
@@ -407,21 +401,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     return  HttpResponse.plainText("ROUTE NOT FOUND");
   }
 
-
-  @Override
-  public void onDuplexConnect(AbstractServer ioHttp, ServerRequest request,  DuplexDraft.Connection connection) {
-      duplexConnections.add(connection);
-  }
-
-  @Override
-  public void onFrame(DuplexDraft.Frame frame, DuplexDraft.Connection connection) {
-    broadcast(frame.getPayloadText());
-  }
-
-  @Override
-  public void onDuplexClose(DuplexDraft.Connection c) {
-    duplexConnections.remove(c);
-  }
 
 
 

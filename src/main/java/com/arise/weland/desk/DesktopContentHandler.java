@@ -13,7 +13,6 @@ import com.arise.weland.model.MediaPlayer;
 
 import static com.arise.core.tools.ContentType.isHttpPath;
 import static com.arise.core.tools.ContentType.isMedia;
-import static com.arise.core.tools.ThreadUtil.sleep;
 import static com.arise.weland.dto.DeviceStat.getInstance;
 
 

@@ -1,21 +1,11 @@
 package com.arise.weland.impl;
 
-import com.arise.core.models.Handler;
 import com.arise.core.models.Tuple2;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.ReflectUtil;
 
 import java.io.File;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.arise.cargo.management.DependencyManager.withJar;
 import static com.arise.cargo.management.Locations.snapshot;
-import static com.arise.core.tools.ReflectUtil.getMethod;
-import static com.arise.core.tools.ReflectUtil.getStaticMethod;
-import static java.lang.Class.forName;
-import static java.util.Collections.unmodifiableList;
 import static java.util.UUID.nameUUIDFromBytes;
 
 public class JARProxies {

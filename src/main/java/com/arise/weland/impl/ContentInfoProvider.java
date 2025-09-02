@@ -1,10 +1,7 @@
 package com.arise.weland.impl;
 
 import com.arise.astox.net.models.ServerResponse;
-import com.arise.astox.net.models.http.HttpResponse;
-import com.arise.canter.CommandRegistry;
 import com.arise.core.models.Handler;
-import com.arise.core.models.Tuple2;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
 import com.arise.weland.dto.ContentInfo;
@@ -300,6 +297,7 @@ public class ContentInfoProvider {
 
 
 
+    @Deprecated
     public ContentInfoProvider get(){
         if(_scanning){
             return this;
@@ -308,6 +306,7 @@ public class ContentInfoProvider {
         return this;
     }
 
+    @Deprecated
     public ContentInfoProvider addRoot(File root) {
         if (root == null || !root.exists() || !root.isDirectory()){
             return this;

@@ -8,11 +8,9 @@ import com.arise.core.tools.StringUtil;
 import com.arise.core.tools.Util;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static com.arise.astox.net.models.http.HttpReader.CRLF;
 import static com.arise.core.tools.CollectionUtil.isEmpty;
 import static com.arise.core.tools.StringUtil.*;
 
@@ -27,7 +25,8 @@ public class HttpRequest extends ServerRequest {
     private String mfileName;
     private static String fileName;
 
-
+    public static final String CRLF = "\r\n";
+    public static final String HEADER_SEPARATOR = CRLF + CRLF;
 
     public boolean isHeaderReadComplete() {
         return headerReadComplete;
@@ -489,7 +488,10 @@ public class HttpRequest extends ServerRequest {
 
 
     public void closeMFilesResidue() {
-
+        if (mFile != null){
+            Util.close(mFile.checkStream);
+            Util.close(mFile.fileStream);
+        }
     }
 
     public boolean mFileHasHeaders() {
@@ -538,7 +540,6 @@ public class HttpRequest extends ServerRequest {
             else {
                 checkStream.write(b);
                 fileStream.write(b);
-                //System.out.println(fName + " writing " + b);
             }
             return true;
         }

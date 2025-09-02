@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.arise.astox.net.models.http.HttpReader.CRLF;
-import static com.arise.astox.net.models.http.HttpReader.HEADER_SEPARATOR;
 import static com.arise.core.tools.FileUtil.findStream;
 
 public class HttpResponse extends ServerResponse {
@@ -27,7 +25,8 @@ public class HttpResponse extends ServerResponse {
     private int contentLength;
     private HttpProtocol protocol = HttpProtocol.V1_0;
     private String statusText = "OK";
-
+    public static final String CRLF = "\r\n";
+    public static final String HEADER_SEPARATOR = CRLF + CRLF;
 
     public HttpResponse() {
 

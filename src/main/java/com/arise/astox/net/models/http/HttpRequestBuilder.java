@@ -2,12 +2,9 @@ package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.ServerRequestBuilder;
 import com.arise.core.models.Handler;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.Util;
 
-import java.io.*;
-import java.util.UUID;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 
 public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {

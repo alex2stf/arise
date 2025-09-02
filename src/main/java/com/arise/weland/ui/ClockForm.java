@@ -1,29 +1,12 @@
 package com.arise.weland.ui;
 
-import com.arise.canter.CommandRegistry;
-import com.arise.cargo.management.Locations;
-import com.arise.core.models.Provider;
-import com.arise.core.models.Tuple2;
 import com.arise.core.tools.AppDispatcher;
-import com.arise.core.tools.Mole;
-import com.arise.core.tools.SYSUtils;
 import com.arise.core.tools.ThreadUtil;
-import com.arise.weland.impl.RadioPlayer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
-import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import static com.arise.core.AppSettings.*;
-import static com.arise.core.tools.StringUtil.join;
-import static com.arise.core.tools.Util.now;
-import static com.arise.weland.dto.DeviceStat.getInstance;
 
 public class ClockForm extends JFrame {
 
