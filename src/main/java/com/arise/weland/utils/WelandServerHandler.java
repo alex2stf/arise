@@ -43,11 +43,6 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-  public static File getClientPropsFile(){
-    return new File(FileUtil.findDocumentsDir(), "weland-client-props");
-  }
-
-
 
 
 
@@ -106,13 +101,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    //main html rendering
-    if ("/app".equalsIgnoreCase(req.path()) || "/app.html".equalsIgnoreCase(req.path())){
-      appContent = StreamUtil.toString(findStream("src/main/resources#weland/app.html"));
-      Map<String, String> args = new HashMap<>();
-      args.put("host", req.getQueryParamString("host", ""));
-      return HttpResponse.html(whisker.compile(appContent, args));
-    }
 
 
     //generic platform agnostic information
@@ -333,7 +321,10 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    return  HttpResponse.plainText("ROUTE NOT FOUND");
+    appContent = StreamUtil.toString(findStream("src/main/resources#weland/app.html"));
+    Map<String, String> args = new HashMap<>();
+    args.put("host", req.getQueryParamString("host", ""));
+    return HttpResponse.html(whisker.compile(appContent, args));
   }
 
 
