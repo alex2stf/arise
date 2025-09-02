@@ -72,44 +72,6 @@ public class AppSettings {
     }
 
 
-    @Deprecated
-    public static List<File> getScannableLocations(){
-        String val = applicationProperties.getProperty("scan.locations");
-        String keys[] = val.split(",");
-        List<File> r = new ArrayList<>();
-        for (String s: keys){
-            if ("music".equalsIgnoreCase(s)){
-                r.add(FileUtil.findMusicDir());
-            }
-            else if ("videos".equalsIgnoreCase(s) || "movie".equalsIgnoreCase(s)){
-                r.add(FileUtil.findMoviesDir());
-            }
-            else if ("downloads".equalsIgnoreCase(s) || "download".equalsIgnoreCase(s)){
-                r.add(FileUtil.findDownloadDir());
-            }
-            else if(s.endsWith(":")){
-                File d = getDrive(s);
-                if (d != null && d.exists()){
-                    r.add(d);
-                }
-                else {
-                    File f = new File(s);
-                    if (f.exists()){
-                        r.add(f);
-                    }
-                }
-
-            }
-            else {
-                File f = new File(s);
-                if (f.exists()){
-                    r.add(f);
-                }
-            }
-
-        }
-        return r;
-    }
 
 
     private static File getDrive(String s){

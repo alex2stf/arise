@@ -209,12 +209,6 @@ public class RadioPlayer {
                 String zmp = MapUtil.getString(zm, "path");
                 if(StringUtil.hasText(zmp)){
                     c.add(zmp);
-                    if(null != contentInfoProvider){
-                        ContentInfo lc = contentInfoProvider.fromMap(zm);
-                        if(lc.getDuration() > 0) {
-                            contentInfoProvider.mergeContent(lc, Playlist.STREAMS);
-                        }
-                    }
                 }
             }
         }
@@ -312,11 +306,6 @@ public class RadioPlayer {
                 Map m = (Map) o;
                 String path = MapUtil.getString(m, "path");
                 addValidString(res, path);
-                if(contentInfoProvider != null){
-                    ContentInfo c = contentInfoProvider.fromMap(m);
-                    contentInfoProvider.mergeContent(c, Playlist.STREAMS);
-                }
-
             }
 
         }

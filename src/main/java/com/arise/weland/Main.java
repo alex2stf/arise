@@ -167,19 +167,8 @@ public class Main {
         }
 
         final ContentInfoDecoder decoder = new PCDecoder();
-        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder)
-                //asta nu tb sa mai contina ce este deja in radio shows
-                .addFromLocalResource("weland/config/commons/content-infos.json");
+        final ContentInfoProvider contentInfoProvider = new ContentInfoProvider(decoder);
 
-
-        for (File file: AppSettings.getScannableLocations()){
-            if (!file.exists()){
-                log.warn("scannable location " + file.getAbsolutePath() + " not found...");
-            } else {
-                log.info("added scannable root ", file.getAbsolutePath());
-            }
-            contentInfoProvider.addRoot(file);
-        }
 
 
 
@@ -239,8 +228,7 @@ public class Main {
             }, "radio-play");
         }
 
-        //porneste scan DUPA ce pornesti rPlayer
-        contentInfoProvider.get();
+
 
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
                 .setContentProvider(contentInfoProvider)

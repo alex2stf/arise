@@ -153,24 +153,10 @@ public class DeskMPlayer extends MediaPlayer {
             proc[0].destroy();
         }
         is_play = true;
-        if (u.startsWith("https") ){
-            if (!CommandRegistry.getInstance().containsCommand("browser-open")){
-                 AppSettings.throwOrExit("no browser-open command defined");
-            }
-            proc[0] = (Process) CommandRegistry.getInstance().getCommand("browser-open").execute(u);
-        } else {
-            String uri = "http://localhost:8221/proxy-skin?type=radio&uri=" + urlEncodeUTF8(u);
-                if (cip != null){
-                ContentInfo ci = cip.findByPath(u);
-                if (ci != null && ci.getThumbnailId() != null){
-                    uri += "&thumbnailId=" + ci.getThumbnailId();
-                }
-                if (ci != null && StringUtil.hasText(ci.getTitle())){
-                    uri += "&title=" + urlEncodeUTF8(ci.getTitle());
-                }
-            }
-            proc[0] = (Process) CommandRegistry.getInstance().getCommand("browser-open").execute(uri);
+        if (!CommandRegistry.getInstance().containsCommand("browser-open")) {
+            AppSettings.throwOrExit("no browser-open command defined");
         }
+        proc[0] = (Process) CommandRegistry.getInstance().getCommand("browser-open").execute(u);
     }
 
 

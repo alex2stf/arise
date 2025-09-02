@@ -73,20 +73,14 @@ public class DesktopContentHandler extends ContentHandler {
 
 
         if (isHttpPath(path)){
-            ContentInfo info = contentInfoProvider.findByPath(path);
-            if (info != null && info.isStream() || path.indexOf("youtube") > -1){
-                deskMPlayer.stop(new Handler<MediaPlayer>() {
-                    @Override
-                    public void handle(MediaPlayer mediaPlayer) {
-                        AppDispatcher.tick();
-                        deskMPlayer.playStreamSync(path);
-                    }
-                });
 
-                return deviceStat.toHttp();
-            } else {
-                System.out.println("WTF????");
-            }
+            deskMPlayer.stop(new Handler<MediaPlayer>() {
+                @Override
+                public void handle(MediaPlayer mediaPlayer) {
+                    AppDispatcher.tick();
+                    deskMPlayer.playStreamSync(path);
+                }
+            });
         }
         else if (isPicture(path)){
             openPicture(path);

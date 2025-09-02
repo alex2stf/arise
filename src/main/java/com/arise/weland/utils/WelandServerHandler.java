@@ -37,7 +37,7 @@ public class WelandServerHandler extends HTTPServerHandler {
   ContentHandler contentHandler;
   Whisker whisker = new Whisker()
           .setTemplatesRoot("src/main/resources#weland");
-  String appContent = StreamUtil.toString(findStream("weland/app_old.html"));
+  String appContent = StreamUtil.toString(findStream("weland/app.html"));
 
   private Mole log = Mole.getInstance(WelandServerHandler.class);
 
@@ -129,16 +129,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if ("/proxy-skin".equals(req.path()) ){
-      Map<String, String> args = new HashMap<>();
-      args.put("uri", urlDecodeUTF8(req.getQueryParamString("uri", "")));
-      args.put("thumbnailId", req.getQueryParamString("thumbnailId", ""));
-      args.put("title", urlDecodeUTF8(req.getQueryParamString("title", "")));
-      return HttpResponse.html(whisker.compile(
-              StreamUtil.toString(findStream("src/main/resources#weland/proxy-skin.html"))
-              , args));
-    }
-
 
     if (req.pathsStartsWith("device-update")){
       String what = req.getPathAt(1);
@@ -166,48 +156,8 @@ public class WelandServerHandler extends HTTPServerHandler {
 
 
 
-    if("/props/get".equals(req.path())){
-      String key = req.getQueryParam("key");
 
-      try {
-        Properties clientProps = FileUtil.loadProps(getClientPropsFile());
-        if (clientProps.containsKey(key)){
-          return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
-        }
-      } catch (Exception e) {
-        log.error("Failed to get property" + key);
-      }
-      return HttpResponse.plainText("").allowAnyOrigin();
-    }
 
-    if("/props/set".equals(req.path())){
-      String key = req.getQueryParam("key");
-      String value = req.getQueryParam("value");
-
-      //TODO intelege de ce asa
-      try {
-        value = URLDecoder.decode(value, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        ;;
-      }
-
-      try {
-        File propsFile = getClientPropsFile();
-        Properties clientProps;
-        if (!propsFile.exists()){
-          clientProps = new Properties();
-        } else {
-          clientProps = FileUtil.loadProps(getClientPropsFile());
-        }
-        clientProps.put(key, value);
-        FileUtil.saveProps(clientProps, getClientPropsFile(), "");
-        return HttpResponse.plainText(clientProps.getProperty(key)).allowAnyOrigin();
-      } catch (Exception e) {
-        log.error(e);
-        return HttpResponse.plainText(e.getMessage()).allowAnyOrigin();
-      }
-
-    }
 
     //fetch thumbnail
     if (req.pathsStartsWith("thumbnail")){
@@ -236,21 +186,9 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if(req.pathsStartsWith("snapshot-make")){
-      String id = req.getQueryParam("id");
-      contentHandler.takeSnapshot(id);
-      return DeviceStat.getInstance().toHttp();
-    }
 
-    //list media based on type
-    if(req.pathsStartsWith("media", "list")){
-      Integer index = req.getQueryParamInt("index");
-      String what = req.getPathAt(2);
 
-      Playlist playlist = Playlist.find(what);
-      ContentPage page = contentInfoProvider.getPage(playlist, index);
-      return HttpResponse.json(page.toString()).addCorelationId(correlationId).allowAnyOrigin();
-    }
+
 
 
 
@@ -294,9 +232,6 @@ public class WelandServerHandler extends HTTPServerHandler {
     }
 
 
-    if(req.pathsStartsWith("info", "persisted", "playlist", "music")){
-      return HttpResponse.plainText(contentInfoProvider.getPlaylistFileContent(Playlist.MUSIC));
-    }
 
     if(req.pathsStartsWith("transfer")){
       return HttpResponse.plainText("copied");
