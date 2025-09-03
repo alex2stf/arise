@@ -1,6 +1,5 @@
-console.log('hi');
 
-function upload(){
 
-http_request('POST', '/upload')
+function setVolume(value){
+    $do_get('/device-update/musicVolume/' + value)
 }

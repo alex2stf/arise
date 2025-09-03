@@ -2,6 +2,7 @@ package com.arise.weland;
 
 import com.arise.astox.net.clients.JHttpClient;
 import com.arise.astox.net.models.AbstractServer;
+import com.arise.astox.net.models.http.HttpRequestBuilder;
 import com.arise.astox.net.servers.io.IOServer;
 import com.arise.canter.Command;
 import com.arise.canter.CommandRegistry;
@@ -179,7 +180,6 @@ public class Main {
         if (isTrue(Keys.RADIO_ENABLED)){
             rplayer = new RadioPlayer();
             rplayer.setContentInfoProvider(contentInfoProvider);
-//            rplayer.loadShowsResourcePath("test_radio_show.json");
             rplayer.loadShowsResourcePath("radio_shows_special.json");
             rplayer.loadShowsResourcePath(AppSettings.getProperty(Keys.RADIO_SHOWS_PATH));
 
@@ -234,7 +234,7 @@ public class Main {
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler);
 
-        final WelandRequestBuilder requestBuilder = new WelandRequestBuilder();
+
 
 
         if(isTrue(Keys.UI_CLOCK_ENABLED)) {
@@ -261,7 +261,7 @@ public class Main {
                         .setPort(port)
                         .setName("DR_" + SYSUtils.getDeviceName())
                         .setUuid(UUID.randomUUID().toString())
-                        .setRequestBuilder(requestBuilder)
+                        .setRequestBuilder(new HttpRequestBuilder())
                         .setHost("localhost")
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);

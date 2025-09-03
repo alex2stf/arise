@@ -1,9 +1,15 @@
 {
-  "lists": {
-
-   "videos": ["todo"]
-  },
   "shows": [
+    {
+      "name": "only_local",
+      "day": "annually:09-03",
+      "hour": "EACH_SECOND BETWEEN_11:00:00_AND_19:00:00",
+      "strategy": "stream-first",
+      "sources": [
+        "file:D:\\MUSIC\\SARBATORI_DE_IARNA\\colinde_copii_2"
+      ]
+    },
+
     {
       "name": "youtube_bruce_springsteen",
       "day": "2024-06-18",

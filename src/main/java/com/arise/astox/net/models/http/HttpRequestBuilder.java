@@ -37,8 +37,7 @@ public class HttpRequestBuilder extends ServerRequestBuilder<HttpRequest> {
             }
 
 
-           System.out.println("POST_ READ");
-            request.closeMFilesResidue();
+           request.closeMFilesResidue();
            onComplete.handle(request);
 
         } catch (Exception e) {

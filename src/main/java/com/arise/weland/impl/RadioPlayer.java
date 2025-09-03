@@ -274,11 +274,7 @@ public class RadioPlayer {
 
     }
 
-    private List<String> merge(List<Object> src, Map<String, List<String>> buf) {
-        if (isEmpty(buf)) {
-            return new ArrayList<>();
-        }
-
+    private List<String> merge(List<Object> src, Map<String, List<String>> dest) {
 
         List<String> res = new ArrayList<>();
 
@@ -290,12 +286,14 @@ public class RadioPlayer {
 
                     String key = s.substring(2, s.length() - 1);
 
-                    if(buf.containsKey(key)) {
-                        for (String u : buf.get(key)) {
+                    if(!dest.containsKey(key)){
+                        dest.put(key, new ArrayList<String>());
+                    }
+
+                    if(dest.containsKey(key)) {
+                        for (String u : dest.get(key)) {
                             addValidString(res, u);
                         }
-                    } else {
-                        System.out.println("No key " + key + "found in buf=" + buf);
                     }
                 } else {
                     addValidString(res, s);

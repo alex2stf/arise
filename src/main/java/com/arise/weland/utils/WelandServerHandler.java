@@ -86,21 +86,6 @@ public class WelandServerHandler extends HTTPServerHandler {
         correlationId = req.getHeaderParam("Correlation-Id");
     }
 
-    if ("/message".equalsIgnoreCase(req.path())
-            && !"get".equalsIgnoreCase(req.method())
-            && !"delete".equalsIgnoreCase(req.method())
-    ){
-      Map mapObj = (Map) Groot.decodeBytes(req.payload());
-      Message message = Message.fromMap(mapObj);
-      contentHandler.onMessageReceived(message);
-      return contentHandler.getDeviceStat().toHttp();
-    }
-
-    if("/device/info".equalsIgnoreCase(req.path())){
-        return HttpResponse.json(contentHandler.getDeviceInfoJson()).allowAnyOrigin();
-    }
-
-
 
 
     //generic platform agnostic information
@@ -121,24 +106,13 @@ public class WelandServerHandler extends HTTPServerHandler {
     if (req.pathsStartsWith("device-update")){
       String what = req.getPathAt(1);
       Map<String, List<String>> params = new HashMap<>();
-      String mode;
+      String value;
 
-      if ("lightMode".equalsIgnoreCase(what)){
-        mode = req.getPathAt(2);
-        params.put("lightMode", Arrays.asList(mode));
+      if ("musicVolume".equalsIgnoreCase(what)){
+        value = req.getPathAt(2);
+        params.put("musicVolume", Arrays.asList(value));
       }
-      else if ("camId".equalsIgnoreCase(what)){
-        mode = req.getPathAt(2);
-        params.put("camId", Arrays.asList(mode));
-      }
-      else if ("musicVolume".equalsIgnoreCase(what)){
-        mode = req.getPathAt(2);
-        params.put("musicVolume", Arrays.asList(mode));
-      }
-      else if ("camEnabled".equalsIgnoreCase(what)){
-        mode = req.getPathAt(2);
-        params.put("camEnabled", Arrays.asList(mode));
-      }
+
       return contentHandler.onDeviceUpdate(params).toHttp();
     }
 
@@ -199,45 +173,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       return contentHandler.getDeviceStat().toHttp(req);
     }
 
-    if ("/download".equals(req.path())){
-      String path = req.getQueryParam("file");
-      File f = new File(path);
-      ContentType contentType = ContentType.search(f);
-      byte[] bytes;
-      try {
-        bytes = StreamUtil.fullyReadFileToBytes(f);
-      } catch (IOException e) {
-        return HttpResponse.plainText("ERROR");
-      }
-
-      return new HttpResponse()
-              .setContentType(contentType)
-              .setContentLength(bytes.length)
-              .addHeader("Content-Disposition",  "attachment; filename=\"" + f.getName() + "\"")
-              .setStatusCode(200)
-              .setBytes(bytes)
-              .allowAnyOrigin();
-    }
-
-
-
-    if(req.pathsStartsWith("transfer")){
-      return HttpResponse.plainText("copied");
-    }
-
-    if ("/upload/stat".equalsIgnoreCase(req.path())){
-      String fileToCheck = req.getQueryParam("name");
-      File f = new File(FileUtil.getUploadDir(), fileToCheck);
-      if (!f.exists()){
-        return HttpResponse.json("{\"exists\": false}").allowAnyOrigin();
-      }
-
-      return HttpResponse
-              .json("{\"exists\": true, \"len\": "+f.length()+", \"path\": " + StringUtil.jsonVal(ContentInfo.encodePath(f.getAbsolutePath()))
-                      + ",\"dStat\":" +contentHandler.getDeviceStat().toJson() +"}")
-              .allowAnyOrigin();
-    }
-
 
 
 
@@ -250,59 +185,9 @@ public class WelandServerHandler extends HTTPServerHandler {
           return DeviceStat.getInstance().toHttp(req);
       }
 
-      //package-info loader
-      if (req.pathsStartsWith("pack")){
-        String path = req.getQueryParam("root");
-        File f = new File(path);
-        try {
-          Map props = ContentInfoProvider.packageInfoProps(f);
-          File html = new File(f.getParentFile(), MapUtil.getString(props, "main"));
-          return HttpResponse.html(FileUtil.read(html));
-        } catch (IOException e) {
-          e.printStackTrace();
-          return oK();
-        }
-
-      }
-
-    if ("/ping".equals(req.path())){
-      HttpResponse serverResponse = oK();
-      for (Map.Entry<String, String> entry : req.getHeaders().entrySet()){
-        serverResponse.addHeader(entry.getKey() + "-Response" , entry.getValue() + "-Response");
-      }
-      serverResponse.setText("PONG").addCorelationId(correlationId).allowAnyOrigin();
-      return DeviceStat.getInstance().toHttp(req);
-    }
 
 
 
-
-
-
-    if (req.pathsStartsWith("playlist")){
-      String action = req.getQueryParamString("action", "xx");
-      String name = req.getQueryParamString("name", null);
-      String path = req.getQueryParamString("path", null);
-      switch (action){
-        case "create":
-          PlaylistWorker.createPlaylist(name);
-          break;
-        case "drop":
-          PlaylistWorker.dropPlaylist(name);
-          break;
-        case "add":
-          PlaylistWorker.add(name, path);
-          break;
-        case "play":
-          PlaylistWorker.setRunningPlaylist(name);
-          contentHandler.onPlaylistPlay(name);
-          break;
-        case "get":
-          return HttpResponse.json(PlaylistWorker.getPlaylist(name)).allowAnyOrigin();
-      }
-
-      return HttpResponse.json(PlaylistWorker.listPlaylists()).allowAnyOrigin();
-    }
 
     if ("/close-app".equals(req.path())){
       contentHandler.onCloseRequested();

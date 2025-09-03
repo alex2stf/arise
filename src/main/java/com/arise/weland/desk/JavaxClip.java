@@ -1,5 +1,7 @@
 package com.arise.weland.desk;
 
+import com.arise.core.tools.Util;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineListener;
@@ -34,8 +36,16 @@ public class JavaxClip {
 
     public void stop() {
         if(c != null){
-            c.stop();
+            try {
+                c.stop();
+                Util.close(c);
+                c.drain();
+                c.flush();
+            } catch (Exception e){
+
+            }
         }
+
         c = null;
     }
 

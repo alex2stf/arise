@@ -10,6 +10,8 @@ import java.util.List;
 import static com.arise.core.tools.FileUtil.readLinesFromFile;
 
 
+@Deprecated
+
 public class PlaylistWorker {
 
     private static File playlistDir() {

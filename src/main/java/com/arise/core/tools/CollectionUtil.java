@@ -216,7 +216,12 @@ public class CollectionUtil {
 
         storeList(k, l.getItems(), index + 1);
         Mole.getInstance("CLCTC_UTI").info(  k + " returned index = " + index + " from " + l.getItems().size());
-        String item = l.getItems().get(index);
+        String item = null;
+        try{
+           item = l.getItems().get(index);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
 
         if(urlBuffer.contains(item) && s.size() > 20){
             System.out.println("take next because " + item + " is in queue");

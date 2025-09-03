@@ -89,26 +89,6 @@ public abstract  class ContentHandler {
         }
 
 
-        if (rPlayer() != null && p.containsKey("rplayer") ){
-            String x = p.get("rplayer").get(0);
-
-            if ("play".equalsIgnoreCase(x)){
-                if (mPlayer().isPlaying()){
-                    mPlayer().stop(null);
-                    sleep(1000 * 8);
-                }
-                rPlayer().play();
-                deviceStat.setProp("rplayer.play", "true");
-            }
-            if ("stop".equalsIgnoreCase(x)){
-                rPlayer().stop();
-                deviceStat.setProp("rplayer.play", "false");
-            }
-
-
-        }
-
-
 
         return deviceStat;
     }

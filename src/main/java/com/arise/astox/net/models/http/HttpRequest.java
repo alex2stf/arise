@@ -2,10 +2,7 @@ package com.arise.astox.net.models.http;
 
 import com.arise.astox.net.models.HttpProtocol;
 import com.arise.astox.net.models.ServerRequest;
-import com.arise.core.tools.CollectionUtil;
-import com.arise.core.tools.FileUtil;
-import com.arise.core.tools.StringUtil;
-import com.arise.core.tools.Util;
+import com.arise.core.tools.*;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -406,6 +403,9 @@ public class HttpRequest extends ServerRequest {
         if(!isHeaderReadComplete()){
             return false;
         }
+        if(!"POST".equalsIgnoreCase(method())){
+            return false;
+        }
         String ct = getHeaderParam("Content-Type");
         if (!hasText(ct)) {
             return false;
@@ -497,6 +497,7 @@ public class HttpRequest extends ServerRequest {
     public boolean mFileHasHeaders() {
         return mFile.fName != null;
     }
+    static final Mole log = Mole.getInstance(HttpRequest.class);
 
 
     private class MFile {
@@ -513,22 +514,23 @@ public class HttpRequest extends ServerRequest {
             return fileName;
         }
 
+
         public void addHeaderLine(String line) {
             if (fName == null){
                 fName = getTitleFromHeaderLine(line);
-                System.out.println(" FOUND FNAME " + fName);
             }
         }
 
         boolean write(byte b) {
             if (checkStream.endsWith("--" + getBoundary())){
-                    System.out.println("completed");
+                    log.info("write " + fName);
 
                     try {
                         FileOutputStream fos = new FileOutputStream(new File(FileUtil.getUploadDir(), fName));
                         byte bytes[] = fileStream.toByteArray();
 
-                        fos.write(bytes, 0, bytes.length - getBoundary().getBytes().length);
+//                        fos.write(bytes, 0, bytes.length - ("--" +getBoundary()).getBytes().length);
+                        fos.write(bytes, 0, bytes.length - ("--" +getBoundary()).getBytes().length + 1);
                         Util.close(fos);
                     } catch (Exception e) {
                         e.printStackTrace();
