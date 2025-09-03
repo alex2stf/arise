@@ -93,6 +93,7 @@ public class DeskMPlayer extends MediaPlayer {
                         boolean isStopEvent = LineEvent.Type.STOP.equals(event.getType()) || LineEvent.Type.CLOSE.equals(event.getType());
                         if (isStopEvent) {
                             log.trace("HANDLE STOP EVENT " + event.getType() + " for " + path);
+                            stopWavClip();
                             c.handle(path);
                             is_play = false;
                         } else {
