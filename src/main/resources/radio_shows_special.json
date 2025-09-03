@@ -6,7 +6,9 @@
       "hour": "EACH_SECOND BETWEEN_11:00:00_AND_19:00:00",
       "strategy": "stream-first",
       "sources": [
-        "file:D:\\MUSIC\\SARBATORI_DE_IARNA\\colinde_copii_2"
+        "file:D:\\MUSIC\\SARBATORI_DE_IARNA\\colinde_copii_2",
+        "file:/media/kids/7CB607A1B6075B52/Music/mixed",
+        "file:/media/kids/7CB607A1B6075B52/Music/sounds"
       ]
     },
 
