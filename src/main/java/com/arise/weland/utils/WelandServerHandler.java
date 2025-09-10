@@ -81,13 +81,6 @@ public class WelandServerHandler extends HTTPServerHandler {
       return oK().allowAnyOrigin();
     }
 
-    String correlationId = "";
-    if (hasText(req.getHeaderParam("Correlation-Id"))){
-        correlationId = req.getHeaderParam("Correlation-Id");
-    }
-
-
-
     //generic platform agnostic information
     if ("/device/stat".equals(req.path()) || "/health".equalsIgnoreCase(req.path())){
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -209,6 +202,8 @@ public class WelandServerHandler extends HTTPServerHandler {
     appContent = StreamUtil.toString(findStream("src/main/resources#weland/app.html"));
     Map<String, String> args = new HashMap<>();
     args.put("host", req.getQueryParamString("host", ""));
+    args.put("osName", DeviceStat.getInstance().getOs().qualifiedName());
+    args.put("deviceName", DeviceStat.getInstance().getDisplayName());
     return HttpResponse.html(whisker.compile(appContent, args));
   }
 

@@ -276,6 +276,10 @@ public enum ContentType  {
     }
 
     public static boolean isMusic(String name) {
+
+        if(!StringUtil.hasText(name)){
+            return false;
+        }
         return name.endsWith(".mp3") ||
                 name.endsWith(".flac") ||
                 name.endsWith(".m4a") ||
@@ -285,6 +289,9 @@ public enum ContentType  {
     }
 
     public static boolean isHttpPath(String in){
+        if(!StringUtil.hasText(in)){
+            return false;
+        }
         if(in.startsWith("http:") || in.startsWith("https:")) {
             try {
                 URL uri = new URL(in);
@@ -298,6 +305,9 @@ public enum ContentType  {
     }
 
     public static boolean isMedia(String path) {
+        if(!StringUtil.hasText(path)){
+            return false;
+        }
         return isMusic(path) || isVideo(path);
     }
 

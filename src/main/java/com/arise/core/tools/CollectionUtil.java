@@ -194,6 +194,9 @@ public class CollectionUtil {
 
 
     public static String pickFromPersistentList(List<String> s, boolean dSh, String name) {
+        if(s.size() == 0){
+            return null;
+        }
         if(s.size() == 1){
             return s.get(0);
         }

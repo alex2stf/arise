@@ -211,6 +211,9 @@ public class Show {
                 }
 
 
+
+
+
                 //daca e fisier local
                 if(ContentType.isMedia(pdir) && new File(pdir).exists()) {
                     final File pflf = new File(pdir);
@@ -227,7 +230,7 @@ public class Show {
                 }
 
                 //daca e format file (director sau fisier):
-                else if (pdir.startsWith("file:")) {
+                else if (StringUtil.hasText(pdir) && pdir.startsWith("file:")) {
                     String path = pdir.substring("file:".length());
                     File file = new File(apply_variables(path));
                     if (!file.exists()) {
@@ -305,7 +308,7 @@ public class Show {
 
                 }
 
-                else if(pdir.startsWith("vlc-list:")){
+                else if(StringUtil.hasText(pdir) && pdir.startsWith("vlc-list:")){
 
                     String path = pdir.substring("vlc-list:".length());
                     System.out.println(path);
@@ -328,7 +331,8 @@ public class Show {
 
                 }
                 else {
-                    log.info(n + "] WTF faci cu " + pdir + "??????");
+                    log.info(n + "] NOTHING FOUND FOR  show [" + n + "] items:\n\t" + StringUtil.join(_s, "\n\t"));
+                    setup_stream_close(c, exp);
                 }
 
                 //final de functie
