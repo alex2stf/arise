@@ -254,6 +254,7 @@
     {
       "name": "autumn_secunda_1",
       "day": "annually:10-23",
+      "strategy": "stream-first",
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:00:00",
       "sources": ["https://www.youtube.com/watch?v=tSA7XZ1QuTE&list=RDtSA7XZ1QuTE&start_radio=1&t=1s"]
 
