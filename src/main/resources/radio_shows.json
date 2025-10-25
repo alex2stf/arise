@@ -361,7 +361,7 @@
       "day": "saturday_sunday",
       "hour": "EACH_SECOND BETWEEN_19:00:00_AND_20:00:00",
       "strategy": "random",
-      "sources": ["${relax}"]
+      "sources": ["${goodiesRoTube}"]
     },
     {
       "name": "weekend_20-21_tube",
