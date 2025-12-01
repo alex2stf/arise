@@ -68,13 +68,15 @@ public class OSProxies {
             @Override
             public void onStdoutLine(int line, String content) {
                 String lines[] = content.split("\n");
-                System.out.println(" READING CONTENT " + content);
+
                 for (String x: lines){
                     x = x.trim().toLowerCase();
+                    System.out.println(" READING line " + content);
                     if (x.startsWith("mono:")){
                         try {
                             String pas = x.split("playback")[1].trim();
                             r[0] = pas.split(" ")[0];
+                            System.out.println("r de 0  = " + r[0]);
                         } catch (Exception e){
                             e.printStackTrace();
                         }
