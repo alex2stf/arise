@@ -94,6 +94,7 @@ public class OSProxies {
             return;
         }
         DefaultCommands.PROCESS_EXEC.execute(f.getAbsolutePath(), "set", "Master", v);
+//        DefaultCommands.PROCESS_EXEC.execute(f.getAbsolutePath(), "sset", "Master", v + "%");
 //        SYSUtils.exec(f.getAbsolutePath(), "set", "Master", v);
     }
 
