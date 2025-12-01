@@ -36,7 +36,9 @@
          $(document).ready(function(){
              $do_get('/device/stat', function (d){
                 console.log(d);
-                $('#vval').text(d.pP['audio.music.volume']);
+                var val = d.pP['audio.music.volume'];
+                $('#vval').text(val);
+                $( "#slider" ).slider('value', val);
              });
          })
 
