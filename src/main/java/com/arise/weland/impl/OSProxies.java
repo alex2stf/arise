@@ -68,6 +68,7 @@ public class OSProxies {
             @Override
             public void onStdoutLine(int line, String content) {
                 String lines[] = content.split("\n");
+                System.out.println(" READING CONTENT " + content);
                 for (String x: lines){
                     x = x.trim().toLowerCase();
                     if (x.startsWith("mono:")){

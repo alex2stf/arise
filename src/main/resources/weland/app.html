@@ -33,6 +33,12 @@
          {{> common-utils.js}}
          {{> app.js}}
 
+         $(document).ready(function(){
+             $do_get('/device/stat', function (d){
+                console.log(d);
+             });
+         })
+
           $( function() {
             $( "#slider" ).slider({
                 value: 10,

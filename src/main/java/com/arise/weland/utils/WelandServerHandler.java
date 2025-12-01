@@ -15,6 +15,7 @@ import com.arise.weland.PlaylistWorker;
 import com.arise.weland.dto.*;
 import com.arise.weland.impl.ContentInfoDecoder;
 import com.arise.weland.impl.ContentInfoProvider;
+import com.arise.weland.impl.OSProxies;
 import com.arise.weland.impl.SGService;
 import com.arise.weland.model.ContentHandler;
 
@@ -87,6 +88,7 @@ public class WelandServerHandler extends HTTPServerHandler {
       simpleDateFormat.setTimeZone(TimeZone.getDefault());
       return contentHandler.getDeviceStat()
               .setProp("JT", simpleDateFormat.format(now()))
+              .setProp("audio.music.volume", OSProxies.getMasterVolume())
               .toHttp();
     }
 
