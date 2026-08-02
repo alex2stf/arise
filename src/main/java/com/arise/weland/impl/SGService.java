@@ -109,9 +109,8 @@ public enum  SGService {
 
 
         if(tmpDesk().exists()) {
-            String title = System.getProperty("arise.app.ipv4.address", "addr_unknown")
-                        + " " + new SimpleDateFormat("EEE, dd/MM").format(new Date());
-//                    ContentInfoProvider.findTitle(desktopImage);
+            String title =  new SimpleDateFormat("EEE, dd/MM").format(new Date()) + "\n" +
+                    System.getProperty("arise.app.ipv4.address", "addr_unknown");
             if(!StringUtil.hasText(title)){
                 title = desktopImage;
             }
