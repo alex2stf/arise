@@ -74,17 +74,17 @@ public enum  SGService {
         }
     }
 
-    public static synchronized void setDesktopImage(String desktopImage) {
+    public static synchronized void setDesktopImage(String filePath) {
         if(!CommandRegistry.getInstance().containsCommand("set-desktop-background")){
             log.warn("Nu poti seta desktop fara comanda definita");
             return;
         }
 
         tmpDesk().delete();
-        Object image = getInstance().find(desktopImage);
+        Object image = getInstance().find(filePath);
 
         if(null == image) {
-            log.info("Nu s-a gasit nici o sugestie pentru " + desktopImage);
+            log.info("Nu s-a gasit nici o sugestie pentru " + filePath);
             iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]
         }
 
@@ -109,11 +109,19 @@ public enum  SGService {
 
 
         if(tmpDesk().exists()) {
-            String title =  new SimpleDateFormat("EEE, dd/MM").format(new Date()) + "\n" +
-                    System.getProperty("arise.app.ipv4.address", "addr_unknown");
-            if(!StringUtil.hasText(title)){
-                title = desktopImage;
-            }
+            String  name = ContentInfoProvider.findTitle(filePath);
+            String title =  new SimpleDateFormat("EEE, dd/MMM").format(new Date())
+                    .replace("Mon", "Luni")
+                    .replace("Tue", "Marți")
+                    .replace("Wed", "Miercuri")
+                    .replace("Thu", "Joi")
+                    .replace("Fri", "Vineri")
+                    .replace("Sat", "Sâmbătă")
+                    .replace("Sun", "Duminică")
+                    + "\n" +
+                    System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
+                    (StringUtil.hasText(name) ? name : filePath);
+
             CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
                     tmpDesk().getAbsolutePath(),
                     out.getAbsolutePath(),
