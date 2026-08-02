@@ -265,8 +265,9 @@ public class Main {
                         .setHost("localhost")
                         .setStateObserver(welandServerHandler)
                         .setRequestHandler(welandServerHandler);
-                log.info("SERVER STARTED at http://" + NetworkUtil.getCurrentIPV4AddressSync() + ":"+port+"/app");
-
+                String ipv4Address = NetworkUtil.getCurrentIPV4AddressSync();
+                log.info("SERVER STARTED at http://" + ipv4Address + ":"+port+"/app");
+                System.setProperty("arise.app.ipv4.address", ipv4Address);
 
                 try {
                     ioServer.start();

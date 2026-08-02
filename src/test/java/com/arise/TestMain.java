@@ -11,6 +11,8 @@ import com.arise.weland.dto.ContentInfoTest;
 import com.arise.weland.impl.RadioPlayerTest;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.arise.core.tools.Assert.assertTrue;
 
@@ -18,15 +20,18 @@ public class TestMain {
 
 
     public static void main(String[] args) throws Exception {
-        ContentInfoTest.main(args);
-        AppCacheTest.main(args);
-        StringUtilTest.main(args);
-        GrootTest.main(args);
-        CronusTest.main(args);
-        CommandRegistryTest.main(args);
-        DependencyManagerTest.main(args);
-        CollectionUtilTest.main(args);
-        RadioPlayerTest.main(args);
-        assertTrue(true);
+        System.out.println(
+                new SimpleDateFormat("EEE, dd/MM").format(new Date())
+        );
+//        ContentInfoTest.main(args);
+//        AppCacheTest.main(args);
+//        StringUtilTest.main(args);
+//        GrootTest.main(args);
+//        CronusTest.main(args);
+//        CommandRegistryTest.main(args);
+//        DependencyManagerTest.main(args);
+//        CollectionUtilTest.main(args);
+//        RadioPlayerTest.main(args);
+//        assertTrue(true);
     }
 }

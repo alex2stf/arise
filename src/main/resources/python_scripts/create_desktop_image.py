@@ -4,10 +4,13 @@ import subprocess
 import os
 
 from random import randint, choice
-#os.system("killall pcmanfm")
-subprocess.Popen(["killall", "pcmanfm"], start_new_session=True)
-
-print(sys.argv[1])
+#doar ptr linux
+try:
+    subprocess.Popen(["killall", "pcmanfm"], start_new_session=True)
+except:
+    print("could not execute killall pcmanfm")
+    
+print(sys.argv[2])
 sw = 0
 sh = 0
 
@@ -112,15 +115,13 @@ else:
 	color_palette = [B1, BLACK, GREEN]
 	horz_gradient(draw, region, gradient_color, color_palette)
 
-#font = ImageFont.load_default()
-font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
+try:
+    font = ImageFont.load_default(size=30)
+except:
+    print("loading dusr-share font")
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
-draw.text(
-	(330, 20),  # Coordinates
-	sys.argv[3],  # Text
-	WHITE,  # Color
-	font=font
-)
+
 
 
 
@@ -136,9 +137,20 @@ offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
 im.paste(img, offset)
 
 
-
 im.save(sys.argv[2])
 
-#os.system("pcmanfm --desktop --profile lubuntu")
-subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
+img2 = Image.open(sys.argv[2], 'r')
+draw2 = ImageDraw.Draw(img2)
+draw2.text(
+    (330, 20),  # Coordinates
+    sys.argv[3],  # Text
+    WHITE,  # Color
+    font=font
+)
+img2.save(sys.argv[2])
 
+#os.system("pcmanfm --desktop --profile lubuntu")
+try:
+    subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
+except:
+    print("could not execute pcmanfm restart")

@@ -153,7 +153,7 @@
       "hour": "EACH_SECOND BETWEEN_17:00:00_AND_18:40:00",
       "strategy": "stream-first",
       "sources": [
-        "https://www.youtube.com/watch?v=jFOBgqJ3YE0"
+        "https://www.youtube.com/watch?v=aPJ0J_q2GZc&list=PLJpPYun-EYjdTcL2TTukW61RO0E0fys82"
       ]
     },
 

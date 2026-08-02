@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.randomPickElement;
@@ -108,7 +109,9 @@ public enum  SGService {
 
 
         if(tmpDesk().exists()) {
-            String title = ContentInfoProvider.findTitle(desktopImage);
+            String title = System.getProperty("arise.app.ipv4.address", "addr_unknown")
+                        + " " + new SimpleDateFormat("EEE, dd/MM").format(new Date());
+//                    ContentInfoProvider.findTitle(desktopImage);
             if(!StringUtil.hasText(title)){
                 title = desktopImage;
             }

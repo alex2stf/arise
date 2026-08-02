@@ -1,12 +1,12 @@
 [
   {
-    "path": "https://www.youtube.com/watch?v=ZXZrZ26Sgqs&list=PL1622C9F99D5CC398",
+    "path": "https://www.youtube.com/watch?v=ekTGthqyKrE&list=PLJpPYun-EYjeRlP0XhsLr3ihvE-Dq0Meq",
     "title": "Phoenix - Baba Novak",
     "duration": "60",
     "thumbnail": "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
   },
   {
-    "path": "https://www.youtube.com/watch?v=OEtJacCqYQs",
+    "path": "https://www.youtube.com/watch?v=Oen_uKKujrk&list=PLJpPYun-EYjdutAaYE46GBQ2aV9dbE0GJ",
     "duration": "40",
     "title": "Muzica romaneasca - Phoenix - Cei ce ne-au dat nume"
   },
@@ -132,21 +132,9 @@
     "duration": "30",
     "title": "Muzica romaneasca - Ada Milea - De ce fierbe copilul in mamaliga"
   },
-  {
-    "path": "https://www.youtube.com/watch?v=WQH3M6omjB0&list=PLJ2I_U9XF3oDGMM2UEb0FWS3gIo0BYos2",
-    "duration": "55",
-    "title": "Muzica romaneasca - Culegere de c�ntece rom�ne?ti, vol. 1"
-  },
-  {
-    "path": "https://www.youtube.com/watch?v=z5MZS1fgc34&list=PLJ2I_U9XF3oAHmqLC-dTSr2EzaMTmB5U-&index=1",
-    "duration": "55",
-    "title": "Muzica romaneasca - Muzic? Folk, vol. 2"
-  },
-  {
-    "path": "https://www.youtube.com/watch?v=y15z9qBOjDE&list=PLJ2I_U9XF3oClQa5h7vYguy6q3KL7V9HC",
-    "duration": "52",
-    "title": "Muzica romaneasca - Caseta Folk 3"
-  },
+
+
+
   {
     "path": "https://www.youtube.com/watch?v=NQv15LwDrIY&list=PLDDf1L6ocYo0GDt3bp1NSg6rvwE5T96BF",
     "duration": "60",
@@ -213,27 +201,32 @@
     "title": "Alexandru Andries - Vecinele mele"
   },
   {
-    "path": "https://www.youtube.com/watch?v=BqKe-DGU9hM&t=0",
+    "path": "https://www.youtube.com/watch?v=-m7uUN6qDGw&list=PLYwOGdAKJhoC4ie0WhbXMHliKtCyE04Bu",
     "duration": "60",
     "title": "Phoenix - SymPhoenix 1992"
   },
   {
-    "path": "https://www.youtube.com/watch?v=Fbv2MrA1nR0&t=0",
+    "path": "https://www.youtube.com/watch?v=aPJ0J_q2GZc&list=PLJpPYun-EYjdTcL2TTukW61RO0E0fys82",
+    "duration": "90",
+    "title": "Phoenix - Cantafabule"
+  },
+  {
+    "path": "https://www.youtube.com/watch?v=7n2LqGQpujQ&list=PLJpPYun-EYjckLsr_2SSeg6Tq65_C9pEs",
     "duration": "74",
     "title": "Phoenix - ANIVERSARE 35 1997"
   },
   {
-    "path": "https://www.youtube.com/watch?v=c9Q9YOFR-24&t=0",
+    "path": "https://www.youtube.com/watch?v=s9VUsKR0uns&list=PLJpPYun-EYjfMX41bZ8M6fxBNuB3_9gQ4",
     "duration": "60",
     "title": "Phoenix - La umbra marelui URSS 2003"
   },
   {
-    "path": "https://www.youtube.com/watch?v=44nL-cqvl0g&t=0",
+    "path": "https://www.youtube.com/watch?v=pv1FdvpYitQ&list=PLJpPYun-EYjcwPaKxMy9s58mG44nVWE5r",
     "duration": "40",
     "title": "Phoenix - Vino Tepes 2014"
   },
   {
-    "path": "https://www.youtube.com/watch?v=YqpPkHUM5JQ&t=0",
+    "path": "https://www.youtube.com/watch?v=kymu5alGQ-Y&list=PLJpPYun-EYjfspzltoHz_RbuqVecC0QKd",
     "duration": "42",
     "title": "Phoenix - Vremuri anii 60"
   },
@@ -273,7 +266,7 @@
     "title": "Trooper - Tribut Iris"
   },
   {
-    "path": "https://www.youtube.com/watch?v=oUHeQlwXRgs&t=0",
+    "path": "https://www.youtube.com/watch?v=g5PqzYlQq1U&list=PLJpPYun-EYjd1xnr9YREuVsWnVJNkifPV",
     "duration": "38",
     "title": "Mix 1 - Phoenix Transsylvania"
   },
