@@ -1,6 +1,6 @@
 @echo off
 @rem Find java.exe
-@rem set JAVA_HOME=C:\Program/ Files\Java\jdk1.7.0_80\bin
+set JAVA_HOME=C:\Applications\jdk8-temurin\bin
 
 set JVEXE=%JAVA_HOME%\java.exe
 set JVC=%JAVA_HOME%\javac.exe
