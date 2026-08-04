@@ -4,6 +4,9 @@ import com.arise.core.tools.ThreadUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,19 +14,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AnalogClock extends JFrame {
+public class AnalogClock extends JFrame  implements MouseListener, MouseMotionListener {
 
     private static final int MAX_MINUTES = 60;
     private static final int MAX_HOURS = 12;
+    private int screenX = 0;
+    private int screenY = 0;
+    private int compX = 0;
+    private int compY = 0;
 
-    public AnalogClock(){
+
+    public AnalogClock() {
         JPanel contentPane = new Circle();
         setLayout(new CardLayout());
         setContentPane(contentPane);
 
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
-
+        addMouseListener(this);
+        addMouseMotionListener(this);
 
         pack();
         setVisible(true);
@@ -43,7 +52,49 @@ public class AnalogClock extends JFrame {
     static BasicStroke BS4 = new BasicStroke(4);
     static BasicStroke BS5 = new BasicStroke(5);
 
-    private class Circle extends JPanel  {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        screenX = e.getXOnScreen();
+        screenY = e.getYOnScreen();
+        compX = getX();
+        compY = getY();
+        repaint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        int dX = e.getXOnScreen() - screenX;
+        int dY = e.getYOnScreen() - screenY;
+        setLocation(compX + dX, compY + dY);
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    private class Circle extends JPanel {
         int rad = 250;
         int pad = 10;
         int size;
@@ -142,14 +193,14 @@ public class AnalogClock extends JFrame {
             g2d.clearRect(0, 0, size, height);
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2d.setColor(Color.WHITE);
-            g2d.fillRect(0, 0, 200, 200);
+            g2d.setColor(new Color(255, 255, 255, 150));
+            g2d.fillOval(0, 0, size, size);
             // Set the color for the circle shape
             g2d.setColor(Color.BLUE);
 
             g2d.setStroke(BS3);
 
-            int off = g2d.getFont().getSize() / 2;
+            int off = g2d.getFont().getSize() / 3;
 
 
 
@@ -195,7 +246,6 @@ public class AnalogClock extends JFrame {
 
             g2d.drawString(sdf.format(now), pad, height - (height / 12));
         }
-
     }
 
 

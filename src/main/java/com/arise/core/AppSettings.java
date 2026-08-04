@@ -195,6 +195,7 @@ public class AppSettings {
         KEEP_SCREEN_ON("config.keep.screen.on", new String[]{"true/false"}),
         CRONUS_CONFIG_FILE("cronus.config.file", new String[]{"path to cronus.json"}),
         CRONUS_ENABLED("cronus.enabled", new String[]{"true (default)", "false"}),
+        @Deprecated
         UI_CLOCK_ENABLED("ui.clock.enabled", new String[]{"true", "false(default)"}),
 
 

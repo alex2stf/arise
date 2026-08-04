@@ -10,10 +10,16 @@ import java.util.Date;
 
 public class ClockForm extends JFrame {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     JTextField textField;
 
+
+    public static void main(String[] args) {
+        ClockForm clockForm = new ClockForm();
+        clockForm.pack();
+        clockForm.setVisible(true);
+    }
     public ClockForm(){
 
         setUndecorated(true);
@@ -30,26 +36,22 @@ public class ClockForm extends JFrame {
         add(textField);
         textField.setText(sdf.format(new Date()));
 
-        AppDispatcher.onTick(new AppDispatcher.Event() {
-            @Override
-            public void execute() {
-                refresh();
-            }
-        });
+
 
         ThreadUtil.repeatedTask(new Runnable() {
             @Override
             public void run() {
                 refresh();
+                AppDispatcher.tick();
             }
-        }, 1000 * 60);
+        }, 1000);
     }
 
     private void refresh(){
         try {
             textField.setText(sdf.format(new Date()));
             repaint();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

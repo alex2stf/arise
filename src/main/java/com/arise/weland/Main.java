@@ -237,18 +237,7 @@ public class Main {
 
 
 
-        if(isTrue(Keys.UI_CLOCK_ENABLED)) {
 
-            ThreadUtil.fireAndForget(new Runnable() {
-                @Override
-                public void run() {
-                    ClockForm clockForm = new ClockForm();
-                    clockForm.pack();
-                    clockForm.setVisible(true);
-                }
-            }, "ui-thread");
-
-        }
 
 
         ThreadUtil.fireAndForget(new Runnable() {
