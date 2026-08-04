@@ -15,6 +15,7 @@ import com.arise.weland.desk.DesktopContentHandler;
 import com.arise.weland.dto.DeviceStat;
 import com.arise.weland.impl.*;
 import com.arise.weland.model.MediaPlayer;
+import com.arise.weland.ui.AnalogClock;
 import com.arise.weland.ui.ClockForm;
 import com.arise.weland.utils.WelandServerHandler;
 
@@ -118,6 +119,15 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        if(AppSettings.isTrue(Keys.UI_CLOCK_ENABLED)){
+            ThreadUtil.startThread(new Runnable() {
+                @Override
+                public void run() {
+                    AnalogClock.main(args);
+                }
+            }, "analog-clock-main");
+        }
+
         try {
             doTrustToCertificates();
         } catch (Exception e) {
@@ -233,6 +243,7 @@ public class Main {
         final WelandServerHandler welandServerHandler = new WelandServerHandler()
                 .setContentProvider(contentInfoProvider)
                 .setContentHandler(desktopContentHandler);
+
 
 
 

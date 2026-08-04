@@ -184,6 +184,9 @@ public class AnalogClock extends JFrame  implements MouseListener, MouseMotionLi
         }
 
 
+        Font smallFont = null;
+        Font bigFont =  null;
+
 
 
         @Override
@@ -200,10 +203,15 @@ public class AnalogClock extends JFrame  implements MouseListener, MouseMotionLi
 
             g2d.setStroke(BS3);
 
-            int off = g2d.getFont().getSize() / 3;
 
 
 
+
+            if (smallFont == null) {
+                smallFont = new Font(g2d.getFont().getFontName(), Font.PLAIN, 12);
+            }
+            int off = g2d.getFont().getSize() / 3; //todo pune global lazy
+            g2d.setFont(smallFont);
             //deseneaza cadran cu orele
             for(int i = 0; i < MAX_HOURS; i++) {
                 g2d.setColor(Color.RED);
@@ -241,6 +249,10 @@ public class AnalogClock extends JFrame  implements MouseListener, MouseMotionLi
             g2d.drawLine(center, center, oraAt.x, oraAt.y);
 
 
+            if (bigFont == null){
+                bigFont = new Font(g2d.getFont().getFontName(), Font.PLAIN, 22);
+            }
+            g2d.setFont(bigFont);
 
 
 
