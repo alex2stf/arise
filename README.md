@@ -6,7 +6,7 @@ Quick start:
 1. At first run a default application.properties file is generated
 2. Create a folder called local_env
 
-
+sudo apt-get install python3-tk for python clock
 
 
 Development notes:

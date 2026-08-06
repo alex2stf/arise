@@ -256,7 +256,7 @@ public class AnalogClock extends JFrame  implements MouseListener, MouseMotionLi
 
 
 
-            g2d.drawString(sdf.format(now), pad, height - (height / 12));
+            g2d.drawString(sdf.format(now), size / 2, height - (height / 12));
         }
     }
 
