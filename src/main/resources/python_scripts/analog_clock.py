@@ -7,7 +7,12 @@ line_width=4
 
 root = tk.Tk()
 root.geometry(str(size) + 'x' + str(size))
-root.title('Analogic')
+
+
+root.title('Clock analogic')
+
+root.wm_attributes("-alpha", 0.5)  #transparenta full
+
 MAX_MINUTES=60
 center = size / 2
 radius = size / 2
