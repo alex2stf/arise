@@ -48,7 +48,7 @@ public class ContentInfoProvider {
 
 
 
-    public synchronized ContentInfo fromMap(Map map) {
+    public static synchronized ContentInfo fromMap(Map map) {
         ContentInfo cI = new ContentInfo();
         cI.setTitle(MapUtil.getString(map, "title"));
         cI.setPath(MapUtil.getString(map, "path"));

@@ -209,6 +209,7 @@ public class RadioPlayer {
                 String zmp = MapUtil.getString(zm, "path");
                 if(StringUtil.hasText(zmp)){
                     c.add(zmp);
+                    ContentInfoProvider.fromMap(zm); //inregistreaza-l ca tip media
                 }
             }
         }
