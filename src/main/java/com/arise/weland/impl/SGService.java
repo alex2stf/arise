@@ -110,15 +110,16 @@ public enum  SGService {
 
         if(tmpDesk().exists()) {
             String  name = ContentInfoProvider.findTitle(filePath);
-            String title =  new SimpleDateFormat("EEE, dd/MMM").format(new Date())
-                    .replace("Mon", "Luni")
-                    .replace("Tue", "Marți")
-                    .replace("Wed", "Miercuri")
-                    .replace("Thu", "Joi")
-                    .replace("Fri", "Vineri")
-                    .replace("Sat", "Sâmbătă")
-                    .replace("Sun", "Duminică")
-                    + "\n" +
+            String title =  "" +
+//                    new SimpleDateFormat("EEE, dd/MMM").format(new Date())
+//                    .replace("Mon", "Luni")
+//                    .replace("Tue", "Marți")
+//                    .replace("Wed", "Miercuri")
+//                    .replace("Thu", "Joi")
+//                    .replace("Fri", "Vineri")
+//                    .replace("Sat", "Sâmbătă")
+//                    .replace("Sun", "Duminică")
+//                    + "\n" +
                     System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
                     (StringUtil.hasText(name) ? name : filePath);
 

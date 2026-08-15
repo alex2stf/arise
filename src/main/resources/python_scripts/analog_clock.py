@@ -11,7 +11,7 @@ root.geometry(str(size) + 'x' + str(size))
 
 root.title('Clock analogic')
 
-root.wm_attributes("-alpha", 0.5)  #transparenta full
+#root.wm_attributes("-alpha", 0.5)  #transparenta full
 
 MAX_MINUTES=60
 center = size / 2
