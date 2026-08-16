@@ -41,10 +41,11 @@ def time():
         back = color['b']
         fron = color['f']
 
+    # bg = PhotoImage(file = "C:\\Users\\Administrator\\Pictures\\poza.png")
     root.configure(bg=back)
     # string = strftime('%H:%M:%S %p')
     str_time = now.strftime('%I:%M %p')
-    str_day = mths[now.month - 1] + "/" + wdays[now.weekday()] + " " + str(now.day)
+    str_day = mths[now.month - 1] + " " + wdays[now.weekday()] + " " + str(now.day)
     # wdays[now.weekday()] + " " + str(now.day)  + "/" + str(now.month) + ": "+ now.strftime('%I:%M %p')
     # fill="#"+("%06x"%random.randint(0,16777215))
     lbl_time.config(text=str_time, background=back, foreground=fron)
