@@ -163,8 +163,7 @@
       "hour": "EACH_SECOND BETWEEN_09:00:00_AND_22:30:00",
       "strategy": "stream-first",
       "sources": [
-        "vlc-list:C:\\Users\\alex2\\Videos\\videos",
-        "vlc-list:/media/kids/407B-B087/videos"
+        "vlc-list:file:/media/kids/7CB607A1B6075B52/Videos"
       ]
     },
 
