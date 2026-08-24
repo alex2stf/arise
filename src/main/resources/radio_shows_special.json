@@ -163,7 +163,7 @@
       "hour": "EACH_SECOND BETWEEN_09:00:00_AND_22:30:00",
       "strategy": "stream-first",
       "sources": [
-        "vlc-list:file:/media/kids/7CB607A1B6075B52/Videos"
+        "vlc-list:/media/kids/7CB607A1B6075B52/Videos"
       ]
     },
 
