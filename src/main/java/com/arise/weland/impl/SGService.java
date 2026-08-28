@@ -100,7 +100,7 @@ public enum  SGService {
                         new File("src/main/resources/python_scripts/").getAbsolutePath()
                 });
             }
-        }, UUID.randomUUID().toString())
+        }, UUID.randomUUID().toString());
 
 
 
