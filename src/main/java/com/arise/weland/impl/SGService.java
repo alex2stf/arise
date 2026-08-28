@@ -90,13 +90,20 @@ public enum  SGService {
         String title = System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
                 (StringUtil.hasText(name) ? name : filePath);
 
+        String finalName = name;
+        ThreadUtil.fireAndForget(new Runnable() {
+            @Override
+            public void run() {
+                CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
+                        finalName,
+                        title,
+                        new File("src/main/resources/python_scripts/").getAbsolutePath()
+                });
+            }
+        }, UUID.randomUUID().toString())
 
 
-        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
-                name,
-                title,
-                new File("src/main/resources/python_scripts/").getAbsolutePath()
-        });
+
 
         return;
 
