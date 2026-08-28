@@ -7,6 +7,7 @@ import shutil
 import sys
 import subprocess
 import os
+import pathlib
 
 socket.setdefaulttimeout(15)
 
@@ -16,15 +17,20 @@ except ImportError:
     from urllib2 import Request, urlopen  # Python 2
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
-
+THIS_DIR = pathlib.Path(__file__).parent.resolve()
 
 
 ####################################
 ##### download image logic #########
 ####################################
+def file_suggestions():
+    return os.path.join(THIS_DIR, "suggestions.json")
+
+def file_images():
+    return os.path.join(THIS_DIR, "images.txt")
 
 def load_sgjson():
-    with open('suggestions.json') as f:
+    with open(file_suggestions()) as f:
         return json.load(f)
 
 
@@ -39,7 +45,7 @@ def load_as_list(fname):
 
 
 def load_images():
-    return load_as_list('images.txt')
+    return load_as_list(file_images())
 
 
 def search_term(term):
