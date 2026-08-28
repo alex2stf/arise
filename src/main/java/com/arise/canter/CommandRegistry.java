@@ -158,7 +158,7 @@ public enum CommandRegistry  {
         if (!isEmpty(args)){
             localArgs = new String[args.length];
             for (int i = 0; i < args.length; i++){
-                log.trace(i + " arg === " + args[i] + " at command " + commandId);
+                log.trace(i + " arg === " + args[i] + " at command " + commandId); //todo pune null check
                 String currentArg = args[i];
                 if (currentArg.startsWith("$")){
                     localArgs[i] = executeCommandLine(currentArg) + "";
