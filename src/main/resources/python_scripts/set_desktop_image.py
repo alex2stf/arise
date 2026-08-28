@@ -150,6 +150,8 @@ def build_local_image(term):
         url = rand_pick_persistent(images_urls)
         image_file = solve_path(url)
 
+    if not image_file:
+        print('doing default...')
     return os.path.abspath(image_file)
 
 
@@ -284,10 +286,9 @@ pcmanf_kill()
 
 term = 'xxx'
 w_text = 'Text'
-print('>>>>>>>>>>>>> ', len(sys.argv))
+
 
 if len(sys.argv) > 1:
-    print('..........', sys.argv[0])
     term = sys.argv[1]
     print("term = ", term)
 
