@@ -156,6 +156,10 @@ public class ContentInfoProvider {
         if(TITLES.containsKey(path)){
             return TITLES.get(path);
         }
+        File f = new File(path);
+        if (f.exists()){
+            return f.getName();
+        }
         return null;
     }
 

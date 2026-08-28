@@ -1,5 +1,3 @@
-print("hi")
-
 from PIL import Image, ImageDraw, ImageFont
 import json
 import random
@@ -26,7 +24,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ####################################
 
 def load_sgjson():
-    with open('../weland/config/commons/suggestions.json') as f:
+    with open('suggestions.json') as f:
         return json.load(f)
 
 
@@ -41,7 +39,7 @@ def load_as_list(fname):
 
 
 def load_images():
-    return load_as_list('../pictures/images.txt')
+    return load_as_list('images.txt')
 
 
 def search_term(term):
@@ -286,12 +284,14 @@ pcmanf_kill()
 
 term = 'xxx'
 w_text = 'Text'
+print('>>>>>>>>>>>>> ', len(sys.argv))
 
-if len(sys.argv) > 0:
+if len(sys.argv) > 1:
+    print('..........', sys.argv[0])
     term = sys.argv[1]
     print("term = ", term)
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 2:
     w_text = sys.argv[2]
     print("text = ", w_text)
 
@@ -308,7 +308,6 @@ except:
 
 
 image_file = build_local_image(term)
-# image_file = os.path.join(get_pictures_dir(), 'poza.png')
 print('dowloaded file: ', image_file)
 
 

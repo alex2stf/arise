@@ -81,58 +81,59 @@ public enum  SGService {
             log.warn("Nu poti seta desktop fara comanda definita");
             return;
         }
+        String  name = ContentInfoProvider.findTitle(filePath);
 
-        tmpDesk().delete();
-        Object image = getInstance().find(filePath);
+        String title =  System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
+                (StringUtil.hasText(name) ? name : filePath);
 
-        if(null == image) {
-            log.info("Nu s-a gasit nici o sugestie pentru " + filePath);
-            iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]  TODO asta nu merge
-        }
+        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
+                name,
+                title
+        });
 
-        File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
-        if (image instanceof HttpResponse){
-            HttpResponse res = (HttpResponse) image;
-            FileUtil.writeBytesToFile(res.bodyBytes(), tmpDesk());
-        } else if(image instanceof String) {
-            final String x = (String) image;
-            downloadImage(x, new Handler<Object>() {
-                @Override
-                public void handle(Object o) {
-                    iaDefaultDinUrl(); //returneaza HttpResponse sau url pe imgs[0]
-                }
-            });
-        }
+        return;
 
-        //a doua iteratie
-        if(!tmpDesk().exists()){
-            scrieCevaDinLocal();
-        }
-
-
-        if(tmpDesk().exists()) {
-            String  name = ContentInfoProvider.findTitle(filePath);
-            String title =  "" +
-//                    new SimpleDateFormat("EEE, dd/MMM").format(new Date())
-//                    .replace("Mon", "Luni")
-//                    .replace("Tue", "Marți")
-//                    .replace("Wed", "Miercuri")
-//                    .replace("Thu", "Joi")
-//                    .replace("Fri", "Vineri")
-//                    .replace("Sat", "Sâmbătă")
-//                    .replace("Sun", "Duminică")
-//                    + "\n" +
-                    System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
-                    (StringUtil.hasText(name) ? name : filePath);
-
-            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
-                    tmpDesk().getAbsolutePath(),
-                    out.getAbsolutePath(),
-                    title
-            });
-        } else {
-			System.out.println("NU EXISTA TMP-UL");
-		}
+//        tmpDesk().delete();
+//        Object image = getInstance().find(filePath);
+//
+//        if(null == image) {
+//            log.info("Nu s-a gasit nici o sugestie pentru " + filePath);
+//            iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]  TODO asta nu merge
+//        }
+//
+//        File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
+//        if (image instanceof HttpResponse){
+//            HttpResponse res = (HttpResponse) image;
+//            FileUtil.writeBytesToFile(res.bodyBytes(), tmpDesk());
+//        } else if(image instanceof String) {
+//            final String x = (String) image;
+//            downloadImage(x, new Handler<Object>() {
+//                @Override
+//                public void handle(Object o) {
+//                    iaDefaultDinUrl(); //returneaza HttpResponse sau url pe imgs[0]
+//                }
+//            });
+//        }
+//
+//        //a doua iteratie
+//        if(!tmpDesk().exists()){
+//            scrieCevaDinLocal();
+//        }
+//
+//
+//        if(tmpDesk().exists()) {
+//            String  name = ContentInfoProvider.findTitle(filePath);
+//            String title =  System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
+//                    (StringUtil.hasText(name) ? name : filePath);
+//
+//            CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
+//                    tmpDesk().getAbsolutePath(),
+//                    out.getAbsolutePath(),
+//                    title
+//            });
+//        } else {
+//			System.out.println("NU EXISTA TMP-UL");
+//		}
 
     }
 
