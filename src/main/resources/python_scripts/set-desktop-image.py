@@ -307,8 +307,8 @@ except:
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-image_file = build_local_image(term)
-# image_file = get_tmp_file("pilmg.jpg")
+# image_file = build_local_image(term)
+image_file = os.path.join(get_pictures_dir(), 'poza.png')
 print('dowloaded file: ', image_file)
 
 
@@ -333,8 +333,10 @@ region = Rect(0, 0, desired_width, desired_height)
 random_gradient(draw, region)
 
 if do_resize:
-    # cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
-    cp = img.resize((desired_width, desired_height), 1)
+    # try:
+    #     cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
+    # except:
+    cp = img.resize((desired_width, desired_height), Image.BICUBIC)
     im.paste(cp, offset)
 else:
     im.paste(img, offset)
