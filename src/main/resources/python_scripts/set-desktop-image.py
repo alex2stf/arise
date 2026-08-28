@@ -307,8 +307,8 @@ except:
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-# image_file = build_local_image(term)
-image_file = os.path.join(get_pictures_dir(), 'poza.png')
+image_file = build_local_image(term)
+# image_file = os.path.join(get_pictures_dir(), 'poza.png')
 print('dowloaded file: ', image_file)
 
 
