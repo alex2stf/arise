@@ -17,8 +17,10 @@ except ImportError:
     from urllib2 import Request, urlopen  # Python 2
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
-THIS_DIR = os.path.abspath(pathlib.Path(sys.argv[0]).parent.resolve())
-
+# try:
+#     THIS_DIR = os.path.abspath(pathlib.Path(__file__).parent.resolve())
+# except:
+THIS_DIR = sys.argv[3]
 
 ####################################
 ##### download image logic #########
