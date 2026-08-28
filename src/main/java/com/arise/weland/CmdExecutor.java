@@ -12,6 +12,6 @@ public class CmdExecutor {
                 .registerDefaultCommands()
         ;
         CommandRegistry.getInstance().loadJsonResource("src/main/resources#weland/config/commands/commands_pi.json");
-        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{"termen", "text"});
+        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{"termen", "text", "out"});
     }
 }

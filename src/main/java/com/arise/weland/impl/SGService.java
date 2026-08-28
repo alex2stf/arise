@@ -89,11 +89,11 @@ public enum  SGService {
 
 
 
-//        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
-//                name,
-//                title,
-//                "src/main/resources/python_scripts/"
-//        });
+        CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
+                name,
+                title,
+                new File("src/main/resources/python_scripts/").getAbsolutePath()
+        });
 
         return;
 
