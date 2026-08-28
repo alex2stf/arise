@@ -83,6 +83,9 @@ public enum  SGService {
             return;
         }
         String  name = ContentInfoProvider.findTitle(filePath);
+        if(!StringUtil.hasText(name)){
+            name = filePath;
+        }
 
         String title = System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
                 (StringUtil.hasText(name) ? name : filePath);
