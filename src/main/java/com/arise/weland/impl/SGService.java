@@ -3,6 +3,7 @@ package com.arise.weland.impl;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
+import com.arise.canter.DefaultCommands;
 import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
@@ -83,12 +84,15 @@ public enum  SGService {
         }
         String  name = ContentInfoProvider.findTitle(filePath);
 
-        String title =  System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
+        String title = System.getProperty("arise.app.ipv4.address", "addr_unknown") + "\n" +
                 (StringUtil.hasText(name) ? name : filePath);
+
+
 
         CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
                 name,
-                title
+                title,
+                "src/main/resources/python_scripts/"
         });
 
         return;
