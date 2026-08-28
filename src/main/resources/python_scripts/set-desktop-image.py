@@ -333,7 +333,8 @@ region = Rect(0, 0, desired_width, desired_height)
 random_gradient(draw, region)
 
 if do_resize:
-    cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
+    # cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
+    cp = img.resize((desired_width, desired_height), 1)
     im.paste(cp, offset)
 else:
     im.paste(img, offset)
