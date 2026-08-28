@@ -245,6 +245,13 @@ def random_gradient(draw, region):
         horz_gradient(draw, region, gradient_color, color_palette)
 
 
+def get_pictures_dir():
+    user_folder = os.path.expanduser("~")
+    if not os.path.exists(user_folder):
+        user_folder = '/arise-tmp'
+        os.mkdir(user_folder)
+    return os.path.join(user_folder, "Pictures")
+
 def get_tmp_folder():
     user_folder = os.path.expanduser("~")
     if not os.path.exists(user_folder):
@@ -258,12 +265,37 @@ def get_tmp_folder():
 def get_tmp_file(name):
     return os.path.join(get_tmp_folder(), name)
 
+def pcmanf_kill():
+    try:
+        subprocess.Popen(["killall", "pcmanfm"], start_new_session=True)
+    except:
+        print("could not execute killall pcmanfm")
+
+def pcmanf_start():
+    try:
+        subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
+    except:
+        print("could not execute pcmanfm restart")
+
+
 ############## start main ##############
 
 #parametrii:
+
+pcmanf_kill()
+
 term = 'xxx'
-desk_out = get_tmp_file("pildesk.jpg")
 w_text = 'Text'
+
+if len(sys.argv) > 0:
+    term = sys.argv[1]
+    print("term = ", term)
+
+if len(sys.argv) > 1:
+    w_text = sys.argv[2]
+    print("text = ", w_text)
+
+desk_out = os.path.join(get_pictures_dir(), "arise-desktop.png")
 desired_width = 1680
 desired_height = 1050
 
@@ -320,3 +352,4 @@ draw2.text(
 img2.save(desk_out)
 # img2.show()
 
+pcmanf_start()
