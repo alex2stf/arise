@@ -86,17 +86,17 @@ public class DefaultCommands {
             String name = FileUtil.getNameFromPath(path);
             File tmp = FileUtil.findSomeTempFile(name);
 
-            tmp.deleteOnExit();
+
             FileOutputStream fo = null;
             try {
                 fo = new FileOutputStream(tmp);
                 StreamUtil.transfer(inputStream, fo);
-
             } catch (Exception e) {
                 Mole.logWarn("Unable to find stream " + path, e);
             }
             Util.close(inputStream);
             Util.close(fo);
+            tmp.deleteOnExit();
             return tmp.getAbsolutePath();
         }
     };
