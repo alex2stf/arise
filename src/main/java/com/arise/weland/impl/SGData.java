@@ -5,6 +5,7 @@ import com.arise.core.tools.ContentType;
 /**
  * Created by alex2 on 20/03/2024.
  */
+@Deprecated
 public class SGData {
 
     public final String id;

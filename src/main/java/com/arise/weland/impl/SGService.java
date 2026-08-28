@@ -17,6 +17,8 @@ import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.randomPickElement;
 
+
+@Deprecated
 public enum  SGService {
     INSTANCE;
 
@@ -85,7 +87,7 @@ public enum  SGService {
 
         if(null == image) {
             log.info("Nu s-a gasit nici o sugestie pentru " + filePath);
-            iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]
+            iaDefaultDinUrl();  //returneaza HttpResponse sau url pe imgs[0]  TODO asta nu merge
         }
 
         File out = new File(FileUtil.findPicturesDir(), "arise-desktop.png");
