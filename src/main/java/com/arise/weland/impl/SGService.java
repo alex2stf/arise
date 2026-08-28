@@ -3,7 +3,6 @@ package com.arise.weland.impl;
 import com.arise.astox.net.models.ServerResponse;
 import com.arise.astox.net.models.http.HttpResponse;
 import com.arise.canter.CommandRegistry;
-import com.arise.canter.DefaultCommands;
 import com.arise.core.models.Handler;
 import com.arise.core.serializers.parser.Groot;
 import com.arise.core.tools.*;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.arise.core.tools.CollectionUtil.randomPickElement;
@@ -34,7 +32,7 @@ public enum  SGService {
     private static final List<String> urls = new ArrayList<>();
     private static final int [] urlIndex = new int[]{0};
     static {
-        StreamUtil.readLineByLine(FileUtil.findStream("pictures/images.txt"), new StreamUtil.LineIterator() {
+        StreamUtil.readLineByLine(FileUtil.findStream("suggestions/images.txt"), new StreamUtil.LineIterator() {
             @Override
             public void onLine(int lineNo, String content) {
                 urls.add(content);
@@ -49,7 +47,7 @@ public enum  SGService {
 
     static void scrieCevaDinLocal(){
         int rand = (int) Math.round((Math.random() * 7) + 0);
-        String name = "pictures/desk" + rand + ".jpg";
+        String name = "suggestions/desk" + rand + ".jpg";
         try {
             StreamUtil.transfer(
                     FileUtil.findStream(name),
@@ -97,7 +95,7 @@ public enum  SGService {
                 CommandRegistry.getInstance().execute("set-desktop-background", new String[]{
                         finalName,
                         title,
-                        new File("src/main/resources/python_scripts/").getAbsolutePath()
+                        new File("src/main/resources/suggestions/").getAbsolutePath()
                 });
             }
         }, UUID.randomUUID().toString());

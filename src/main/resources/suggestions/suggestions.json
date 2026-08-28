@@ -4,7 +4,7 @@
       "key": "Bruce Springsteen",
       "icons": [
         "https://i.pinimg.com/originals/a2/25/84/a22584ce1cd31c02d61590b3dad5783d.jpg",
-        "classpath:pictures/bruce_springsteen.jpg",
+        "classpath:bruce_springsteen.jpg",
         "https://i.cbc.ca/1.5802018.1605311609!/fileImage/httpImage/image.jpg_gen/derivatives/original_1180/bruce-springsteen-young-1975.jpg"
       ]
     },
@@ -12,7 +12,7 @@
     {
       "key": "rammstein",
       "icons": [
-        "classpath:/pictures/rammstein.jpg",
+        "classpath:rammstein.jpg",
         "https://rare-gallery.com/uploads/posts/562009-till-lindemann.jpg",
         "https://rare-gallery.com/uploads/posts/935493-RammPatricia-abstract-digital-digital-art-Rammstein.jpg"
       ]
@@ -94,7 +94,7 @@
     {
       "key": "romanian folk",
       "icons": [
-        "classpath:pictures/romanian_folk.jpg"
+        "classpath:romanian_folk.jpg"
       ]
     },
     {
@@ -132,7 +132,7 @@
       "key": "rolling stones",
       "icons": [
         "https://w0.peakpx.com/wallpaper/969/46/HD-wallpaper-rockstar-female-rock-cg-music-tattoo-bar-sexy-club-cool-guitar-girl-hot-dance-light.jpg",
-        "classpath:pictures/rolling_stones.png",
+        "classpath:rolling_stones.png",
         "https://rare-gallery.com/uploads/posts/779061-The-Rolling-Stones-Graffiti.jpg",
         "https://rare-gallery.com/uploads/posts/1059344-women-model-anime-photography-tattoo-fashion-headphones-clothing-Rolling-Stones-girl-beauty-costume-photo-shoot.jpg",
         "https://rare-gallery.com/uploads/posts/4573016-women-headphones-tattoo-wings-rolling-stones.jpg",
@@ -320,7 +320,7 @@
       "key": "elvis",
       "icons": [
         "https://steemitimages.com/DQmSyZzLhnFTwDt4d8kXPBfW2r9vyjivoLgRX9sK5LUcoYq/old-historic-photos-141__605.jpg",
-        "classpath:pictures/elvis_presley.jpg",
+        "classpath:elvis_presley.jpg",
         "https://images8.alphacoders.com/127/1270930.jpg",
         "https://w0.peakpx.com/wallpaper/69/407/HD-wallpaper-movie-elvis-austin-butler.jpg",
         "https://w.forfun.com/fetch/3a/3a34dc9e646b4bd08181c4bca69363f0.jpeg"
@@ -368,7 +368,7 @@
       "key": "bob dylan",
       "icons": [
         "https://images.unsplash.com/photo-1592671939744-3d41768d1392",
-        "classpath:pictures/bob_dylan.jpg",
+        "classpath:bob_dylan.jpg",
         "https://media.cnn.com/api/v1/images/stellar/prod/210521174805-01-bob-dylan-unf.jpg",
         "https://images.unsplash.com/photo-1608503402194-6b51ab76c22c"
       ]

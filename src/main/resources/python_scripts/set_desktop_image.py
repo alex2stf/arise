@@ -20,17 +20,17 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # try:
 #     THIS_DIR = os.path.abspath(pathlib.Path(__file__).parent.resolve())
 # except:
-THIS_DIR = os.path.abspath(sys.argv[3])
-print(THIS_DIR)
+WORKING_DIR = os.path.abspath(sys.argv[3])
+print("WORKING_DIR = ", WORKING_DIR)
 
 ####################################
 ##### download image logic #########
 ####################################
 def file_suggestions():
-    return os.path.join(THIS_DIR, "suggestions.json")
+    return os.path.join(WORKING_DIR, "suggestions.json")
 
 def file_images():
-    return os.path.join(THIS_DIR, "images.txt")
+    return os.path.join(WORKING_DIR, "images.txt")
 
 def load_sgjson():
     print(file_suggestions())
@@ -120,9 +120,11 @@ def download_image_with_requests(img_url, output):
         raise Exception(str(r.status_code) + ' for ' + img_url)
 
 
+#TODO foloseste WORKING_DIR
 def solve_path(path):
     if path.startswith('classpath:'):
-        abspath = os.path.abspath('../' + path[len('classpath:'):])
+        part = os.path.abspath('../' + path[len('classpath:'):])
+        abspath = os.path.join(WORKING_DIR, part)
         if(os.path.exists(abspath)):
             return abspath
     if path.startswith("http:") or path.startswith("https:"):
@@ -161,7 +163,8 @@ def build_local_image(term):
         image_file = solve_path(url)
 
     if not image_file:
-        print('doing default...')
+        rand = random.randint(0, 7)
+        return os.path.join(WORKING_DIR, 'desk' + str(rand) + '.jpg')
     return os.path.abspath(image_file)
 
 

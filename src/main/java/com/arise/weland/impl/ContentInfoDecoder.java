@@ -24,7 +24,7 @@ public abstract class ContentInfoDecoder {
     protected ContentInfoProvider provider;
 
     public final SGService sugServ = SGService.getInstance()
-            .load("weland/config/commons/suggestions.json");
+            .load("suggestions/suggestions.json");
 
     public static final byte[] EMPTY_BYTE = new byte[0];
 

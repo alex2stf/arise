@@ -37,7 +37,7 @@ public class Builder {
                     .jarLib("libs/vlcj-3.0.1.jar")
                     .jarLib("libs/commons-compress-1.19.jar")
                     .jarLib("libs/webcam-capture-0.3.12.jar")
-                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland", RES_ROOT + "_cargo_", RES_ROOT + "pictures", RES_ROOT + "python_scripts")
+                    .resourcesDirs(RES_ROOT + "templates", RES_ROOT + "weland", RES_ROOT + "_cargo_", RES_ROOT + "suggestions", RES_ROOT + "python_scripts")
                     .resourceFiles(RES_ROOT + "content-types.json", RES_ROOT + "radio_shows.json")
                     .resourceFiles(RES_ROOT + "content-types.json", RES_ROOT + "radio_shows_special.json")
                     .mainClass("com.arise.weland.Main")
