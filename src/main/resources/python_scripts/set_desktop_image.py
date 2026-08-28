@@ -20,7 +20,8 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # try:
 #     THIS_DIR = os.path.abspath(pathlib.Path(__file__).parent.resolve())
 # except:
-THIS_DIR = sys.argv[3]
+THIS_DIR = os.path.abspath(sys.argv[3])
+print(THIS_DIR)
 
 ####################################
 ##### download image logic #########
@@ -32,6 +33,7 @@ def file_images():
     return os.path.join(THIS_DIR, "images.txt")
 
 def load_sgjson():
+    print(file_suggestions())
     with open(file_suggestions()) as f:
         return json.load(f)
 

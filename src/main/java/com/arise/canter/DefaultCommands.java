@@ -109,7 +109,7 @@ public class DefaultCommands {
                 }
             }
             Mole.getInstance("Command:" + getId()).warn("No valid exe found for " + join(tests, "]["));
-            return null;
+            return tests.get(0);
         }
     };
 

@@ -42,8 +42,8 @@
       {
         "id": "process-exec",
         "args": [
-          "$valid-file(C:\\Users\\alex2\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)",
-          "$find-file-stream(#python_scripts/create_desktop_image.py)", "{0}", "{1}", "{2}"
+          "$valid-file(C://Users//Administrator//AppData//Local//Microsoft//WindowsApps//python3.exe)",
+          "$find-file-stream(#python_scripts/set_desktop_image.py)", "{0}", "{1}", "{2}"
         ],
         "store-key": "desk-img"
       }
