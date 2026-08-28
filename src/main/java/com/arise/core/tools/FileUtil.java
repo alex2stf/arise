@@ -227,7 +227,7 @@ public class FileUtil {
             stream = findInFS(fsPath);
 
             if (stream == null){
-                log.trace(fsPath + "] not found in FS" + new File(".").getAbsolutePath());
+                log.trace(fsPath + "] not found in FS" + new File(".").getAbsolutePath() + " continue search");
                 stream = findInResOrAssets(classPathRoot);
             }
             if(stream == null){
