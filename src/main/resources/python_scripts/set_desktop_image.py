@@ -428,7 +428,8 @@ except:
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-image_file = build_local_image(term)
+image_file = 'C:\\Users\\Administrator\\Pictures\\poza.png'
+# image_file = build_local_image(term)
 # image_file = download_image(
 #     'https://w0.peakpx.com/wallpaper/704/252/HD-wallpaper-movie-dune-2021.jpg'
 # )
@@ -440,13 +441,23 @@ img_w, img_h = img.size
 
 offset = ((desired_width - img_w) // 2, (desired_height - img_h) // 2)
 do_resize = False
+resize_w = desired_width
+resize_h = desired_height
 
 #todo aici e gresit, calculeaza ratio
-if img_w * img_h > desired_width * desired_height:
-    print("img sursa mai mare decat plansa")
+if img_h > desired_height or img_w > desired_width:
     place_gradient = False
     do_resize = True
-    offset = (0,0) #important ptr resize
+    if img_w > img_h:
+        print("latimea mai mare decat plansa")
+        resize_w = desired_width
+        resize_h = int(img_h // (img_w // img_h))
+        offset = ((desired_width - resize_w) // 2, (desired_height - resize_h) // 2)
+    else:
+        print("inaltimea mai mare decat plansa")
+        resize_h = desired_height
+        resize_w = int(img_w // (img_h / img_w))
+        offset = ((desired_width - resize_w) // 2, (desired_height - resize_h) // 2)
 
 
 
@@ -460,7 +471,9 @@ if do_resize:
     # try:
     #     cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
     # except:
-    cp = img.resize((desired_width, desired_height), Image.BICUBIC)
+    # cp = img.resize((resize_w, resize_h), Image.BICUBIC)
+    print('do resize')
+    cp = img.resize((resize_w, resize_h), Image.BICUBIC)
     im.paste(cp, offset)
 else:
     im.paste(img, offset)
