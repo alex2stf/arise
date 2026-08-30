@@ -428,8 +428,8 @@ except:
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-image_file = 'C:\\Users\\Administrator\\Pictures\\poza.png'
-# image_file = build_local_image(term)
+# image_file = 'C:\\Users\\Administrator\\Pictures\\poza.png'
+image_file = build_local_image(term)
 # image_file = download_image(
 #     'https://w0.peakpx.com/wallpaper/704/252/HD-wallpaper-movie-dune-2021.jpg'
 # )
