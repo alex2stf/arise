@@ -6,6 +6,7 @@ import random
 
 palette = [
     {'f': 'white', 'b': 'black'}
+    ,{'f': 'black', 'b': 'white'}
     ,{'f': '#FFDFDF', 'b': '#560505'}
     ,{'f': '#FFF5DF', 'b': '#554111'}
     ,{'f': '#F9BCE4', 'b': '#420D2F'}

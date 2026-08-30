@@ -18,13 +18,27 @@ try:
 except ImportError:
     from urllib2 import Request, urlopen  # Python 2
 
-###
-#   Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
-#   Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0
-#
-##
-WORKING_DIR = os.path.abspath(sys.argv[3])
-print("WORKING_DIR = ", WORKING_DIR)
+
+####################################
+##### global params and args #######
+####################################
+WORKING_DIR = 'src/main/resources/suggestions/'
+term = 'xxx'
+w_text = 'Text'
+
+
+if len(sys.argv) > 1:
+    term = sys.argv[1]
+
+if len(sys.argv) > 2:
+    w_text = sys.argv[2]
+
+if len(sys.argv) > 3:
+    WORKING_DIR = os.path.abspath(sys.argv[3])  #TODO more wdir search
+
+print("term = ", term)
+print("text = ", w_text)
+print("working_dir = ", WORKING_DIR)
 
 ####################################
 ##### download image logic #########
@@ -111,8 +125,6 @@ def download_image_with_urllib(img_url, output):
     return output
 
 
-# ,'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
-# ,'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*
 def build_headers():
     mozilla = 'Mozilla/' + str(random.randint(3, 5)) + '.' + str(random.randint(0, 10))
     apple_webkit = 'AppleWebKit/'+ str(random.choice([537,538,539,605,523])) + '.' + str(random.randint(47, 212))
@@ -146,7 +158,6 @@ def build_headers():
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + vivaldi,
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + edge
             ]
-
         },
         {
             'platform': 'Android',
@@ -171,7 +182,27 @@ def build_headers():
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/ff19::1:2:3 ' + firefox + ' Waterfox/56.2.10',
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/20100101 ' +  firefox + ' Waterfox/56.3'
             ]
-        }
+        },
+        # rare
+        {
+            'platform': 'Chromium OS',
+            'uag': '(X11; CrOS armv7l 16733.57.0)',
+            'vers': [
+                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS armv7l 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS aarch64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari
+            ]
+        },
+        {
+            'platform': 'iOS',
+            'uag': '(iPhone; CPU iPhone OS 18_7_8 like Mac OS X)',
+            'vers': [
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) Version/26.0 Mobile/15E148 ' + safari,
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) CriOS/152.0.7977.64 Mobile/15E148 ' + safari,
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) FxiOS/154.0 Mobile/15E148 ' + safari
+            ]
+        },
     ])
 
     userAgent = random.choice(os_data['vers'])
@@ -315,7 +346,7 @@ def vert_gradient(draw, rect, color_func, color_palette):
 
 def random_gradient(draw, region):
     global GREEN
-    rint = random.randint(0, 7)
+    rint = random.randint(0, 10)
     if rint == 0:
         color_palette = [B1, B2, B3]
         vert_gradient(draw, region, gradient_color, color_palette)
@@ -340,6 +371,18 @@ def random_gradient(draw, region):
     elif rint == 7:
         color_palette = [G1, G2, G3]
         vert_gradient(draw, region, gradient_color, color_palette)
+    elif rint == 8:
+        color_palette = [BLACK, WHITE, BLACK]
+        vert_gradient(draw, region, gradient_color, color_palette)
+    elif rint == 9:
+        color_palette = [WHITE, BLACK, WHITE]
+        vert_gradient(draw, region, gradient_color, color_palette)
+    elif rint == 10:
+        color_palette = [WHITE, BLACK]
+        vert_gradient(draw, region, gradient_color, color_palette)
+    elif rint == 10:
+        color_palette = [BLACK, WHITE]
+        horz_gradient(draw, region, gradient_color, color_palette)
     else:
         color_palette = [B1, BLACK, GREEN]
         horz_gradient(draw, region, gradient_color, color_palette)
@@ -386,17 +429,7 @@ def pcmanf_start():
 
 pcmanf_kill()
 
-term = 'xxx'
-w_text = 'Text'
 
-
-if len(sys.argv) > 1:
-    term = sys.argv[1]
-    print("term = ", term)
-
-if len(sys.argv) > 2:
-    w_text = sys.argv[2]
-    print("text = ", w_text)
 
 desk_out = os.path.join(get_pictures_dir(), "arise-desktop.png")
 desired_width = 1680
