@@ -183,6 +183,8 @@ def build_headers():
         ,'Sec-CH-UA-Platform': os_data['platform']
         ,'Sec-Fetch-Dest': 'document'
         ,'cache-control': 'max-age=0'
+        # ,"cookie": "GeoIP=RO:B:Bucharest:44.43:26.10:v4; WMF-Uniq=TwDbipya-BY7nZBx9EECkgOlAAYDAFvd76k_xW8sl4PHpVQ7IPd14qxDteyZC6EM"
+        ,'User-Agent': userAgent
     }
 
 
@@ -196,7 +198,7 @@ def download_image_with_requests(img_url, output):
             f.write(r.content)
             # r.raw.decode_content = True
             # shutil.copyfileobj(r.raw, f)
-            print("written")
+            print("written to system at ", output)
             return output
     else:
         raise Exception(str(r.status_code) + ' for ' + img_url)
@@ -408,7 +410,7 @@ except:
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-# image_file = 'C:\\Users\\Administrator\\Pictures\\poza.png'
+# image_file = 'C:\\Users\\Administrator\\Pictures\\portret.jpeg'
 image_file = build_local_image(term)
 # image_file = download_image(
 #     'https://w0.peakpx.com/wallpaper/704/252/HD-wallpaper-movie-dune-2021.jpg'
@@ -426,17 +428,17 @@ resize_h = desired_height
 
 #todo aici e gresit, calculeaza ratio
 if img_h > desired_height or img_w > desired_width:
-    place_gradient = False
-    do_resize = True
-    if img_w > img_h:
-        print("latimea mai mare decat plansa")
-        resize_w = desired_width
-        resize_h = int(img_h // (img_w // img_h))
-        offset = ((desired_width - resize_w) // 2, (desired_height - resize_h) // 2)
-    else:
-        print("inaltimea mai mare decat plansa")
-        resize_h = desired_height
-        resize_w = int(img_w // (img_h / img_w))
+    if img_w > desired_width:
+        ratio = img_w / desired_width
+        print("[-] > plansa ratio = ", ratio, ' din ', img_w, '/', desired_width)
+    elif img_h > desired_height:
+        ratio = img_h / desired_height
+        print("[|] > plansa ratio = ", ratio, ' din ', img_h, '/', desired_height)
+    if ratio > 0:
+        do_resize=True
+        resize_w = int(img_w // ratio)
+        resize_h = int(img_h // ratio)
+        print('resize_w=', resize_w, 'resize_h=', resize_h)
         offset = ((desired_width - resize_w) // 2, (desired_height - resize_h) // 2)
 
 
