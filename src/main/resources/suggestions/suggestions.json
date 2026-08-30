@@ -558,6 +558,25 @@
     {
       "key": "The Crow OST",
       "icons": ["https://upload.wikimedia.org/wikipedia/en/7/72/The_Crow_soundtrack_album_cover.jpg"]
+    },
+    {
+      "key": "The Crow City of Angels OST",
+      "icons": [
+        "https://upload.wikimedia.org/wikipedia/en/3/3f/Crowangels.jpg"
+      ]
+    },
+    {
+      "key": "Phoenix - Baba Novak",
+      "duration": "60",
+      "icons": [
+        "https://upload.wikimedia.org/wikipedia/ro/f/ff/Phoenix_-_Baba_Novak_%282005%29.jpg"
+      ]
+    },
+    {
+      "key": "Iris - Luna plina",
+      "icons": [
+        "https://i.discogs.com/eaRET-gWqNnCrbQGYWfkmTl7Slt7e9KTtgCG8R0-hG8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzNTg3/MTQtMTMzMjkyODM5/NC5qcGVn.jpeg"
+      ]
     }
 
 
