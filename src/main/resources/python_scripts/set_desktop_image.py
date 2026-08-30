@@ -409,7 +409,7 @@ except:
     print("loading din usr-share font")
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
-
+go
 # image_file = 'C:\\Users\\Administrator\\Pictures\\portret.jpeg'
 image_file = build_local_image(term)
 # image_file = download_image(
