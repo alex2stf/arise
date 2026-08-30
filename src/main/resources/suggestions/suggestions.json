@@ -531,10 +531,33 @@
       ]
     },
     {
+      "key": "motorhead",
+      "icons": [
+        "https://upload.wikimedia.org/wikipedia/commons/3/37/Motorhead_5632.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/a/af/Motorhead-01.jpg"
+      ]
+    },
+    {
       "key": "guns",
       "icons": [
         "https://w0.peakpx.com/wallpaper/691/54/HD-wallpaper-sexy-slash-bands-guitar-rock-music-entertainment.jpg"
       ]
+    },
+    {
+      "key": "Fabrizio de Andre - Storia di un impiegato",
+      "icons": [
+        "https://www.mondadoriperte.it/media/catalog/product/cache/2/image_detail/9df78eab33525d08d6e5fb8d27136e95/p/r/prodotto_cd-fabrizio-de-andre-06-min.jpg"
+      ]
+    },
+    {
+      "key": "Pantera - Vulgar display of power",
+      "icons": [
+        "https://upload.wikimedia.org/wikipedia/en/1/12/PanteraVulgarDisplayofPower.jpg"
+      ]
+    },
+    {
+      "key": "The Crow OST",
+      "icons": ["https://upload.wikimedia.org/wikipedia/en/7/72/The_Crow_soundtrack_album_cover.jpg"]
     }
 
 

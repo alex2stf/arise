@@ -9,17 +9,20 @@ import subprocess
 import os
 import pathlib
 
-socket.setdefaulttimeout(15)
+TIMEOUT = 60
+
+socket.setdefaulttimeout(TIMEOUT)
 
 try:
     from urllib.request import Request, urlopen  # Python 3
 except ImportError:
     from urllib2 import Request, urlopen  # Python 2
 
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
-# try:
-#     THIS_DIR = os.path.abspath(pathlib.Path(__file__).parent.resolve())
-# except:
+###
+#   Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36
+#   Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0
+#
+##
 WORKING_DIR = os.path.abspath(sys.argv[3])
 print("WORKING_DIR = ", WORKING_DIR)
 
@@ -100,21 +103,120 @@ def rand_pick_persistent(list):
 def download_image_with_urllib(img_url, output):
     print('download_image_with_urllib ', img_url, ' to ', output)
     req = Request(img_url)
-    req.add_header('User-Agent', USER_AGENT)
-    content = urlopen(req, timeout=15).read()
+    for key, value in build_headers().items():
+        req.add_header(key, value)
+    content = urlopen(req, timeout=TIMEOUT).read()
     with open(output, 'wb') as localFile:
         localFile.write(content.read())
     return output
 
 
+# ,'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36'
+# ,'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*
+def build_headers():
+    mozilla = 'Mozilla/' + str(random.randint(3, 5)) + '.' + str(random.randint(0, 10))
+    apple_webkit = 'AppleWebKit/'+ str(random.choice([537,538,539,605,523])) + '.' + str(random.randint(47, 212))
+    chrome = 'Chrome/' + str(random.randint(123, 578)) + '.' + str(random.randint(0, 9)) + '.' + str(random.randint(0, 9)) + '.' + str(random.randint(0,9))
+    safari = 'Safari/' + str(random.randint(523, 749)) + '.' + str(random.randint(20, 80))
+    geko = 'Gecko/'+str(random.randint(2010, 2027))+'0'+str(random.randint(1,9))+'0' + str(random.randint(1, 9))
+    edge = 'Edg/' + str(random.randint(123, 345)) + '.' + str(random.randint(0, 0)) + '.' + str(random.randint(0, 9)) + '.' + str(random.randint(0, 9))
+    vivaldi = 'Vivaldi/8.1.' + str(random.randint(1000, 5000)) + '.' + str(random.randint(20, 63))
+    firefox = 'Firefox/154.' + str(random.randint(0, 20))
+    rv = str(random.choice([154,155,167,278]))
+
+    os_data = random.choice([
+        {
+            'platform': 'Windows',
+            'uag': '(Windows NT 10.0; Win64; x64)',
+            'vers': [
+                'Mozilla/5.0 (Windows NT 10.0; WOW64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + vivaldi,
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:' + rv + '.0) ' + geko + ' ' + firefox,
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + edge,
+                'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko'
+            ]
+        },
+        {
+            'platform': 'macOs',
+            'uag': '(Macintosh; Intel Mac OS X 15_7_9)',
+            'vers': [
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) Version/26.0 ' + safari,
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 15.7; rv:' + rv + '.0) ' + geko + ' ' + firefox,
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + vivaldi,
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_9) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + edge
+            ]
+
+        },
+        {
+            'platform': 'Android',
+            'uag': '(Linux; Android 17)',
+            'vers': [
+                'Mozilla/5.0 (Linux; Android 17) ' + apple_webkit + ' (KHTML, like Gecko)  ' + chrome + ' Mobile ' + safari,
+                'Mozilla/5.0 (Linux; Android 17; ' + random.choice(['SM-A205U', 'SM-A102U', 'SM-G960U', 'LM-Q720', 'LG-M255']) + ') ' + apple_webkit + ' (KHTML, like Gecko)  ' + chrome + ' Mobile ' + safari,
+                'Mozilla/5.0 (Android 17; Mobile; rv:' + random.choice(['68', '70', '83', '154']) + '.0) ' + geko + ' ' + firefox,
+                'Mozilla/5.0 (Android 17; Mobile; ' + random.choice(['SM-A205U', 'SM-A102U', 'SM-G960U', 'LM-Q720', 'LG-M255']) + '; rv:' + random.choice(['68', '70', '83', '154']) + '.0) ' + geko + ' ' + firefox
+            ]
+        },
+        {
+            'platform': 'iOS',
+            'uag': '(iPhone; CPU iPhone OS 18_7_8 like Mac OS X)',
+            'vers': [
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) Version/26.0 Mobile/15E148 ' + safari,
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) CriOS/152.0.7977.64 Mobile/15E148 ' + safari,
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) FxiOS/154.0 Mobile/15E148 ' + safari
+            ]
+        },
+
+        {
+            'platform': 'Linux',
+            'uag': '(X11; Linux x86_64; rv:130.0)',
+            'vers': [
+                'Mozilla/5.0 (X11; Linux x86_64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.9) Gecko/20071103 BonEcho/2.0.0.9',
+                'Mozilla/5.0 (X11; Linux x86_64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + edge,
+                'Mozilla/5.0 (X11; Linux x86_64; rv:56.0; Waterfox) ' + geko + ' ' + firefox,
+                'Mozilla/5.0 (X11; Linux x86_64; Ubuntu 22.04) ' + apple_webkit + ' (KHTML, like Gecko) JavaFX/8.0 ' + safari,
+                'Mozilla/5.0 (X11; U; Linux; nb-NO) ' + apple_webkit + ' (KHTML, like Gecko, ' + safari + ') Arora/0.2',
+                'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/ff19::1:2:3 ' + firefox + ' Waterfox/56.2.10',
+                'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/20100101 ' +  firefox + ' Waterfox/56.3'
+            ]
+        },
+        {
+            'platform': 'Chromium OS',
+            'uag': '(X11; CrOS armv7l 16733.57.0)',
+            'vers': [
+                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS armv7l 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
+                'Mozilla/5.0 (X11; CrOS aarch64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari
+            ]
+        }
+    ])
+
+    userAgent = random.choice(os_data['vers'])
+    print('platform', os_data['platform'], ' \nus=', userAgent)
+
+    return {
+        'accept-encoding': 'gzip, deflate, br, zstd'
+        ,'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/jpg,image/jpeg,image/png,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+        ,'Sec-CH-UA-Platform': os_data['platform']
+        ,'Sec-Fetch-Dest': 'document'
+        ,'cache-control': 'max-age=0'
+    }
+
+
 def download_image_with_requests(img_url, output):
     print('download_image_with_requests ', img_url, ' to ', output)
     r = requests.get(img_url, stream=True,
-                     headers={'User-agent': USER_AGENT})
-    if r.status_code == 200:
+                     headers=build_headers(), timeout = 30)
+    print('status_code', r.status_code)
+    if r.status_code < 359:
         with open(output, 'wb') as f:
-            r.raw.decode_content = True
-            shutil.copyfileobj(r.raw, f)
+            f.write(r.content)
+            # r.raw.decode_content = True
+            # shutil.copyfileobj(r.raw, f)
+            print("written")
             return output
     else:
         raise Exception(str(r.status_code) + ' for ' + img_url)
@@ -135,6 +237,8 @@ def download_image(img_url):
     extension = '.jpg'
     if img_url.endswith('.png'):
         extension = '.png'
+    if img_url.endswith('.jpeg'):
+        extension = '.jpeg'
     output = get_tmp_file("pilmg") + extension
     try:
         return download_image_with_requests(img_url, output)
@@ -228,6 +332,7 @@ def vert_gradient(draw, rect, color_func, color_palette):
 
 
 def random_gradient(draw, region):
+    global GREEN
     rint = random.randint(0, 7)
     if rint == 0:
         color_palette = [B1, B2, B3]
@@ -295,6 +400,8 @@ def pcmanf_start():
 
 #parametrii:
 
+
+
 pcmanf_kill()
 
 term = 'xxx'
@@ -322,8 +429,11 @@ except:
 
 
 image_file = build_local_image(term)
-print('dowloaded file: ', image_file)
-
+# image_file = download_image(
+#     'https://w0.peakpx.com/wallpaper/704/252/HD-wallpaper-movie-dune-2021.jpg'
+# )
+# print('dowloaded file: ', image_file)
+# exit()
 
 img = Image.open(image_file, 'r')
 img_w, img_h = img.size
@@ -331,6 +441,7 @@ img_w, img_h = img.size
 offset = ((desired_width - img_w) // 2, (desired_height - img_h) // 2)
 do_resize = False
 
+#todo aici e gresit, calculeaza ratio
 if img_w * img_h > desired_width * desired_height:
     print("img sursa mai mare decat plansa")
     place_gradient = False
