@@ -166,6 +166,17 @@
         "vlc-list:/media/kids/7CB607A1B6075B52/Videos"
       ]
     },
+    {
+      "name": "special_local_videos",
+      "day": "annually:08-30",
+      "hour": "EACH_SECOND BETWEEN_12:00:00_AND_15:30:00",
+      "strategy": "stream-first",
+      "sources": [
+        "file:/media/kids/7CB607A1B6075B52/Music/mixed",
+        "file:/media/kids/7CB607A1B6075B52/Music/sounds",
+        "file:/home/kids/Desktop/received_files"
+      ]
+    },
 
     {
       "name": "linkin park 50 songs",
