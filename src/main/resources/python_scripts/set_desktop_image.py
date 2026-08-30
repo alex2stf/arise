@@ -159,16 +159,6 @@ def build_headers():
             ]
         },
         {
-            'platform': 'iOS',
-            'uag': '(iPhone; CPU iPhone OS 18_7_8 like Mac OS X)',
-            'vers': [
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) Version/26.0 Mobile/15E148 ' + safari,
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) CriOS/152.0.7977.64 Mobile/15E148 ' + safari,
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_8 like Mac OS X) ' + apple_webkit + ' (KHTML, like Gecko) FxiOS/154.0 Mobile/15E148 ' + safari
-            ]
-        },
-
-        {
             'platform': 'Linux',
             'uag': '(X11; Linux x86_64; rv:130.0)',
             'vers': [
@@ -180,16 +170,6 @@ def build_headers():
                 'Mozilla/5.0 (X11; U; Linux; nb-NO) ' + apple_webkit + ' (KHTML, like Gecko, ' + safari + ') Arora/0.2',
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/ff19::1:2:3 ' + firefox + ' Waterfox/56.2.10',
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/20100101 ' +  firefox + ' Waterfox/56.3'
-            ]
-        },
-        {
-            'platform': 'Chromium OS',
-            'uag': '(X11; CrOS armv7l 16733.57.0)',
-            'vers': [
-                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
-                'Mozilla/5.0 (X11; CrOS x86_64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
-                'Mozilla/5.0 (X11; CrOS armv7l 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari,
-                'Mozilla/5.0 (X11; CrOS aarch64 16733.57.0) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari
             ]
         }
     ])
