@@ -279,6 +279,7 @@ def build_local_image(term):
         url = rand_pick_persistent(images_urls)
         image_file = solve_path(url)
 
+    #default ia din local
     if not image_file:
         rand = random.randint(0, 7)
         return os.path.join(WORKING_DIR, 'desk' + str(rand) + '.jpg')
@@ -421,6 +422,14 @@ def pcmanf_start():
         print("could not execute pcmanfm restart")
 
 
+
+def get_font():
+    try:
+        return ImageFont.load_default(size=30)
+    except:
+        print("loading font din usr/share")
+        return ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
+
 ############## start main ##############
 
 #parametrii:
@@ -436,22 +445,23 @@ desired_width = 1680
 desired_height = 1050
 
 
-try:
-    font = ImageFont.load_default(size=30)
-except:
-    print("loading din usr-share font")
-    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', size=30)
 
 
-# image_file = 'C:\\Users\\Administrator\\Pictures\\portret.jpeg'
+
+# image_file = 'C:\\Users\\Administrator\\Pictures\\portret.jpeg' #linie de test
 image_file = build_local_image(term)
-# image_file = download_image(
-#     'https://w0.peakpx.com/wallpaper/704/252/HD-wallpaper-movie-dune-2021.jpg'
-# )
-# print('dowloaded file: ', image_file)
-# exit()
+# image_file = download_image('https://ro.cam4.com/female')#linie de test
 
-img = Image.open(image_file, 'r')
+try:
+    img = Image.open(image_file, 'r')
+except Exception as err:
+    print('eroare la parsare imagine ', err)
+    print('........... 2nd build iteration')
+    image_file = build_local_image(term)
+    img = Image.open(image_file, 'r')
+
+
+
 img_w, img_h = img.size
 
 offset = ((desired_width - img_w) // 2, (desired_height - img_h) // 2)
@@ -502,7 +512,7 @@ draw2.text(
     (330, 20),  # Coordinates
     w_text,  # Text
     WHITE,  # Color
-    font=font
+    font=get_font()
 )
 img2.save(desk_out)
 # img2.show()
