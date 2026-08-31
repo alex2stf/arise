@@ -177,7 +177,7 @@ def build_headers():
                 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.9) Gecko/20071103 BonEcho/2.0.0.9',
                 'Mozilla/5.0 (X11; Linux x86_64) ' + apple_webkit + ' (KHTML, like Gecko) ' + chrome + ' ' + safari + ' ' + edge,
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0; Waterfox) ' + geko + ' ' + firefox,
-                'Mozilla/5.0 (X11; Linux x86_64; Ubuntu 22.04) ' + apple_webkit + ' (KHTML, like Gecko) JavaFX/8.0 ' + safari,
+                'Mozilla/5.0 (X11; Linux x86_64; Ubuntu 22.04) ' + apple_webkit + ' (KHTML, like Gecko) ' + safari,
                 'Mozilla/5.0 (X11; U; Linux; nb-NO) ' + apple_webkit + ' (KHTML, like Gecko, ' + safari + ') Arora/0.2',
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/ff19::1:2:3 ' + firefox + ' Waterfox/56.2.10',
                 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/20100101 ' +  firefox + ' Waterfox/56.3'
@@ -279,7 +279,7 @@ def build_local_image(term):
         url = rand_pick_persistent(images_urls)
         image_file = solve_path(url)
 
-    #default ia din local
+    #default ia din local #TODO cauta in niste locatii din sistem
     if not image_file:
         rand = random.randint(0, 7)
         return os.path.join(WORKING_DIR, 'desk' + str(rand) + '.jpg')
