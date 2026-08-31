@@ -104,7 +104,8 @@ def rand_pick_persistent(list):
         index = 0
         print("overflow, re-writing...")
 
-    res = list[index]
+    print('pick item index = ', index, ' val: ', lines[index], ' ret: ', list[int(lines[index])])
+    res = list[int(lines[index])]
     lines[0] = str(index + 1)
 
     with open(file, "w") as f:
