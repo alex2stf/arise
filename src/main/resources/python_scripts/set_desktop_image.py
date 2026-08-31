@@ -247,6 +247,7 @@ def solve_path(path):
 
 
 def download_image(img_url):
+    #todo pune si un query param random
     extension = '.jpg'
     if img_url.endswith('.png'):
         extension = '.png'
@@ -450,7 +451,7 @@ desired_height = 1050
 
 # image_file = 'C:\\Users\\Administrator\\Pictures\\portret.jpeg' #linie de test
 image_file = build_local_image(term)
-# image_file = download_image('https://ro.cam4.com/female')#linie de test
+# image_file = download_image('https://adultpaintbynumbers.com/cdn/shop/products/sexy-beauty-diy-paint-by-numbers-kits-wm-885-915.jpg')#linie de test
 
 try:
     img = Image.open(image_file, 'r')
@@ -469,7 +470,7 @@ do_resize = False
 resize_w = desired_width
 resize_h = desired_height
 
-#todo aici e gresit, calculeaza ratio
+#daca imaginea e mai mare decat desired / retrurneaza float, // returneaza int
 if img_h > desired_height or img_w > desired_width:
     if img_w > desired_width:
         ratio = img_w / desired_width
@@ -493,11 +494,7 @@ region = Rect(0, 0, desired_width, desired_height)
 random_gradient(draw, region)
 
 if do_resize:
-    # try:
-    #     cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
-    # except:
-    # cp = img.resize((resize_w, resize_h), Image.BICUBIC)
-    print('do resize')
+    # cp = img.resize((desired_width, desired_height), Image.Resampling.LANCZOS) #linie de test
     cp = img.resize((resize_w, resize_h), Image.BICUBIC)
     im.paste(cp, offset)
 else:

@@ -288,20 +288,17 @@
   },
   {
     "path": "https://www.youtube.com/watch?v=2f3XaoHqQuQ&list=PLNPGM2D7aODc2XU4MAMYcdNuHLo47_iTP",
-    "title": "Bruce Springsteen  - Magic",
-    "duration": "60",
-    "thumbnail": "https://upload.wikimedia.org/wikipedia/en/5/5d/Bruce_Springsteen_-_Magic.jpg"
+    "title": "Bruce Springsteen - Magic",
+    "duration": "60"
   },
   {
-    "title": "Bruce Springsteen  - Lucky town",
+    "title": "Bruce Springsteen - Lucky town",
     "path": "https://www.youtube.com/watch?v=SM3pM8HZ5fE&list=PLSIGLU67ZCz_wxkzRg8fHQjupBABARQiz",
-    "duration": "110",
-    "thumbnail": "https://upload.wikimedia.org/wikipedia/en/2/25/Lucky_Town.jpg"
+    "duration": "110"
   },
   {
     "title": "Bruce Springsteen - The ghost of Tom Joad",
     "path": "https://www.youtube.com/watch?v=CumZ9dugKKU&list=PLNPGM2D7aODew2hs5OVlHiMAkWi_UYH_h",
-    "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/ea/The_Ghost_of_Tom_Joad.jpg",
     "duration": "70"
   },
   {

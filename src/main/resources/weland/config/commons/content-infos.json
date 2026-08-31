@@ -35,8 +35,7 @@
   },
   {
     "path": "http://edge76.rdsnet.ro:84/digifm/digifm.mp3",
-    "title": "Digi FM",
-    "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Logo_Digi_24_%282012%29.svg/1200px-Logo_Digi_24_%282012%29.svg.png"
+    "title": "Digi FM"
   },
   {
     "path": "https://radio2.vip-radios.fm:18009/stream-128kmp3-BossaNovaBrazil",
