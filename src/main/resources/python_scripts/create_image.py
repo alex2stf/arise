@@ -114,46 +114,97 @@ def draw_z(d, w, h, lw, fill, outline):
         width=lw               # Border thickness in pixels
     )
 
-def draw_z2(d, w, h, lw, fill, outline):
+def draw_z2(d, w, h, fill, tx, ty):
     w6 = w / 6
     w2 = w / 2
     h2 = h / 2
     h6 = h / 6
     wf = 2
     hf = 2
+    # tx = 100
+    # ty = 100
     triangle_vertices = [
-        (w2 + w6, 0),
-        (w2 - w6 * wf, h2 + h6),
-        (w2 , h2 + h6 / hf),
-        (w2 - w6, h),
-        (w2 + w6 * wf, h2 - h6),
-        (w2, h2 - h6 / hf),
-        (w2 + w6, 0)
+        (w2 + w6 + tx, ty),
+        (w2 - w6 * wf + tx, h2 + h6 + ty),
+        (w2 + tx, h2 + h6 / hf + ty),
+        (w2 - w6 + tx, h + ty),
+        (w2 + w6 * wf + tx, h2 - h6 + ty),
+        (w2 + tx, h2 - h6 / hf + ty),
+        (w2 + w6 + tx, ty)
     ]
     d.polygon(
         triangle_vertices,
         fill=fill,     # Color inside the triangle
-        outline=outline,       # Color of the border
-        width=lw               # Border thickness in pixels
+        outline=fill,       # Color of the border
+        width=0               # Border thickness in pixels
     )
 
-
-def img_with_lines(color, background, w, h, lw, line_colors):
-    print('lw=', lw)
-    out = Image.new("RGB", (w, h), background)
-    d = ImageDraw.Draw(out)
-    draw_lines(d, w, h, lw, line_colors) #ok
-    # draw_z2(d, w, h, 0, color, 'red') #ok
-    # d.ellipse([(20, 20), (w / 6, w / 6)], color) #ok, arata ca o luna
-
-    cw = lw * len(color) * random.choice([1, 1.5, 2])
+def draw_circle(d, cw, w, h, color):
     w2 = random.choice(
         [
-            w - cw / 2, w / 2, w / 1.5, w, w / random.randint(3, 9)
+            cw,
+            cw * 2,
+            w - cw * 2,
+            w - cw,
+            w / 2,
+            w / 1.5,
+            w / random.randint(3, 9)
         ]
     )
-    h2 = h / 2
+    h2 = h / random.choice([2,4])
     d.ellipse([( w2 - cw, h2 - cw ), (w2 + cw, h2 + cw)], color) #ok
+
+def img_with_lines(color, background, w, h, lw, line_colors):
+
+    out = Image.new("RGB", (w, h), background)
+    d = ImageDraw.Draw(out)
+
+    rf = len(line_colors)
+    if 1 == rf:
+        rf = 3
+
+    cw = lw * (rf * random.randint(2, rf))
+
+    model = 'Z2'
+    print('pick model ', model)
+
+    if 'Z1' == model:
+        draw_lines(d, w, h, lw, line_colors) #deseneaza liniile
+        zsize = h / 2
+        px = random.choice([
+            w / 2 - zsize / 2, #centru
+            0, #stanga
+            w - zsize  #dreapta
+        ])
+        draw_z2(d, zsize, zsize, color, px, h / 2 - zsize / 2) #ok
+    elif 'Z2' == model:
+        draw_lines(d, w, h, lw, line_colors) #deseneaza liniile
+        draw_z(d, w, h, 0, color, color)
+
+    elif 'CB' == model:
+        draw_circle(d, cw, w, h, color)
+        draw_lines(d, w, h, lw, line_colors)
+    else:
+        #lines then circle
+        draw_lines(d, w, h, lw, line_colors)
+        draw_circle(d, cw, w, h, color)
+
+
+
+
+
+
+    # draw_lines(d, w, h, lw, line_colors) #ok
+    # zsize = h / 3
+    # draw_z2(d, zsize, zsize, 0, color, w / 2 - zsize / 2, h / 2 - zsize / 2) #ok
+    # d.ellipse([(20, 20), (w / 6, w / 6)], color) #ok, arata ca o luna
+
+
+
+    # draw_circle(d, cw, w, h, color)
+
+
+
     return out
 
 # color = random.choice(colors3())
@@ -164,7 +215,7 @@ def img_with_lines(color, background, w, h, lw, line_colors):
 # img = img_sinusoid('black', 'white', WIDTH, HEIGHT, 10)
 # img = img_with_lines('red', 'black', WIDTH, HEIGHT, random.randint(8, 15), ['magenta', 'blue', 'red'])
 img = img_with_lines(
-    random.choice(['#2E90FF', '#D40000', '#F5FF2E', '#2EFF49'
+    random.choice(['#2E90FF', '#D40000', '#F5FF2E', '#2EFF49',
                    '#2EFFEA', '#F12EFF', '#FFAB2E', '#FF662E', '#FF2E2E', '#4A2EFF', '#972EFF',
                    '#D52EFF', '#FF2EBD', '#FF2E6D', '#00D40E', '#0019D4'
                    ])
