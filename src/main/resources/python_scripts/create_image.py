@@ -139,20 +139,24 @@ def draw_z2(d, w, h, fill, tx, ty):
         width=0               # Border thickness in pixels
     )
 
-def draw_circle(d, cw, w, h, color):
-    w2 = random.choice(
-        [
-            cw,
-            cw * 2,
-            w - cw * 2,
-            w - cw,
-            w / 2,
-            w / 1.5,
-            w / random.randint(3, 9)
-        ]
-    )
-    h2 = h / random.choice([2,4])
-    d.ellipse([( w2 - cw, h2 - cw ), (w2 + cw, h2 + cw)], color) #ok
+
+
+
+
+
+def complementary_color(my_hex):
+    """Returns complementary RGB color
+
+    Example:
+    # >>>complementaryColor('FFFFFF')
+    '000000'
+    """
+    if my_hex[0] == '#':
+        my_hex = my_hex[1:]
+    rgb = (my_hex[0:2], my_hex[2:4], my_hex[4:6])
+    comp = ['%02X' % (255 - int(a, 16)) for a in rgb]
+    return ''.join(comp)
+
 
 def img_with_lines(color, background, w, h, lw, line_colors):
 
@@ -165,11 +169,42 @@ def img_with_lines(color, background, w, h, lw, line_colors):
 
     cw = lw * (rf * random.randint(2, rf))
 
+    w2 = random.choice(
+        [
+            cw,
+            cw * 2,
+            w - cw * 2,
+            w - cw,
+            w / 2,
+            w / 1.5,
+            w / random.randint(3, 9)
+        ]
+    )
+    h2 = h / random.choice([2,4])
+
     model = 'Z2'
     print('pick model ', model)
 
-    if 'Z1' == model:
+    def draw_circle_at_random_top():
+        d.ellipse([( w2 - cw, h2 - cw ), (w2 + cw, h2 + cw)], color) #ok
+
+    def draw_two_circles_at_random_top():
+        a = w2 - cw
+        b = h2 - cw
+        c = w2 + cw
+        x = h2 + cw
+        cw2 = cw / 2
+        d.ellipse([( a, b), (c, x)], color) #ok
+        d.ellipse([( a + cw2, b + cw2), (c - cw2, x - cw2)], random.choice([
+            '#' + complementary_color(color), 'black', 'white'
+        ])) #ok
+
+
+    def _drawlines():
         draw_lines(d, w, h, lw, line_colors) #deseneaza liniile
+
+    if 'Z1' == model:
+        _drawlines() #deseneaza liniile
         zsize = h / 2
         px = random.choice([
             w / 2 - zsize / 2, #centru
@@ -177,34 +212,19 @@ def img_with_lines(color, background, w, h, lw, line_colors):
             w - zsize  #dreapta
         ])
         draw_z2(d, zsize, zsize, color, px, h / 2 - zsize / 2) #ok
-    elif 'Z2' == model:
-        draw_lines(d, w, h, lw, line_colors) #deseneaza liniile
+    elif 'Z2' == model: # z simplu cu 2 triunghuri
+        _drawlines()
         draw_z(d, w, h, 0, color, color)
-
+    elif 'CB2' == model:
+        _drawlines() #deseneaza liniile
+        draw_two_circles_at_random_top()
     elif 'CB' == model:
-        draw_circle(d, cw, w, h, color)
-        draw_lines(d, w, h, lw, line_colors)
+        draw_circle_at_random_top()
+        _drawlines()
     else:
         #lines then circle
-        draw_lines(d, w, h, lw, line_colors)
-        draw_circle(d, cw, w, h, color)
-
-
-
-
-
-
-    # draw_lines(d, w, h, lw, line_colors) #ok
-    # zsize = h / 3
-    # draw_z2(d, zsize, zsize, 0, color, w / 2 - zsize / 2, h / 2 - zsize / 2) #ok
-    # d.ellipse([(20, 20), (w / 6, w / 6)], color) #ok, arata ca o luna
-
-
-
-    # draw_circle(d, cw, w, h, color)
-
-
-
+        _drawlines()
+        draw_circle_at_random_top()
     return out
 
 # color = random.choice(colors3())

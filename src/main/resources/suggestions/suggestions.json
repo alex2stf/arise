@@ -570,7 +570,8 @@
       "key": "motorhead",
       "icons": [
         "https://upload.wikimedia.org/wikipedia/commons/3/37/Motorhead_5632.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/a/af/Motorhead-01.jpg"
+        "https://upload.wikimedia.org/wikipedia/commons/a/af/Motorhead-01.jpg",
+        "https://wallpapercave.com/wp/wp1828003.jpg"
       ]
     },
     {
@@ -645,6 +646,41 @@
         "https://www.romanianfriend.com/uploads/media/communist-period.png",
         "https://www.romanianfriend.com/uploads/media/romanian-1989-revolution.jpeg",
         "https://cdn.romania-insider.com/sites/default/files/styles/article_large_image/public/featured_images/Andrei-Birsan-aprilie-1981-16-ani-2.jpg"
+      ]
+    },
+    {
+
+      "key": "ocs ",
+      "icons": [
+        "https://m.media-amazon.com/images/M/MV5BZDZiZDc0ZmUtZDY3ZS00YjEzLTg3YTQtNTQxY2NkNTIzNGRkXkEyXkFqcGc@._V1_FMjpg_UX800_.jpg",
+        "https://m.media-amazon.com/images/M/MV5BNzhkZTQ4MzAtMGFmYi00MTA5LWIzMDgtNDhhMWI4ZTM1ZWE2XkEyXkFqcGc@._V1_FMjpg_UX665_.jpg",
+        "https://robertvgalluzzo.com/wp-content/uploads/2025/01/the_boondock_saints.jpg",
+        "https://stor0.anuntul.ro/media/foto/landscape/2021/11/26/265182191.jpeg",
+        "https://s-cache.s3.cloudworks.ro/kissfm/cache/1080/0/0/content-files/2022/02/01/atoma-la-lucru-pictura-muralaj_file_61f8facc4795f.jpg",
+        "https://merg.in/thumbs/big_art/2022/03/07/galeria-de-arta-subterana-din-statia-de-metrou-piata-romana-24027.jpg",
+        "https://i.etsystatic.com/27448350/r/il/99112d/6439384756/il_794xN.6439384756_nup1.jpg"
+      ]
+
+    },
+    {
+      "key": "korn ",
+      "icons": [
+        "https://wallpapercave.com/wp/vE2bAhb.jpg"
+      ]
+    },
+    {
+      "key": "rockfm",
+      "icons": [
+        "https://upload.wikimedia.org/wikipedia/ro/6/6a/Logo_Rock_FM_Rom%C3%A2nia.png",
+        "https://instabilelab.com/wp-content/uploads/2023/03/carta-da-parati-rock-you-instabilelab-800x529.jpg",
+        "https://wallpapercave.com/wp/wp1827986.jpg",
+        "https://wallpaperaccess.com/full/232873.jpg",
+        "https://wallpaperaccess.com/full/232903.jpg",
+        "https://wallpaperaccess.com/full/232881.jpg",
+        "https://wallpapercave.com/wp/wp1827990.png",
+        "https://wallpapercave.com/wp/YF1FTNk.jpg",
+        "https://wallpapercave.com/wp/QUl6MW3.jpg",
+        "https://wallpapercave.com/wp/2KXPTXD.jpg"
       ]
     }
 
