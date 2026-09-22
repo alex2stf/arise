@@ -411,17 +411,38 @@ def get_tmp_folder():
 def get_tmp_file(name):
     return os.path.join(get_tmp_folder(), name)
 
+def file_out():
+    return os.path.join(get_pictures_dir(), "arise-desktop.png")
+
+
+def get_raspberry_pi_version():
+    try:
+        with open('/proc/device-tree/model', 'r') as file:
+            return file.read()
+    except:
+        print("not raspberry pi version")
+        return ""
+
 def pcmanf_kill():
+    if get_raspberry_pi_version().lower().find("raspberry pi 4"):
+        return
     try:
         subprocess.Popen(["killall", "pcmanfm"], start_new_session=True)
     except:
         print("could not execute killall pcmanfm")
 
 def pcmanf_start():
+    if get_raspberry_pi_version().lower().find("raspberry pi 4"):
+        subprocess.Popen(["pcmanfm", "--set-wallpaper=" + file_out()], start_new_session=True)
+        return
+
     try:
+        #restart pcmanfm on lubuntu
         subprocess.Popen(["pcmanfm", "--desktop", "--profile", "lubuntu"], start_new_session=True)
     except:
         print("could not execute pcmanfm restart")
+
+
 
 
 
@@ -442,7 +463,7 @@ pcmanf_kill()
 
 
 
-desk_out = os.path.join(get_pictures_dir(), "arise-desktop.png")
+desk_out = file_out()
 desired_width = 1680
 desired_height = 1050
 
