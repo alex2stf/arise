@@ -9,6 +9,8 @@ import subprocess
 import os
 import pathlib
 
+import util_persist
+
 TIMEOUT = 60
 
 socket.setdefaulttimeout(TIMEOUT)
@@ -55,14 +57,7 @@ def load_sgjson():
         return json.load(f)
 
 
-def load_as_list(fname):
-    list = []
-    with open(fname) as file:
-        for line in file:
-            lx = (line.rstrip())
-            if lx:
-                list.append(lx)
-    return list
+
 
 
 def load_images():
@@ -77,42 +72,10 @@ def search_term(term):
             return (random.choice(item['icons']))
 
 
-def write_pfile_zero(list, fname):
-    indices = []
-    for index, element in enumerate(list):
-        indices.append(index)
-
-    random.shuffle(indices)
-
-    with open(fname, 'w') as f:
-        f.write('0\n')
-        for i in indices:
-            f.write("%s\n" % i)
 
 
-def rand_pick_persistent(list):
-    file = get_tmp_file("pilst.txt")
 
-    if not os.path.exists(file) or 0 == os.path.getsize(file):
-        print('no file found, writing')
-        write_pfile_zero(list, file)
 
-    lines = load_as_list(file)
-    index = int(lines[0])
-    if index > len(list) - 1:
-        write_pfile_zero(list, file)
-        index = 0
-        print("overflow, re-writing...")
-
-    print('pick item index = ', index, ' val: ', lines[index], ' ret: ', list[int(lines[index])])
-    res = list[int(lines[index])]
-    lines[0] = str(index + 1)
-
-    with open(file, "w") as f:
-        for i in lines:
-            f.write("%s\n" % i)
-
-    return res
 
 
 def download_image_with_urllib(img_url, output):
@@ -398,18 +361,9 @@ def get_pictures_dir():
         os.mkdir(user_folder)
     return os.path.join(user_folder, "Pictures")
 
-def get_tmp_folder():
-    user_folder = os.path.expanduser("~")
-    if not os.path.exists(user_folder):
-        user_folder = '/arise-tmp'
-        os.mkdir(user_folder)
-    app_fldr = os.path.abspath(os.path.join(user_folder, "arise-app"))
-    if not os.path.exists(app_fldr):
-        os.mkdir(app_fldr)
-    return app_fldr
 
-def get_tmp_file(name):
-    return os.path.join(get_tmp_folder(), name)
+
+
 
 def file_out():
     return os.path.join(get_pictures_dir(), "arise-desktop.png")
