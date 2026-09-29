@@ -12,17 +12,7 @@ turtle.bgcolor("black")
 
 
 
-def get_screen_bounds(s):
-    width = s.window_width()
-    height = s.window_height()
-    return {
-        'width': width,
-        'height': height,
-        'from_x': -(width / 2),
-        'from_y': (height / 2),
-        'to_x': (width / 2),
-        'to_y': -(height / 2)
-    }
+
 
 def circles_linear(t, bounds, c_size, pensize, coloring_method):
 
@@ -100,7 +90,9 @@ def circle_web(t, radius, iterations, pensize):
             radius = radius + 1
         # print(i, ' din ', screen.window_height())
 
-bounds = get_screen_bounds(screen)
+import util_turtle
+
+bounds = util_turtle.get_screen_bounds(screen)
 
 circles_linear(turtle, bounds, 40, 2, util_draw.random_light_color)
 turtle.penup()
